@@ -1,0 +1,1 @@
+export * from './GetDocuments.usecase';

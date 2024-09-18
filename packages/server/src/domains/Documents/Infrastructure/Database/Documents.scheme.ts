@@ -1,39 +1,34 @@
 import { Documents } from '@server/data';
 import { delay } from '@server/utils/Utils';
-
-type TDocument = {
-  id: string;
-  uploadDate: Date;
-  title: string;
-  file: unknown;
-  signed: Date | null;
-  view: Date | null;
-  type: string;
-  requireSign: boolean;
-  validationSign: string | null;
-};
+import { IDocument } from '../../Domain';
 
 interface IFilters {
-  requireSign: boolean;
+  requireSign: boolean | null;
   type: string;
   title: string;
   date: Date | null;
-  signed: Date | null;
+  signed: boolean | null;
 }
 
 export class DocumentsScheme {
-  getDocuments = async (filters: IFilters): Promise<TDocument[]> => {
+  getDocuments = async (filters: IFilters): Promise<IDocument[]> => {
     delay();
 
     const allDocuments = Documents.map((document) => ({
       ...document,
       uploadDate: new Date(document.uploadDate),
+      signed: (document.signed && new Date(document.signed)) || null,
     }));
 
     return allDocuments.filter(
       ({ requireSign, type, title, uploadDate, signed }) => {
-        const matchRequireSign = requireSign === filters.requireSign;
-        const matchSigned = signed === filters.signed;
+        const matchRequireSign =
+          filters.requireSign === null || requireSign === filters.requireSign;
+        const matchSigned =
+          filters.signed === null ||
+          (!filters.signed && signed === null) ||
+          (filters.signed && signed !== null);
+
         const matchType = !filters.type || type === filters.type;
         const matchTitle =
           !filters.title ||

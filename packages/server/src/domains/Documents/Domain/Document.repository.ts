@@ -3,11 +3,11 @@ import { Document } from './Document.entity';
 
 export interface IGetDocumentsRepository extends IRequestContext {
   filters: {
-    requireSign: boolean;
+    requireSign: boolean | null;
     type: string;
     title: string;
     date: Date | null;
-    signed: Date | null;
+    signed: boolean | null;
   };
 }
 export interface IViewDocumentRepository extends IRequestContext {

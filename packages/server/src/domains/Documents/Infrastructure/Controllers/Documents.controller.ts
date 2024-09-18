@@ -9,7 +9,7 @@ export class DocumentsController {
   getDocuments = protectedProcedure
     .input(
       z.object({
-        requireSign: z.boolean().default(true),
+        requireSign: z.boolean().nullable().default(null),
         type: z.string().default(''),
         title: z.string().default(''),
         date: z
@@ -18,12 +18,7 @@ export class DocumentsController {
           .or(z.date())
           .nullable()
           .default(null),
-        signed: z
-          .string()
-          .transform((arg) => new Date(arg))
-          .or(z.date())
-          .nullable()
-          .default(null),
+        signed: z.boolean().nullable().default(null),
       }),
     )
     .query(

@@ -2,11 +2,11 @@ import { IRequestContext } from '@server/Application/Interfaces';
 
 export interface IGetDocuments extends IRequestContext {
   input: {
-    requireSign: boolean;
+    requireSign: boolean | null; // Si rquiere firma, si es null retora todo.
     type: string;
     title: string;
     date: Date | null;
-    signed: Date | null;
+    signed: boolean | null; // si fue firmado, si es null retora todo.
   };
 }
 

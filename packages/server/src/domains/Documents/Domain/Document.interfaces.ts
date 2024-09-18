@@ -1,6 +1,14 @@
 import { IRequestContext } from '@server/Application/Interfaces';
 
-export interface IGetDocuments extends IRequestContext {}
+export interface IGetDocuments extends IRequestContext {
+  input: {
+    requireSign: boolean;
+    type: string;
+    title: string;
+    date: Date | null;
+    signed: Date | null;
+  };
+}
 
 export interface IViewDocument extends IRequestContext {
   input: string; // document Id

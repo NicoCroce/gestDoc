@@ -12,10 +12,11 @@ export class DocumentsRepositoryImplementation implements DocumentRepository {
   private readonly DB = new DocumentsScheme();
 
   async getDocuments({
+    filters,
     requestContext,
   }: IGetDocumentsRepository): Promise<Document[]> {
     console.log('Hacer algo con userID', requestContext);
-    const documents = await this.DB.getDocuments();
+    const documents = await this.DB.getDocuments(filters);
     return documents?.map((document) => Document.create(document));
   }
 

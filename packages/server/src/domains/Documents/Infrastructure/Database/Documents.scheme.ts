@@ -13,13 +13,42 @@ type TDocument = {
   validationSign: string | null;
 };
 
+interface IFilters {
+  requireSign: boolean;
+  type: string;
+  title: string;
+  date: Date | null;
+  signed: Date | null;
+}
+
 export class DocumentsScheme {
-  getDocuments = async (): Promise<TDocument[]> => {
+  getDocuments = async (filters: IFilters): Promise<TDocument[]> => {
     delay();
 
-    return Documents.map((document) => ({
+    const allDocuments = Documents.map((document) => ({
       ...document,
       uploadDate: new Date(document.uploadDate),
     }));
+
+    return allDocuments.filter(
+      ({ requireSign, type, title, uploadDate, signed }) => {
+        const matchRequireSign = requireSign === filters.requireSign;
+        const matchSigned = signed === filters.signed;
+        const matchType = !filters.type || type === filters.type;
+        const matchTitle =
+          !filters.title ||
+          title.toLowerCase().includes(filters.title.toLowerCase());
+        const matchDate = !filters.date || uploadDate >= filters.date;
+
+        // Retornar solo los documentos que cumplen con todos los filtros
+        return (
+          matchRequireSign &&
+          matchType &&
+          matchTitle &&
+          matchDate &&
+          matchSigned
+        );
+      },
+    );
   };
 }

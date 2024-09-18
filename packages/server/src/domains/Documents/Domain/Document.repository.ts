@@ -1,7 +1,15 @@
 import { IRequestContext } from '@server/Application';
 import { Document } from './Document.entity';
 
-export interface IGetDocumentsRepository extends IRequestContext {}
+export interface IGetDocumentsRepository extends IRequestContext {
+  filters: {
+    requireSign: boolean;
+    type: string;
+    title: string;
+    date: Date | null;
+    signed: Date | null;
+  };
+}
 export interface IViewDocumentRepository extends IRequestContext {
   id: string;
 }
@@ -12,6 +20,7 @@ export interface ISignDocumentRepository extends IRequestContext {
 
 export interface DocumentRepository {
   getDocuments({
+    filters,
     requestContext,
   }: IGetDocumentsRepository): Promise<Document[]>;
   viewDocument({

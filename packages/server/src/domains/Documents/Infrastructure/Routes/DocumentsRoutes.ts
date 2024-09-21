@@ -1,4 +1,4 @@
-import { documentsController } from '../documents.app';
+import { documentsController } from '../../documents.app';
 
 const { getDocuments } = documentsController;
 

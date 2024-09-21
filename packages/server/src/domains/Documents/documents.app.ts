@@ -1,9 +1,9 @@
 import { container } from '@server/utils/Container';
-import { DocumentsService } from '../Application/Documents.service';
-import { DocumentsController } from './Controllers/Documents.controller';
+import { DocumentsService } from './Application/Documents.service';
+import { DocumentsController } from './Infrastructure/Controllers/Documents.controller';
 import { asClass } from 'awilix';
-import { DocumentsRepositoryImplementation } from './Database/DocumentsRepository.implementation.localDB';
-import { GetDocuments } from '../Domain';
+import { DocumentsRepositoryImplementation } from './Infrastructure/Database/DocumentsRepository.implementation.localDB';
+import { GetDocuments } from './Domain';
 
 container.register({
   documentsRepository: asClass(DocumentsRepositoryImplementation),

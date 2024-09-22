@@ -15,7 +15,12 @@ export type TIsSigned = 'signed' | 'pending';
 export type TDocumentSearch = {
   signed?: TIsSigned;
   title: string;
+  type?: string;
 };
 
 export const SIGNED: TIsSigned = 'signed';
 export const PENDING: TIsSigned = 'pending';
+
+export const VACATIONS = 'Vacaciones';
+export const RECEIPT = 'Recibo';
+export const ACCORDANCE = 'Conformidad';

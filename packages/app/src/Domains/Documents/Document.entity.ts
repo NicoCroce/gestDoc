@@ -9,3 +9,13 @@ export type TDocument = {
   requireSign: boolean;
   validationSign: string | null;
 };
+
+export type TIsSigned = 'signed' | 'pending';
+
+export type TDocumentSearch = {
+  signed?: TIsSigned;
+  title: string;
+};
+
+export const SIGNED: TIsSigned = 'signed';
+export const PENDING: TIsSigned = 'pending';

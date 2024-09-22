@@ -8,9 +8,10 @@ export const Document = ({
   requireSign,
   uploadDate,
   type,
+  signed,
 }: TDocument) => {
   return (
-    <Card className="p-4 w-80">
+    <Card className="p-4">
       <Container>
         <Title variant="h3">{title}</Title>
         <Text.Muted>
@@ -20,6 +21,7 @@ export const Document = ({
           <Badge>{requireSign ? 'Requiere firmar' : 'Firmado'}</Badge>
           <Badge variant="secondary">{type}</Badge>
         </Container>
+        <Badge variant="secondary">{signed ? 'FIRMADO' : 'POR FIRMAR'}</Badge>
       </Container>
     </Card>
   );

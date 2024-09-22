@@ -6,7 +6,7 @@ import {
   TabsList,
   TabsTrigger,
 } from '@app/Aplication/Components/ui/tabs';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   PENDING,
   SIGNED,
@@ -16,7 +16,7 @@ import {
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faFilter } from '@fortawesome/free-solid-svg-icons';
 import { DOCUMENTS_ROUTE } from '../Documents.routes';
-/* import { FiltersSheet } from './FiltersSheet'; */
+import { FiltersSheet } from './FiltersSheet/FiltersSheet';
 
 export const DocumentsList = () => {
   const { searchParams, updateParams } =
@@ -25,8 +25,12 @@ export const DocumentsList = () => {
     searchParams?.signed || PENDING,
   );
   const { data } = useGetDocuments();
-  /*   const [filtersIsOpen, setFiltersIsOpen] = useState(false);
-   */
+  const [filtersIsOpen, setFiltersIsOpen] = useState(true);
+
+  useEffect(() => {
+    updateParams({ signed: searchParams?.signed || PENDING });
+  }, [searchParams?.signed, updateParams]);
+
   if (!data) return null;
 
   const handleTabsChange = (value: string) => {
@@ -35,10 +39,10 @@ export const DocumentsList = () => {
   };
 
   const handleFilters = () => {
-    /* setFiltersIsOpen((prevState) => {
+    setFiltersIsOpen((prevState) => {
       console.log('DATO :  ', !prevState);
       return !prevState;
-    }); */
+    });
   };
 
   return (
@@ -69,7 +73,7 @@ export const DocumentsList = () => {
           ))}
         </List>
       </Tabs>
-      {/* <FiltersSheet open={filtersIsOpen} closeSheet={handleFilters} /> */}
+      <FiltersSheet open={filtersIsOpen} closeSheet={handleFilters} />
     </>
   );
 };

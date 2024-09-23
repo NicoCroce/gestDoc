@@ -6,10 +6,10 @@ export class Document {
     private readonly uploadDate: Date,
     private readonly title: string,
     private readonly file: unknown,
-    private readonly signed: Date | null,
-    private readonly view: Date | null,
+    private readonly signed: Date | null, // Si fue firmado.
+    private readonly view: Date | null, // La fecha en que el usuario lo visualizó.
     private readonly type: string,
-    private readonly requireSign: boolean,
+    private readonly requireSign: boolean, // Si el documento requiere ser firmado
     private readonly validationSign: string | null, //registra una huella perteneciente al usuario por cuestiones legales.
   ) {}
 

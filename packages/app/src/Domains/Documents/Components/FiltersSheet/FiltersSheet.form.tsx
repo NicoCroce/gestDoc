@@ -20,7 +20,7 @@ import {
 const initialState: TDocumentSearch = {
   title: '',
   signed: PENDING,
-  type: 'vacaciones',
+  type: '',
 };
 
 const buttonGroupActiveClass =
@@ -28,9 +28,10 @@ const buttonGroupActiveClass =
 
 export const FiltersSheetForm = () => {
   const { searchParams, updateParams } = useURLParams<TDocumentSearch>();
-  const [formState, setFormState] = useState<TDocumentSearch>(
-    searchParams || initialState,
-  );
+  const [formState, setFormState] = useState<TDocumentSearch>({
+    ...initialState,
+    ...searchParams,
+  });
 
   const handleChangeFilters = ({
     target: { name, value },
@@ -49,9 +50,11 @@ export const FiltersSheetForm = () => {
   const handleApplyFilters = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setTimeout(() => {
-      updateParams(formState);
+      updateParams({ ...formState, id: undefined });
     }, 300);
   };
+
+  const cleanFilters = () => setFormState(initialState);
 
   return (
     <form className="grid gap-4 py-4" onSubmit={handleApplyFilters}>
@@ -106,10 +109,16 @@ export const FiltersSheetForm = () => {
           </ToggleGroupItem>
         </ToggleGroup>
       </Container>
+
       <SheetFooter className="mt-16">
-        <SheetClose asChild>
-          <Button type="submit">Aplicar filtros</Button>
-        </SheetClose>
+        <Container row>
+          <Button variant="outline" onClick={cleanFilters}>
+            Limpiar filtros
+          </Button>
+          <SheetClose asChild>
+            <Button type="submit">Aplicar filtros</Button>
+          </SheetClose>
+        </Container>
       </SheetFooter>
     </form>
   );

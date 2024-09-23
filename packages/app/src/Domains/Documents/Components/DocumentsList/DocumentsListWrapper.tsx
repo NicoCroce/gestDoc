@@ -34,7 +34,7 @@ export const DocumentsListWrapper = () => {
 
   const handleTabsChange = (value: string) => {
     setIsSigned(value as TIsSigned);
-    updateParams({ signed: value });
+    updateParams({ signed: value, id: undefined });
   };
 
   const handleFilters = () => {

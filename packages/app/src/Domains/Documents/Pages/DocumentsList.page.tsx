@@ -1,12 +1,12 @@
 import { Container, Page } from '@app/Aplication';
-import { DocumentsList } from '../Components';
+import { DocumentsListWrapper } from '../Components';
 
 export const DocumentsListPage = () => {
   return (
     <Page title="Documentos">
       <Container row>
         <div className="min-w-[350px] max-w-[400px]">
-          <DocumentsList />
+          <DocumentsListWrapper />
         </div>
 
         <object

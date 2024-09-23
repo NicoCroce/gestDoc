@@ -2,6 +2,7 @@
 import {
   Document,
   DocumentRepository,
+  IGetDocumentRepository,
   IGetDocumentsRepository,
   ISignDocumentRepository,
   IViewDocumentRepository,
@@ -18,6 +19,16 @@ export class DocumentsRepositoryImplementation implements DocumentRepository {
     console.log('Hacer algo con userID', requestContext);
     const documents = await this.DB.getDocuments(filters);
     return documents?.map((document) => Document.create(document));
+  }
+
+  async getDocument({
+    id,
+    requestContext,
+  }: IGetDocumentRepository): Promise<Document | null> {
+    console.log('Hacer algo con userID', requestContext);
+    const document = await this.DB.getDocument(id);
+    if (!document) return null;
+    return Document.create(document);
   }
 
   viewDocument({

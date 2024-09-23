@@ -10,17 +10,18 @@ interface IFilters {
   signed: boolean | null;
 }
 
+const allDocuments = () =>
+  Documents.map((document) => ({
+    ...document,
+    uploadDate: new Date(document.uploadDate),
+    signed: (document.signed && new Date(document.signed)) || null,
+  }));
+
 export class DocumentsScheme {
   getDocuments = async (filters: IFilters): Promise<IDocument[]> => {
     await delay();
 
-    const allDocuments = Documents.map((document) => ({
-      ...document,
-      uploadDate: new Date(document.uploadDate),
-      signed: (document.signed && new Date(document.signed)) || null,
-    }));
-
-    return allDocuments.filter(
+    return allDocuments().filter(
       ({ requireSign, type, title, uploadDate, signed }) => {
         const matchRequireSign =
           filters.requireSign === null || requireSign === filters.requireSign;
@@ -45,5 +46,10 @@ export class DocumentsScheme {
         );
       },
     );
+  };
+
+  getDocument = async (documentId: string) => {
+    await delay();
+    return allDocuments().find(({ id }) => id === documentId);
   };
 }

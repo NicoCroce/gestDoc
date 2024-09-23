@@ -18,11 +18,19 @@ export interface ISignDocumentRepository extends IRequestContext {
   validationSign: string;
 }
 
+export interface IGetDocumentRepository extends IRequestContext {
+  id: string;
+}
+
 export interface DocumentRepository {
   getDocuments({
     filters,
     requestContext,
   }: IGetDocumentsRepository): Promise<Document[]>;
+  getDocument({
+    id,
+    requestContext,
+  }: IGetDocumentRepository): Promise<Document | null>;
   viewDocument({
     requestContext,
     id,

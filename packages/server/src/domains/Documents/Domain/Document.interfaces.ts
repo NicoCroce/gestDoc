@@ -21,6 +21,10 @@ export interface ISignDocument extends IRequestContext {
   };
 }
 
+export interface IGetDocument extends IRequestContext {
+  input: string; //document Id
+}
+
 export interface IDocument {
   id: string;
   uploadDate: Date;

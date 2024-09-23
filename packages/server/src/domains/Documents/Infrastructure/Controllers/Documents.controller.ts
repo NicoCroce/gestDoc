@@ -26,4 +26,12 @@ export class DocumentsController {
         this.documentsService.getDocuments.bind(this.documentsService),
       ),
     );
+
+  getDocument = protectedProcedure
+    .input(z.string())
+    .query(
+      executeService(
+        this.documentsService.getDocument.bind(this.documentsService),
+      ),
+    );
 }

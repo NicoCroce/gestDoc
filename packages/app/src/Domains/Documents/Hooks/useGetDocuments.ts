@@ -4,8 +4,10 @@ import { documentsService } from '../Documents.service';
 
 export const useGetDocuments = () => {
   const { searchParams } = useURLParams<TDocumentSearch>();
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const { id, ...filterSearchParams } = searchParams || {};
   return documentsService.getAll.useQuery({
-    ...searchParams,
-    signed: searchParams?.signed === SIGNED,
+    ...filterSearchParams,
+    signed: filterSearchParams?.signed === SIGNED,
   });
 };

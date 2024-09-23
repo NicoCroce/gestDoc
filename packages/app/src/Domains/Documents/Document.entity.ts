@@ -16,6 +16,7 @@ export type TDocumentSearch = {
   signed?: TIsSigned;
   title?: string;
   type?: string;
+  id?: string;
 };
 
 export const SIGNED: TIsSigned = 'firmados';

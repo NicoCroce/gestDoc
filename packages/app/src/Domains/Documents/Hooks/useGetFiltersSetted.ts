@@ -6,7 +6,8 @@ export const useGetFiltersSetted = () => {
   if (!searchParams) return false;
 
   return (
-    searchParams && Object.keys(searchParams).filter((key) => key !== 'signed')
+    searchParams &&
+    Object.keys(searchParams).filter((key) => key !== 'signed' && key !== 'id')
   )?.length > 0
     ? true
     : false;

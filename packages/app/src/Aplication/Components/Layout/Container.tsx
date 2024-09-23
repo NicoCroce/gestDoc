@@ -12,7 +12,7 @@ interface ContainerProps {
 }
 
 const SPACE = {
-  small: 'gap-1',
+  small: 'gap-2',
   medium: 'gap-4',
   large: 'gap-6',
 } as const;

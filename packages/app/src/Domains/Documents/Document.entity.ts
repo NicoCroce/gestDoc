@@ -10,17 +10,17 @@ export type TDocument = {
   validationSign: string | null;
 };
 
-export type TIsSigned = 'signed' | 'pending';
+export type TIsSigned = 'firmados' | 'pendientes';
 
 export type TDocumentSearch = {
   signed?: TIsSigned;
-  title: string;
+  title?: string;
   type?: string;
 };
 
-export const SIGNED: TIsSigned = 'signed';
-export const PENDING: TIsSigned = 'pending';
+export const SIGNED: TIsSigned = 'firmados';
+export const PENDING: TIsSigned = 'pendientes';
 
-export const VACATIONS = 'Vacaciones';
-export const RECEIPT = 'Recibo';
-export const ACCORDANCE = 'Conformidad';
+export const VACATIONS = 'vacaciones';
+export const RECEIPT = 'recibo';
+export const ACCORDANCE = 'conformidad';

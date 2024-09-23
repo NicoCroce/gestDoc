@@ -17,6 +17,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faFilter } from '@fortawesome/free-solid-svg-icons';
 import { DOCUMENTS_ROUTE } from '../Documents.routes';
 import { FiltersSheet } from './FiltersSheet/FiltersSheet';
+import { useGetFiltersSetted } from '../Hooks/useGetFiltersSetted';
 
 export const DocumentsList = () => {
   const { searchParams, updateParams } =
@@ -25,7 +26,8 @@ export const DocumentsList = () => {
     searchParams?.signed || PENDING,
   );
   const { data } = useGetDocuments();
-  const [filtersIsOpen, setFiltersIsOpen] = useState(true);
+  const [filtersIsOpen, setFiltersIsOpen] = useState(false);
+  const hasFilters = useGetFiltersSetted();
 
   useEffect(() => {
     updateParams({ signed: searchParams?.signed || PENDING });
@@ -39,10 +41,7 @@ export const DocumentsList = () => {
   };
 
   const handleFilters = () => {
-    setFiltersIsOpen((prevState) => {
-      console.log('DATO :  ', !prevState);
-      return !prevState;
-    });
+    setFiltersIsOpen((prevState) => !prevState);
   };
 
   return (
@@ -61,7 +60,10 @@ export const DocumentsList = () => {
               Firmados
             </TabsTrigger>
           </TabsList>
-          <Button className="flex-auto" onClick={handleFilters}>
+          <Button className="relative" onClick={handleFilters}>
+            {hasFilters && (
+              <span className="w-3 h-3 bg-red-700 rounded-full absolute top-[-4px] z-50"></span>
+            )}
             <FontAwesomeIcon icon={faFilter}></FontAwesomeIcon>
           </Button>
         </Container>

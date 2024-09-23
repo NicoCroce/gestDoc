@@ -13,7 +13,7 @@ export const DocumentsListPage = () => {
           data="https://firebasestorage.googleapis.com/v0/b/chabashoytest.appspot.com/o/CV_Nicola%CC%81s_Croce.pdf?alt=media&token=83802297-5edf-4456-9e71-34246caf1eae"
           type="application/pdf"
           width="100%"
-          className="h-[100vh]"
+          className="h-[82vh] p-4 border"
         >
           {/* <p>
             PDF

@@ -59,7 +59,7 @@ export const DocumentsListWrapper = () => {
           </TabsList>
           <Button className="relative" onClick={handleFilters}>
             {hasFilters && (
-              <span className="w-3 h-3 bg-red-700 rounded-full absolute top-[-4px] right-[-4px] z-50"></span>
+              <span className="w-3 h-3 bg-red-700 rounded-full absolute top-[-4px] right-[-4px]"></span>
             )}
             <FontAwesomeIcon icon={faFilter}></FontAwesomeIcon>
           </Button>

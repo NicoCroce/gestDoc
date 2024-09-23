@@ -12,7 +12,7 @@ interface IFilters {
 
 export class DocumentsScheme {
   getDocuments = async (filters: IFilters): Promise<IDocument[]> => {
-    delay();
+    await delay();
 
     const allDocuments = Documents.map((document) => ({
       ...document,

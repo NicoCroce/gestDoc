@@ -7,7 +7,7 @@ import {
 import { useEffect, useState } from 'react';
 import {
   PENDING,
-  SIGNED,
+  VALIDATED,
   TDocumentSearch,
   TIsSigned,
 } from '../../Document.entity';
@@ -56,8 +56,8 @@ export const DocumentsListWrapper = () => {
             <TabsTrigger value={PENDING} className="flex-auto">
               Pendientes
             </TabsTrigger>
-            <TabsTrigger value={SIGNED} className="flex-auto">
-              Firmados
+            <TabsTrigger value={VALIDATED} className="flex-auto">
+              Validados
             </TabsTrigger>
           </TabsList>
           <Button className="relative" onClick={handleFilters}>

@@ -1,5 +1,5 @@
 import { useURLParams } from '@app/Aplication';
-import { SIGNED, TDocumentSearch } from '../Document.entity';
+import { VALIDATED, TDocumentSearch } from '../Document.entity';
 import { documentsService } from '../Documents.service';
 
 export const useGetDocuments = () => {
@@ -8,6 +8,6 @@ export const useGetDocuments = () => {
   const { id, ...filterSearchParams } = searchParams || {};
   return documentsService.getAll.useQuery({
     ...filterSearchParams,
-    signed: filterSearchParams?.signed === SIGNED,
+    signed: filterSearchParams?.signed === VALIDATED,
   });
 };

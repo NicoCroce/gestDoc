@@ -10,7 +10,7 @@ export type TDocument = {
   validationSign: string | null;
 };
 
-export type TIsSigned = 'firmados' | 'pendientes';
+export type TIsSigned = 'validados' | 'pendientes';
 
 export type TDocumentSearch = {
   signed?: TIsSigned;
@@ -19,7 +19,7 @@ export type TDocumentSearch = {
   id?: string;
 };
 
-export const SIGNED: TIsSigned = 'firmados';
+export const VALIDATED: TIsSigned = 'validados';
 export const PENDING: TIsSigned = 'pendientes';
 
 export const VACATIONS = 'vacaciones';

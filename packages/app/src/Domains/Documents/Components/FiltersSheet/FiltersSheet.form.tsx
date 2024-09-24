@@ -5,7 +5,7 @@ import {
   ACCORDANCE,
   PENDING,
   RECEIPT,
-  SIGNED,
+  VALIDATED,
   TDocumentSearch,
   TIsSigned,
   VACATIONS,
@@ -81,7 +81,7 @@ export const FiltersSheetForm = () => {
           <ToggleGroupItem value={PENDING} className={buttonGroupActiveClass}>
             Pendientes
           </ToggleGroupItem>
-          <ToggleGroupItem value={SIGNED} className={buttonGroupActiveClass}>
+          <ToggleGroupItem value={VALIDATED} className={buttonGroupActiveClass}>
             Firmados
           </ToggleGroupItem>
         </ToggleGroup>

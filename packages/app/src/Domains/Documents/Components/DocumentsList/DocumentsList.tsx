@@ -40,7 +40,7 @@ export const DocumentsList = ({ openFilters }: DocumentsListProps) => {
   return (
     <>
       {data ? (
-        <ScrollArea className="h-[76vh] w-full">
+        <ScrollArea className="h-[74vh] w-full">
           <List>
             {data?.map((document) => (
               <List.Li key={document.id}>

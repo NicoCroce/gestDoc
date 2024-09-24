@@ -29,7 +29,9 @@ export const DocumentsListWrapper = () => {
   const hasFilters = useGetFiltersSetted();
 
   useEffect(() => {
-    updateParams({ signed: searchParams?.signed || PENDING });
+    const value = searchParams?.signed || PENDING;
+    updateParams({ signed: value });
+    setIsSigned(value);
   }, [searchParams?.signed, updateParams]);
 
   const handleTabsChange = (value: string) => {
@@ -47,6 +49,7 @@ export const DocumentsListWrapper = () => {
         defaultValue={isSigned}
         className="w-full flex flex-col gap-4"
         onValueChange={handleTabsChange}
+        value={isSigned}
       >
         <Container row>
           <TabsList className="grid w-full grid-cols-2">

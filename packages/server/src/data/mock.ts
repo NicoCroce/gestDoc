@@ -24,7 +24,7 @@ export const Documents = [
     view: 'Tue Sep 24 2024 12:14:43 GMT-0300 (hora estándar de Argentina)',
     type: 'recibo',
     requireSign: true,
-    validationSign: null,
+    validationSign: 'string de validación',
     agreedment: true,
   },
   {

@@ -34,4 +34,26 @@ export class DocumentsController {
         this.documentsService.getDocument.bind(this.documentsService),
       ),
     );
+
+  viewDocument = protectedProcedure
+    .input(z.string())
+    .mutation(
+      executeService(
+        this.documentsService.viewDocument.bind(this.documentsService),
+      ),
+    );
+
+  signDocument = protectedProcedure
+    .input(
+      z.object({
+        documentId: z.string(),
+        password: z.string(),
+        agreement: z.boolean(),
+      }),
+    )
+    .mutation(
+      executeService(
+        this.documentsService.signDocument.bind(this.documentsService),
+      ),
+    );
 }

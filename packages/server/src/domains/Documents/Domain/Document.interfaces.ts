@@ -16,8 +16,9 @@ export interface IViewDocument extends IRequestContext {
 
 export interface ISignDocument extends IRequestContext {
   input: {
-    id: string;
-    validationSign: string;
+    documentId: string;
+    password: string;
+    agreement: boolean;
   };
 }
 
@@ -35,4 +36,5 @@ export interface IDocument {
   type: string;
   requireSign: boolean;
   validationSign: string | null;
+  agreedment: null | boolean;
 }

@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import {
   Document,
   DocumentRepository,
@@ -34,14 +33,18 @@ export class DocumentsRepositoryImplementation implements DocumentRepository {
   viewDocument({
     requestContext,
     id,
-  }: IViewDocumentRepository): Promise<Document> {
-    throw new Error('Method not implemented.');
+  }: IViewDocumentRepository): Promise<void | null> {
+    console.log('Hacer algo con userID', requestContext);
+    return this.DB.viewDocument(id);
   }
+
   signDocument({
     requestContext,
     id,
     validationSign,
-  }: ISignDocumentRepository): Promise<Document> {
-    throw new Error('Method not implemented.');
+    agreement,
+  }: ISignDocumentRepository): Promise<void | null> {
+    console.log('Hacer algo con userID', requestContext);
+    return this.DB.signDocument(id, agreement, validationSign);
   }
 }

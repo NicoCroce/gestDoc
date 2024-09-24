@@ -15,6 +15,7 @@ const allDocuments = () =>
     ...document,
     uploadDate: new Date(document.uploadDate),
     signed: (document.signed && new Date(document.signed)) || null,
+    view: (document.view && new Date(document.view)) || null,
   }));
 
 export class DocumentsScheme {
@@ -51,5 +52,33 @@ export class DocumentsScheme {
   getDocument = async (documentId: string) => {
     await delay();
     return allDocuments().find(({ id }) => id === documentId);
+  };
+
+  viewDocument = async (documentId: string) => {
+    await delay();
+    const index = Documents.findIndex(({ id }) => id === documentId);
+
+    if (index === -1) return null;
+
+    if (!Documents[index].view) {
+      Documents[index].view = new Date().toISOString();
+    }
+  };
+
+  signDocument = async (
+    documentId: string,
+    agreedment: boolean,
+    validationSign: string,
+  ) => {
+    await delay();
+    const index = Documents.findIndex(({ id }) => id === documentId);
+
+    if (index === -1) return null;
+
+    if (!Documents[index].signed) {
+      Documents[index].signed = new Date().toISOString();
+      Documents[index].agreedment = agreedment;
+      Documents[index].validationSign = validationSign;
+    }
   };
 }

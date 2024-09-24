@@ -20,11 +20,12 @@ export const Documents = [
       'Tue Sep 17 2024 16:23:40 GMT-0300 (hora estándar de Argentina)',
     title: 'Recibo mes *',
     file: 'https://firebasestorage.googleapis.com/v0/b/chabashoytest.appspot.com/o/CV_Nicola%CC%81s_Croce.pdf?alt=media&token=83802297-5edf-4456-9e71-34246caf1eae',
-    signed: null,
-    view: null,
+    signed: 'Tue Sep 24 2024 12:14:43 GMT-0300 (hora estándar de Argentina)',
+    view: 'Tue Sep 24 2024 12:14:43 GMT-0300 (hora estándar de Argentina)',
     type: 'recibo',
     requireSign: true,
     validationSign: null,
+    agreedment: true,
   },
   {
     id: 'f9724742-6702-4b60-9581-24cf34903c02',
@@ -33,10 +34,11 @@ export const Documents = [
     title: 'Recibo mes *',
     file: 'https://firebasestorage.googleapis.com/v0/b/chabashoytest.appspot.com/o/CV_Nicola%CC%81s_Croce.pdf?alt=media&token=83802297-5edf-4456-9e71-34246caf1eae',
     signed: 'Tue Sep 17 2024 16:23:40 GMT-0300 (hora estándar de Argentina)',
-    view: null,
+    view: '',
     type: 'vacaciones',
     requireSign: true,
     validationSign: null,
+    agreedment: null,
   },
   {
     id: '824f9716-e3e4-4664-ad5f-93ba3678acce',
@@ -45,10 +47,11 @@ export const Documents = [
     title: 'Vacaciones',
     file: 'https://firebasestorage.googleapis.com/v0/b/chabashoytest.appspot.com/o/CV_Nicola%CC%81s_Croce.pdf?alt=media&token=83802297-5edf-4456-9e71-34246caf1eae',
     signed: null,
-    view: null,
+    view: 'Tue Sep 24 2024 12:14:43 GMT-0300 (hora estándar de Argentina)',
     type: 'vacaciones',
     requireSign: false,
     validationSign: null,
+    agreedment: null,
   },
   {
     id: 'e473004f-049b-40dd-8580-d24d60df99a5',
@@ -61,6 +64,7 @@ export const Documents = [
     type: 'vacaciones',
     requireSign: true,
     validationSign: null,
+    agreedment: null,
   },
   {
     id: 'aa41de3f-9388-4131-a6d7-b8f8cb85e44c',
@@ -73,6 +77,7 @@ export const Documents = [
     type: 'vacaciones',
     requireSign: false,
     validationSign: null,
+    agreedment: null,
   },
   {
     id: '7e0dbe26-5af2-43b9-9da5-d519128a9511',
@@ -85,6 +90,7 @@ export const Documents = [
     type: 'recibo',
     requireSign: true,
     validationSign: null,
+    agreedment: null,
   },
   {
     id: 'be053c97-f316-41a2-8e32-70ae1ddbb715',
@@ -97,6 +103,7 @@ export const Documents = [
     type: 'vacaciones',
     requireSign: false,
     validationSign: null,
+    agreedment: null,
   },
   {
     id: '0cbc9657-826d-4d50-8e52-7128c6ef5ddb',
@@ -109,6 +116,7 @@ export const Documents = [
     type: 'recibo',
     requireSign: true,
     validationSign: null,
+    agreedment: null,
   },
   {
     id: 'ccab7966-ea9b-420a-b0c5-b7f6064c8bf9',
@@ -121,6 +129,7 @@ export const Documents = [
     type: 'vacaciones',
     requireSign: false,
     validationSign: null,
+    agreedment: null,
   },
   {
     id: '50ffd46a-795c-477e-a993-b20cb0b06ca4',
@@ -133,6 +142,7 @@ export const Documents = [
     type: 'conformidad',
     requireSign: false,
     validationSign: null,
+    agreedment: null,
   },
   {
     id: '0452701d-2f9c-4284-b1ab-09ee96331682',
@@ -145,6 +155,7 @@ export const Documents = [
     type: 'conformidad',
     requireSign: false,
     validationSign: null,
+    agreedment: null,
   },
   {
     id: '2248b559-540b-4239-8c20-4b944bec78b8',
@@ -157,6 +168,7 @@ export const Documents = [
     type: 'vacaciones',
     requireSign: false,
     validationSign: null,
+    agreedment: null,
   },
   {
     id: 'eea8c274-fd5c-48ea-8317-f120d770846e',
@@ -169,6 +181,7 @@ export const Documents = [
     type: 'vacaciones',
     requireSign: true,
     validationSign: null,
+    agreedment: null,
   },
   {
     id: 'cccaee0b-098f-4b77-9183-9f625acb1091',
@@ -181,6 +194,7 @@ export const Documents = [
     type: 'conformidad',
     requireSign: false,
     validationSign: null,
+    agreedment: null,
   },
   {
     id: '29d47fe0-946b-4e02-a3f8-d33e3533fcde',
@@ -193,6 +207,7 @@ export const Documents = [
     type: 'vacaciones',
     requireSign: true,
     validationSign: null,
+    agreedment: null,
   },
   {
     id: '30907212-e5b1-4f5a-9d37-3e6cfc6c8e34',
@@ -205,6 +220,7 @@ export const Documents = [
     type: 'vacaciones',
     requireSign: false,
     validationSign: null,
+    agreedment: null,
   },
   {
     id: '701888b2-7507-4e4a-8c35-c492361618f8',
@@ -217,6 +233,7 @@ export const Documents = [
     type: 'conformidad',
     requireSign: true,
     validationSign: null,
+    agreedment: null,
   },
   {
     id: 'eba219ea-6919-4b36-84dd-e4a2d4dc3b40',
@@ -229,6 +246,7 @@ export const Documents = [
     type: 'vacaciones',
     requireSign: true,
     validationSign: null,
+    agreedment: null,
   },
   {
     id: 'e9565df0-f505-4235-b248-1cb99339199b',
@@ -241,6 +259,7 @@ export const Documents = [
     type: 'recibo',
     requireSign: true,
     validationSign: null,
+    agreedment: null,
   },
   {
     id: 'd7b81ca7-271c-433c-a862-6e900a945735',
@@ -253,6 +272,7 @@ export const Documents = [
     type: 'vacaciones',
     requireSign: false,
     validationSign: null,
+    agreedment: null,
   },
   {
     id: '0618a138-0134-4beb-96a8-6d7c9fc4d050',
@@ -265,6 +285,7 @@ export const Documents = [
     type: 'vacaciones',
     requireSign: true,
     validationSign: null,
+    agreedment: null,
   },
   {
     id: '9696ec14-d380-456b-b438-0224a708fd7e',
@@ -277,6 +298,7 @@ export const Documents = [
     type: 'vacaciones',
     requireSign: true,
     validationSign: null,
+    agreedment: null,
   },
   {
     id: '14ef0f4e-c78b-4e22-93fc-cd6b26c88048',
@@ -289,6 +311,7 @@ export const Documents = [
     type: 'conformidad',
     requireSign: true,
     validationSign: null,
+    agreedment: null,
   },
   {
     id: 'd5d565a8-92b4-406e-933a-e2b13129191a',
@@ -301,6 +324,7 @@ export const Documents = [
     type: 'vacaciones',
     requireSign: true,
     validationSign: null,
+    agreedment: null,
   },
   {
     id: '3cbfd267-26e3-4bc0-8e1c-7edd6553a32a',
@@ -313,6 +337,7 @@ export const Documents = [
     type: 'vacaciones',
     requireSign: true,
     validationSign: null,
+    agreedment: null,
   },
   {
     id: '3f72f349-644a-4974-8dbe-972d60e2ac8f',
@@ -325,6 +350,7 @@ export const Documents = [
     type: 'vacaciones',
     requireSign: true,
     validationSign: null,
+    agreedment: null,
   },
   {
     id: '9d88904c-32fa-473e-bde6-9bb5a41e1e31',
@@ -337,6 +363,7 @@ export const Documents = [
     type: 'recibo',
     requireSign: false,
     validationSign: null,
+    agreedment: null,
   },
   {
     id: '87e70776-7e64-4cb5-b0b8-0dfcbda65133',
@@ -349,6 +376,7 @@ export const Documents = [
     type: 'vacaciones',
     requireSign: false,
     validationSign: null,
+    agreedment: null,
   },
   {
     id: '596ca71d-659b-47ca-9441-4de4ef690031',
@@ -361,6 +389,7 @@ export const Documents = [
     type: 'recibo',
     requireSign: false,
     validationSign: null,
+    agreedment: null,
   },
   {
     id: '3442a1a8-ff56-4e6e-ad91-5716b2850571',
@@ -373,5 +402,6 @@ export const Documents = [
     type: 'recibo',
     requireSign: false,
     validationSign: null,
+    agreedment: null,
   },
 ];

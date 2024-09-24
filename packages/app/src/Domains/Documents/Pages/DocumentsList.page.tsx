@@ -1,9 +1,9 @@
 import { Container, Page } from '@app/Aplication';
-import { DocumentsListWrapper, PDFPreview } from '../Components';
+import { DocumentsListWrapper, PDFPreview, SignDocument } from '../Components';
 
 export const DocumentsListPage = () => {
   return (
-    <Page title="Documentos">
+    <Page title="Documentos" headerRight={<SignDocument />}>
       <Container row>
         <div className="min-w-[350px] max-w-[400px]">
           <DocumentsListWrapper />

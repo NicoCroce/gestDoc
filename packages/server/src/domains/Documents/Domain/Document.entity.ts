@@ -11,6 +11,7 @@ export class Document {
     private readonly type: string,
     private readonly requireSign: boolean, // Si el documento requiere ser firmado
     private readonly validationSign: string | null, //registra una huella perteneciente al usuario por cuestiones legales.
+    private readonly agreedment: boolean | null, // si el documento requuiere firmar, lo hace bajo conformidad o no.
   ) {}
 
   static create({
@@ -23,6 +24,7 @@ export class Document {
     type,
     requireSign,
     validationSign,
+    agreedment,
   }: IDocument): Document {
     return new Document(
       id,
@@ -34,6 +36,7 @@ export class Document {
       type,
       requireSign,
       validationSign,
+      agreedment,
     );
   }
 
@@ -52,6 +55,7 @@ export class Document {
       type: this.type,
       requireSign: this.requireSign,
       validationSign: this.validationSign,
+      agreedment: this.agreedment,
     };
   }
 }

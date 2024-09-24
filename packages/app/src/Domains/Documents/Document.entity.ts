@@ -8,6 +8,7 @@ export type TDocument = {
   type: string;
   requireSign: boolean;
   validationSign: string | null;
+  agreedment: boolean | null;
 };
 
 export type TIsSigned = 'validados' | 'pendientes';

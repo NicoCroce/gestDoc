@@ -9,6 +9,7 @@ export interface IGetDocumentsRepository extends IRequestContext {
     date: Date | null;
     signed: boolean | null;
     view: boolean | null;
+    validated: boolean | null;
   };
 }
 export interface IViewDocumentRepository extends IRequestContext {

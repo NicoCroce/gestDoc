@@ -1,18 +1,14 @@
-import { AppError, IUseCase } from '@server/Application';
+import { IUseCase } from '@server/Application';
 import { DocumentRepository } from '../Document.repository';
 import { IViewDocument } from '../Document.interfaces';
 
-export class ViewDocument implements IUseCase<void> {
+export class ViewDocument implements IUseCase<void | null> {
   constructor(private readonly documentsRepository: DocumentRepository) {}
 
-  async execute({ input, requestContext }: IViewDocument): Promise<void> {
-    const document = await this.documentsRepository.viewDocument({
+  execute({ input, requestContext }: IViewDocument): Promise<void | null> {
+    return this.documentsRepository.viewDocument({
       id: input,
       requestContext,
     });
-
-    if (!document) {
-      throw new AppError('No se pude ver el documento');
-    }
   }
 }

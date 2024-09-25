@@ -57,8 +57,8 @@ export const Documents = [
     id: 'e473004f-049b-40dd-8580-d24d60df99a5',
     uploadDate:
       'Tue Sep 17 2024 16:23:40 GMT-0300 (hora estándar de Argentina)',
-    title: 'Certificado',
-    file: 'https://firebasestorage.googleapis.com/v0/b/chabashoytest.appspot.com/o/CV_Nicola%CC%81s_Croce.pdf?alt=media&token=83802297-5edf-4456-9e71-34246caf1eae',
+    title: 'Certificado prueba para ver',
+    file: 'https://google.com',
     signed: null,
     view: null,
     type: 'vacaciones',

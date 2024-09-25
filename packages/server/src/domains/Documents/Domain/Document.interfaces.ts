@@ -8,6 +8,7 @@ export interface IGetDocuments extends IRequestContext {
     date: Date | null;
     signed: boolean | null; // si fue firmado, si es null retora todo.
     view: boolean | null;
+    validated: boolean | null;
   };
 }
 

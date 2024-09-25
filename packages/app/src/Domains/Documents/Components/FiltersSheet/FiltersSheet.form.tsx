@@ -82,7 +82,7 @@ export const FiltersSheetForm = () => {
             Pendientes
           </ToggleGroupItem>
           <ToggleGroupItem value={VALIDATED} className={buttonGroupActiveClass}>
-            Firmados
+            Validados
           </ToggleGroupItem>
         </ToggleGroup>
       </Container>

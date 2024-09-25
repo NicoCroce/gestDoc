@@ -11,14 +11,21 @@ import {
   faCircleExclamation,
   faHourglass,
 } from '@fortawesome/free-solid-svg-icons';
+import { useEffect, useState } from 'react';
 
 export const PDFPreview = () => {
   const { searchParams } = useURLParams<TDocumentSearch>();
-  const { data, isLoading } = useGetDocument(searchParams?.id);
+  const { currentDocument, isLoading } = useGetDocument(searchParams?.id);
+  const [onLoad, setOnload] = useState(false);
 
-  console.log(data);
+  useEffect(() => {
+    setOnload(false);
+    setTimeout(() => {
+      setOnload(true);
+    }, 500);
+  }, [currentDocument]);
 
-  if (!data)
+  if (!currentDocument)
     return (
       <Alert className="max-w-lg">
         <FontAwesomeIcon icon={faCircleExclamation} size="lg" />
@@ -29,7 +36,7 @@ export const PDFPreview = () => {
       </Alert>
     );
 
-  if (isLoading)
+  if (isLoading || !onLoad)
     return (
       <Alert className="max-w-lg">
         <FontAwesomeIcon icon={faHourglass} size="lg" />
@@ -39,16 +46,20 @@ export const PDFPreview = () => {
     );
 
   return (
-    <object
-      data={data.file as string}
-      type="application/pdf"
-      width="100%"
-      className="h-full"
-    >
-      <p>
-        PDF
-        <a href={data.file as string}>to the PDF!</a>
-      </p>
-    </object>
+    <>
+      <object
+        data={currentDocument.file as string}
+        type="application/pdf"
+        width="100%"
+        className="h-full"
+      >
+        <p>
+          PDF
+          <a href={currentDocument.file as string}>
+            Download pdf <span>{currentDocument.file as string}</span>
+          </a>
+        </p>
+      </object>
+    </>
   );
 };

@@ -1,5 +1,11 @@
 import { useMemo } from 'react';
-import { Container, Title, Text, useURLParams } from '@app/Aplication';
+import {
+  Container,
+  Title,
+  Text,
+  useURLParams,
+  useGlobalStore,
+} from '@app/Aplication';
 import { Badge } from '@app/Aplication/Components/ui/badge';
 import { Card } from '@app/Aplication/Components/ui/card';
 import { TDocument, TDocumentSearch } from '../Document.entity';
@@ -42,9 +48,12 @@ export const Document = ({
   view,
 }: TDocument) => {
   const { searchParams, updateParams } = useURLParams<TDocumentSearch>();
+  const { setQueryData } = useGlobalStore('documentViewed');
 
   const handleClick = () => {
     updateParams({ id });
+    // este timeout es necesario para no actulizar el listado al hacer click sobre el documento
+    setTimeout(() => setQueryData(id), 1000);
   };
 
   const clasNameCard = clsx(

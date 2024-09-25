@@ -11,17 +11,17 @@ export type TDocument = {
   agreedment: boolean | null;
 };
 
-export type TIsSigned = 'validados' | 'pendientes';
+export type TStateDocument = 'validados' | 'pendientes';
 
 export type TDocumentSearch = {
-  signed?: TIsSigned;
+  state?: TStateDocument;
   title?: string;
   type?: string;
   id?: string;
 };
 
-export const VALIDATED: TIsSigned = 'validados';
-export const PENDING: TIsSigned = 'pendientes';
+export const VALIDATED: TStateDocument = 'validados';
+export const PENDING: TStateDocument = 'pendientes';
 
 export const VACATIONS = 'vacaciones';
 export const RECEIPT = 'recibo';

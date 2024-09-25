@@ -19,6 +19,7 @@ export class DocumentsController {
           .nullable()
           .default(null),
         signed: z.boolean().nullable().default(null),
+        view: z.boolean().default(false),
       }),
     )
     .query(

@@ -8,6 +8,7 @@ interface IFilters {
   title: string;
   date: Date | null;
   signed: boolean | null;
+  view: boolean | null;
 }
 
 const allDocuments = () =>
@@ -23,14 +24,16 @@ export class DocumentsScheme {
     await delay();
 
     return allDocuments().filter(
-      ({ requireSign, type, title, uploadDate, signed }) => {
-        const matchRequireSign =
-          filters.requireSign === null || requireSign === filters.requireSign;
+      ({ requireSign, type, title, uploadDate, signed, view }) => {
         const matchSigned =
           filters.signed === null ||
           (!filters.signed && signed === null) ||
-          (filters.signed && signed !== null);
+          (filters.signed && signed !== null) ||
+          filters.requireSign === null ||
+          requireSign === filters.requireSign;
 
+        const matchView =
+          (filters.view && view !== null) || (!filters.view && view === null);
         const matchType = !filters.type || type === filters.type;
         const matchTitle =
           !filters.title ||
@@ -38,13 +41,7 @@ export class DocumentsScheme {
         const matchDate = !filters.date || uploadDate >= filters.date;
 
         // Retornar solo los documentos que cumplen con todos los filtros
-        return (
-          matchRequireSign &&
-          matchType &&
-          matchTitle &&
-          matchDate &&
-          matchSigned
-        );
+        return matchType && matchTitle && matchDate && matchSigned && matchView;
       },
     );
   };

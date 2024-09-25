@@ -1,13 +1,35 @@
+import { useMemo } from 'react';
 import { Container, Title, Text, useURLParams } from '@app/Aplication';
 import { Badge } from '@app/Aplication/Components/ui/badge';
 import { Card } from '@app/Aplication/Components/ui/card';
 import { TDocument, TDocumentSearch } from '../Document.entity';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
-  faCircleCheck,
   faClockRotateLeft,
+  faThumbsDown,
+  faThumbsUp,
+  faEye,
 } from '@fortawesome/free-solid-svg-icons';
 import clsx from 'clsx';
+
+const IconStyle = {
+  signedAgreedment: {
+    icon: faThumbsUp,
+    color: 'text-green-800',
+  },
+  signedDisagree: {
+    icon: faThumbsDown,
+    color: 'text-amber-600',
+  },
+  viewed: {
+    icon: faEye,
+    color: 'text-gray-800',
+  },
+  waiting: {
+    icon: faClockRotateLeft,
+    color: 'text-amber-600',
+  },
+};
 
 export const Document = ({
   id,
@@ -16,6 +38,8 @@ export const Document = ({
   uploadDate,
   type,
   signed,
+  agreedment,
+  view,
 }: TDocument) => {
   const { searchParams, updateParams } = useURLParams<TDocumentSearch>();
 
@@ -31,14 +55,26 @@ export const Document = ({
     },
   );
 
+  const selectedStyle = useMemo(
+    () =>
+      signed && agreedment
+        ? IconStyle.signedAgreedment
+        : signed && !agreedment
+          ? IconStyle.signedDisagree
+          : !requireSign && view
+            ? IconStyle.viewed
+            : IconStyle.waiting,
+    [agreedment, requireSign, signed, view],
+  );
+
   return (
     <Card onClick={handleClick} className={clasNameCard}>
       <Container space="small">
         <Container row justify="between">
           <Title variant="h4">{title}</Title>
           <FontAwesomeIcon
-            className={`${signed ? 'text-green-800' : 'text-amber-600	'}`}
-            icon={signed ? faCircleCheck : faClockRotateLeft}
+            className={selectedStyle.color}
+            icon={selectedStyle.icon}
           />
         </Container>
         <Text.Muted>

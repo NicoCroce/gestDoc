@@ -9,5 +9,6 @@ export const useGetDocuments = () => {
   return documentsService.getAll.useQuery({
     ...filterSearchParams,
     signed: filterSearchParams?.signed === VALIDATED,
+    view: filterSearchParams?.signed === VALIDATED,
   });
 };

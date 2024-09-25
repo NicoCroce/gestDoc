@@ -8,19 +8,20 @@ export type TDocument = {
   type: string;
   requireSign: boolean;
   validationSign: string | null;
+  agreedment: boolean | null;
 };
 
-export type TIsSigned = 'firmados' | 'pendientes';
+export type TStateDocument = 'validados' | 'pendientes';
 
 export type TDocumentSearch = {
-  signed?: TIsSigned;
+  state?: TStateDocument;
   title?: string;
   type?: string;
   id?: string;
 };
 
-export const SIGNED: TIsSigned = 'firmados';
-export const PENDING: TIsSigned = 'pendientes';
+export const VALIDATED: TStateDocument = 'validados';
+export const PENDING: TStateDocument = 'pendientes';
 
 export const VACATIONS = 'vacaciones';
 export const RECEIPT = 'recibo';

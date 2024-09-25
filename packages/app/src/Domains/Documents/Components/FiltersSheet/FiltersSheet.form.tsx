@@ -5,9 +5,9 @@ import {
   ACCORDANCE,
   PENDING,
   RECEIPT,
-  SIGNED,
+  VALIDATED,
   TDocumentSearch,
-  TIsSigned,
+  TStateDocument,
   VACATIONS,
 } from '../../Document.entity';
 import { useState } from 'react';
@@ -19,7 +19,7 @@ import {
 
 const initialState: TDocumentSearch = {
   title: '',
-  signed: PENDING,
+  state: PENDING,
   type: '',
 };
 
@@ -39,8 +39,8 @@ export const FiltersSheetForm = () => {
     setFormState((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSigned = (value: string) => {
-    setFormState((prev) => ({ ...prev, signed: value as TIsSigned }));
+  const handleState = (value: string) => {
+    setFormState((prev) => ({ ...prev, state: value as TStateDocument }));
   };
 
   const handleType = (value: string) => {
@@ -75,14 +75,14 @@ export const FiltersSheetForm = () => {
           type="single"
           variant="outline"
           className="justify-start gap-4"
-          onValueChange={handleSigned}
-          value={formState.signed}
+          onValueChange={handleState}
+          value={formState.state}
         >
           <ToggleGroupItem value={PENDING} className={buttonGroupActiveClass}>
             Pendientes
           </ToggleGroupItem>
-          <ToggleGroupItem value={SIGNED} className={buttonGroupActiveClass}>
-            Firmados
+          <ToggleGroupItem value={VALIDATED} className={buttonGroupActiveClass}>
+            Validados
           </ToggleGroupItem>
         </ToggleGroup>
       </Container>

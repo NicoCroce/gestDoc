@@ -8,6 +8,8 @@ export interface IGetDocumentsRepository extends IRequestContext {
     title: string;
     date: Date | null;
     signed: boolean | null;
+    view: boolean | null;
+    validated: boolean | null;
   };
 }
 export interface IViewDocumentRepository extends IRequestContext {
@@ -16,6 +18,7 @@ export interface IViewDocumentRepository extends IRequestContext {
 export interface ISignDocumentRepository extends IRequestContext {
   id: string;
   validationSign: string;
+  agreement: boolean;
 }
 
 export interface IGetDocumentRepository extends IRequestContext {
@@ -34,10 +37,11 @@ export interface DocumentRepository {
   viewDocument({
     requestContext,
     id,
-  }: IViewDocumentRepository): Promise<Document>;
+  }: IViewDocumentRepository): Promise<void | null>;
   signDocument({
     requestContext,
     id,
     validationSign,
-  }: ISignDocumentRepository): Promise<Document>;
+    agreement,
+  }: ISignDocumentRepository): Promise<void | null>;
 }

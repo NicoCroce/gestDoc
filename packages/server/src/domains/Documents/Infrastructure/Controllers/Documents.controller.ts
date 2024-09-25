@@ -19,6 +19,8 @@ export class DocumentsController {
           .nullable()
           .default(null),
         signed: z.boolean().nullable().default(null),
+        view: z.boolean().nullable().default(null),
+        validated: z.boolean().nullable().default(null),
       }),
     )
     .query(
@@ -32,6 +34,28 @@ export class DocumentsController {
     .query(
       executeService(
         this.documentsService.getDocument.bind(this.documentsService),
+      ),
+    );
+
+  viewDocument = protectedProcedure
+    .input(z.string())
+    .mutation(
+      executeService(
+        this.documentsService.viewDocument.bind(this.documentsService),
+      ),
+    );
+
+  signDocument = protectedProcedure
+    .input(
+      z.object({
+        documentId: z.string(),
+        password: z.string(),
+        agreement: z.boolean(),
+      }),
+    )
+    .mutation(
+      executeService(
+        this.documentsService.signDocument.bind(this.documentsService),
       ),
     );
 }

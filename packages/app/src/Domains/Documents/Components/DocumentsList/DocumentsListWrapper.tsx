@@ -7,9 +7,9 @@ import {
 import { useEffect, useState } from 'react';
 import {
   PENDING,
-  SIGNED,
+  VALIDATED,
   TDocumentSearch,
-  TIsSigned,
+  TStateDocument,
 } from '../../Document.entity';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faFilter } from '@fortawesome/free-solid-svg-icons';
@@ -17,26 +17,28 @@ import { DOCUMENTS_ROUTE } from '../../Documents.routes';
 import { FiltersSheet } from '../FiltersSheet/FiltersSheet';
 import { useGetFiltersSetted } from '../../Hooks/useGetFiltersSetted';
 import { DocumentsList } from './DocumentsList';
+import { useViewDocument } from '../../Hooks/useViewDocument';
 
 export const DocumentsListWrapper = () => {
   const { searchParams, updateParams } =
     useURLParams<TDocumentSearch>(DOCUMENTS_ROUTE);
-  const [isSigned, setIsSigned] = useState<TIsSigned>(
-    searchParams?.signed || PENDING,
+  const [isState, setState] = useState<TStateDocument>(
+    searchParams?.state || PENDING,
   );
 
   const [filtersIsOpen, setFiltersIsOpen] = useState(false);
   const hasFilters = useGetFiltersSetted();
+  useViewDocument();
 
   useEffect(() => {
-    const value = searchParams?.signed || PENDING;
-    updateParams({ signed: value });
-    setIsSigned(value);
-  }, [searchParams?.signed, updateParams]);
+    const value = searchParams?.state || PENDING;
+    updateParams({ state: value });
+    setState(value);
+  }, [searchParams?.state, updateParams]);
 
   const handleTabsChange = (value: string) => {
-    setIsSigned(value as TIsSigned);
-    updateParams({ signed: value, id: undefined });
+    setState(value as TStateDocument);
+    updateParams({ state: value, id: undefined });
   };
 
   const handleFilters = () => {
@@ -46,18 +48,18 @@ export const DocumentsListWrapper = () => {
   return (
     <>
       <Tabs
-        defaultValue={isSigned}
+        defaultValue={isState}
         className="w-full flex flex-col gap-4"
         onValueChange={handleTabsChange}
-        value={isSigned}
+        value={isState}
       >
         <Container row>
           <TabsList className="grid w-full grid-cols-2">
             <TabsTrigger value={PENDING} className="flex-auto">
               Pendientes
             </TabsTrigger>
-            <TabsTrigger value={SIGNED} className="flex-auto">
-              Firmados
+            <TabsTrigger value={VALIDATED} className="flex-auto">
+              Validados
             </TabsTrigger>
           </TabsList>
           <Button className="relative" onClick={handleFilters}>

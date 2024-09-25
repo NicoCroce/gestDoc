@@ -19,9 +19,11 @@
     "cors": "^2.8.5",
     "express": "^4.19.2",
     "jsonwebtoken": "^9.0.2",
+    "mysql2": "^3.11.3",
     "pino": "^9.4.0",
     "pino-http": "^10.3.0",
-    "pino-pretty": "^11.2.2"
+    "pino-pretty": "^11.2.2",
+    "sequelize": "^6.37.3"
   },
   "devDependencies": {
     "@types/bcryptjs": "^2.4.6",

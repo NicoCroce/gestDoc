@@ -18,10 +18,7 @@ export const useViewDocument = () => {
   });
 
   useEffect(() => {
-    console.log('Cambia search Params');
     if (documentViewedId && !currentDocument?.view) {
-      console.log('Lo marca como visto!', documentViewedId);
-      console.log('Ejecuta servicio');
       setQueryData(null);
       setTimeout(() => {
         mutate(documentViewedId as string);

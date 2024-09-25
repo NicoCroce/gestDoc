@@ -24,8 +24,7 @@ export const useGetDocument = (id: string | undefined = '') => {
       cacheDocumentsList
         .getData({
           ...filterSearchParams,
-          signed: filterSearchParams?.signed === VALIDATED,
-          view: filterSearchParams?.signed === VALIDATED,
+          validated: searchParams?.state === VALIDATED,
         })
         ?.find((document) => document.id === id) || null
     );

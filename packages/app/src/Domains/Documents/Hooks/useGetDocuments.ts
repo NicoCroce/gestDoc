@@ -7,8 +7,6 @@ export const useGetDocuments = () => {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { id, ...filterSearchParams } = searchParams || {};
 
-  console.log(filterSearchParams);
-
   return documentsService.getAll.useQuery({
     ...filterSearchParams,
     validated: searchParams?.state === VALIDATED,

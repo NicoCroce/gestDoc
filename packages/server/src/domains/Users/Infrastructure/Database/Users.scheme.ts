@@ -1,21 +1,43 @@
 import { sequelize } from '@server/Infrastructure';
 import { DataTypes, Model } from 'sequelize';
 
-export class UserScheme extends Model {
-  public id!: string;
-  public nombre!: string;
-  public apellido!: string;
-  public email!: string;
-  public clave!: string;
-  public imagen!: string;
-  public telefono!: string;
-  public direccion!: string;
-  public localidad!: string;
-  public fecha_nac!: string;
-  public id_propietario!: number;
-  public createdAt!: Date;
-  public updatedAt!: Date;
-  public deletedAt!: Date;
+interface UserAttributes {
+  id: string;
+  nombre: string;
+  apellido: string;
+  email: string;
+  clave: string;
+  imagen?: string;
+  telefono?: string;
+  direccion?: string;
+  localidad?: string;
+  fecha_nac?: string;
+  id_propietario?: number;
+  createdAt?: Date;
+  updatedAt?: Date;
+  deletedAt?: Date;
+}
+
+type UserCreationAttributes = Omit<UserAttributes, 'id'>;
+
+export class UserScheme
+  extends Model<UserAttributes, UserCreationAttributes>
+  implements UserAttributes
+{
+  declare id: string;
+  declare nombre: string;
+  declare apellido: string;
+  declare email: string;
+  declare clave: string;
+  declare imagen?: string;
+  declare telefono?: string;
+  declare direccion?: string;
+  declare localidad?: string;
+  declare fecha_nac?: string;
+  declare id_propietario?: number;
+  declare createdAt?: Date;
+  declare updatedAt?: Date;
+  declare deletedAt?: Date;
 }
 
 UserScheme.init(

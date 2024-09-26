@@ -10,7 +10,7 @@ import {
 } from '../../Domain';
 import { LocalDatabase } from '.';
 
-export class UsersRepositoryImplementation implements UserRepository {
+export class UsersRepositoryImplementationLocal implements UserRepository {
   private Db = new LocalDatabase();
 
   async getUsers({

@@ -19,22 +19,46 @@ export class UsersRepositoryImplementation implements UserRepository {
     });
     return users.map((user) => new User(user.id, user.email, user.nombre));
   }
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  registerUser(_params: IRegisterUserRepository): Promise<User> {
-    throw new Error('Method not implemented.');
+
+  async registerUser({
+    user,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    requestContext,
+  }: IRegisterUserRepository): Promise<User> {
+    const newUser = await UserScheme.create({
+      nombre: user.mail,
+      apellido: '',
+      clave: user.password!,
+      email: user.mail,
+    });
+    return new User(newUser.id, newUser.email, newUser.nombre);
   }
+
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   getUser({ id }: IGetUserRepository): Promise<User | null> {
     throw new Error('Method not implemented.');
   }
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  validateUser(_params: IValidateUserRepository): Promise<User | null> {
-    throw new Error('Method not implemented.');
+
+  async validateUser({
+    mail,
+    id,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    requestContext,
+  }: IValidateUserRepository): Promise<User | null> {
+    const newUser = await UserScheme.findOne({
+      where: mail ? { email: mail } : { id },
+    });
+
+    if (!newUser) return null;
+
+    return new User(newUser.id, newUser.email, newUser.nombre, newUser.clave);
   }
+
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   updateUser(_params: IUpdateUserRepository): Promise<User | null> {
     throw new Error('Method not implemented.');
   }
+
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   deleteUser(_params: IDeleteUserRepository): Promise<User | null> {
     throw new Error('Method not implemented.');

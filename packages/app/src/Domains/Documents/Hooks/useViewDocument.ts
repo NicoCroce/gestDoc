@@ -21,7 +21,7 @@ export const useViewDocument = () => {
     if (documentViewedId && !currentDocument?.view) {
       setQueryData(null);
       setTimeout(() => {
-        mutate(documentViewedId as string);
+        mutate(documentViewedId as number);
       }, 500);
     }
   }, [searchParams]);

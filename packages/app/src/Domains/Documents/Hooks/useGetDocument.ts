@@ -4,11 +4,11 @@ import { documentsService } from '../Documents.service';
 import { useCacheDocuments } from './useCacheDocuments';
 import { useURLParams } from '@app/Aplication';
 
-export const useGetDocument = (id: string | undefined = '') => {
+export const useGetDocument = (id: string | undefined) => {
   const [currentDocument, setCurrentDocument] = useState<TDocument | null>(
     null,
   );
-  const queryDocument = documentsService.get.useQuery(id, {
+  const queryDocument = documentsService.get.useQuery(Number(id), {
     enabled: false,
   });
   const { searchParams } = useURLParams<TDocumentSearch>();
@@ -26,7 +26,7 @@ export const useGetDocument = (id: string | undefined = '') => {
           ...filterSearchParams,
           validated: searchParams?.state === VALIDATED,
         })
-        ?.find((document) => document.id === id) || null
+        ?.find((document) => document.id === Number(id)) || null
     );
   }, [cacheDocumentsList, searchParams]);
 

@@ -1,5 +1,5 @@
 export type TDocument = {
-  id: string;
+  id: string | number;
   uploadDate: Date;
   title: string;
   file: unknown;

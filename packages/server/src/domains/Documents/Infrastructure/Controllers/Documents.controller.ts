@@ -30,7 +30,7 @@ export class DocumentsController {
     );
 
   getDocument = protectedProcedure
-    .input(z.string())
+    .input(z.number())
     .query(
       executeService(
         this.documentsService.getDocument.bind(this.documentsService),
@@ -38,7 +38,7 @@ export class DocumentsController {
     );
 
   viewDocument = protectedProcedure
-    .input(z.string())
+    .input(z.number())
     .mutation(
       executeService(
         this.documentsService.viewDocument.bind(this.documentsService),
@@ -48,7 +48,7 @@ export class DocumentsController {
   signDocument = protectedProcedure
     .input(
       z.object({
-        documentId: z.string(),
+        documentId: z.number(),
         password: z.string(),
         agreement: z.boolean(),
       }),

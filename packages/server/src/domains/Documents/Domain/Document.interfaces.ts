@@ -13,23 +13,23 @@ export interface IGetDocuments extends IRequestContext {
 }
 
 export interface IViewDocument extends IRequestContext {
-  input: string; // document Id
+  input: number; // document Id
 }
 
 export interface ISignDocument extends IRequestContext {
   input: {
-    documentId: string;
+    documentId: number;
     password: string;
     agreement: boolean;
   };
 }
 
 export interface IGetDocument extends IRequestContext {
-  input: string; //document Id
+  input: number; //document Id
 }
 
 export interface IDocument {
-  id: string;
+  id: number;
   uploadDate: Date;
   title: string;
   file: unknown;

@@ -71,12 +71,12 @@ export class DocumentsScheme {
     );
   };
 
-  getDocument = async (documentId: string) => {
+  getDocument = async (documentId: number) => {
     await delay();
     return allDocuments().find(({ id }) => id === documentId);
   };
 
-  viewDocument = async (documentId: string) => {
+  viewDocument = async (documentId: number) => {
     await delay();
     const index = Documents.findIndex(({ id }) => id === documentId);
 
@@ -85,10 +85,12 @@ export class DocumentsScheme {
     if (!Documents[index].view) {
       Documents[index].view = new Date().toISOString();
     }
+
+    return documentId;
   };
 
   signDocument = async (
-    documentId: string,
+    documentId: number,
     agreedment: boolean,
     validationSign: string,
   ) => {
@@ -102,5 +104,7 @@ export class DocumentsScheme {
       Documents[index].agreedment = agreedment;
       Documents[index].validationSign = validationSign;
     }
+
+    return documentId;
   };
 }

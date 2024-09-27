@@ -3,13 +3,13 @@ import { DocumentRepository } from '../Document.repository';
 import { ISignDocument } from '../Document.interfaces';
 import { ValidateUserPassword } from '@server/domains/Auth';
 
-export class SignDocument implements IUseCase<void> {
+export class SignDocument implements IUseCase<number> {
   constructor(
     private readonly documentsRepository: DocumentRepository,
     private readonly _validateUserPassword: ValidateUserPassword,
   ) {}
 
-  async execute({ input, requestContext }: ISignDocument): Promise<void> {
+  async execute({ input, requestContext }: ISignDocument): Promise<number> {
     const user = await executeUseCase({
       useCase: this._validateUserPassword,
       input: {
@@ -19,7 +19,7 @@ export class SignDocument implements IUseCase<void> {
       requestContext,
     });
 
-    const document = this.documentsRepository.signDocument({
+    const document = await this.documentsRepository.signDocument({
       id: input.documentId,
       validationSign: user.password || '',
       requestContext,
@@ -29,5 +29,7 @@ export class SignDocument implements IUseCase<void> {
     if (!document) {
       throw new AppError('No se puede firmar el documento');
     }
+
+    return input.documentId;
   }
 }

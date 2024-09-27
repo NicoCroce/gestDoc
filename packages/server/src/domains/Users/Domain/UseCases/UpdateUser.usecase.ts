@@ -17,7 +17,7 @@ export class UpdateUser implements IUseCase<string> {
     });
 
     if (!response) {
-      throw new AppError('The user can be updated');
+      throw new AppError('The user can`t be updated');
     }
 
     return response;

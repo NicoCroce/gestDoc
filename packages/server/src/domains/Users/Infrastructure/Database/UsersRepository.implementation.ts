@@ -1,3 +1,4 @@
+import { Op } from 'sequelize';
 import {
   IDeleteUserRepository,
   IGetUserRepository,
@@ -12,10 +13,16 @@ import {
 import { UserScheme } from './Users.scheme';
 
 export class UsersRepositoryImplementation implements UserRepository {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  async getUsers({ requestContext }: IGetUsersRepository): Promise<User[]> {
+  async getUsers({ filters }: IGetUsersRepository): Promise<User[]> {
     const users = await UserScheme.findAll({
       attributes: ['id', 'email', 'nombre'],
+      where: filters?.name
+        ? {
+            nombre: {
+              [Op.substring]: filters?.name,
+            },
+          }
+        : {},
     });
     return users.map((user) => new User(user.id, user.email, user.nombre));
   }

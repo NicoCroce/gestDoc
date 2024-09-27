@@ -24,7 +24,9 @@ export class UsersRepositoryImplementation implements UserRepository {
           }
         : {},
     });
-    return users.map((user) => new User(user.id, user.email, user.nombre));
+    return users.map(
+      ({ id, email, nombre }) => new User({ id, mail: email, name: nombre }),
+    );
   }
 
   async registerUser({ user }: IRegisterUserRepository): Promise<User> {
@@ -34,7 +36,11 @@ export class UsersRepositoryImplementation implements UserRepository {
       clave: user.password!,
       email: user.mail,
     });
-    return new User(newUser.id, newUser.email, newUser.nombre);
+    return new User({
+      id: newUser.id,
+      mail: newUser.email,
+      name: newUser.nombre,
+    });
   }
 
   async getUser({ id }: IGetUserRepository): Promise<User | null> {
@@ -42,8 +48,8 @@ export class UsersRepositoryImplementation implements UserRepository {
     if (!userFound) {
       return null;
     }
-    const { id: userId, email, nombre } = userFound;
-    return new User(userId, email, nombre);
+    const { email, nombre } = userFound;
+    return new User({ id, mail: email, name: nombre });
   }
 
   async validateUser({
@@ -56,22 +62,26 @@ export class UsersRepositoryImplementation implements UserRepository {
 
     if (!newUser) return null;
 
-    return new User(newUser.id, newUser.email, newUser.nombre, newUser.clave);
+    return new User({
+      id: newUser.id,
+      mail: newUser.email,
+      name: newUser.nombre,
+      password: newUser.clave,
+    });
   }
 
-  async updateUser({ user }: IUpdateUserRepository): Promise<string | null> {
+  async updateUser({ user }: IUpdateUserRepository): Promise<number | null> {
     const { id, mail, name } = user.values;
-    console.log(id);
     const rowsAffected = await UserScheme.update(
       { nombre: name, email: mail },
       { where: { id } },
     );
 
-    if (!rowsAffected[0]) return null;
+    if (!id || !rowsAffected[0]) return null;
     return id;
   }
 
-  async deleteUser({ id }: IDeleteUserRepository): Promise<string | null> {
+  async deleteUser({ id }: IDeleteUserRepository): Promise<number | null> {
     const rowsAffected = await UserScheme.destroy({ where: { id } });
     if (rowsAffected === 0) return null;
     return id;

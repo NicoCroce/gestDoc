@@ -2,7 +2,7 @@ import { sequelize } from '@server/Infrastructure';
 import { DataTypes, Model } from 'sequelize';
 
 interface UserAttributes {
-  id: string;
+  id: number;
   nombre: string;
   apellido: string;
   email: string;
@@ -24,7 +24,7 @@ export class UserScheme
   extends Model<UserAttributes, UserCreationAttributes>
   implements UserAttributes
 {
-  declare id: string;
+  declare id: number;
   declare nombre: string;
   declare apellido: string;
   declare email: string;

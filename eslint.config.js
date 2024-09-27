@@ -12,9 +12,16 @@ const ignores = {
   ],
 };
 
+const customRules = {
+  rules: {
+    'prettier/prettier': 0,
+  },
+};
+
 export default tseslint.config(
   eslint.configs.recommended,
   ...tseslint.configs.recommended,
   ignores,
   eslintPluginPrettierRecommended,
+  customRules,
 );

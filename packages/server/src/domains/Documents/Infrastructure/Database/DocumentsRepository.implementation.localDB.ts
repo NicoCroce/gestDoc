@@ -6,10 +6,10 @@ import {
   ISignDocumentRepository,
   IViewDocumentRepository,
 } from '../../Domain';
-import { DocumentsScheme } from './Documents.scheme';
+import { DocumentsSchemeLocal } from './Documents.scheme.local';
 
 export class DocumentsRepositoryImplementation implements DocumentRepository {
-  private readonly DB = new DocumentsScheme();
+  private readonly DB = new DocumentsSchemeLocal();
 
   async getDocuments({
     filters,

@@ -20,7 +20,7 @@ const allDocuments = () =>
     view: (document.view && new Date(document.view)) || null,
   }));
 
-export class DocumentsScheme {
+export class DocumentsSchemeLocal {
   getDocuments = async (filters: IFilters): Promise<IDocument[]> => {
     await delay();
 

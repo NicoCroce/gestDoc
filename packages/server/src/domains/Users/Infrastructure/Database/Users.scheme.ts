@@ -1,43 +1,30 @@
 import { sequelize } from '@server/Infrastructure';
-import { DataTypes, Model } from 'sequelize';
-
-interface UserAttributes {
-  id: number;
-  nombre: string;
-  apellido: string;
-  email: string;
-  clave: string;
-  imagen?: string;
-  telefono?: string;
-  direccion?: string;
-  localidad?: string;
-  fecha_nac?: string;
-  id_propietario?: number;
-  createdAt?: Date;
-  updatedAt?: Date;
-  deletedAt?: Date;
-}
-
-type UserCreationAttributes = Omit<UserAttributes, 'id'>;
-
-export class UserScheme
-  extends Model<UserAttributes, UserCreationAttributes>
-  implements UserAttributes
-{
-  declare id: number;
+import {
+  DataTypes,
+  InferAttributes,
+  InferCreationAttributes,
+  Model,
+  CreationOptional,
+} from 'sequelize';
+export class UserScheme extends Model<
+  InferAttributes<UserScheme>,
+  InferCreationAttributes<UserScheme>
+> {
+  declare id: CreationOptional<number>;
   declare nombre: string;
   declare apellido: string;
   declare email: string;
   declare clave: string;
-  declare imagen?: string;
-  declare telefono?: string;
-  declare direccion?: string;
-  declare localidad?: string;
-  declare fecha_nac?: string;
-  declare id_propietario?: number;
-  declare createdAt?: Date;
-  declare updatedAt?: Date;
-  declare deletedAt?: Date;
+  declare imagen?: CreationOptional<string>;
+  declare telefono?: CreationOptional<string>;
+  declare direccion?: CreationOptional<string>;
+  declare localidad?: CreationOptional<string>;
+  declare fecha_nac?: CreationOptional<string>;
+  declare id_propietario?: CreationOptional<number>;
+
+  declare createdAt: CreationOptional<Date>;
+  declare updatedAt?: CreationOptional<Date>;
+  declare deletedAt?: CreationOptional<Date>;
 }
 
 UserScheme.init(

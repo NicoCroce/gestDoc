@@ -66,60 +66,56 @@ export class DocumentsRepositoryImplementation implements DocumentRepository {
     requestContext,
   }: IGetDocumentRepository): Promise<Document | null> {
     console.log('Hacer algo con userID', requestContext);
-    const document = await this.DB.getDocument(id);
+    const document = await Documentos.findOne({
+      where: { id },
+    });
     if (!document) return null;
-    return Document.create(document);
+    return Document.create({
+      id,
+      title: document.titulo,
+      file: document.archivo,
+      signed: document.firmado,
+      type: document.Sis_tipo_documento.denominacion,
+      agreedment: document.firma_bajo_acuerdo,
+      requireSign: document.Sis_tipo_documento.requiere_firma,
+      uploadDate: document.fecha_de_subida,
+      validationSign: document.validacion_de_firma,
+      view: document.visualizado,
+    });
   }
 
-  viewDocument({
+  async viewDocument({
     requestContext,
     id,
   }: IViewDocumentRepository): Promise<number | null> {
     console.log('Hacer algo con userID', requestContext);
-    return this.DB.viewDocument(id);
+    const rowsAffected = await Documentos.update(
+      { visualizado: new Date() },
+      { where: { id } },
+    );
+
+    if (!id || !rowsAffected[0]) return null;
+    return id;
   }
 
-  signDocument({
+  async signDocument({
     requestContext,
     id,
     validationSign,
     agreement,
   }: ISignDocumentRepository): Promise<number | null> {
     console.log('Hacer algo con userID', requestContext);
-    return this.DB.signDocument(id, agreement, validationSign);
+    const rowsAffected = await Documentos.update(
+      {
+        firmado: new Date(),
+        validacion_de_firma: validationSign,
+        firma_bajo_acuerdo: agreement,
+      },
+      { where: { id } },
+    );
+
+    if (!id || !rowsAffected[0]) return null;
+
+    return id;
   }
 }
-
-/* const whereCondition: WhereOptions<Documentos> = {
-      ...(filters.signed
-        ? ({
-            firmado: {
-              [Op.not]: null,
-            },
-          } as WhereOptions<Documentos>)
-        : {}),
-      ...(filters.title
-        ? {
-            titulo: {
-              [Op.substring]: filters.title,
-            },
-          }
-        : {}),
-    }; */
-
-// adentro de la función
-
-/* where: filters.signed
-        ? ({
-            firmado: {
-              [Op.not]: null,
-            },
-          } as WhereOptions<Documentos>)
-        : {}, */
-/* where: filters.title
-        ? {
-            titulo: {
-              [Op.substring]: filters.title,
-            },
-          }
-        : {}, */

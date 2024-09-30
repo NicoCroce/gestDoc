@@ -34,12 +34,12 @@ export const useGetDocument = (id: string | undefined) => {
     // Si el documento está en caché, lo usamos, de lo contrario, hacemos fetch
     if (cachedDocuments) {
       setCurrentDocument(cachedDocuments);
-    } else if (!isFetching && !isFetched && id) {
+    } else if (!isFetching && !isFetched && id && searchParams?.id) {
       refetch().then((res) => {
         setCurrentDocument(res.data || null);
       });
     }
-  }, [id, isFetching, isFetched, refetch, cachedDocuments]);
+  }, [id, isFetching, isFetched, refetch, cachedDocuments, searchParams?.id]);
 
   return {
     currentDocument,

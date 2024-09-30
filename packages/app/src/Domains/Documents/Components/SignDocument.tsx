@@ -15,7 +15,6 @@ export const SignDocument = () => {
   );
 
   useEffect(() => {
-    console.log('pasa');
     isSuccess && setSign(false);
   }, [isSuccess]);
 
@@ -32,8 +31,6 @@ export const SignDocument = () => {
     });
 
   const onCloseDialog = () => setSign(false);
-
-  console.log(!!sign);
 
   return (
     <>

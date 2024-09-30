@@ -51,7 +51,7 @@ export const Document = ({
   const { setQueryData } = useGlobalStore('documentViewed');
 
   const handleClick = () => {
-    updateParams({ id });
+    updateParams({ id: String(id) });
     // este timeout es necesario para no actulizar el listado al hacer click sobre el documento
     setTimeout(() => setQueryData(id), 1000);
   };
@@ -59,8 +59,8 @@ export const Document = ({
   const clasNameCard = clsx(
     'p-4 hover:cursor-pointer hover:shadow-lg transform-gpu transition-all duration-500',
     {
-      'scale-95': id !== searchParams?.id, // Aplica scale-95 si el id no coincide
-      'shadow-lg border-primary': id === searchParams?.id, // Agrega shadow-lg solo si coincide con el id
+      'scale-95': String(id) !== searchParams?.id, // Aplica scale-95 si el id no coincide
+      'shadow-lg border-primary': String(id) === searchParams?.id, // Agrega shadow-lg solo si coincide con el id
     },
   );
 

@@ -6,10 +6,12 @@ import {
   ISignDocumentRepository,
   IViewDocumentRepository,
 } from '../../Domain';
-import { DocumentsScheme } from './Documents.scheme';
+import { DocumentsSchemeLocal } from './Documents.scheme.local';
 
-export class DocumentsRepositoryImplementation implements DocumentRepository {
-  private readonly DB = new DocumentsScheme();
+export class DocumentsRepositoryImplementationLocal
+  implements DocumentRepository
+{
+  private readonly DB = new DocumentsSchemeLocal();
 
   async getDocuments({
     filters,
@@ -33,7 +35,7 @@ export class DocumentsRepositoryImplementation implements DocumentRepository {
   viewDocument({
     requestContext,
     id,
-  }: IViewDocumentRepository): Promise<void | null> {
+  }: IViewDocumentRepository): Promise<number | null> {
     console.log('Hacer algo con userID', requestContext);
     return this.DB.viewDocument(id);
   }
@@ -43,7 +45,7 @@ export class DocumentsRepositoryImplementation implements DocumentRepository {
     id,
     validationSign,
     agreement,
-  }: ISignDocumentRepository): Promise<void | null> {
+  }: ISignDocumentRepository): Promise<number | null> {
     console.log('Hacer algo con userID', requestContext);
     return this.DB.signDocument(id, agreement, validationSign);
   }

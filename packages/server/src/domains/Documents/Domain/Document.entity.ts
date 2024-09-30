@@ -2,7 +2,7 @@ import { IDocument } from './Document.interfaces';
 
 export class Document {
   constructor(
-    private readonly id: string,
+    private readonly id: number,
     private readonly uploadDate: Date,
     private readonly title: string,
     private readonly file: unknown,

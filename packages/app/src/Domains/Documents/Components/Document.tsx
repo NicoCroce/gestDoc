@@ -51,9 +51,11 @@ export const Document = ({
   const { setQueryData } = useGlobalStore('documentViewed');
 
   const handleClick = () => {
-    updateParams({ id: String(id) });
+    // resetea el id para que pueda ser asignado nuevamemte. De esta forma en mobile, vuelve a cargarlo.
+    updateParams({ id: undefined });
+    setTimeout(() => updateParams({ id: String(id) }), 0);
     // este timeout es necesario para no actulizar el listado al hacer click sobre el documento
-    setTimeout(() => setQueryData(id), 1000);
+    setTimeout(() => setQueryData(id), 2000);
   };
 
   const clasNameCard = clsx(
@@ -91,7 +93,9 @@ export const Document = ({
         </Text.Muted>
         <Container row justify="between">
           {requireSign ? <Badge>Requiere firma</Badge> : <span />}
-          <Badge variant="secondary">{type}</Badge>
+          <Badge variant="secondary" className="capitalize">
+            {type}
+          </Badge>
         </Container>
       </Container>
     </Card>

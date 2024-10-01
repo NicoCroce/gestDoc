@@ -1,4 +1,4 @@
-import { useURLParams } from '@app/Aplication';
+import { useGlobalStore, useURLParams } from '@app/Aplication';
 import { TDocumentSearch } from '../../Document.entity';
 import { useGetDocument } from '../../Hooks';
 import {
@@ -12,11 +12,13 @@ import {
   faHourglass,
 } from '@fortawesome/free-solid-svg-icons';
 import { useEffect, useState } from 'react';
+import { PDFPreviewMobile } from './PDFPreviewMobile';
 
 export const PDFPreview = () => {
   const { searchParams } = useURLParams<TDocumentSearch>();
   const { currentDocument, isLoading } = useGetDocument(searchParams?.id);
   const [onLoad, setOnload] = useState(false);
+  const { data: isMobile } = useGlobalStore('isMobile');
 
   useEffect(() => {
     setOnload(false);
@@ -25,7 +27,8 @@ export const PDFPreview = () => {
     }, 500);
   }, [currentDocument]);
 
-  if (!currentDocument)
+  if (!currentDocument) {
+    if (isMobile) return null;
     return (
       <Alert className="max-w-lg">
         <FontAwesomeIcon icon={faCircleExclamation} size="lg" />
@@ -35,8 +38,9 @@ export const PDFPreview = () => {
         </AlertDescription>
       </Alert>
     );
+  }
 
-  if (isLoading || !onLoad)
+  if (!isMobile && (isLoading || !onLoad))
     return (
       <Alert className="max-w-lg">
         <FontAwesomeIcon icon={faHourglass} size="lg" />
@@ -45,21 +49,23 @@ export const PDFPreview = () => {
       </Alert>
     );
 
+  if (isMobile) {
+    return <PDFPreviewMobile file={currentDocument.file as string} />;
+  }
+
   return (
-    <>
-      <object
-        data={currentDocument.file as string}
-        type="application/pdf"
-        width="100%"
-        className="h-full"
-      >
-        <p>
-          PDF
-          <a href={currentDocument.file as string}>
-            Download pdf <span>{currentDocument.file as string}</span>
-          </a>
-        </p>
-      </object>
-    </>
+    <object
+      data={currentDocument.file as string}
+      type="application/pdf"
+      width="100%"
+      className="h-full"
+    >
+      <p>
+        PDF
+        <a href={currentDocument.file as string}>
+          Download pdf <span>{currentDocument.file as string}</span>
+        </a>
+      </p>
+    </object>
   );
 };

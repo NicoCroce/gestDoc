@@ -91,7 +91,9 @@ export const Document = ({
         </Text.Muted>
         <Container row justify="between">
           {requireSign ? <Badge>Requiere firma</Badge> : <span />}
-          <Badge variant="secondary">{type}</Badge>
+          <Badge variant="secondary" className="capitalize">
+            {type}
+          </Badge>
         </Container>
       </Container>
     </Card>

@@ -1,8 +1,13 @@
-import { Button, Container, useURLParams } from '@app/Aplication';
+import {
+  Button,
+  Container,
+  useGlobalStore,
+  useURLParams,
+} from '@app/Aplication';
 import { TDocumentSearch, VALIDATED } from '../Document.entity';
 import { useGetDocument } from '../Hooks';
 import { faThumbsDown, faThumbsUp } from '@fortawesome/free-solid-svg-icons';
-import { ConfirmWithPassword } from '@app/Aplication/Components/Molecules/ConfirmWithPassword';
+import { ConfirmWithPassword } from '@app/Aplication/Components/Molecules';
 import { useSignDocument } from '../Hooks/useSignDocument';
 import { useEffect, useState } from 'react';
 
@@ -13,6 +18,7 @@ export const SignDocument = () => {
   const [sign, setSign] = useState<boolean | 'agreement' | 'disagreement'>(
     false,
   );
+  const { data: isMobile } = useGlobalStore('isMobile');
 
   useEffect(() => {
     isSuccess && setSign(false);
@@ -41,16 +47,18 @@ export const SignDocument = () => {
           icon={faThumbsDown}
           showIcon
           onClick={() => setSign('disagreement')}
+          className="flex-auto"
         >
-          Firmo sin conformidad
+          {isMobile ? 'sin conformidad' : 'Firmo sin conformidad'}
         </Button>
         <Button
           disabled={disabled}
           icon={faThumbsUp}
           showIcon
           onClick={() => setSign('agreement')}
+          className="flex-auto"
         >
-          Firmo con conformidad
+          {isMobile ? 'con conformidad' : 'Firmo con conformidad'}
         </Button>
       </Container>
       <ConfirmWithPassword

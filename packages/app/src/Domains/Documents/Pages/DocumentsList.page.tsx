@@ -10,7 +10,9 @@ export const DocumentsListPage = () => {
         <div className="min-w-[350px] max-w-[400px] w-full">
           <DocumentsListWrapper />
         </div>
-        {!isMobile && (
+        {isMobile ? (
+          <PDFPreview />
+        ) : (
           <Container
             justify="center"
             align="center"

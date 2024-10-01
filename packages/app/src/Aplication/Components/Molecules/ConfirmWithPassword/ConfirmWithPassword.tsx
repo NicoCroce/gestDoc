@@ -1,4 +1,4 @@
-import { Button } from './Button';
+import { Button } from '../Button';
 import {
   Dialog,
   DialogContent,
@@ -6,8 +6,8 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from '../ui/dialog';
-import { Input } from '../ui/input';
+} from '../../ui/dialog';
+import { Input } from '../../ui/input';
 import { z } from 'zod';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -18,7 +18,9 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '../ui/form';
+} from '../../ui/form';
+
+import './ConfirmWithPassword.css';
 
 const formSchema = z.object({
   password: z.string().min(8, {

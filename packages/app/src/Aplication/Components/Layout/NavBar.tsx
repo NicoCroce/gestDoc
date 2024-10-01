@@ -7,7 +7,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { NavLink, NavLinkRenderProps } from 'react-router-dom';
 import { Container } from './Container';
-import { DOCUMENTS_ROUTE } from '@app/Domains/Documents/Documents.routes';
+import { DOCUMENTS_ROUTE } from '@app/Domains/Documents/';
 
 const styleLink =
   'flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary';

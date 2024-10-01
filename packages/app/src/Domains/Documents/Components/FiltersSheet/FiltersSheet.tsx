@@ -16,7 +16,7 @@ export const FiltersSheet = ({ open = false, closeSheet }: IFiltersSheet) => {
   return (
     <Sheet defaultOpen={false} open={open} onOpenChange={closeSheet}>
       <SheetContent>
-        <SheetHeader>
+        <SheetHeader className="text-left">
           <SheetTitle>Filtros de Documentos</SheetTitle>
           <SheetDescription>
             Puedes filtrar los documentos por los siguientes parámetros

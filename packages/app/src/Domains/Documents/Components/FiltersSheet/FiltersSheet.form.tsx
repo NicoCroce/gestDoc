@@ -91,7 +91,7 @@ export const FiltersSheetForm = () => {
         <ToggleGroup
           type="single"
           variant="outline"
-          className="justify-start gap-4"
+          className="justify-start gap-4 flex-wrap"
           onValueChange={handleType}
           value={formState.type}
         >
@@ -111,7 +111,7 @@ export const FiltersSheetForm = () => {
       </Container>
 
       <SheetFooter className="mt-16">
-        <Container row>
+        <Container row className="justify-end">
           <Button variant="outline" onClick={cleanFilters}>
             Limpiar filtros
           </Button>

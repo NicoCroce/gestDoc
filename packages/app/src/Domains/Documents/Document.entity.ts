@@ -22,7 +22,3 @@ export type TDocumentSearch = {
 
 export const VALIDATED: TStateDocument = 'validados';
 export const PENDING: TStateDocument = 'pendientes';
-
-export const VACATIONS = 'vacaciones';
-export const RECEIPT = 'recibo';
-export const ACCORDANCE = 'conformidad';

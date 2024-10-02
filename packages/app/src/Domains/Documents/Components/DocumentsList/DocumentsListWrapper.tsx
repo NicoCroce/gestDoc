@@ -18,6 +18,7 @@ import { FiltersSheet } from '../FiltersSheet/FiltersSheet';
 import { useGetFiltersSetted } from '../../Hooks/useGetFiltersSetted';
 import { DocumentsList } from './DocumentsList';
 import { useViewDocument } from '../../Hooks/useViewDocument';
+import { useGetDocumentsTypes } from '../../Hooks/useGetDocumentsTypes';
 
 export const DocumentsListWrapper = () => {
   const { searchParams, updateParams } =
@@ -29,6 +30,7 @@ export const DocumentsListWrapper = () => {
   const [filtersIsOpen, setFiltersIsOpen] = useState(false);
   const hasFilters = useGetFiltersSetted();
   useViewDocument();
+  useGetDocumentsTypes();
 
   useEffect(() => {
     const value = searchParams?.state || PENDING;

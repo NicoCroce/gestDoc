@@ -6,13 +6,11 @@ import {
   ISignDocumentRepository,
   IViewDocumentRepository,
 } from '../../Domain';
-import { DocumentsSchemeLocal } from './Documents.scheme.local';
 import { DocumentsFilters } from './DocumentsFilters';
-import { Documentos, Sis_tipo_documentos } from './Schemes';
+import { Documentos } from './';
+import { DocumentsTypesModel } from '@server/domains/DocumentsTypes/Infraestructure';
 
 export class DocumentsRepositoryImplementation implements DocumentRepository {
-  private readonly DB = new DocumentsSchemeLocal();
-
   async getDocuments({
     filters,
     requestContext,
@@ -38,7 +36,7 @@ export class DocumentsRepositoryImplementation implements DocumentRepository {
       },
       include: [
         {
-          model: Sis_tipo_documentos,
+          model: DocumentsTypesModel,
           attributes: ['denominacion', 'requiere_firma'],
           where: whereConditionSisTipoDocumentos,
         },
@@ -51,10 +49,10 @@ export class DocumentsRepositoryImplementation implements DocumentRepository {
         title: document.titulo,
         uploadDate: document.fecha_de_subida,
         file: document.archivo,
-        requireSign: document.Sis_tipo_documento?.requiere_firma || false,
+        requireSign: document.DocumentsTypesModel?.requiere_firma || false,
         signed: document.firmado,
         agreedment: document.firma_bajo_acuerdo,
-        type: document.Sis_tipo_documento.denominacion,
+        type: document.DocumentsTypesModel.denominacion,
         validationSign: document.validacion_de_firma,
         view: document.visualizado,
       }),
@@ -75,9 +73,9 @@ export class DocumentsRepositoryImplementation implements DocumentRepository {
       title: document.titulo,
       file: document.archivo,
       signed: document.firmado,
-      type: document.Sis_tipo_documento.denominacion,
+      type: document.DocumentsTypesModel.denominacion,
       agreedment: document.firma_bajo_acuerdo,
-      requireSign: document.Sis_tipo_documento.requiere_firma,
+      requireSign: document.DocumentsTypesModel.requiere_firma,
       uploadDate: document.fecha_de_subida,
       validationSign: document.validacion_de_firma,
       view: document.visualizado,

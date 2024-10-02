@@ -1,8 +1,9 @@
 import { UserScheme } from '@server/domains/Users';
-import { Documentos, Sis_tipo_documentos } from './Schemes';
+import { Documentos } from './';
+import { DocumentsTypesModel } from '@server/domains/DocumentsTypes/Infraestructure';
 
-Sis_tipo_documentos.hasMany(Documentos, { foreignKey: 'tipo' });
-Documentos.belongsTo(Sis_tipo_documentos, { foreignKey: 'tipo' });
+DocumentsTypesModel.hasMany(Documentos, { foreignKey: 'tipo' });
+Documentos.belongsTo(DocumentsTypesModel, { foreignKey: 'tipo' });
 
 UserScheme.hasMany(Documentos, { foreignKey: 'Usuario_id' });
 Documentos.belongsTo(UserScheme, { foreignKey: 'Usuario_id' });

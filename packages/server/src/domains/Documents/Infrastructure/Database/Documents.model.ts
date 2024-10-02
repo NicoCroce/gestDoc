@@ -1,3 +1,4 @@
+import { DocumentsTypesModel } from '@server/domains/DocumentsTypes/Infraestructure';
 import { sequelize } from '@server/Infrastructure';
 import {
   Model,
@@ -7,7 +8,6 @@ import {
   CreationOptional,
   NonAttribute,
 } from 'sequelize';
-import { Sis_tipo_documentos } from './DocumentsTypes.scheme';
 
 export class Documentos extends Model<
   InferAttributes<Documentos>,
@@ -30,8 +30,8 @@ export class Documentos extends Model<
   declare readonly deletedAt: CreationOptional<Date>;
 
   // Relation
-  declare readonly Sis_tipo_documento: NonAttribute<
-    InferAttributes<Sis_tipo_documentos>
+  declare readonly DocumentsTypesModel: NonAttribute<
+    InferAttributes<DocumentsTypesModel>
   >;
 }
 

@@ -7,48 +7,48 @@ import {
   Model,
 } from 'sequelize';
 
-export class Sis_tipo_documentos extends Model<
-  InferAttributes<Sis_tipo_documentos>,
-  InferCreationAttributes<Sis_tipo_documentos>
+export type DocumentsTypesModelAttributes = Array<
+  keyof InferAttributes<DocumentsTypesModel>
+>;
+
+export class DocumentsTypesModel extends Model<
+  InferAttributes<DocumentsTypesModel>,
+  InferCreationAttributes<DocumentsTypesModel>
 > {
   declare id: CreationOptional<number>;
   declare denominacion: string;
   declare requiere_firma: boolean;
 
-  // Timestamps
-  declare readonly createdAt: Date;
-  declare readonly updatedAt: Date;
-  declare readonly deletedAt: Date;
+  declare createdAt: CreationOptional<Date>;
+  declare updatedAt?: CreationOptional<Date>;
+  declare deletedAt?: CreationOptional<Date>;
 }
 
-Sis_tipo_documentos.init(
+DocumentsTypesModel.init(
   {
     id: {
-      type: DataTypes.INTEGER,
-      autoIncrement: true,
+      type: DataTypes.BIGINT,
       primaryKey: true,
+      autoIncrement: true,
+      allowNull: false,
     },
     denominacion: {
-      type: DataTypes.STRING(200),
+      type: DataTypes.STRING,
       allowNull: false,
     },
     requiere_firma: {
       type: DataTypes.BOOLEAN,
-      defaultValue: 0,
       allowNull: false,
+      defaultValue: 0,
     },
-    createdAt: {
-      type: DataTypes.DATE,
-      defaultValue: DataTypes.NOW,
-    },
+    createdAt: DataTypes.DATE,
     updatedAt: DataTypes.DATE,
     deletedAt: DataTypes.DATE,
   },
   {
     sequelize,
-    modelName: 'Sis_tipo_documentos',
     paranoid: true,
-    timestamps: true,
+    modelName: 'DocumentsTypesModel',
     tableName: 'Sis_tipo_documentos',
   },
 );

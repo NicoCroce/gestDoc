@@ -2,13 +2,10 @@ import { Button, Container, useURLParams } from '@app/Aplication';
 import { Input } from '@app/Aplication/Components/ui/input';
 import { Label } from '@app/Aplication/Components/ui/label';
 import {
-  ACCORDANCE,
   PENDING,
-  RECEIPT,
   VALIDATED,
   TDocumentSearch,
   TStateDocument,
-  VACATIONS,
 } from '../../Document.entity';
 import { useState } from 'react';
 import { SheetClose, SheetFooter } from '@app/Aplication/Components/ui/sheet';
@@ -16,6 +13,8 @@ import {
   ToggleGroup,
   ToggleGroupItem,
 } from '@app/Aplication/Components/ui/toggle-group';
+import { useGetDocumentsTypes } from '../../Hooks/useGetDocumentsTypes';
+import clsx from 'clsx';
 
 const initialState: TDocumentSearch = {
   title: '',
@@ -32,6 +31,7 @@ export const FiltersSheetForm = () => {
     ...initialState,
     ...searchParams,
   });
+  const { data: documentsTypes } = useGetDocumentsTypes();
 
   const handleChangeFilters = ({
     target: { name, value },
@@ -95,18 +95,15 @@ export const FiltersSheetForm = () => {
           onValueChange={handleType}
           value={formState.type}
         >
-          <ToggleGroupItem value={RECEIPT} className={buttonGroupActiveClass}>
-            Recibos
-          </ToggleGroupItem>
-          <ToggleGroupItem value={VACATIONS} className={buttonGroupActiveClass}>
-            Vacaciones
-          </ToggleGroupItem>
-          <ToggleGroupItem
-            value={ACCORDANCE}
-            className={buttonGroupActiveClass}
-          >
-            Conformidad
-          </ToggleGroupItem>
+          {documentsTypes?.map((docType) => (
+            <ToggleGroupItem
+              key={docType.id}
+              value={docType.denominacion}
+              className={clsx('capitalize', buttonGroupActiveClass)}
+            >
+              {docType.denominacion}
+            </ToggleGroupItem>
+          ))}
         </ToggleGroup>
       </Container>
 

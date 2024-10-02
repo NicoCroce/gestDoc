@@ -1,13 +1,14 @@
 import { Op, WhereOptions } from 'sequelize';
-import { Documentos, Sis_tipo_documentos } from './Schemes';
+import { Documentos } from './';
 import { Literal } from 'sequelize/lib/utils';
 import { IGetDocumentsRepository } from '../../Domain';
+import { DocumentsTypesModel } from '@server/domains/DocumentsTypes/Infraestructure';
 
 export const DocumentsFilters = (
   filters: IGetDocumentsRepository['filters'],
 ) => {
   const whereCondition: WhereOptions<Documentos> = {};
-  const whereConditionSisTipoDocumentos: WhereOptions<Sis_tipo_documentos> = {};
+  const whereConditionSisTipoDocumentos: WhereOptions<DocumentsTypesModel> = {};
 
   if (filters.title) whereCondition.titulo = { [Op.substring]: filters.title };
 
@@ -34,7 +35,7 @@ export const DocumentsFilters = (
           },
           {
             [Op.and]: [
-              { '$Sis_tipo_documento.requiere_firma$': false }, // Doesn't require signature
+              { '$DocumentsTypesModel.requiere_firma$': false }, // Doesn't require signature
               { visualizado: { [Op.not]: null } }, // And has been viewed
             ],
           },
@@ -45,13 +46,13 @@ export const DocumentsFilters = (
           [Op.or]: [
             {
               [Op.and]: [
-                { '$Sis_tipo_documento.requiere_firma$': true },
+                { '$DocumentsTypesModel.requiere_firma$': true },
                 { firmado: { [Op.is]: null } },
               ],
             },
             {
               [Op.and]: [
-                { '$Sis_tipo_documento.requiere_firma$': false },
+                { '$DocumentsTypesModel.requiere_firma$': false },
                 { visualizado: { [Op.is]: null } },
               ],
             },

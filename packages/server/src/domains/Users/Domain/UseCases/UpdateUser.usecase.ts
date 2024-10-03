@@ -10,7 +10,7 @@ export class UpdateUser implements IUseCase<number> {
     input: { id, mail, name },
     requestContext,
   }: IUpdateUser): Promise<number> {
-    const user = new User({ id, mail, name });
+    const user = User.create({ id, mail, name });
     const response = await this.usersRepository.updateUser({
       user,
       requestContext,

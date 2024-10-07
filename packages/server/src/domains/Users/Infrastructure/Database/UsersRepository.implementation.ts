@@ -11,6 +11,7 @@ import {
 } from '../../Domain';
 
 import { UserScheme } from './Users.scheme';
+import { CompaniesModel } from '@server/domains/Companies/Infrastructure';
 
 export class UsersRepositoryImplementation implements UserRepository {
   async getUsers({ filters }: IGetUsersRepository): Promise<User[]> {
@@ -24,8 +25,8 @@ export class UsersRepositoryImplementation implements UserRepository {
           }
         : {},
     });
-    return users.map(
-      ({ id, email, nombre }) => new User({ id, mail: email, name: nombre }),
+    return users.map(({ id, email, nombre }) =>
+      User.create({ id, mail: email, name: nombre }),
     );
   }
 
@@ -36,7 +37,7 @@ export class UsersRepositoryImplementation implements UserRepository {
       clave: user.password!,
       email: user.mail,
     });
-    return new User({
+    return User.create({
       id: newUser.id,
       mail: newUser.email,
       name: newUser.nombre,
@@ -49,24 +50,33 @@ export class UsersRepositoryImplementation implements UserRepository {
       return null;
     }
     const { email, nombre } = userFound;
-    return new User({ id, mail: email, name: nombre });
+    return User.create({ id, mail: email, name: nombre });
   }
 
   async validateUser({
     mail,
     id,
   }: IValidateUserRepository): Promise<User | null> {
-    const newUser = await UserScheme.findOne({
+    const user = await UserScheme.findOne<UserScheme>({
       where: mail ? { email: mail } : { id },
+      include: [
+        {
+          model: CompaniesModel,
+          attributes: ['denominacion', 'logo'],
+        },
+      ],
     });
 
-    if (!newUser) return null;
+    if (!user) return null;
 
-    return new User({
-      id: newUser.id,
-      mail: newUser.email,
-      name: newUser.nombre,
-      password: newUser.clave,
+    return User.create({
+      id: user.id,
+      mail: user.email,
+      name: user.nombre,
+      password: user.clave,
+      userImage: user.imagen,
+      companyLogo: user.CompaniesModel.logo,
+      companyName: user.CompaniesModel.denominacion,
     });
   }
 

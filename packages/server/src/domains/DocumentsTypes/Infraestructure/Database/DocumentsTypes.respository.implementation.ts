@@ -1,7 +1,7 @@
 import {
   DocumentsTypeRepository,
   DocumentType,
-  IGetDocumentsTypesRepository,
+  //IGetDocumentsTypesRepository,
 } from '../../Domain';
 import {
   DocumentsTypesModel,
@@ -11,10 +11,8 @@ import {
 export class DocumentsTypesRespositoryImplementation
   implements DocumentsTypeRepository
 {
-  async getDocumentsTypes(
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    params: IGetDocumentsTypesRepository,
-  ): Promise<DocumentType[]> {
+  async getDocumentsTypes() //params: IGetDocumentsTypesRepository,
+  : Promise<DocumentType[]> {
     const documentsTypes = await DocumentsTypesModel.findAll({
       attributes: [
         'id',

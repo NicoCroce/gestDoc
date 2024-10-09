@@ -1,7 +1,5 @@
-import { USERS_ROUTE } from '@app/Domains/Users/Users.routes';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
-  faUser,
   faArrowRightFromBracket,
   faFile,
 } from '@fortawesome/free-solid-svg-icons';
@@ -51,10 +49,10 @@ export const NavBar = ({ className = '' }: { className?: string }) => {
       </header>
       <nav className="flex flex-col h-full justify-between mt-4">
         <Container className="flex flex-col gap-2 md:p-4">
-          <NavLink to={USERS_ROUTE} className={isActiveLink}>
+          {/* <NavLink to={USERS_ROUTE} className={isActiveLink}>
             <FontAwesomeIcon icon={faUser} />
             Usuarios
-          </NavLink>
+          </NavLink> */}
           <NavLink to={DOCUMENTS_ROUTE} className={isActiveLink}>
             <FontAwesomeIcon icon={faFile} />
             Documentos

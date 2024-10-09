@@ -2,9 +2,9 @@ import { toast } from 'sonner';
 import { AuthService } from '../Auth.service';
 import { useNavigate } from 'react-router-dom';
 import { setLogged } from '@app/Aplication/Helpers/isLogged';
-import { MAIN_ROUTE } from '@app/Domains/Main';
 import { setLoggedUser } from '@app/Aplication/Helpers/manageLoggedUser';
 import { useGlobalStore } from '@app/Aplication';
+import { DOCUMENTS_ROUTE } from '@app/Domains/Documents';
 
 export const useLoginUser = () => {
   const navigate = useNavigate();
@@ -18,7 +18,7 @@ export const useLoginUser = () => {
       setLogged();
       setLoggedUser(data);
       setQueryData(data);
-      navigate(MAIN_ROUTE);
+      navigate(DOCUMENTS_ROUTE);
     },
   });
 };

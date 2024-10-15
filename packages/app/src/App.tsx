@@ -10,9 +10,7 @@ export const App = () => {
   return (
     <>
       <AnimatePresence mode="wait">
-        <Routes location={location} key={location.pathname}>
-          {AllRoutes}
-        </Routes>
+        <Routes>{AllRoutes}</Routes>
       </AnimatePresence>
       <Toaster richColors />
     </>

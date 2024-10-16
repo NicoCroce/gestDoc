@@ -7,7 +7,7 @@ import {
   FormLabel,
   FormMessage,
 } from '@app/Aplication/Components/ui/form';
-import { Input } from '@app/Aplication/Components/ui/input';
+import { Input } from '@app/Aplication/Components';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
@@ -119,7 +119,7 @@ export const LoginForm = () => {
             <FormItem>
               <FormLabel>Constraseña</FormLabel>
               <FormControl>
-                <Input {...field} />
+                <Input.Password {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -133,7 +133,7 @@ export const LoginForm = () => {
               <FormItem>
                 <FormLabel>Ingrese nuevamente la Constraseña</FormLabel>
                 <FormControl>
-                  <Input {...field} />
+                  <Input.Password {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>

@@ -22,9 +22,10 @@ export class Login implements IUseCase<IExecuteResponse> {
     };
 
     const token = generateToken(data);
-    const userImageResponse = process.env.URL_IMG
-      ? `${process.env.URL_IMG}/${userImage}`
-      : '';
+    const userImageResponse =
+      userImage && process.env.URL_IMG
+        ? `${process.env.URL_IMG}/${userImage}`
+        : '';
 
     return {
       token,

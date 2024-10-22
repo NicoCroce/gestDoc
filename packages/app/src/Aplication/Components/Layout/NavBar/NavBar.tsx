@@ -1,14 +1,14 @@
+import { USERS_ROUTE } from '@app/Domains/Users/Users.routes';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
+  faUser,
   faArrowRightFromBracket,
-  faFile,
 } from '@fortawesome/free-solid-svg-icons';
 import { NavLink, NavLinkRenderProps } from 'react-router-dom';
-import { Container } from './Container';
-import { DOCUMENTS_ROUTE } from '@app/Domains/Documents/';
+import { Container } from '../Container';
 import { useGlobalStore } from '@app/Aplication/Hooks';
 import { TUser } from '@app/Domains/Users';
-import { Text, Title } from '../Molecules';
+import { Text, Title } from '../../Molecules';
 
 const styleLink =
   'flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary';
@@ -49,13 +49,9 @@ export const NavBar = ({ className = '' }: { className?: string }) => {
       </header>
       <nav className="flex flex-col h-full justify-between mt-4">
         <Container className="flex flex-col gap-2 md:p-4">
-          {/* <NavLink to={USERS_ROUTE} className={isActiveLink}>
+          <NavLink to={USERS_ROUTE} className={isActiveLink}>
             <FontAwesomeIcon icon={faUser} />
             Usuarios
-          </NavLink> */}
-          <NavLink to={DOCUMENTS_ROUTE} className={isActiveLink}>
-            <FontAwesomeIcon icon={faFile} />
-            Documentos
           </NavLink>
         </Container>
         <Container className="flex flex-col gap-2 md:p-4">

@@ -147,6 +147,9 @@ importers:
       clsx:
         specifier: ^2.1.1
         version: 2.1.1
+      dotenv:
+        specifier: ^16.4.5
+        version: 16.4.5
       framer-motion:
         specifier: ^11.3.21
         version: 11.11.7(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -177,6 +180,9 @@ importers:
       tailwindcss-animate:
         specifier: ^1.0.7
         version: 1.0.7(tailwindcss@3.4.13(ts-node@10.9.2(@types/node@20.16.11)(typescript@5.6.3)))
+      uuid:
+        specifier: ^10.0.0
+        version: 10.0.0
       vaul:
         specifier: ^1.0.0
         version: 1.0.0(@types/react-dom@18.3.0)(@types/react@18.3.11)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -271,6 +277,12 @@ importers:
       sequelize:
         specifier: ^6.37.3
         version: 6.37.4(mysql2@3.11.3)
+      uuid:
+        specifier: ^10.0.0
+        version: 10.0.0
+      zod:
+        specifier: ^3.23.8
+        version: 3.23.8
     devDependencies:
       '@types/bcryptjs':
         specifier: ^2.4.6
@@ -6726,7 +6738,7 @@ snapshots:
     transitivePeerDependencies:
       - debug
 
-  babel-plugin-polyfill-corejs2@0.4.11(@babel/core@7.25.2):
+  babel-plugin-polyfill-corejs2@0.4.11(@babel/core@7.25.7):
     dependencies:
       '@babel/compat-data': 7.25.7
       '@babel/core': 7.25.7
@@ -8301,7 +8313,7 @@ snapshots:
       minimist: 1.2.8
       on-exit-leak-free: 2.1.2
       pino-abstract-transport: 1.2.0
-      pump: 3.0.2
+      pump: 3.0.0
       readable-stream: 4.5.2
       secure-json-parse: 2.7.0
       sonic-boom: 4.1.0
@@ -8668,7 +8680,7 @@ snapshots:
     dependencies:
       '@types/debug': 4.1.12
       '@types/validator': 13.12.2
-      debug: 4.3.6
+      debug: 4.3.7
       dottie: 2.0.6
       inflection: 1.13.4
       lodash: 4.17.21

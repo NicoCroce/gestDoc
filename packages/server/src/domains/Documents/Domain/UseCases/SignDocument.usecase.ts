@@ -24,6 +24,7 @@ export class SignDocument implements IUseCase<number> {
       validationSign: user.password || '',
       requestContext,
       agreement: input.agreement,
+      reasonSignatureNonConformity: input.reasonSignatureNonConformity || null,
     });
 
     if (!document) {

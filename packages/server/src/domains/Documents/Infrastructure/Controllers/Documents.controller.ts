@@ -51,6 +51,7 @@ export class DocumentsController {
         documentId: z.number(),
         password: z.string(),
         agreement: z.boolean(),
+        reasonSignatureNonConformity: z.string().nullable(),
       }),
     )
     .mutation(

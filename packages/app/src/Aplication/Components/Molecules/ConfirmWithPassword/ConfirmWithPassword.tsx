@@ -7,7 +7,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from '../../ui/dialog';
-import { Input } from '../../ui/input';
+import { Input } from '../../Molecules';
 import { z } from 'zod';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -74,7 +74,7 @@ export const ConfirmWithPassword = ({
                 <FormItem>
                   <FormLabel>Contraseña</FormLabel>
                   <FormControl>
-                    <Input {...field} autoFocus />
+                    <Input.Password {...field} autoFocus />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

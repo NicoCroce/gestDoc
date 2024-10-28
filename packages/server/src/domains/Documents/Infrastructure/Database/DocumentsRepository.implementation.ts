@@ -66,6 +66,12 @@ export class DocumentsRepositoryImplementation implements DocumentRepository {
     console.log('Hacer algo con userID', requestContext);
     const document = await Documentos.findOne({
       where: { id },
+      include: [
+        {
+          model: DocumentsTypesModel,
+          attributes: ['denominacion', 'requiere_firma'],
+        },
+      ],
     });
     if (!document) return null;
     return Document.create({

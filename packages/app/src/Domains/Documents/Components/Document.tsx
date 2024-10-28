@@ -54,8 +54,7 @@ export const Document = ({
     // resetea el id para que pueda ser asignado nuevamemte. De esta forma en mobile, vuelve a cargarlo.
     updateParams({ id: undefined });
     setTimeout(() => updateParams({ id: String(id) }), 0);
-    // este timeout es necesario para no actulizar el listado al hacer click sobre el documento
-    setTimeout(() => setQueryData(id), 2000);
+    setQueryData(id);
   };
 
   const clasNameCard = clsx(

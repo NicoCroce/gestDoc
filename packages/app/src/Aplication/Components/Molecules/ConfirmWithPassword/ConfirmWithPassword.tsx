@@ -63,7 +63,10 @@ export const ConfirmWithPassword = ({
   const handleSubmit = ({ password, reason }: z.infer<typeof formSchema>) =>
     onConfirm(password, reason);
 
-  const handleClose = () => onCloseDialog();
+  const handleClose = () => {
+    form.reset();
+    onCloseDialog();
+  };
 
   const additionalText =
     signType === 'agreement' ? 'bajo conformidad' : 'sin conformidad';

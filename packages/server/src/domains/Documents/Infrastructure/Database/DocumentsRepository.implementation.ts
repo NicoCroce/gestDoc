@@ -51,6 +51,7 @@ export class DocumentsRepositoryImplementation implements DocumentRepository {
         file: document.archivo,
         requireSign: document.DocumentsTypesModel?.requiere_firma || false,
         signed: document.firmado,
+        reasonSignatureNonConformity: document.motivo_firma_sin_conformidad,
         agreedment: document.firma_bajo_acuerdo,
         type: document.DocumentsTypesModel.denominacion,
         validationSign: document.validacion_de_firma,
@@ -79,6 +80,7 @@ export class DocumentsRepositoryImplementation implements DocumentRepository {
       title: document.titulo,
       file: document.archivo,
       signed: document.firmado,
+      reasonSignatureNonConformity: document.motivo_firma_sin_conformidad,
       type: document.DocumentsTypesModel.denominacion,
       agreedment: document.firma_bajo_acuerdo,
       requireSign: document.DocumentsTypesModel.requiere_firma,
@@ -107,6 +109,7 @@ export class DocumentsRepositoryImplementation implements DocumentRepository {
     id,
     validationSign,
     agreement,
+    reasonSignatureNonConformity,
   }: ISignDocumentRepository): Promise<number | null> {
     console.log('Hacer algo con userID', requestContext);
     const rowsAffected = await Documentos.update(
@@ -114,6 +117,7 @@ export class DocumentsRepositoryImplementation implements DocumentRepository {
         firmado: new Date(),
         validacion_de_firma: validationSign,
         firma_bajo_acuerdo: agreement,
+        motivo_firma_sin_conformidad: reasonSignatureNonConformity,
       },
       { where: { id } },
     );

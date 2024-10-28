@@ -29,11 +29,12 @@ export const SignDocument = () => {
   const disabled =
     searchParams?.state === VALIDATED || !currentDocument.requireSign;
 
-  const signDocument = (password: string) =>
+  const signDocument = (password: string, reason: string) =>
     mutate({
       documentId: Number(searchParams?.id),
       password,
       agreement: sign === 'agreement',
+      reasonSignatureNonConformity: reason,
     });
 
   const onCloseDialog = () => setSign(false);
@@ -67,6 +68,7 @@ export const SignDocument = () => {
         isLoading={isPending}
         isOpen={sign ? true : false}
         onCloseDialog={onCloseDialog}
+        signType={sign === 'agreement' ? 'agreement' : 'disagreement'}
       />
     </>
   );

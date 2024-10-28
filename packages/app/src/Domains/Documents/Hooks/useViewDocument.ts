@@ -11,20 +11,24 @@ export const useViewDocument = () => {
     useGlobalStore('documentViewed');
   const { currentDocument } = useGetDocument(documentViewedId as string);
   const cacheDocuments = useCacheDocuments();
-  const { mutate } = documentsService.view.useMutation({
-    onSuccess() {
-      cacheDocuments.invalidate();
-    },
-  });
+  const { mutate } = documentsService.view.useMutation();
 
   useEffect(() => {
     if (documentViewedId && !currentDocument?.view) {
       setQueryData(null);
-      setTimeout(() => {
-        mutate(documentViewedId as number);
-      }, 500);
+      if (searchParams.get('id') !== documentViewedId) {
+        cacheDocuments.invalidate();
+      }
+      setTimeout(() => mutate(documentViewedId as number), 500);
     }
-  }, [searchParams]);
+  }, [
+    cacheDocuments,
+    currentDocument?.view,
+    documentViewedId,
+    mutate,
+    searchParams,
+    setQueryData,
+  ]);
 
   const markAsViewed = (id: string) => setQueryData(id);
 

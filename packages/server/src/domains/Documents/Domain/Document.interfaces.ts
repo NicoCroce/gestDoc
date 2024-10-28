@@ -21,6 +21,7 @@ export interface ISignDocument extends IRequestContext {
     documentId: number;
     password: string;
     agreement: boolean;
+    reasonSignatureNonConformity: string | null;
   };
 }
 
@@ -34,6 +35,7 @@ export interface IDocument {
   title: string;
   file: unknown;
   signed: Date | null;
+  reasonSignatureNonConformity: string | null;
   view: Date | null;
   type: string;
   requireSign: boolean;

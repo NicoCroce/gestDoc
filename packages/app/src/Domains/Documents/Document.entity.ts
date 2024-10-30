@@ -1,3 +1,5 @@
+import { TStateDocument } from '@server/domains/Documents';
+
 export type TDocument = {
   id: string | number;
   uploadDate: Date;
@@ -11,8 +13,6 @@ export type TDocument = {
   agreedment: boolean | null;
 };
 
-export type TStateDocument = 'validados' | 'pendientes';
-
 export type TDocumentSearch = {
   state?: TStateDocument;
   title?: string;
@@ -22,3 +22,4 @@ export type TDocumentSearch = {
 
 export const VALIDATED: TStateDocument = 'validados';
 export const PENDING: TStateDocument = 'pendientes';
+export type { TStateDocument };

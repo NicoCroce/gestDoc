@@ -1,5 +1,5 @@
 import { useURLParams } from '@app/Aplication';
-import { TDocumentSearch, VALIDATED } from '../Document.entity';
+import { TDocumentSearch } from '../Document.entity';
 import { documentsService } from '../Documents.service';
 
 export const useGetDocuments = () => {
@@ -9,6 +9,5 @@ export const useGetDocuments = () => {
 
   return documentsService.getAll.useQuery({
     ...filterSearchParams,
-    validated: searchParams?.state === VALIDATED,
   });
 };

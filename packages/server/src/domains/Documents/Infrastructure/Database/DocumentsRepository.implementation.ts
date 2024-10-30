@@ -25,6 +25,7 @@ export class DocumentsRepositoryImplementation implements DocumentRepository {
         'titulo',
         'archivo',
         'firmado',
+        'motivo_firma_sin_conformidad',
         'visualizado',
         'validacion_de_firma',
         'firma_bajo_acuerdo',

@@ -14,7 +14,8 @@ export const useViewDocument = () => {
   const { mutate } = documentsService.view.useMutation();
 
   useEffect(() => {
-    if (documentViewedId && !currentDocument?.view) {
+    console.log(currentDocument?.view);
+    if (documentViewedId && currentDocument && currentDocument.view === null) {
       setQueryData(null);
       if (searchParams.get('id') !== documentViewedId) {
         cacheDocuments.invalidate();
@@ -23,7 +24,7 @@ export const useViewDocument = () => {
     }
   }, [
     cacheDocuments,
-    currentDocument?.view,
+    currentDocument,
     documentViewedId,
     mutate,
     searchParams,

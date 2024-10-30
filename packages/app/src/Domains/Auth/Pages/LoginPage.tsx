@@ -2,8 +2,8 @@ import { Container, HalfPage, Title } from '@app/Aplication';
 import { LoginForm } from '../Components';
 import { useLogout } from '../Hooks/useLogout';
 
-import img from '@app/../public/images/icons/icon-152x152.png';
-const bg = '/public/images/login.jpg';
+import img from '@app/Aplication/Images/icon-192x192.png';
+const bg = '/images/login.jpg';
 
 const Left = () => (
   <Container

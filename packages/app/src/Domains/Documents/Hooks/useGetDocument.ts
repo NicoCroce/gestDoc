@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { TDocument, TDocumentSearch, VALIDATED } from '../Document.entity';
+import { TDocument, TDocumentSearch } from '../Document.entity';
 import { documentsService } from '../Documents.service';
 import { useCacheDocuments } from './useCacheDocuments';
 import { useURLParams } from '@app/Aplication';
@@ -18,16 +18,13 @@ export const useGetDocument = (id: string | undefined) => {
 
   // Extraemos los datos de la caché si es que existe.
   const cachedDocuments = useMemo(() => {
-    const { id, ...filterSearchParams } = searchParams || {};
+    const { id: paramId, ...filterSearchParams } = searchParams || {};
 
-    return (
-      cacheDocumentsList
-        .getData({
-          ...filterSearchParams,
-          validated: searchParams?.state === VALIDATED,
-        })
-        ?.find((document) => document.id === Number(id)) || null
-    );
+    return cacheDocumentsList
+      .getData({
+        ...filterSearchParams,
+      })
+      ?.find((document) => document.id === Number(paramId));
   }, [cacheDocumentsList, searchParams]);
 
   useEffect(() => {
@@ -41,7 +38,7 @@ export const useGetDocument = (id: string | undefined) => {
         setCurrentDocument(res.data || null);
       });
     }
-  }, [id, isFetching, isFetched, refetch, cachedDocuments, searchParams?.id]);
+  }, [id, isFetching, isFetched, refetch, cachedDocuments, searchParams]);
 
   return {
     currentDocument,

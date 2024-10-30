@@ -11,6 +11,7 @@ import {
 } from '@app/Aplication/Components/ui/drawer';
 import { TDocumentSearch } from '../../Document.entity';
 import { useEffect, useState } from 'react';
+import { SignedDetail } from '../SignedDetail';
 
 interface PDFPreviewMobileProps {
   file: string;
@@ -28,10 +29,11 @@ export const PDFPreviewMobile = ({ file }: PDFPreviewMobileProps) => {
     <Drawer open={isOpen} onOpenChange={() => setIsOpen(false)}>
       <DrawerContent className="h-[90%]">
         <DrawerHeader className="justify-start">
-          <DrawerTitle>Puedes firmar el documento</DrawerTitle>
+          <DrawerTitle>Detalle del documento</DrawerTitle>
         </DrawerHeader>
         <Container className="p-4 h-full">
           <SignDocument />
+          <SignedDetail />
           <iframe src={file} height="100%" width="100%"></iframe>
         </Container>
         <DrawerFooter>

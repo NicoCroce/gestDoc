@@ -19,6 +19,7 @@ export interface ISignDocumentRepository extends IRequestContext {
   id: number;
   validationSign: string;
   agreement: boolean;
+  reasonSignatureNonConformity: string | null;
 }
 
 export interface IGetDocumentRepository extends IRequestContext {

@@ -7,6 +7,7 @@ export class Document {
     private readonly title: string,
     private readonly file: unknown,
     private readonly signed: Date | null, // Si fue firmado.
+    private readonly reasonSignatureNonConformity: string | null, // Descripción de por qué firma sin confirmidad.
     private readonly view: Date | null, // La fecha en que el usuario lo visualizó.
     private readonly type: string,
     private readonly requireSign: boolean, // Si el documento requiere ser firmado
@@ -20,6 +21,7 @@ export class Document {
     title,
     file,
     signed,
+    reasonSignatureNonConformity,
     view,
     type,
     requireSign,
@@ -32,6 +34,7 @@ export class Document {
       title,
       file,
       signed,
+      reasonSignatureNonConformity,
       view,
       type,
       requireSign,
@@ -51,6 +54,7 @@ export class Document {
       title: this.title,
       file: this.file,
       signed: this.signed,
+      reasonSignatureNonConformity: this.reasonSignatureNonConformity,
       view: this.view,
       type: this.type,
       requireSign: this.requireSign,

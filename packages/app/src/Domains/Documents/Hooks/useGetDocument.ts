@@ -31,6 +31,8 @@ export const useGetDocument = (id: string | undefined) => {
   }, [cacheDocumentsList, searchParams]);
 
   useEffect(() => {
+    if (!searchParams?.id) return setCurrentDocument(null);
+
     // Si el documento está en caché, lo usamos, de lo contrario, hacemos fetch
     if (cachedDocuments) {
       setCurrentDocument(cachedDocuments);

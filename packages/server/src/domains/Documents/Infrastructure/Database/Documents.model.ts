@@ -20,6 +20,7 @@ export class Documentos extends Model<
   declare archivo: string;
   declare fecha_de_subida: Date;
   declare firmado: CreationOptional<Date>;
+  declare motivo_firma_sin_conformidad: string | null;
   declare visualizado: CreationOptional<Date>;
   declare validacion_de_firma: CreationOptional<string>;
   declare firma_bajo_acuerdo: CreationOptional<boolean>;
@@ -64,6 +65,10 @@ Documentos.init(
     },
     firmado: {
       type: DataTypes.DATE,
+      allowNull: true,
+    },
+    motivo_firma_sin_conformidad: {
+      type: DataTypes.STRING,
       allowNull: true,
     },
     visualizado: {

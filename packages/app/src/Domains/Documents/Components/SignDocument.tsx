@@ -1,9 +1,4 @@
-import {
-  Button,
-  Container,
-  useGlobalStore,
-  useURLParams,
-} from '@app/Aplication';
+import { Button, Container, useURLParams } from '@app/Aplication';
 import { TDocumentSearch, VALIDATED } from '../Document.entity';
 import { useGetDocument } from '../Hooks';
 import { faThumbsDown, faThumbsUp } from '@fortawesome/free-solid-svg-icons';
@@ -18,29 +13,29 @@ export const SignDocument = () => {
   const [sign, setSign] = useState<boolean | 'agreement' | 'disagreement'>(
     false,
   );
-  const { data: isMobile } = useGlobalStore('isMobile');
 
   useEffect(() => {
     isSuccess && setSign(false);
   }, [isSuccess]);
 
   if (!currentDocument) return null;
+  if (searchParams?.state === VALIDATED) return null;
 
-  const disabled =
-    searchParams?.state === VALIDATED || !currentDocument.requireSign;
+  const disabled = !currentDocument.requireSign;
 
-  const signDocument = (password: string) =>
+  const signDocument = (password: string, reason: string) =>
     mutate({
       documentId: Number(searchParams?.id),
       password,
       agreement: sign === 'agreement',
+      reasonSignatureNonConformity: reason,
     });
 
   const onCloseDialog = () => setSign(false);
 
   return (
     <>
-      <Container row>
+      <Container row className="flex-wrap">
         <Button
           disabled={disabled}
           variant="outline"
@@ -49,7 +44,7 @@ export const SignDocument = () => {
           onClick={() => setSign('disagreement')}
           className="flex-auto"
         >
-          {isMobile ? 'sin conformidad' : 'Firmo sin conformidad'}
+          Firmo sin conformidad
         </Button>
         <Button
           disabled={disabled}
@@ -58,7 +53,7 @@ export const SignDocument = () => {
           onClick={() => setSign('agreement')}
           className="flex-auto"
         >
-          {isMobile ? 'con conformidad' : 'Firmo con conformidad'}
+          Firmo con conformidad
         </Button>
       </Container>
       <ConfirmWithPassword
@@ -67,6 +62,7 @@ export const SignDocument = () => {
         isLoading={isPending}
         isOpen={sign ? true : false}
         onCloseDialog={onCloseDialog}
+        signType={sign === 'agreement' ? 'agreement' : 'disagreement'}
       />
     </>
   );

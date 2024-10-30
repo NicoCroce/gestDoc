@@ -1,14 +1,16 @@
 import { IRequestContext } from '@server/Application/Interfaces';
 
+export type TStateDocument = 'validados' | 'pendientes';
+
 export interface IGetDocuments extends IRequestContext {
   input: {
-    requireSign: boolean | null; // Si rquiere firma, si es null retora todo.
-    type: string;
-    title: string;
-    date: Date | null;
-    signed: boolean | null; // si fue firmado, si es null retora todo.
-    view: boolean | null;
-    validated: boolean | null;
+    requireSign?: boolean | null; // Si rquiere firma, si es null retora todo.
+    type?: string;
+    title?: string;
+    date?: Date | null;
+    signed?: boolean | null; // si fue firmado, si es null retora todo.
+    view?: boolean | null;
+    state?: TStateDocument;
   };
 }
 

@@ -20,7 +20,7 @@ export class DocumentsController {
           .default(null),
         signed: z.boolean().nullable().default(null),
         view: z.boolean().nullable().default(null),
-        validated: z.boolean().nullable().default(null),
+        state: z.enum(['validados', 'pendientes']).default('pendientes'),
       }),
     )
     .query(

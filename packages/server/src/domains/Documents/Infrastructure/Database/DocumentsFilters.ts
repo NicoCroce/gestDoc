@@ -25,40 +25,41 @@ export const DocumentsFilters = (
     whereConditionSisTipoDocumentos.requiere_firma =
       filters.requireSign || false;
 
-  const filterValidated: WhereOptions<Documentos> = filters.validated
-    ? ({
-        [Op.or]: [
-          {
-            firmado: {
-              [Op.not]: null, // Document signed
-            },
-          },
-          {
-            [Op.and]: [
-              { '$DocumentsTypesModel.requiere_firma$': false }, // Doesn't require signature
-              { visualizado: { [Op.not]: null } }, // And has been viewed
-            ],
-          },
-        ],
-      } as WhereOptions<Documentos>)
-    : filters.validated === false
+  const filterValidated: WhereOptions<Documentos> =
+    filters.state === 'validados'
       ? ({
           [Op.or]: [
             {
-              [Op.and]: [
-                { '$DocumentsTypesModel.requiere_firma$': true },
-                { firmado: { [Op.is]: null } },
-              ],
+              firmado: {
+                [Op.not]: null, // Document signed
+              },
             },
             {
               [Op.and]: [
-                { '$DocumentsTypesModel.requiere_firma$': false },
-                { visualizado: { [Op.is]: null } },
+                { '$DocumentsTypesModel.requiere_firma$': false }, // Doesn't require signature
+                { visualizado: { [Op.not]: null } }, // And has been viewed
               ],
             },
           ],
         } as WhereOptions<Documentos>)
-      : {};
+      : filters.state === 'pendientes'
+        ? ({
+            [Op.or]: [
+              {
+                [Op.and]: [
+                  { '$DocumentsTypesModel.requiere_firma$': true },
+                  { firmado: { [Op.is]: null } },
+                ],
+              },
+              {
+                [Op.and]: [
+                  { '$DocumentsTypesModel.requiere_firma$': false },
+                  { visualizado: { [Op.is]: null } },
+                ],
+              },
+            ],
+          } as WhereOptions<Documentos>)
+        : {};
 
   return {
     whereCondition,

@@ -1,6 +1,5 @@
 import { Routes } from 'react-router-dom';
 import { Toaster } from './Aplication/Components/ui/sonner';
-import { AnimatePresence } from 'framer-motion';
 
 import { AllRoutes } from './Infrastructure';
 
@@ -10,10 +9,8 @@ import { ChangePasswordModal } from './Domains/Users/Components/ChangePassword/C
 export const App = () => {
   return (
     <>
-      <AnimatePresence mode="wait">
-        <Routes>{AllRoutes}</Routes>
-        <ChangePasswordModal />
-      </AnimatePresence>
+      <Routes>{AllRoutes}</Routes>
+      <ChangePasswordModal />
       <Toaster richColors />
     </>
   );

@@ -6,6 +6,7 @@ export type TDocument = {
   title: string;
   file: unknown;
   signed: Date | null;
+  reasonSignatureNonConformity: string | null;
   view: Date | null;
   type: string;
   requireSign: boolean;

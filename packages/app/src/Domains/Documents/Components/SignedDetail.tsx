@@ -10,11 +10,13 @@ import { faCircleInfo } from '@fortawesome/free-solid-svg-icons';
 
 export const SignedDetail = () => {
   const [searchParams] = useSearchParams();
-  const currentDocument = useGetDocument(searchParams.get('id') || undefined);
+  const { currentDocument } = useGetDocument(
+    searchParams.get('id') || undefined,
+  );
 
-  if (!currentDocument.data?.signed) return null;
+  if (!currentDocument || !currentDocument?.signed) return null;
 
-  const alertTitle = currentDocument.data?.agreedment
+  const alertTitle = currentDocument.agreedment
     ? 'Firmado bajo conformidad'
     : 'Firmado sin conformidad';
 
@@ -23,7 +25,7 @@ export const SignedDetail = () => {
       <FontAwesomeIcon icon={faCircleInfo} />
       <AlertTitle>{alertTitle}</AlertTitle>
       <AlertDescription>
-        {currentDocument.data?.reasonSignatureNonConformity}
+        {currentDocument.reasonSignatureNonConformity}
       </AlertDescription>
     </Alert>
   );

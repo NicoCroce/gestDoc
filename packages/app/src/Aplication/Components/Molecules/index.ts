@@ -4,6 +4,7 @@ export * from './ConfirmWithPassword';
 export * from './Input';
 export * from './Link';
 export * from './List';
+export * from './Modal';
 export * from './OutletSheet';
 export * from './Text';
 export * from './Title';

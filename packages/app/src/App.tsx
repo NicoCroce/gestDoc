@@ -5,12 +5,14 @@ import { AnimatePresence } from 'framer-motion';
 import { AllRoutes } from './Infrastructure';
 
 import './App.css';
+import { ChangePasswordModal } from './Domains/Users/Components/ChangePassword/ChangePasswordModal';
 
 export const App = () => {
   return (
     <>
       <AnimatePresence mode="wait">
         <Routes>{AllRoutes}</Routes>
+        <ChangePasswordModal />
       </AnimatePresence>
       <Toaster richColors />
     </>

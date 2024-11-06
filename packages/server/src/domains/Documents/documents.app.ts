@@ -10,7 +10,7 @@ import {
 } from './Domain';
 import { DocumentsRepositoryImplementation } from './Infrastructure';
 
-container.register({
+export const documentsApp = {
   documentsRepository: asClass(DocumentsRepositoryImplementation),
   documentsService: asClass(DocumentsService),
   documentsController: asClass(DocumentsController),
@@ -18,8 +18,7 @@ container.register({
   _getDocument: asClass(GetDocument),
   _signDocument: asClass(SignDocument),
   _viewDocument: asClass(ViewDocument),
-});
+};
 
-export const documentsController = container.resolve<DocumentsController>(
-  'documentsController',
-);
+export const documentsController = () =>
+  container.resolve<DocumentsController>('documentsController');

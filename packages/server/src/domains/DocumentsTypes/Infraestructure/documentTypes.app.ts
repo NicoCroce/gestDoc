@@ -5,12 +5,12 @@ import { DocumentTypesService } from '../Application';
 import { DocumentsTypesController } from './Controllers';
 import { DocumentsTypesRespositoryImplementation } from './Database';
 
-container.register({
+export const documentTypesApp = {
   documentsTypesRepository: asClass(DocumentsTypesRespositoryImplementation),
   documentsTypesService: asClass(DocumentTypesService),
   documentsTypesController: asClass(DocumentsTypesController),
   _getDocumentsTypes: asClass(GetDocumentsTypes),
-});
+};
 
-export const documentsTypesController =
+export const documentsTypesController = () =>
   container.resolve<DocumentsTypesController>('documentsTypesController');

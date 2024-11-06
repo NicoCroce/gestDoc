@@ -1,9 +1,11 @@
 import { documentsTypesController } from '../documentTypes.app';
 
-const { getDocumentsTypes } = documentsTypesController;
+export const DocumentsTypesRoutes = () => {
+  const { getDocumentsTypes } = documentsTypesController();
 
-export const DocumentsTypesRoutes = {
-  documentsType: {
-    getAll: getDocumentsTypes,
-  },
+  return {
+    documentsType: {
+      getAll: getDocumentsTypes,
+    },
+  };
 };

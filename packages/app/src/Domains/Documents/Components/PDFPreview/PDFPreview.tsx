@@ -46,9 +46,14 @@ export const PDFPreview = () => {
       </Alert>
     );
 
+  const hideToolbar =
+    !currentDocument.signed && currentDocument.requireSign
+      ? '#zoom=85&scrollbar=1&toolbar=0&navpanes=0'
+      : '';
+
   return (
     <object
-      data={currentDocument.file as string}
+      data={(currentDocument.file as string) + hideToolbar}
       type="application/pdf"
       width="100%"
       className="h-full"

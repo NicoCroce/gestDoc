@@ -7,7 +7,12 @@ export const useGetDocuments = () => {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { id, ...filterSearchParams } = searchParams || {};
 
-  return documentsService.getAll.useQuery({
-    ...filterSearchParams,
-  });
+  return documentsService.getAll.useQuery(
+    {
+      ...filterSearchParams,
+    },
+    {
+      staleTime: 3000, // Los datos no se refetchan durante 3 segundos
+    },
+  );
 };

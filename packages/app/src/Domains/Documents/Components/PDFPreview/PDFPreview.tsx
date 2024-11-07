@@ -1,4 +1,4 @@
-import { useGlobalStore, useURLParams } from '@app/Aplication';
+import { useURLParams } from '@app/Aplication';
 import { TDocumentSearch } from '../../Document.entity';
 import { useGetDocument } from '../../Hooks';
 import {
@@ -12,13 +12,11 @@ import {
   faHourglass,
 } from '@fortawesome/free-solid-svg-icons';
 import { useEffect, useState } from 'react';
-import { PDFPreviewMobile } from './PDFPreviewMobile';
 
 export const PDFPreview = () => {
   const { searchParams } = useURLParams<TDocumentSearch>();
   const { currentDocument, isLoading } = useGetDocument(searchParams?.id);
   const [onLoad, setOnload] = useState(false);
-  const { data: isMobile } = useGlobalStore('isMobile');
 
   useEffect(() => {
     setOnload(false);
@@ -28,7 +26,6 @@ export const PDFPreview = () => {
   }, [currentDocument]);
 
   if (!currentDocument) {
-    if (isMobile) return null;
     return (
       <Alert className="max-w-lg">
         <FontAwesomeIcon icon={faCircleExclamation} size="lg" />
@@ -40,7 +37,7 @@ export const PDFPreview = () => {
     );
   }
 
-  if (!isMobile && (isLoading || !onLoad))
+  if (isLoading || !onLoad)
     return (
       <Alert className="max-w-lg">
         <FontAwesomeIcon icon={faHourglass} size="lg" />
@@ -48,10 +45,6 @@ export const PDFPreview = () => {
         <AlertDescription>Esta opración puede demorar...</AlertDescription>
       </Alert>
     );
-
-  if (isMobile) {
-    return <PDFPreviewMobile file={currentDocument.file as string} />;
-  }
 
   return (
     <object

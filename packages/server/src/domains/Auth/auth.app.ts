@@ -2,7 +2,11 @@ import { AuthService } from './Application';
 import { AuthController } from './Infrastructure';
 import { asClass } from 'awilix';
 import { Login } from './Domain';
-import { ValidateUserPassword, RestorePassword } from './Domain/UseCases';
+import {
+  ValidateUserPassword,
+  RestorePassword,
+  ChangePasswordPublic,
+} from './Domain/UseCases';
 import { AuthRepositoryImplementation } from './Infrastructure/Repository/AuthRepository.implementation';
 import { container } from '@server/utils/Container';
 
@@ -13,6 +17,7 @@ export const authApp = {
   _login: asClass(Login),
   _validateUserPassword: asClass(ValidateUserPassword),
   _restorePassword: asClass(RestorePassword),
+  _changePasswordPublic: asClass(ChangePasswordPublic),
 };
 
 export const authController = () =>

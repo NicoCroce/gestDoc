@@ -1,13 +1,15 @@
-import { Container, Page, useGlobalStore } from '@app/Aplication';
+import { Container, Page, useDevice } from '@app/Aplication';
 import {
   DocumentsListWrapper,
   PDFPreview,
   SignDocument,
   SignedDetail,
 } from '../Components';
+import { PDFPreviewMobile } from '../Components/PDFPreview/PDFPreviewMobile';
 
 export const DocumentsListPage = () => {
-  const { data: isMobile } = useGlobalStore('isMobile');
+  const { isMobile } = useDevice();
+  console.log(isMobile);
 
   return (
     <Page title="Documentos" headerRight={!isMobile && <SignDocument />}>
@@ -16,7 +18,7 @@ export const DocumentsListPage = () => {
           <DocumentsListWrapper />
         </div>
         {isMobile ? (
-          <PDFPreview />
+          <PDFPreviewMobile />
         ) : (
           <Container className="w-full">
             <SignedDetail />

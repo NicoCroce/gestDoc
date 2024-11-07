@@ -9,7 +9,6 @@ import { PDFPreviewMobile } from '../Components/PDFPreview/PDFPreviewMobile';
 
 export const DocumentsListPage = () => {
   const { isMobile } = useDevice();
-  console.log(isMobile);
 
   return (
     <Page title="Documentos" headerRight={!isMobile && <SignDocument />}>

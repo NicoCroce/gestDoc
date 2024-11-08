@@ -10,7 +10,7 @@ import {
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
-import { useChangePassword } from '../Hooks';
+import { useChangePasswordPublic } from '../Hooks';
 import { useSearchParams } from 'react-router-dom';
 
 const formSchema = z
@@ -44,7 +44,7 @@ export const ChangePasswordFormPublic = ({
     },
   });
 
-  const { mutate, isSuccess, isPending } = useChangePassword();
+  const { mutate, isSuccess, isPending } = useChangePasswordPublic();
   const token = searchParams.get('token') || '';
 
   if (isSuccess) {

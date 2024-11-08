@@ -3,7 +3,7 @@ import { AuthService } from '../Auth.service';
 import { useNavigate } from 'react-router-dom';
 import { AUTH_ROUTE } from '../Auth.routes';
 
-export const useChangePassword = () => {
+export const useChangePasswordPublic = () => {
   const navigate = useNavigate();
 
   return AuthService.changePassword.useMutation({

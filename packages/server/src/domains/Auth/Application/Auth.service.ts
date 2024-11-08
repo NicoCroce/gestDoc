@@ -55,7 +55,7 @@ export class AuthService {
     let dataToken;
 
     try {
-      dataToken = (await verifyToken(token)) as { mail: string };
+      dataToken = (await verifyToken(token)) as { email: string };
     } catch {
       throw new TRPCError({
         message: 'Token error',
@@ -65,7 +65,7 @@ export class AuthService {
 
     return executeUseCase({
       useCase: this._changePasswordPublic,
-      input: { mail: dataToken.mail, newPassword, rePassword },
+      input: { mail: dataToken.email, newPassword, rePassword },
       requestContext,
     });
   }

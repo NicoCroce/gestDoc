@@ -24,3 +24,11 @@ export interface IExecuteResponse {
   token: string;
   user: User;
 }
+
+export interface IChangePasswordPublic extends IRequestContext {
+  input: { token: string; newPassword: string; rePassword: string };
+}
+
+export interface IChangePasswordPublicUsecase extends IRequestContext {
+  input: { mail: string; newPassword: string; rePassword: string };
+}

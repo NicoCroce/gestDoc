@@ -1,5 +1,6 @@
 import { Op } from 'sequelize';
 import {
+  IChangePasswordPublicRepository,
   IChangePasswordRepository,
   IDeleteUserRepository,
   IGetUserRepository,
@@ -112,5 +113,18 @@ export class UsersRepositoryImplementation implements UserRepository {
     );
 
     if (!id || !rowsAffected[0]) return null;
+  }
+
+  async changePasswordPublic(
+    params: IChangePasswordPublicRepository,
+  ): Promise<void | null> {
+    const { mail, password } = params;
+
+    const rowsAffected = await UserScheme.update(
+      { clave: password },
+      { where: { email: mail } },
+    );
+
+    if (!mail || !rowsAffected[0]) return null;
   }
 }

@@ -120,7 +120,7 @@ export class UsersRepositoryImplementation implements UserRepository {
   ): Promise<void | null> {
     const { mail, password } = params;
 
-    const rowsAffected = await UserScheme.update(
+    const rowsAffected = await UserModel.update(
       { clave: password },
       { where: { email: mail } },
     );

@@ -1,4 +1,5 @@
 import { CompaniesModel } from '@server/domains/Companies/Infrastructure';
+import { RolesModel } from '@server/domains/Permissions';
 import { sequelize } from '@server/Infrastructure';
 import {
   DataTypes,
@@ -8,9 +9,9 @@ import {
   CreationOptional,
   NonAttribute,
 } from 'sequelize';
-export class UserScheme extends Model<
-  InferAttributes<UserScheme>,
-  InferCreationAttributes<UserScheme>
+export class UserModel extends Model<
+  InferAttributes<UserModel>,
+  InferCreationAttributes<UserModel>
 > {
   declare id: CreationOptional<number>;
   declare nombre: string;
@@ -29,12 +30,14 @@ export class UserScheme extends Model<
     InferAttributes<CompaniesModel>
   >;
 
+  declare readonly RolesModels: NonAttribute<RolesModel[]>;
+
   declare createdAt: CreationOptional<Date>;
   declare updatedAt?: CreationOptional<Date>;
   declare deletedAt?: CreationOptional<Date>;
 }
 
-UserScheme.init(
+UserModel.init(
   {
     id: {
       type: DataTypes.BIGINT,

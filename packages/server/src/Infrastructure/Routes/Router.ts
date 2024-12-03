@@ -2,6 +2,7 @@ import { Express } from 'express';
 import { UserRoutes } from '@server/domains/Users';
 import { router, trpcExpress, createContext } from '../trpc';
 import { AuthRoutes } from '@server/domains/Auth';
+import { PermissionsRoutes } from '@server/domains/Permissions';
 import { DocumentsRoutes } from '@server/domains/Documents';
 import { DocumentsTypesRoutes } from '@server/domains/DocumentsTypes';
 
@@ -9,6 +10,7 @@ const MainRouter = () => {
   const AllRouters = {
     ...UserRoutes(),
     ...AuthRoutes(),
+    ...PermissionsRoutes(),
     ...DocumentsRoutes(),
     ...DocumentsTypesRoutes(),
   };

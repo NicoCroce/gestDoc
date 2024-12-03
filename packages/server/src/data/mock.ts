@@ -447,3 +447,35 @@ export const Documents = [
     agreedment: null,
   },
 ];
+
+export const Permissions = [
+  {
+    name: 'dasdboard-access',
+    description: 'Lee el estado de todos los documentos',
+  },
+  {
+    name: 'users-access',
+    description:
+      'Accede al listado de todos lo susuarios con la posibilidad de agregar, editar y eliminar',
+  },
+];
+
+export const Roles = [
+  {
+    name: 'admin-access',
+    description: 'Tienen acceso a toda la información de los empleados',
+    permissions: ['dashboard-access', 'users-access'],
+  },
+  {
+    name: 'recurso-humano',
+    description: 'Tienen acceso a toda la información de los empleados',
+    permissions: ['dashboard-access'],
+  },
+];
+
+export const Roles_Users = [
+  {
+    userId: 1,
+    roleName: 'admin-access',
+  },
+];

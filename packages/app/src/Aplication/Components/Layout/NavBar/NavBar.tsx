@@ -16,6 +16,7 @@ export const styleLink =
 
 export const NavBar = ({ className = '' }: { className?: string }) => {
   const { isMobile } = useDevice();
+
   const isActiveLink = ({ isActive }: NavLinkRenderProps): string => {
     return isActive ? styleLink + ' bg-muted' : styleLink;
   };

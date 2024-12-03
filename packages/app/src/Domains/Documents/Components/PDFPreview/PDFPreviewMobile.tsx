@@ -59,7 +59,7 @@ export const PDFPreviewMobile = () => {
               <FontAwesomeIcon icon={faHourglass} size="lg" />
               <AlertTitle>Obteniendo información</AlertTitle>
               <AlertDescription>
-                Esta opración puede demorar...
+                Esta operación puede demorar...
               </AlertDescription>
             </Alert>
           )}

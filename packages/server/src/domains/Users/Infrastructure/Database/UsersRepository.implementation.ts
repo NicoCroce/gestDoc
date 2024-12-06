@@ -79,6 +79,7 @@ export class UsersRepositoryImplementation implements UserRepository {
       password: user.clave,
       renewPassword: user.renovar_clave,
       userImage: user.imagen,
+      ownerId: user.id_propietario,
       companyLogo: user.CompaniesModel.logo,
       companyName: user.CompaniesModel.denominacion,
     });

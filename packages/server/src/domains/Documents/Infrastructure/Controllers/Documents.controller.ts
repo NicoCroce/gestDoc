@@ -59,4 +59,10 @@ export class DocumentsController {
         this.documentsService.signDocument.bind(this.documentsService),
       ),
     );
+
+  getDocumentsByCompany = protectedProcedure.query(
+    executeService(
+      this.documentsService.getDocumentsByCompany.bind(this.documentsService),
+    ),
+  );
 }

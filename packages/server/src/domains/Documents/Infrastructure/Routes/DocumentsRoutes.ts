@@ -1,8 +1,13 @@
 import { documentsController } from '../../documents.app';
 
 export const DocumentsRoutes = () => {
-  const { getDocuments, getDocument, viewDocument, signDocument } =
-    documentsController();
+  const {
+    getDocuments,
+    getDocument,
+    viewDocument,
+    signDocument,
+    getDocumentsByCompany,
+  } = documentsController();
 
   return {
     documents: {
@@ -10,6 +15,7 @@ export const DocumentsRoutes = () => {
       get: getDocument,
       sign: signDocument,
       view: viewDocument,
+      getAllByCompany: getDocumentsByCompany,
     },
   };
 };

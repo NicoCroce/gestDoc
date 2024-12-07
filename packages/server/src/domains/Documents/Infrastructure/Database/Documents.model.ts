@@ -1,4 +1,5 @@
 import { DocumentsTypesModel } from '@server/domains/DocumentsTypes/Infraestructure';
+import { UserModel } from '@server/domains/Users';
 import { sequelize } from '@server/Infrastructure';
 import {
   Model,
@@ -24,6 +25,7 @@ export class Documentos extends Model<
   declare visualizado: CreationOptional<Date>;
   declare validacion_de_firma: CreationOptional<string>;
   declare firma_bajo_acuerdo: CreationOptional<boolean>;
+  declare User?: NonAttribute<InferAttributes<UserModel>>;
 
   // Timestamps
   declare readonly createdAt: CreationOptional<Date>;

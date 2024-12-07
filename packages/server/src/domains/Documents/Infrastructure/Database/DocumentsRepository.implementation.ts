@@ -2,6 +2,7 @@ import {
   Document,
   DocumentRepository,
   IGetDocumentRepository,
+  IGetDocumentsByCompanyRepository,
   IGetDocumentsRepository,
   ISignDocumentRepository,
   IViewDocumentRepository,
@@ -9,6 +10,7 @@ import {
 import { DocumentsFilters } from './DocumentsFilters';
 import { Documentos } from './';
 import { DocumentsTypesModel } from '@server/domains/DocumentsTypes/Infraestructure';
+import { UserModel } from '@server/domains/Users';
 
 export class DocumentsRepositoryImplementation implements DocumentRepository {
   async getDocuments({
@@ -126,5 +128,50 @@ export class DocumentsRepositoryImplementation implements DocumentRepository {
     if (!id || !rowsAffected[0]) return null;
 
     return id;
+  }
+
+  async getDocumentsByCompany({
+    requestContext,
+  }: IGetDocumentsByCompanyRepository): Promise<Document[]> {
+    const ownerId = requestContext.values.ownerId;
+    const allDocuments = await Documentos.findAll({
+      include: [
+        {
+          model: UserModel,
+          as: 'User',
+          required: true,
+          where: {
+            id_propietario: ownerId,
+          },
+          attributes: ['id', 'nombre', 'apellido'],
+        },
+        {
+          model: DocumentsTypesModel,
+          attributes: ['denominacion', 'requiere_firma'],
+        },
+      ],
+      order: [[{ model: UserModel, as: 'User' }, 'apellido', 'ASC']],
+    });
+
+    return allDocuments.map((document) =>
+      Document.create({
+        id: document.id,
+        title: document.titulo,
+        uploadDate: document.fecha_de_subida,
+        file: document.archivo,
+        requireSign: document.DocumentsTypesModel?.requiere_firma || false,
+        signed: document.firmado,
+        reasonSignatureNonConformity: document.motivo_firma_sin_conformidad,
+        agreedment: document.firma_bajo_acuerdo,
+        type: document.DocumentsTypesModel.denominacion,
+        validationSign: document.validacion_de_firma,
+        view: document.visualizado,
+        user: {
+          id: document.User?.id || null,
+          name: document.User?.nombre || '',
+          surname: document.User?.apellido || '',
+        },
+      }),
+    );
   }
 }

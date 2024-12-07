@@ -16,3 +16,5 @@ export const useGetDocuments = () => {
     },
   );
 };
+
+export type TuseGetDocuments = ReturnType<typeof useGetDocuments>;

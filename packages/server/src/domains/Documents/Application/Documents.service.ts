@@ -2,8 +2,10 @@ import { executeUseCase } from '@server/Application';
 import {
   GetDocument,
   GetDocuments,
+  GetDocumentsByCompany,
   IGetDocument,
   IGetDocuments,
+  IGetDocumentsByCompany,
   ISignDocument,
   IViewDocument,
   SignDocument,
@@ -16,6 +18,7 @@ export class DocumentsService {
     private readonly _getDocument: GetDocument,
     private readonly _signDocument: SignDocument,
     private readonly _viewDocument: ViewDocument,
+    private readonly _getDocumentsByCompany: GetDocumentsByCompany,
   ) {}
 
   getDocuments({ input, requestContext }: IGetDocuments) {
@@ -46,6 +49,13 @@ export class DocumentsService {
     return executeUseCase({
       useCase: this._viewDocument,
       input,
+      requestContext,
+    });
+  }
+
+  async getDocumentsByCompany({ requestContext }: IGetDocumentsByCompany) {
+    return executeUseCase({
+      useCase: this._getDocumentsByCompany,
       requestContext,
     });
   }

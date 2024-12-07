@@ -27,6 +27,8 @@ export interface IGetDocumentRepository extends IRequestContext {
   id: number;
 }
 
+export interface IGetDocumentsByCompanyRepository extends IRequestContext {}
+
 export interface DocumentRepository {
   getDocuments({
     filters,
@@ -46,4 +48,7 @@ export interface DocumentRepository {
     validationSign,
     agreement,
   }: ISignDocumentRepository): Promise<number | null>;
+  getDocumentsByCompany({
+    requestContext,
+  }: IGetDocumentsByCompanyRepository): Promise<Document[]>;
 }

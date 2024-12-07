@@ -1,4 +1,5 @@
 import { IRequestContext } from '@server/Application/Interfaces';
+import { Document } from './Document.entity';
 
 export type TStateDocument = 'validados' | 'pendientes';
 
@@ -31,6 +32,15 @@ export interface IGetDocument extends IRequestContext {
   input: number; //document Id
 }
 
+export interface IGetDocumentsByCompany extends IRequestContext {}
+
+export interface IGetDocumentsByCompanyResponse {
+  [userId: number]: {
+    user: string;
+    documents: Document[];
+  };
+}
+
 export interface IDocument {
   id: number;
   uploadDate: Date;
@@ -43,4 +53,9 @@ export interface IDocument {
   requireSign: boolean;
   validationSign: string | null;
   agreedment: null | boolean;
+  user?: {
+    id: number | null;
+    name: string;
+    surname: string;
+  };
 }

@@ -32,7 +32,7 @@ export interface IGetDocument extends IRequestContext {
   input: number; //document Id
 }
 
-export interface IGetDocumentsByCompany extends IRequestContext {}
+export interface IGetDocumentsByCompany extends IGetDocuments {}
 
 export interface IGetDocumentsByCompanyResponse {
   [userId: number]: {

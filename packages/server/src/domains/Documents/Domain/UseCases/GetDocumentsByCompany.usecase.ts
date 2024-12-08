@@ -13,8 +13,10 @@ export class GetDocumentsByCompany
 
   async execute({
     requestContext,
+    input: filters,
   }: IGetDocumentsByCompany): Promise<IGetDocumentsByCompanyResponse> {
     const documents = await this.documentsRepository.getDocumentsByCompany({
+      filters,
       requestContext,
     });
 

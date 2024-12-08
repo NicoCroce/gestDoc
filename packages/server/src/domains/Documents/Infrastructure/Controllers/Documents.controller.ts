@@ -3,26 +3,25 @@ import { DocumentsService } from '../../Application/Documents.service';
 import { executeService } from '@server/Application';
 import z from 'zod';
 
+const params = z.object({
+  requireSign: z.boolean().nullable().default(null),
+  type: z.string().default(''),
+  title: z.string().default(''),
+  date: z
+    .string()
+    .transform((arg) => new Date(arg))
+    .or(z.date())
+    .nullable()
+    .default(null),
+  signed: z.boolean().nullable().default(null),
+  view: z.boolean().nullable().default(null),
+  state: z.enum(['validados', 'pendientes']).default('pendientes'),
+});
 export class DocumentsController {
   constructor(private readonly documentsService: DocumentsService) {}
 
   getDocuments = protectedProcedure
-    .input(
-      z.object({
-        requireSign: z.boolean().nullable().default(null),
-        type: z.string().default(''),
-        title: z.string().default(''),
-        date: z
-          .string()
-          .transform((arg) => new Date(arg))
-          .or(z.date())
-          .nullable()
-          .default(null),
-        signed: z.boolean().nullable().default(null),
-        view: z.boolean().nullable().default(null),
-        state: z.enum(['validados', 'pendientes']).default('pendientes'),
-      }),
-    )
+    .input(params)
     .query(
       executeService(
         this.documentsService.getDocuments.bind(this.documentsService),
@@ -60,9 +59,11 @@ export class DocumentsController {
       ),
     );
 
-  getDocumentsByCompany = protectedProcedure.query(
-    executeService(
-      this.documentsService.getDocumentsByCompany.bind(this.documentsService),
-    ),
-  );
+  getDocumentsByCompany = protectedProcedure
+    .input(params)
+    .query(
+      executeService(
+        this.documentsService.getDocumentsByCompany.bind(this.documentsService),
+      ),
+    );
 }

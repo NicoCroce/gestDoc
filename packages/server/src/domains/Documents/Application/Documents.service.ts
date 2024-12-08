@@ -53,9 +53,13 @@ export class DocumentsService {
     });
   }
 
-  async getDocumentsByCompany({ requestContext }: IGetDocumentsByCompany) {
+  async getDocumentsByCompany({
+    input,
+    requestContext,
+  }: IGetDocumentsByCompany) {
     return executeUseCase({
       useCase: this._getDocumentsByCompany,
+      input,
       requestContext,
     });
   }

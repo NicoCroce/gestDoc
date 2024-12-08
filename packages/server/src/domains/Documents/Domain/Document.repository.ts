@@ -27,7 +27,8 @@ export interface IGetDocumentRepository extends IRequestContext {
   id: number;
 }
 
-export interface IGetDocumentsByCompanyRepository extends IRequestContext {}
+export interface IGetDocumentsByCompanyRepository
+  extends IGetDocumentsRepository {}
 
 export interface DocumentRepository {
   getDocuments({

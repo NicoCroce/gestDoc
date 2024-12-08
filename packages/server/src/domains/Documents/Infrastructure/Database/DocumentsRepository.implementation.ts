@@ -131,10 +131,18 @@ export class DocumentsRepositoryImplementation implements DocumentRepository {
   }
 
   async getDocumentsByCompany({
+    filters,
     requestContext,
   }: IGetDocumentsByCompanyRepository): Promise<Document[]> {
     const ownerId = requestContext.values.ownerId;
+    const { whereCondition, filterValidated, whereConditionSisTipoDocumentos } =
+      DocumentsFilters(filters);
+
     const allDocuments = await Documentos.findAll({
+      where: {
+        ...whereCondition,
+        ...filterValidated,
+      },
       include: [
         {
           model: UserModel,
@@ -148,6 +156,7 @@ export class DocumentsRepositoryImplementation implements DocumentRepository {
         {
           model: DocumentsTypesModel,
           attributes: ['denominacion', 'requiere_firma'],
+          where: whereConditionSisTipoDocumentos,
         },
       ],
       order: [[{ model: UserModel, as: 'User' }, 'apellido', 'ASC']],

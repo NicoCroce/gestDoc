@@ -3,9 +3,12 @@ import {
   GetDocument,
   GetDocuments,
   GetDocumentsByCompany,
+  GetStatisticsDocuments,
   IGetDocument,
   IGetDocuments,
   IGetDocumentsByCompany,
+  IGetStatisticsDocuments,
+  IGetStatisticsDocumentsResponse,
   ISignDocument,
   IViewDocument,
   SignDocument,
@@ -19,6 +22,7 @@ export class DocumentsService {
     private readonly _signDocument: SignDocument,
     private readonly _viewDocument: ViewDocument,
     private readonly _getDocumentsByCompany: GetDocumentsByCompany,
+    private readonly _getStatisticsDocuments: GetStatisticsDocuments,
   ) {}
 
   getDocuments({ input, requestContext }: IGetDocuments) {
@@ -60,6 +64,15 @@ export class DocumentsService {
     return executeUseCase({
       useCase: this._getDocumentsByCompany,
       input,
+      requestContext,
+    });
+  }
+
+  async getStatisticsDocuments({
+    requestContext,
+  }: IGetStatisticsDocuments): Promise<IGetStatisticsDocumentsResponse> {
+    return executeUseCase({
+      useCase: this._getStatisticsDocuments,
       requestContext,
     });
   }

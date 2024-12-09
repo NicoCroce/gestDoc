@@ -66,4 +66,10 @@ export class DocumentsController {
         this.documentsService.getDocumentsByCompany.bind(this.documentsService),
       ),
     );
+
+  getStatisticsDocuments = protectedProcedure.query(
+    executeService(
+      this.documentsService.getStatisticsDocuments.bind(this.documentsService),
+    ),
+  );
 }

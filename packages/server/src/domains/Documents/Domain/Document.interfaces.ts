@@ -41,6 +41,14 @@ export interface IGetDocumentsByCompanyResponse {
   };
 }
 
+export interface IGetStatisticsDocuments extends IRequestContext {}
+
+export interface IGetStatisticsDocumentsResponse {
+  total: number;
+  pending: number;
+  validated: number;
+}
+
 export interface IDocument {
   id: number;
   uploadDate: Date;

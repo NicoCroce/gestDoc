@@ -30,6 +30,13 @@ export interface IGetDocumentRepository extends IRequestContext {
 export interface IGetDocumentsByCompanyRepository
   extends IGetDocumentsRepository {}
 
+export interface IGetStatisticsDocumentsRepository extends IRequestContext {}
+export interface IGetStatisticsDocumentsResponseRepository {
+  total: number;
+  pending: number;
+  validated: number;
+}
+
 export interface DocumentRepository {
   getDocuments({
     filters,
@@ -52,4 +59,7 @@ export interface DocumentRepository {
   getDocumentsByCompany({
     requestContext,
   }: IGetDocumentsByCompanyRepository): Promise<Document[]>;
+  getStatisticsDocuments({
+    requestContext,
+  }: IGetStatisticsDocumentsRepository): Promise<IGetStatisticsDocumentsResponseRepository>;
 }

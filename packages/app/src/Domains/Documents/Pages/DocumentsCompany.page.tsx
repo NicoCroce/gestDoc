@@ -1,5 +1,10 @@
-import { Container, Page, useDevice, Text } from '@app/Aplication';
-import { DocumentsListWrapper, PDFPreview, SignedDetail } from '../Components';
+import { Container, Page, useDevice } from '@app/Aplication';
+import {
+  DocumentsListWrapper,
+  PDFPreview,
+  SignedDetail,
+  Statistics,
+} from '../Components';
 import { PDFPreviewMobile } from '../Components/PDFPreview/PDFPreviewMobile';
 import { useGetDocumentsByCompany } from '../Hooks/useGetDocumentsByCompany';
 
@@ -10,11 +15,7 @@ export const DocumentsCompanyPage = () => {
   return (
     <Page title="Todos los documentos de la empresa">
       <Container>
-        <Container>
-          <Text>
-            Usuarios Totales: {service.data && Object.keys(service.data).length}
-          </Text>
-        </Container>
+        <Statistics />
         <Container row>
           <div className="min-w-[300px] max-w-[400px] w-full">
             <DocumentsListWrapper service={service} segmented />

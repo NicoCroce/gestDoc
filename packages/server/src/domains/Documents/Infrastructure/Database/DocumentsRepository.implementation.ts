@@ -4,6 +4,8 @@ import {
   IGetDocumentRepository,
   IGetDocumentsByCompanyRepository,
   IGetDocumentsRepository,
+  IGetStatisticsDocumentsRepository,
+  IGetStatisticsDocumentsResponseRepository,
   ISignDocumentRepository,
   IViewDocumentRepository,
 } from '../../Domain';
@@ -182,5 +184,49 @@ export class DocumentsRepositoryImplementation implements DocumentRepository {
         },
       }),
     );
+  }
+
+  async getStatisticsDocuments({
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    requestContext,
+  }: IGetStatisticsDocumentsRepository): Promise<IGetStatisticsDocumentsResponseRepository> {
+    const { filterValidated: filterValidatedPending } = DocumentsFilters({
+      state: 'pendientes',
+    });
+    const { filterValidated: filterValidatedValidated } = DocumentsFilters({
+      state: 'validados',
+    });
+
+    const totalDocuments = await Documentos.count();
+
+    const pendingDocuments = await Documentos.count({
+      where: {
+        ...filterValidatedPending,
+      },
+      include: [
+        {
+          model: DocumentsTypesModel,
+          attributes: [],
+        },
+      ],
+    });
+
+    const validatedDocuments = await Documentos.count({
+      where: {
+        ...filterValidatedValidated,
+      },
+      include: [
+        {
+          model: DocumentsTypesModel,
+          attributes: [],
+        },
+      ],
+    });
+
+    return {
+      total: totalDocuments,
+      pending: pendingDocuments,
+      validated: validatedDocuments,
+    };
   }
 }

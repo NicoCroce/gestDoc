@@ -7,6 +7,7 @@ export const DocumentsRoutes = () => {
     viewDocument,
     signDocument,
     getDocumentsByCompany,
+    getStatisticsDocuments,
   } = documentsController();
 
   return {
@@ -16,6 +17,7 @@ export const DocumentsRoutes = () => {
       sign: signDocument,
       view: viewDocument,
       getAllByCompany: getDocumentsByCompany,
+      getStatistics: getStatisticsDocuments,
     },
   };
 };

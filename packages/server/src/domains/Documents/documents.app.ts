@@ -6,6 +6,7 @@ import {
   GetDocument,
   GetDocuments,
   GetDocumentsByCompany,
+  GetStatisticsDocuments,
   SignDocument,
   ViewDocument,
 } from './Domain';
@@ -20,6 +21,7 @@ export const documentsApp = {
   _signDocument: asClass(SignDocument),
   _viewDocument: asClass(ViewDocument),
   _getDocumentsByCompany: asClass(GetDocumentsByCompany),
+  _getStatisticsDocuments: asClass(GetStatisticsDocuments),
 };
 
 export const documentsController = () =>

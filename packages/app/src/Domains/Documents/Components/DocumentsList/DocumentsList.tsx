@@ -1,5 +1,5 @@
 import { Button, Container, List, Text } from '@app/Aplication';
-import { useGetDocuments } from '../../Hooks/useGetDocuments';
+import { TuseGetDocuments } from '../../Hooks/useGetDocuments';
 import { Document } from '../Document';
 import { Alert, AlertTitle } from '@app/Aplication/Components/ui/alert';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -17,10 +17,11 @@ const SkeletonLoader = () => (
 
 interface DocumentsListProps {
   openFilters: () => void;
+  service: TuseGetDocuments;
 }
 
-export const DocumentsList = ({ openFilters }: DocumentsListProps) => {
-  const { data, isLoading } = useGetDocuments();
+export const DocumentsList = ({ openFilters, service }: DocumentsListProps) => {
+  const { data, isLoading } = service;
 
   if (isLoading) {
     return <SkeletonLoader />;

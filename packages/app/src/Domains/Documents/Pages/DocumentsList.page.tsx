@@ -6,15 +6,17 @@ import {
   SignedDetail,
 } from '../Components';
 import { PDFPreviewMobile } from '../Components/PDFPreview/PDFPreviewMobile';
+import { useGetDocuments } from '../Hooks';
 
 export const DocumentsListPage = () => {
   const { isMobile } = useDevice();
+  const service = useGetDocuments();
 
   return (
     <Page title="Documentos" headerRight={!isMobile && <SignDocument />}>
       <Container row>
         <div className="min-w-[300px] max-w-[400px] w-full">
-          <DocumentsListWrapper />
+          <DocumentsListWrapper service={service} />
         </div>
         {isMobile ? (
           <PDFPreviewMobile />

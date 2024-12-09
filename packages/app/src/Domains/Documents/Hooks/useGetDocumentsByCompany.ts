@@ -2,12 +2,13 @@ import { useURLParams } from '@app/Aplication';
 import { TDocumentSearch } from '../Document.entity';
 import { documentsService } from '../Documents.service';
 
-export const useGetDocuments = () => {
+export const useGetDocumentsByCompany = () => {
   const { searchParams } = useURLParams<TDocumentSearch>();
+
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { id, ...filterSearchParams } = searchParams || {};
 
-  return documentsService.getAll.useQuery(
+  return documentsService.getAllByCompany.useQuery(
     {
       ...filterSearchParams,
     },
@@ -17,4 +18,6 @@ export const useGetDocuments = () => {
   );
 };
 
-export type TuseGetDocuments = ReturnType<typeof useGetDocuments>;
+export type TuseGetDocumentsByCompany = ReturnType<
+  typeof useGetDocumentsByCompany
+>;

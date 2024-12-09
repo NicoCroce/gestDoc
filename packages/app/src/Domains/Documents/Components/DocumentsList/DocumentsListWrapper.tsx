@@ -19,8 +19,19 @@ import { useGetFiltersSetted } from '../../Hooks/useGetFiltersSetted';
 import { DocumentsList } from './DocumentsList';
 import { useViewDocument } from '../../Hooks/useViewDocument';
 import { useGetDocumentsTypes } from '../../Hooks/useGetDocumentsTypes';
+import { TuseGetDocuments } from '../../Hooks';
+import { TuseGetDocumentsByCompany } from '../../Hooks/useGetDocumentsByCompany';
+import { DocumentsListByUser } from './DocumentsListByUser';
 
-export const DocumentsListWrapper = () => {
+interface DocumentsListWrapperProps {
+  service: TuseGetDocuments | TuseGetDocumentsByCompany;
+  segmented?: boolean;
+}
+
+export const DocumentsListWrapper = ({
+  service,
+  segmented = false,
+}: DocumentsListWrapperProps) => {
   const { searchParams, updateParams } =
     useURLParams<TDocumentSearch>(DOCUMENTS_ROUTE);
   const [isState, setState] = useState<TStateDocument>(
@@ -71,7 +82,17 @@ export const DocumentsListWrapper = () => {
             <FontAwesomeIcon icon={faFilter}></FontAwesomeIcon>
           </Button>
         </Container>
-        <DocumentsList openFilters={handleFilters} />
+        {segmented ? (
+          <DocumentsListByUser
+            openFilters={handleFilters}
+            service={service as TuseGetDocumentsByCompany}
+          />
+        ) : (
+          <DocumentsList
+            openFilters={handleFilters}
+            service={service as TuseGetDocuments}
+          />
+        )}
       </Tabs>
       <FiltersSheet open={filtersIsOpen} closeSheet={handleFilters} />
     </>

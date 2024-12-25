@@ -59,7 +59,7 @@ export const DocumentsListByUser = ({
                 <List.Li key={userId}>
                   <Accordion type="single" collapsible defaultValue="item-0">
                     <AccordionItem value={`item-${index}`}>
-                      <AccordionTrigger>
+                      <AccordionTrigger className="px-4">
                         {data[Number(userId)].user}
                       </AccordionTrigger>
                       <AccordionContent>

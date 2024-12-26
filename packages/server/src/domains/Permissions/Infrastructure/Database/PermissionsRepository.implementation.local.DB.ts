@@ -24,7 +24,9 @@ export class PermissionsRepositoryImplementationLocal
     );
   }
 
-  getPermissions(_params: IGetPermissionsRepository): Promise<Permissions[]> {
+  getPermissions({
+    requestContext: _,
+  }: IGetPermissionsRepository): Promise<Permissions[]> {
     throw new Error('Method not implemented.');
   }
 

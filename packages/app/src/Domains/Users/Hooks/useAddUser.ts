@@ -18,7 +18,7 @@ export const useAddUser = () => {
           id: state?.length,
           name,
           mail,
-          renewPassword: undefined,
+          renewPassword: true,
           companyLogo: undefined,
           companyName: undefined,
           userImage: undefined,

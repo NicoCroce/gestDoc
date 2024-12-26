@@ -80,8 +80,8 @@ export class UsersRepositoryImplementation implements UserRepository {
       renewPassword: user.renovar_clave,
       userImage: user.imagen,
       ownerId: user.id_propietario,
-      companyLogo: user.CompaniesModel.logo,
-      companyName: user.CompaniesModel.denominacion,
+      companyLogo: user?.CompaniesModel?.logo || '',
+      companyName: user?.CompaniesModel?.denominacion,
     });
   }
 

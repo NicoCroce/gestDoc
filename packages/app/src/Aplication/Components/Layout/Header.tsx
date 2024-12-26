@@ -25,7 +25,13 @@ export const Header = () => {
           </Button>
         )}
       </span>
-      <Container row align="center" space="small" className="relative z-10">
+      <Container
+        row
+        align="center"
+        justify="center"
+        space="small"
+        className="relative z-10"
+      >
         <img
           src={img}
           width={36}

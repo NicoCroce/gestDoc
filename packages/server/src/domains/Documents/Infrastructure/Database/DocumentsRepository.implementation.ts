@@ -187,8 +187,7 @@ export class DocumentsRepositoryImplementation implements DocumentRepository {
   }
 
   async getStatisticsDocuments({
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    requestContext,
+    requestContext: _,
   }: IGetStatisticsDocumentsRepository): Promise<IGetStatisticsDocumentsResponseRepository> {
     const { filterValidated: filterValidatedPending } = DocumentsFilters({
       state: 'pendientes',

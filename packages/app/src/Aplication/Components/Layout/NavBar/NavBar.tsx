@@ -11,12 +11,15 @@ import { Container } from '../Container';
 import { NavBarHeader } from './NavBarHeader';
 import { useDevice } from '@app/Aplication/Hooks';
 import { DOCUMENTS_DASHBOARD, DOCUMENTS_ROUTE } from '@app/Domains/Documents';
+import { useHasPermission } from '@app/Aplication/Hooks/useHasPermission';
+import { DASHBOARD_ACCESS } from '@app/Aplication/Helpers';
 
 export const styleLink =
   'flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary';
 
 export const NavBar = ({ className = '' }: { className?: string }) => {
   const { isMobile } = useDevice();
+  const { hasPermission } = useHasPermission();
 
   const isActiveLink = ({ isActive }: NavLinkRenderProps): string => {
     return isActive ? styleLink + ' bg-muted' : styleLink;
@@ -27,10 +30,12 @@ export const NavBar = ({ className = '' }: { className?: string }) => {
       <NavBarHeader />
       <nav className="flex flex-col h-full justify-between mt-4">
         <Container className="flex flex-col gap-2 md:p-4">
-          <NavLink to={DOCUMENTS_DASHBOARD} className={isActiveLink}>
-            <FontAwesomeIcon icon={faChartLine} />
-            Administrar
-          </NavLink>
+          {hasPermission(DASHBOARD_ACCESS) && (
+            <NavLink to={DOCUMENTS_DASHBOARD} className={isActiveLink}>
+              <FontAwesomeIcon icon={faChartLine} />
+              Administrar
+            </NavLink>
+          )}
           <NavLink to={DOCUMENTS_ROUTE} className={isActiveLink}>
             <FontAwesomeIcon icon={faFile} />
             Documentos

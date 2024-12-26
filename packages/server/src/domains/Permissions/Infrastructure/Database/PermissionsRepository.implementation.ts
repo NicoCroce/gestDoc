@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { UserModel } from '@server/domains/Users';
 import {
   IAssociateUserToRoleRepository,
@@ -14,8 +13,6 @@ import {
 import { RolesModel } from './Roles.model';
 import { PermissionsModel } from './Permissions.model';
 import { Users_RolesModel } from './Users_Roles.model';
-import { Roles_Users } from '@server/data';
-import { where } from 'sequelize';
 
 export class PermissionsRepositoryImplementation
   implements PermissionsRepository
@@ -33,7 +30,7 @@ export class PermissionsRepositoryImplementation
   }
 
   async getPermissions({
-    requestContext,
+    requestContext: _,
   }: IGetPermissionsRepository): Promise<Permissions[]> {
     throw new Error('Method not implemented.');
   }

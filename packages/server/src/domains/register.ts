@@ -4,6 +4,7 @@ import { authApp } from './Auth';
 import { permissionsApp } from './Permissions';
 import { documentsApp } from './Documents';
 import { documentTypesApp } from './DocumentsTypes';
+import { certificatesApp } from './Certificates';
 
 export const registerDomains = () =>
   container.register({
@@ -12,4 +13,5 @@ export const registerDomains = () =>
     ...permissionsApp,
     ...documentsApp,
     ...documentTypesApp,
+    ...certificatesApp,
   });

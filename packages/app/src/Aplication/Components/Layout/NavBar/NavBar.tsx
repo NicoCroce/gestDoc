@@ -4,6 +4,7 @@ import {
   faArrowRightFromBracket,
   faChartLine,
   faFile,
+  faFileContract,
   faUser,
 } from '@fortawesome/free-solid-svg-icons';
 import { NavLink, NavLinkRenderProps } from 'react-router-dom';
@@ -13,6 +14,7 @@ import { useDevice } from '@app/Aplication/Hooks';
 import { DOCUMENTS_DASHBOARD, DOCUMENTS_ROUTE } from '@app/Domains/Documents';
 import { useHasPermission } from '@app/Aplication/Hooks/useHasPermission';
 import { DASHBOARD_ACCESS } from '@app/Aplication/Helpers';
+import { CERTIFICATES } from '@app/Domains/Certificates';
 
 export const styleLink =
   'flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary';
@@ -39,6 +41,10 @@ export const NavBar = ({ className = '' }: { className?: string }) => {
           <NavLink to={DOCUMENTS_ROUTE} className={isActiveLink}>
             <FontAwesomeIcon icon={faFile} />
             Documentos
+          </NavLink>
+          <NavLink to={CERTIFICATES} className={isActiveLink}>
+            <FontAwesomeIcon icon={faFileContract} />
+            Mis Certificados
           </NavLink>
         </Container>
         <Container className="flex flex-col gap-2 md:p-4">

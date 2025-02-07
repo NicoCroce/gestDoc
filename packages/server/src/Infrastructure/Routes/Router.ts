@@ -5,6 +5,7 @@ import { AuthRoutes } from '@server/domains/Auth';
 import { PermissionsRoutes } from '@server/domains/Permissions';
 import { DocumentsRoutes } from '@server/domains/Documents';
 import { DocumentsTypesRoutes } from '@server/domains/DocumentsTypes';
+import { CertificatesRoutes } from '@server/domains/Certificates/Infrastructure/Routes';
 
 const MainRouter = () => {
   const AllRouters = {
@@ -13,6 +14,7 @@ const MainRouter = () => {
     ...PermissionsRoutes(),
     ...DocumentsRoutes(),
     ...DocumentsTypesRoutes(),
+    ...CertificatesRoutes(),
   };
   return router(AllRouters);
 };

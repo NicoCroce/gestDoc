@@ -1,0 +1,11 @@
+import { Route } from 'react-router-dom';
+import { CERTIFICATES } from './Certificates.routes';
+import { CertificateListPage } from './Pages';
+
+export const CertificatesRouter = [
+  <Route
+    key="certificates-list"
+    path={CERTIFICATES}
+    element={<CertificateListPage />}
+  />,
+];

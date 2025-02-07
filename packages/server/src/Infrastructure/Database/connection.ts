@@ -8,6 +8,7 @@ export const sequelize = new Sequelize({
   host: process.env.DB_HOST || '127.0.0.1',
   port: 3306,
   logging: false,
+  timezone: '-03:00', // Configura la zona horaria a Argentina
 });
 
 export const connect = async () => {

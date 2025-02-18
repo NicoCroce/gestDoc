@@ -1,14 +1,20 @@
 import { Container } from '@app/Aplication/Components';
-import { Certificate } from './Certificate';
+import { Certificate } from './Certificate/Certificate';
+import { ICertificate } from '../Certificate.entity';
 
-export const CertificatesGrid = () => {
+export interface CertificatesGridProps {
+  certificatesList: ICertificate[];
+}
+
+export const CertificatesGrid = ({
+  certificatesList,
+}: CertificatesGridProps) => {
   return (
-    <Container className="grid gap-2 grid-cols-[repeat(auto-fit,minmax(200px,1fr))]">
-      {Array(20)
-        .fill(0)
-        .map(() => (
-          <div>
-            <Certificate />
+    <Container className="grid gap-2 grid-cols-[repeat(auto-fit,minmax(200px,400px))]">
+      {certificatesList &&
+        certificatesList.map((certificate) => (
+          <div key={certificate.id}>
+            <Certificate data={certificate} />
           </div>
         ))}
     </Container>

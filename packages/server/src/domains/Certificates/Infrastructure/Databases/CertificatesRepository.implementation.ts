@@ -3,6 +3,7 @@ import {
   CertificateRepository,
   IGetCertificatesRepository,
 } from '../../Domain';
+import { CertificateTypes } from '../../Domain/CertificateTypes.entity';
 import { Certificados } from './Certificates.model';
 import { CertificatesTypesModel } from './CertificatesTypes.model';
 
@@ -29,6 +30,20 @@ export class CertificatesRepositoryImplementation
         reason: certificate.motivo,
         type: certificate.CertificatesTypesModel.denominacion,
         files: certificate.archivos,
+      }),
+    );
+  }
+
+  async getCertificatesTypes({
+    requestContext: _,
+  }: IGetCertificatesRepository): Promise<CertificateTypes[]> {
+    const certificatesTypes = await CertificatesTypesModel.findAll();
+
+    return certificatesTypes.map((certificateType) =>
+      CertificateTypes.create({
+        id: certificateType.id,
+        name: certificateType.denominacion,
+        description: certificateType.descripcion,
       }),
     );
   }

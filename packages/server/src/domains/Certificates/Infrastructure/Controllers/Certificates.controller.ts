@@ -10,4 +10,12 @@ export class CertificatesController {
       this.certificatesService.getCertificates.bind(this.certificatesService),
     ),
   );
+
+  getCertificateTypes = protectedProcedure.query(
+    executeService(
+      this.certificatesService.getCertificateTypes.bind(
+        this.certificatesService,
+      ),
+    ),
+  );
 }

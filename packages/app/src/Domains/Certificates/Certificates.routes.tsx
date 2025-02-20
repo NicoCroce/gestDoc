@@ -1,1 +1,1 @@
-export const CERTIFICATES = '/certificates';
+export const CERTIFICATES_ROUTES = '/certificates';

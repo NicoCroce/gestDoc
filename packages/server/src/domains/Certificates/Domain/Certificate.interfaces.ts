@@ -2,6 +2,7 @@ import { IRequestContext } from '@server/Application';
 import { Certificate } from './Certificate.entity';
 
 export interface IGetCertificates extends IRequestContext {}
+export interface IGetCertificateTypes extends IRequestContext {}
 
 export interface IGetCertificatesResponse {
   [key: number]: Certificate[];
@@ -14,4 +15,10 @@ export interface ICertificate {
   reason: string;
   type: string;
   files: string[];
+}
+
+export interface ICertificateTypes {
+  id: number;
+  name: string;
+  description: string;
 }

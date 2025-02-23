@@ -3,8 +3,8 @@ import { ICertificateTypes } from './Certificate.interfaces';
 export class CertificateTypes {
   constructor(
     private readonly id: number,
-    private readonly name: string,
-    private readonly description: string,
+    private readonly name?: string,
+    private readonly description?: string,
   ) {}
 
   static create({ id, name, description }: ICertificateTypes) {

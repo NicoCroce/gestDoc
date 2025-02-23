@@ -1,3 +1,5 @@
-import { ICertificate as IcertificateServer } from '@server/domains/Certificates';
+import { CertificateDTO } from '@server/domains/Certificates';
 
-export interface ICertificate extends IcertificateServer {}
+export interface ICertificate extends CertificateDTO {
+  type: string;
+}

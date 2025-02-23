@@ -9,9 +9,9 @@ import {
 } from 'sequelize';
 import { CertificatesTypesModel } from './CertificatesTypes.model';
 
-export class Certificados extends Model<
-  InferAttributes<Certificados>,
-  InferCreationAttributes<Certificados>
+export class CertificateModel extends Model<
+  InferAttributes<CertificateModel>,
+  InferCreationAttributes<CertificateModel>
 > {
   declare id: CreationOptional<number>;
   declare id_usuario: number;
@@ -33,7 +33,7 @@ export class Certificados extends Model<
   >;
 }
 
-Certificados.init(
+CertificateModel.init(
   {
     id: {
       type: DataTypes.BIGINT,
@@ -71,7 +71,7 @@ Certificados.init(
   },
   {
     sequelize,
-    modelName: 'Certificados',
+    modelName: 'CertificateModel',
     paranoid: true,
     timestamps: true,
     tableName: 'Certificados',

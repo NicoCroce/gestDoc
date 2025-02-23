@@ -1,4 +1,4 @@
-import { Container, formatDate, Text } from '@app/Aplication';
+import { Container, Text } from '@app/Aplication';
 import { ICertificate } from '../../Certificate.entity';
 
 import './certificate.css';
@@ -21,9 +21,9 @@ export const Certificate = ({ data }: CertificateProps) => {
           <Badge className="uppercase">{type}</Badge>
           <Badge variant="secondary">
             <Container row>
-              <span>{formatDate(startDate)}</span>
+              <span>{startDate}</span>
               <span>-</span>
-              <span>{formatDate(endDate)}</span>
+              <span>{endDate}</span>
             </Container>
           </Badge>
         </Container>

@@ -1,21 +1,17 @@
-import { Button, Container, Page, Text } from '@app/Aplication';
+import { Container, Page, Text } from '@app/Aplication';
 import { CertificatesGrid } from '../Components/CertificatesGrid';
-import { faAdd } from '@fortawesome/free-solid-svg-icons';
-import { useGetCertificates } from '../Hooks/useGetCertificates';
+
 import { v4 as uuidv4 } from 'uuid';
+import { useGetCertificates } from '../Hooks';
+import { NewLicenseButton } from '../Components';
 
 export const CertificateListPage = () => {
   const { data } = useGetCertificates();
 
+  console.log(data);
+
   return (
-    <Page
-      title="Certificados"
-      headerRight={
-        <Button showIcon icon={faAdd}>
-          Cargar certificado
-        </Button>
-      }
-    >
+    <Page title="Certificados" headerRight={<NewLicenseButton />}>
       {data &&
         Object.entries(data).map(([year, certificates]) => (
           <Container key={uuidv4()} space="large">

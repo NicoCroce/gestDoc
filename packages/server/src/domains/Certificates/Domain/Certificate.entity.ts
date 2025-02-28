@@ -1,17 +1,22 @@
 import { ICertificate } from './Certificate.interfaces';
+import { CertificateTypes } from './CertificateTypes.entity';
 
 export class Certificate {
   constructor(
-    private readonly id: number,
-    private readonly startDate: Date,
-    private readonly endDate: Date,
-    private readonly reason: string,
-    private readonly type: string,
-    private readonly files: string[],
+    private readonly _startDate: Date,
+    private readonly _endDate: Date,
+    private readonly _reason: string,
+    private readonly _type: CertificateTypes,
+    private readonly _files: string[],
+    private readonly _id?: number,
   ) {}
 
   static create({ id, startDate, endDate, reason, type, files }: ICertificate) {
-    return new Certificate(id, startDate, endDate, reason, type, files);
+    const typeInstance = CertificateTypes.create({
+      id: type.values.id,
+      name: type.values.name,
+    });
+    return new Certificate(startDate, endDate, reason, typeInstance, files, id);
   }
 
   toJSON() {
@@ -20,12 +25,16 @@ export class Certificate {
 
   get values() {
     return {
-      id: this.id,
-      startDate: this.startDate,
-      endDate: this.endDate,
-      reason: this.reason,
-      type: this.type,
-      files: this.files,
+      id: this._id,
+      startDate: this._startDate,
+      endDate: this._endDate,
+      reason: this._reason,
+      type: this._type,
+      files: this._files,
     };
+  }
+
+  get type() {
+    return this._type.values.name;
   }
 }

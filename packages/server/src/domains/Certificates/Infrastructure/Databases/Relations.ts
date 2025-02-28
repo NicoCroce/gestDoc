@@ -1,9 +1,9 @@
-import { Certificados } from './Certificates.model';
+import { CertificateModel } from './Certificates.model';
 import { CertificatesTypesModel } from './CertificatesTypes.model';
 
-CertificatesTypesModel.hasMany(Certificados, {
+CertificatesTypesModel.hasMany(CertificateModel, {
   foreignKey: 'id_tipo_certificado',
 });
-Certificados.belongsTo(CertificatesTypesModel, {
+CertificateModel.belongsTo(CertificatesTypesModel, {
   foreignKey: 'id_tipo_certificado',
 });

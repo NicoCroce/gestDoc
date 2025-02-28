@@ -1,11 +1,14 @@
 import { certificatesController } from '../../certificates.app';
 
 export const CertificatesRoutes = () => {
-  const { getCertificates } = certificatesController();
+  const { getCertificates, getCertificateTypes, addCertificate } =
+    certificatesController();
 
   return {
     certificates: {
       getAll: getCertificates,
+      getCertificateTypes,
+      addCertificate,
     },
   };
 };

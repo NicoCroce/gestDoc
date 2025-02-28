@@ -1,6 +1,7 @@
 export * from './AlertDialog';
 export * from './Button';
 export * from './ConfirmWithPassword';
+export * from './DateRange';
 export * from './Input';
 export * from './Link';
 export * from './List';

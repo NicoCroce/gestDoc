@@ -24,7 +24,7 @@ export const Page = ({
   });
 
   return (
-    <div className="page p-4 grid grid-rows-[min-content_auto] grid-cols-1 gap-6 max-w-[100vw] bg-gray-50 md:p-6 md:pt-10">
+    <div className="page p-4 grid grid-rows-[min-content_auto] grid-cols-1 gap-6 max-w-[100vw] h-full bg-gray-50 md:p-6 md:pt-10">
       <Container row justify="between" align="center" className="md:pb-6">
         <Title variant="h1">{title}</Title>
         {headerRight && <>{headerRight}</>}

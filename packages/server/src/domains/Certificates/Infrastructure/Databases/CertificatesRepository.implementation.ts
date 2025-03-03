@@ -3,7 +3,10 @@ import {
   CertificateRepository,
   IGetCertificatesRepository,
 } from '../../Domain';
-import { IAddCertificateRepository } from '../../Domain/Certificate.respository';
+import {
+  IAddCertificateRepository,
+  IAppendImagesRepository,
+} from '../../Domain/Certificate.respository';
 import { CertificateTypes } from '../../Domain/CertificateTypes.entity';
 import { CertificateModel } from './Certificates.model';
 import { CertificatesTypesModel } from './CertificatesTypes.model';
@@ -11,6 +14,47 @@ import { CertificatesTypesModel } from './CertificatesTypes.model';
 export class CertificatesRepositoryImplementation
   implements CertificateRepository
 {
+  async appendImages({
+    requestContext: _,
+    certificateId,
+    files,
+  }: IAppendImagesRepository): Promise<Certificate> {
+    try {
+      const certificate = await CertificateModel.findByPk(certificateId);
+
+      if (!certificate) {
+        throw new Error('Certificate not found');
+      }
+
+      const updatedFiles = [...certificate.archivos, ...files];
+
+      await certificate.update({ archivos: updatedFiles });
+
+      const certificateType = await CertificatesTypesModel.findByPk(
+        certificate.id_tipo_certificado,
+      );
+
+      if (!certificateType) {
+        throw new Error('Certificate type not found');
+      }
+
+      return Certificate.create({
+        id: certificate.id,
+        startDate: certificate.fecha_inicio,
+        endDate: certificate.fecha_fin,
+        reason: certificate.motivo,
+        type: CertificateTypes.create({
+          id: certificateType.id,
+          name: certificateType.denominacion,
+        }),
+        files: updatedFiles,
+      });
+    } catch (error) {
+      console.error('Error appending images to certificate:', error);
+      throw new Error('Failed to append images to certificate');
+    }
+  }
+
   async getCertificates({
     requestContext,
   }: IGetCertificatesRepository): Promise<Certificate[]> {

@@ -5,14 +5,18 @@ import express, { Request, Express, Response } from 'express';
 import { initMiddlewares } from './Infrastructure/Middlewares';
 import { registerDomains } from './domains/register';
 import { InstanceMainRouter } from './Infrastructure/Routes/Router';
+import { initExpress } from './Infrastructure/Express/LoadFiles';
 
 const app: Express = express();
 const port = process.env.PORT || 5500;
 
-registerDomains();
+registerDomains(app);
 initMiddlewares(app);
 //** Routes */
 InstanceMainRouter(app);
+
+/** Express instance */
+initExpress(app);
 
 app.get('/', (_req: Request, res: Response) => {
   res.send('Express + TypeScript Server 😁');

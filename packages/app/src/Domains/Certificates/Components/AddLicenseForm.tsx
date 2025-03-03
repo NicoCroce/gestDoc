@@ -129,6 +129,7 @@ export const AddLicenseForm = () => {
                     <FormControl>
                       <Input
                         type="file"
+                        accept="image/*"
                         className="cursor-pointer"
                         {...field}
                       />

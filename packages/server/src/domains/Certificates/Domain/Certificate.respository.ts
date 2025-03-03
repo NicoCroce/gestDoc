@@ -7,6 +7,10 @@ export interface IAddCertificateRepository extends IRequestContext {
   certificate: Certificate;
 }
 
+export interface IAppendImagesRepository extends IRequestContext {
+  certificateId: number;
+  files: string[];
+}
 export interface CertificateRepository {
   getCertificates({
     requestContext,
@@ -18,4 +22,9 @@ export interface CertificateRepository {
     requestContext,
     certificate,
   }: IAddCertificateRepository): Promise<Certificate>;
+  appendImages({
+    requestContext,
+    certificateId,
+    files,
+  }: IAppendImagesRepository): Promise<Certificate>;
 }

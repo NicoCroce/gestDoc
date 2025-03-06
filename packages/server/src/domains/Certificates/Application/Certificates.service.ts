@@ -10,6 +10,7 @@ import {
   Certificate,
   GetCertificates,
   GetCertificateTypes,
+  IAppendImages,
   ICertificate,
   IGetCertificates,
   IGetCertificateTypes,
@@ -17,6 +18,7 @@ import {
 import { CertificateDTO, IGetCertificatesDTO } from './DTO/CertificateDTO';
 import { convertToDTO } from './digest';
 import { NextFunction, Request, Response } from 'express';
+import { AppendImages } from '../Domain/UseCases/AppendImages.usecases';
 
 interface IAddCertificateService extends IRequestContext {
   input: Omit<ICertificate, 'startDate' | 'endDate' | 'type'> & {
@@ -31,6 +33,7 @@ export class CertificatesServices {
     private readonly _getCertificates: GetCertificates,
     private readonly _getCertificateTypes: GetCertificateTypes,
     private readonly _addCertificate: AddCertificate,
+    private readonly _appendImages: AppendImages,
   ) {}
 
   async getCertificates({
@@ -82,35 +85,14 @@ export class CertificatesServices {
   }
 
   savefilesMiddleware(req: Request, res: Response, next: NextFunction) {
-    uploadImages(3).single('image')(req, res, next);
+    const userId = req.requestContext.values.userId;
+    uploadImages(userId).single('image')(req, res, next);
   }
 
-  saveFiles(req: Request, res: Response) {
-    const userId = 3;
-
-    try {
-      if (!req.file) {
-        return res
-          .status(400)
-          .json({ error: 'No se ha subido ningún archivo' });
-      }
-
-      console.log('Archivo recibido:', req.file);
-
-      // Construir URL para acceder al archivo
-      const fileUrl = `${req.protocol}://${req.get('host')}/uploads/${userId}/${req.file.filename}`;
-
-      return res.status(200).json({
-        success: true,
-        message: 'Imagen cargada correctamente',
-        fileData: req.file,
-        fileUrl,
-      });
-    } catch (error) {
-      console.error('Error al procesar el archivo:', error);
-      return res
-        .status(500)
-        .json({ error: 'Error al procesar la subida del archivo' });
-    }
+  async saveFiles({ input, requestContext }: IAppendImages) {
+    return await this._appendImages.execute({
+      input,
+      requestContext,
+    });
   }
 }

@@ -1,9 +1,7 @@
-// import { saveImagesController } from '../../certificates.app';
+import { saveImagesController } from '../../certificates.app';
 
 export const CertificatesRoutesExpress = () => {
-  //const { appendImages } = saveImagesController();
+  const { appendImages } = saveImagesController();
 
-  return {
-    certificates: {},
-  };
+  appendImages();
 };

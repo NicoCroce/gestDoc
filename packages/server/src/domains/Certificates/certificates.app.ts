@@ -7,6 +7,7 @@ import {
 } from './Infrastructure/Controllers';
 import { container } from '@server/utils/Container';
 import { CertificatesRepositoryImplementation } from './Infrastructure/Databases';
+import { AppendImages } from './Domain/UseCases/AppendImages.usecases';
 
 export const certificatesApp = {
   certificatesRepository: asClass(CertificatesRepositoryImplementation),
@@ -16,6 +17,7 @@ export const certificatesApp = {
   _getCertificates: asClass(GetCertificates),
   _getCertificateTypes: asClass(GetCertificateTypes),
   _addCertificate: asClass(AddCertificate),
+  _appendImages: asClass(AppendImages),
 };
 
 export const certificatesController = () =>

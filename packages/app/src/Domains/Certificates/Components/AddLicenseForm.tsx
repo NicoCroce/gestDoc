@@ -20,27 +20,29 @@ import { useGetCertificatesTypes } from '../Hooks';
 import { useNavigate } from 'react-router-dom';
 import { DateRange } from 'react-day-picker';
 import { Textarea } from '@app/Aplication/Components/ui/textarea';
+import { useAddLicense } from '../Hooks/useAddLicense';
+
+export const formSchemeAddLicense = z.object({
+  reason: z.string(),
+  type: z.string(),
+  startDate: z.date(),
+  endDate: z.date(),
+  files: z.any(),
+});
 
 export const AddLicenseForm = () => {
   const { data: dataTypes } = useGetCertificatesTypes();
   const navigate = useNavigate();
+  const { mutateAddLicence, isPendingAddLicense } = useAddLicense();
 
-  const formScheme = z.object({
-    reason: z.string(),
-    type: z.string(),
-    startDate: z.date(),
-    endDate: z.date(),
-    files: z.array(z.string()),
-  });
-
-  const formLicense = useForm<z.infer<typeof formScheme>>({
-    resolver: zodResolver(formScheme),
+  const formLicense = useForm<z.infer<typeof formSchemeAddLicense>>({
+    resolver: zodResolver(formSchemeAddLicense),
     defaultValues: {
       reason: '',
       type: '',
       startDate: new Date(),
       endDate: new Date(),
-      files: [],
+      files: undefined,
     },
   });
 
@@ -57,8 +59,9 @@ export const AddLicenseForm = () => {
     formLicense.setValue('type', value);
   };
 
-  const handleSubmit = (values: z.infer<typeof formScheme>) => {
+  const handleSubmit = (values: z.infer<typeof formSchemeAddLicense>) => {
     console.log(values);
+    mutateAddLicence(values);
   };
 
   const handleCancel = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
@@ -123,15 +126,17 @@ export const AddLicenseForm = () => {
               <FormField
                 name="files"
                 control={formLicense.control}
-                render={({ field }) => (
+                render={({ field: { value, onChange, ...fieldProps } }) => (
                   <FormItem>
                     <FormLabel>Cargue el archivo de la licencia</FormLabel>
                     <FormControl>
                       <Input
                         type="file"
                         accept="image/*"
+                        multiple
                         className="cursor-pointer"
-                        {...field}
+                        onChange={(e) => onChange(e.target.files)}
+                        {...fieldProps}
                       />
                     </FormControl>
                   </FormItem>
@@ -140,10 +145,18 @@ export const AddLicenseForm = () => {
             )}
 
             <Container row justify="end">
-              <Button appearance="cancel" onClick={handleCancel}>
+              <Button
+                appearance="cancel"
+                onClick={handleCancel}
+                disabled={isPendingAddLicense}
+              >
                 Cancelar
               </Button>
-              <Button type="submit" appearance="save" />
+              <Button
+                type="submit"
+                appearance="save"
+                disabled={isPendingAddLicense}
+              />
             </Container>
           </Container>
         </form>

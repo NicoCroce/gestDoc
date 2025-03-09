@@ -32,7 +32,7 @@ export interface ICertificate {
   endDate: Date;
   reason: string;
   type: CertificateTypes;
-  files: string[];
+  files?: string[];
 }
 
 export interface ICertificateTypes {

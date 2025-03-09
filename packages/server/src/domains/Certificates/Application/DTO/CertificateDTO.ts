@@ -4,7 +4,7 @@ export interface CertificateDTO {
   endDate: string;
   reason: string;
   type: string;
-  files: string[];
+  files?: string[];
 }
 
 export interface IGetCertificatesDTO {

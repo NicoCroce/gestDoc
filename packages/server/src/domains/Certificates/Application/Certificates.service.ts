@@ -11,7 +11,6 @@ import {
   GetCertificates,
   GetCertificateTypes,
   IAppendImages,
-  ICertificate,
   IGetCertificates,
   IGetCertificateTypes,
 } from '../Domain';
@@ -21,10 +20,11 @@ import { NextFunction, Request, Response } from 'express';
 import { AppendImages } from '../Domain/UseCases/AppendImages.usecases';
 
 interface IAddCertificateService extends IRequestContext {
-  input: Omit<ICertificate, 'startDate' | 'endDate' | 'type'> & {
+  input: {
     startDate: string;
     endDate: string;
     type: number;
+    reason: string;
   };
 }
 

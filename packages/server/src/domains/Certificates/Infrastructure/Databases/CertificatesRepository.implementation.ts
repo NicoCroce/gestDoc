@@ -100,24 +100,17 @@ export class CertificatesRepositoryImplementation
     requestContext,
     certificate,
   }: IAddCertificateRepository): Promise<Certificate> {
-    const { startDate, endDate, type, reason, files } = certificate.values;
+    const { startDate, endDate, type, reason } = certificate.values;
 
     try {
-      const {
-        id,
-        fecha_inicio,
-        fecha_fin,
-        motivo,
-        archivos,
-        id_tipo_certificado,
-      } = await CertificateModel.create({
-        fecha_inicio: startDate,
-        fecha_fin: endDate,
-        motivo: reason,
-        id_tipo_certificado: type.values.id,
-        archivos: files,
-        id_usuario: requestContext.values.userId,
-      });
+      const { id, fecha_inicio, fecha_fin, motivo, id_tipo_certificado } =
+        await CertificateModel.create({
+          fecha_inicio: startDate,
+          fecha_fin: endDate,
+          motivo: reason,
+          id_tipo_certificado: type.values.id,
+          id_usuario: requestContext.values.userId,
+        });
 
       const certificateType =
         await CertificatesTypesModel.findByPk(id_tipo_certificado);
@@ -135,7 +128,6 @@ export class CertificatesRepositoryImplementation
           id: certificateType.id,
           name: certificateType.denominacion,
         }),
-        files: archivos,
       });
     } catch (error) {
       console.error('Error inserting certificate:', error);

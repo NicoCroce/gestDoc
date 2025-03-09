@@ -20,7 +20,7 @@ export class CertificateModel extends Model<
 
   declare motivo: string;
   declare id_tipo_certificado: number;
-  declare archivos: string[];
+  declare archivos: CreationOptional<string[]>;
 
   // Timestamps
   declare readonly createdAt: CreationOptional<Date>;
@@ -62,7 +62,7 @@ CertificateModel.init(
     },
     archivos: {
       type: DataTypes.JSON,
-      allowNull: false,
+      allowNull: true,
     },
 
     createdAt: DataTypes.DATE,

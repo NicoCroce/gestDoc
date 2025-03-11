@@ -18,12 +18,8 @@ export interface IAppendImages extends IRequestContext {
     file?: Express.Multer.File;
     protocol: string;
     host: string;
+    id: number;
   };
-}
-export interface IAppendImagesResponse {
-  message: string;
-  fileData: Express.Multer.File;
-  fileUrl: string;
 }
 
 export interface ICertificate {

@@ -2,7 +2,7 @@ import { getDateString } from '@server/Application';
 import { Certificate } from '../Domain';
 
 export const convertToDTO = (certificate: Certificate) => {
-  const { id, startDate, endDate, type, reason } = certificate.values;
+  const { id, startDate, endDate, type, reason, files } = certificate.values;
 
   return {
     id: id!,
@@ -10,5 +10,6 @@ export const convertToDTO = (certificate: Certificate) => {
     endDate: getDateString(endDate),
     reason,
     type: type.values.name!,
+    files,
   };
 };

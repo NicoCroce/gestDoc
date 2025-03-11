@@ -6,6 +6,6 @@ export const MenuCertificates = () => (
   <MenuItem
     to={CERTIFICATES_ROUTES}
     icon={faFileContract}
-    text="Mis Certificados"
+    text="Mis Licencias"
   />
 );

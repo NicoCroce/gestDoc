@@ -86,7 +86,7 @@ export class CertificatesServices {
 
   savefilesMiddleware(req: Request, res: Response, next: NextFunction) {
     const userId = req.requestContext.values.userId;
-    uploadImages(userId).single('image')(req, res, next);
+    uploadImages(userId)(req, res, next);
   }
 
   async saveFiles({ input, requestContext }: IAppendImages) {

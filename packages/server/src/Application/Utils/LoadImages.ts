@@ -1,4 +1,4 @@
-import { Request } from 'express';
+import { Request, RequestHandler } from 'express';
 
 import fs from 'fs';
 import multer from 'multer';
@@ -34,9 +34,9 @@ const fileFilter = (
   }
 };
 
-export const uploadImages = (userId: number) =>
+export const uploadImages = (userId: number): RequestHandler =>
   multer({
     storage: storage(userId),
     fileFilter,
     limits: { fileSize: 5 * 1024 * 1024 }, // 5MB
-  });
+  }).single('file');

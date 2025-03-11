@@ -26,7 +26,7 @@ export class CertificatesRepositoryImplementation
         throw new Error('Certificate not found');
       }
 
-      const updatedFiles = [...certificate.archivos, ...files];
+      const updatedFiles = [...(certificate.archivos || []), ...files];
 
       await certificate.update({ archivos: updatedFiles });
 

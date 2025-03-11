@@ -13,7 +13,7 @@ export class SaveImagesController {
 
   appendImages = () =>
     this.app.post(
-      '/express/load',
+      '/express/load/:id',
       authMiddleware,
       this.certificatesService.savefilesMiddleware,
       async (req: Request, res: Response) => {
@@ -21,6 +21,7 @@ export class SaveImagesController {
           file: req.file,
           host: req.get('host')!,
           protocol: req.protocol,
+          id: Number(req.params.id),
         };
 
         try {

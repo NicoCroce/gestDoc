@@ -11,7 +11,7 @@ export const CertificateListPage = () => {
   console.log(data);
 
   return (
-    <Page title="Certificados" headerRight={<NewLicenseButton />}>
+    <Page title="Licencias" headerRight={<NewLicenseButton />}>
       {data &&
         Object.entries(data).map(([year, certificates]) => (
           <Container key={uuidv4()} space="large">

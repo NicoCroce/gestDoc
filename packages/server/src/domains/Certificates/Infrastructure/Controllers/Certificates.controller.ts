@@ -27,7 +27,6 @@ export class CertificatesController {
         endDate: z.string(),
         reason: z.string(),
         type: z.number(),
-        files: z.array(z.string()),
       }),
     )
     .mutation(

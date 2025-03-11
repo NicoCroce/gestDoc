@@ -3,24 +3,28 @@ import {
   executeUseCase,
   IRequestContext,
   normalizeDate,
+  uploadImages,
 } from '@server/Application';
 import {
   AddCertificate,
   Certificate,
   GetCertificates,
   GetCertificateTypes,
-  ICertificate,
+  IAppendImages,
   IGetCertificates,
   IGetCertificateTypes,
 } from '../Domain';
 import { CertificateDTO, IGetCertificatesDTO } from './DTO/CertificateDTO';
 import { convertToDTO } from './digest';
+import { NextFunction, Request, Response } from 'express';
+import { AppendImages } from '../Domain/UseCases/AppendImages.usecases';
 
 interface IAddCertificateService extends IRequestContext {
-  input: Omit<ICertificate, 'startDate' | 'endDate' | 'type'> & {
+  input: {
     startDate: string;
     endDate: string;
     type: number;
+    reason: string;
   };
 }
 
@@ -29,6 +33,7 @@ export class CertificatesServices {
     private readonly _getCertificates: GetCertificates,
     private readonly _getCertificateTypes: GetCertificateTypes,
     private readonly _addCertificate: AddCertificate,
+    private readonly _appendImages: AppendImages,
   ) {}
 
   async getCertificates({
@@ -77,5 +82,17 @@ export class CertificatesServices {
     } catch {
       throw new AppError('Error en las fechas');
     }
+  }
+
+  savefilesMiddleware(req: Request, res: Response, next: NextFunction) {
+    const userId = req.requestContext.values.userId;
+    uploadImages(userId)(req, res, next);
+  }
+
+  async saveFiles({ input, requestContext }: IAppendImages) {
+    return await this._appendImages.execute({
+      input,
+      requestContext,
+    });
   }
 }

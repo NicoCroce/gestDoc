@@ -7,7 +7,7 @@ export class Certificate {
     private readonly _endDate: Date,
     private readonly _reason: string,
     private readonly _type: CertificateTypes,
-    private readonly _files: string[],
+    private readonly _files?: string[],
     private readonly _id?: number,
   ) {}
 

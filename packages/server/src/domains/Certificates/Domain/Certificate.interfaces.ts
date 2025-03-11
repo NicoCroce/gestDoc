@@ -13,13 +13,22 @@ export interface IGetCertificatesResponse {
   [key: number]: Certificate[];
 }
 
+export interface IAppendImages extends IRequestContext {
+  input: {
+    file?: Express.Multer.File;
+    protocol: string;
+    host: string;
+    id: number;
+  };
+}
+
 export interface ICertificate {
   id?: number;
   startDate: Date;
   endDate: Date;
   reason: string;
   type: CertificateTypes;
-  files: string[];
+  files?: string[];
 }
 
 export interface ICertificateTypes {

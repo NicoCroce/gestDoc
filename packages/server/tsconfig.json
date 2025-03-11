@@ -24,11 +24,14 @@
     },
     "typeRoots": ["./node_modules/@types"]
   },
+  "files": [
+    "src/Types/express.d.ts" // Incluye explícitamente el archivo
+  ],
   "ts-node": {
     "esm": true,
     "compiler": "typescript",
     "experimentalSpecifierResolution": "node"
   },
-  "include": ["src/**/*"],
+  "include": ["src/**/*", "src/**/*.d.ts"], // Esto incluirá archivos de declaración como express.d.ts,
   "exclude": ["node_modules", "dist"]
 }

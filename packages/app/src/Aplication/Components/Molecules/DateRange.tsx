@@ -1,6 +1,6 @@
 'use client';
 
-import * as React from 'react';
+import { useState } from 'react';
 import { format } from 'date-fns';
 import { CalendarIcon } from 'lucide-react';
 import { DateRange } from 'react-day-picker';
@@ -20,24 +20,27 @@ interface DatePickerWithRangeProps
 export const DatePickerWithRange = ({
   onChangeDate,
 }: DatePickerWithRangeProps) => {
-  const [date, setDate] = React.useState<DateRange | undefined>({
+  const [date, setDate] = useState<DateRange | undefined>({
     from: undefined,
     to: undefined,
   });
 
+  const [isPopoverOpen, setIsPopoverOpen] = useState(false);
+
   const saveDate = () => {
-    return onChangeDate(date!);
+    onChangeDate(date!);
+    setIsPopoverOpen(false); // Cierra el Popover
   };
 
   return (
     <div className={cn('grid gap-2')}>
-      <Popover>
+      <Popover open={isPopoverOpen} onOpenChange={setIsPopoverOpen}>
         <PopoverTrigger asChild>
           <ButtonLib
             id="date"
             variant={'outline'}
             className={cn(
-              'w-[300px] justify-start text-left font-normal',
+              'w-full justify-start text-left font-normal',
               !date && 'text-muted-foreground',
             )}
           >
@@ -68,7 +71,10 @@ export const DatePickerWithRange = ({
             numberOfMonths={2}
           />
           <Container row align="center" justify="end" className="m-4">
-            <Button appearance="cancel" />
+            <Button
+              appearance="cancel"
+              onClick={() => setIsPopoverOpen(false)}
+            />
             <Button appearance="accept" onClick={saveDate} />
           </Container>
         </PopoverContent>

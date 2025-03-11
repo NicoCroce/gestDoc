@@ -6,6 +6,7 @@ import { PermissionsRoutes } from '@server/domains/Permissions';
 import { DocumentsRoutes } from '@server/domains/Documents';
 import { DocumentsTypesRoutes } from '@server/domains/DocumentsTypes';
 import { CertificatesRoutes } from '@server/domains/Certificates/Infrastructure/Routes';
+import { CertificatesRoutesExpress } from '@server/domains/Certificates/Infrastructure/Routes/CertificatesRoutesExpress';
 
 const MainRouter = () => {
   const AllRouters = {
@@ -18,6 +19,8 @@ const MainRouter = () => {
   };
   return router(AllRouters);
 };
+
+setTimeout(CertificatesRoutesExpress, 0);
 
 const InstanceMainRouter = (app: Express) => {
   app.use(

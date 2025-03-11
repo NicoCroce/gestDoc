@@ -7,7 +7,7 @@ export const NewLicenseButton = () => {
   return (
     <Link to={CERTIFICATES_ROUTES_ADD}>
       <Button showIcon icon={faAdd}>
-        Cargar certificado
+        Cargar licencia
       </Button>
     </Link>
   );

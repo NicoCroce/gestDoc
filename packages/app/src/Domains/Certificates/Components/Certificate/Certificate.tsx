@@ -20,21 +20,25 @@ export const Certificate = ({ data }: CertificateProps) => {
         <Container row justify="between">
           <Badge className="uppercase">{type}</Badge>
           <Badge variant="secondary">
-            <Container row>
-              <span>{startDate}</span>
-              <span>-</span>
-              <span>{endDate}</span>
+            <Container row space="none">
+              <span className="max-w-[90px] text-ellipsis overflow-hidden whitespace-nowrap">
+                {startDate}
+              </span>
+              <span className="px-1">-</span>
+              <span className="max-w-[90px] text-ellipsis overflow-hidden whitespace-nowrap">
+                {endDate}
+              </span>
             </Container>
           </Badge>
         </Container>
         <Text.Small>{reason}</Text.Small>
       </Container>
-      <Container>
-        {files.map((file) => (
-          <Container
-            key={file}
-            className="grid gap-2 grid-cols-[repeat(auto-fit,minmax(100px,1fr))]"
-          >
+      <Container
+        className="grid grid-cols-[repeat(auto-fit,minmax(50px,1fr))] overflow-hidden max-h-20"
+        space="small"
+      >
+        {files?.map((file) => (
+          <Container key={file}>
             <button className="certificate">
               <img className="transition-all" src={file} />
             </button>

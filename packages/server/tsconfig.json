@@ -22,10 +22,13 @@
     "paths": {
       "@server/*": ["src/*"]
     },
-    "typeRoots": ["./node_modules/@types"]
+    "typeRoots": [
+      "./node_modules/@types",
+      "./src/types" // Cambio de "Types" a "types" (minúsculas)
+    ]
   },
   "files": [
-    "src/Types/express.d.ts" // Incluye explícitamente el archivo
+    "src/types/express/index.d.ts" // Incluye explícitamente el archivo
   ],
   "ts-node": {
     "esm": true,

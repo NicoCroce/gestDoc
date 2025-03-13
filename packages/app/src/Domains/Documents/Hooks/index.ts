@@ -1,7 +1,6 @@
 export * from './useCacheDocuments';
 export * from './useGetDocument';
 export * from './useGetDocuments';
-export * from './useGetDocumentsByCompany';
 export * from './useGetDocumentsTypes';
 export * from './useGetFiltersSetted';
 export * from './useGetStatisticsDocuments';

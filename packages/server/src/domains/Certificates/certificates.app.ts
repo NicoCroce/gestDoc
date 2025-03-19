@@ -1,6 +1,11 @@
 import { asClass } from 'awilix';
 import { CertificatesServices } from './Application';
-import { AddCertificate, GetCertificates, GetCertificateTypes } from './Domain';
+import {
+  AddCertificate,
+  GetCertificates,
+  GetCertificatesByCompany,
+  GetCertificateTypes,
+} from './Domain';
 import {
   CertificatesController,
   SaveImagesController,
@@ -18,6 +23,7 @@ export const certificatesApp = {
   _getCertificateTypes: asClass(GetCertificateTypes),
   _addCertificate: asClass(AddCertificate),
   _appendImages: asClass(AppendImages),
+  _getCertificatesByCompany: asClass(GetCertificatesByCompany),
 };
 
 export const certificatesController = () =>

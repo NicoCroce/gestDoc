@@ -1,3 +1,4 @@
+import { UserModel } from '@server/domains/Users';
 import {
   Certificate,
   CertificateRepository,
@@ -6,6 +7,7 @@ import {
 import {
   IAddCertificateRepository,
   IAppendImagesRepository,
+  IGetAllCompanyCertificatesRepositoryResponse,
 } from '../../Domain/Certificate.respository';
 import { CertificateTypes } from '../../Domain/CertificateTypes.entity';
 import { CertificateModel } from './Certificates.model';
@@ -80,6 +82,57 @@ export class CertificatesRepositoryImplementation
         files: certificate.archivos,
       }),
     );
+  }
+
+  async getAllCompanyCertificates({
+    requestContext,
+  }: IGetCertificatesRepository): Promise<
+    IGetAllCompanyCertificatesRepositoryResponse[]
+  > {
+    const certificates = await CertificateModel.findAll({
+      include: [
+        {
+          model: UserModel,
+          as: 'User',
+          where: { id_propietario: requestContext.values.ownerId },
+          attributes: ['id', 'nombre', 'apellido'], // Atributos necesarios para la agrupación y ordenación
+        },
+        {
+          model: CertificatesTypesModel,
+        },
+      ],
+      order: [
+        [{ model: UserModel, as: 'User' }, 'nombre', 'ASC'],
+        [{ model: UserModel, as: 'User' }, 'apellido', 'ASC'],
+      ],
+    });
+
+    return certificates.map((certificate) => {
+      const {
+        id,
+        fecha_inicio,
+        fecha_fin,
+        motivo,
+        archivos,
+        id_usuario,
+        CertificatesTypesModel,
+        User,
+      } = certificate;
+
+      return {
+        id,
+        startDate: fecha_inicio,
+        endDate: fecha_fin,
+        reason: motivo,
+        type: CertificateTypes.create({
+          id: CertificatesTypesModel.id,
+          name: CertificatesTypesModel.denominacion,
+        }),
+        files: archivos,
+        userId: id_usuario,
+        userName: `${User.nombre} ${User.apellido}`,
+      };
+    });
   }
 
   async getCertificatesTypes({

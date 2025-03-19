@@ -9,12 +9,19 @@ import {
   AddCertificate,
   Certificate,
   GetCertificates,
+  GetCertificatesByCompany,
   GetCertificateTypes,
   IAppendImages,
   IGetCertificates,
+  IGetCertificatesByCompanyResponse,
+  IGetCertificatesCompany,
   IGetCertificateTypes,
 } from '../Domain';
-import { CertificateDTO, IGetCertificatesDTO } from './DTO/CertificateDTO';
+import {
+  CertificateDTO,
+  IGetCertificatesByCompanyDTO,
+  IGetCertificatesDTO,
+} from './DTO/CertificateDTO';
 import { convertToDTO } from './digest';
 import { NextFunction, Request, Response } from 'express';
 import { AppendImages } from '../Domain/UseCases/AppendImages.usecases';
@@ -34,6 +41,7 @@ export class CertificatesServices {
     private readonly _getCertificateTypes: GetCertificateTypes,
     private readonly _addCertificate: AddCertificate,
     private readonly _appendImages: AppendImages,
+    private readonly _getCertificatesByCompany: GetCertificatesByCompany,
   ) {}
 
   async getCertificates({
@@ -94,5 +102,24 @@ export class CertificatesServices {
       input,
       requestContext,
     });
+  }
+
+  async getCertificatesByCompany({ requestContext }: IGetCertificatesCompany) {
+    const certificates: IGetCertificatesByCompanyResponse =
+      await this._getCertificatesByCompany.execute({
+        requestContext,
+      });
+
+    // Convierte la respuesta del caso de uso en un objeto más simple.
+    return Object.entries(certificates).reduce((response, [userId, list]) => {
+      response[Number(userId)] = {
+        user: list.user,
+        certificates: list.certificates.map((certificate: Certificate) =>
+          convertToDTO(certificate),
+        ),
+      };
+
+      return response;
+    }, {} as IGetCertificatesByCompanyDTO);
   }
 }

@@ -34,4 +34,12 @@ export class CertificatesController {
         this.certificatesService.addCertificate.bind(this.certificatesService),
       ),
     );
+
+  getCertificatesByCompany = protectedProcedure.query(
+    executeService(
+      this.certificatesService.getCertificatesByCompany.bind(
+        this.certificatesService,
+      ),
+    ),
+  );
 }

@@ -3,6 +3,7 @@ import { Certificate } from './Certificate.entity';
 import { CertificateTypes } from './CertificateTypes.entity';
 
 export interface IGetCertificates extends IRequestContext {}
+export interface IGetCertificatesCompany extends IRequestContext {}
 export interface IGetCertificateTypes extends IRequestContext {}
 export interface IAddCertificate extends IRequestContext {
   input: Omit<ICertificate, 'id' | 'type'> & { type: number };
@@ -11,6 +12,13 @@ export interface IAddCertificate extends IRequestContext {
 // Retorna un array ordenado por año, es decir que unifica todas las licencias de ese año en una key.
 export interface IGetCertificatesResponse {
   [key: number]: Certificate[];
+}
+
+export interface IGetCertificatesByCompanyResponse {
+  [userId: number]: {
+    user: string;
+    certificates: Certificate[];
+  };
 }
 
 export interface IAppendImages extends IRequestContext {
@@ -29,6 +37,7 @@ export interface ICertificate {
   reason: string;
   type: CertificateTypes;
   files?: string[];
+  userId?: number;
 }
 
 export interface ICertificateTypes {

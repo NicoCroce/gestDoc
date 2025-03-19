@@ -9,14 +9,31 @@ export class Certificate {
     private readonly _type: CertificateTypes,
     private readonly _files?: string[],
     private readonly _id?: number,
+    private readonly _userId?: number,
   ) {}
 
-  static create({ id, startDate, endDate, reason, type, files }: ICertificate) {
+  static create({
+    id,
+    startDate,
+    endDate,
+    reason,
+    type,
+    files,
+    userId,
+  }: ICertificate) {
     const typeInstance = CertificateTypes.create({
-      id: type.values.id,
+      id: type?.values.id,
       name: type.values.name,
     });
-    return new Certificate(startDate, endDate, reason, typeInstance, files, id);
+    return new Certificate(
+      startDate,
+      endDate,
+      reason,
+      typeInstance,
+      files,
+      id,
+      userId,
+    );
   }
 
   toJSON() {
@@ -32,6 +49,10 @@ export class Certificate {
       type: this._type,
       files: this._files,
     };
+  }
+
+  get userId() {
+    return this._userId;
   }
 
   get type() {

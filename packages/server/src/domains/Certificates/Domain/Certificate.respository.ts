@@ -1,6 +1,7 @@
 import { IRequestContext } from '@server/Application';
 import { Certificate } from './Certificate.entity';
 import { CertificateTypes } from './CertificateTypes.entity';
+import { ICertificate } from './Certificate.interfaces';
 
 export interface IGetCertificatesRepository extends IRequestContext {}
 export interface IAddCertificateRepository extends IRequestContext {
@@ -11,6 +12,13 @@ export interface IAppendImagesRepository extends IRequestContext {
   certificateId: number;
   files: string[];
 }
+
+export interface IGetAllCompanyCertificatesRepository extends IRequestContext {}
+export interface IGetAllCompanyCertificatesRepositoryResponse
+  extends ICertificate {
+  userName: string;
+}
+
 export interface CertificateRepository {
   getCertificates({
     requestContext,
@@ -27,4 +35,9 @@ export interface CertificateRepository {
     certificateId,
     files,
   }: IAppendImagesRepository): Promise<Certificate>;
+  getAllCompanyCertificates({
+    requestContext,
+  }: IGetAllCompanyCertificatesRepository): Promise<
+    IGetAllCompanyCertificatesRepositoryResponse[]
+  >;
 }

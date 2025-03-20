@@ -1,4 +1,4 @@
-import { Container, Page, Text } from '@app/Aplication';
+import { Container, Page, Title } from '@app/Aplication';
 import { CertificatesGrid } from '../Components/CertificatesGrid';
 
 import { v4 as uuidv4 } from 'uuid';
@@ -15,8 +15,12 @@ export const CertificateListPage = () => {
       {data &&
         Object.entries(data).map(([year, certificates]) => (
           <Container key={uuidv4()} space="large">
-            <Text.Lead>Certificados correspondientes al año {year}</Text.Lead>
-            <CertificatesGrid certificatesList={certificates} />
+            <Title variant="h4">
+              Certificados correspondientes al año {year}
+            </Title>
+            <Container block className="md:mx-14">
+              <CertificatesGrid certificatesList={certificates} />
+            </Container>
           </Container>
         ))}
     </Page>

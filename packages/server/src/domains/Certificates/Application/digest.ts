@@ -9,7 +9,7 @@ export const convertToDTO = (certificate: Certificate) => {
     startDate: getDateString(startDate),
     endDate: getDateString(endDate),
     reason,
-    type: type.values.name!,
+    type: type.values.name || '',
     files,
   };
 };

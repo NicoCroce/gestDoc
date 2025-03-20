@@ -104,7 +104,9 @@ export class CertificatesServices {
     });
   }
 
-  async getCertificatesByCompany({ requestContext }: IGetCertificatesCompany) {
+  async getCertificatesByCompany({
+    requestContext,
+  }: IGetCertificatesCompany): Promise<IGetCertificatesByCompanyDTO> {
     const certificates: IGetCertificatesByCompanyResponse =
       await this._getCertificatesByCompany.execute({
         requestContext,

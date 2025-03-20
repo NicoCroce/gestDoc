@@ -1,4 +1,4 @@
-import { Certificate } from '../../Domain';
+import { ICertificate } from '../../Domain';
 
 export interface CertificateDTO {
   id: number;
@@ -16,6 +16,9 @@ export interface IGetCertificatesDTO {
 export interface IGetCertificatesByCompanyDTO {
   [userId: number]: {
     user: string;
-    certificates: (Omit<Certificate, 'type'> & { type: string })[];
+    certificates: (Omit<ICertificate, 'type' | 'id'> & {
+      type: string;
+      id: number;
+    })[];
   };
 }

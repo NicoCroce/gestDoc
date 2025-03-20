@@ -20,8 +20,9 @@ import { DocumentsList } from './DocumentsList';
 import { useViewDocument } from '../../Hooks/useViewDocument';
 import { useGetDocumentsTypes } from '../../Hooks/useGetDocumentsTypes';
 import { TuseGetDocuments } from '../../Hooks';
-import { TuseGetDocumentsByCompany } from '../../Hooks/useGetDocumentsByCompany';
+
 import { DocumentsListByUser } from './DocumentsListByUser';
+import { TuseGetDocumentsByCompany } from '@app/Domains/Admin/Hooks';
 
 interface DocumentsListWrapperProps {
   service: TuseGetDocuments | TuseGetDocumentsByCompany;

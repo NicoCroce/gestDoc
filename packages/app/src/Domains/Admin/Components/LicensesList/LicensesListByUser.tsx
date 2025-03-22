@@ -1,4 +1,4 @@
-import { Container, List, Text } from '@app/Aplication';
+import { Container, List, Text, Title } from '@app/Aplication';
 import { ScrollArea } from '@app/Aplication/Components/ui/scroll-area';
 import { Skeleton } from '@app/Aplication/Components/ui/skeleton';
 
@@ -10,6 +10,7 @@ import {
 } from '@app/Aplication/Components/ui/accordion';
 import { TuseGetCertificatesByCompany } from '../../Hooks';
 import { Certificate } from '@app/Domains/Certificates/Components';
+import { uuid } from '@app/Aplication/Helpers/uuid';
 
 const SkeletonLoader = () => (
   <Container space="small">
@@ -48,15 +49,25 @@ export const LicensesListByUser = ({ service }: DocumentsListProps) => {
                         </AccordionTrigger>
                       </Container>
                       <AccordionContent>
-                        <Container className="grid gap-2 grid-cols-[repeat(auto-fit,minmax(200px,420px))] justify-center">
-                          {certificates.map((certificate) => {
-                            return (
-                              <Container block key={certificate.id}>
-                                <Certificate data={certificate} />
+                        {Object.entries(certificates).map(
+                          ([year, certificatesForYear]) => (
+                            <Container
+                              key={uuid()}
+                              className="[&:not(:first-child)]:mt-8"
+                            >
+                              <Title variant="h3">
+                                Licencias correspondientes al año {year}
+                              </Title>
+                              <Container className="grid gap-2 grid-cols-[repeat(auto-fit,minmax(200px,420px))] md:mx-14">
+                                {certificatesForYear.map((cert) => (
+                                  <Container block key={cert.id}>
+                                    <Certificate data={cert} />
+                                  </Container>
+                                ))}
                               </Container>
-                            );
-                          })}
-                        </Container>
+                            </Container>
+                          ),
+                        )}
                       </AccordionContent>
                     </AccordionItem>
                   </Accordion>

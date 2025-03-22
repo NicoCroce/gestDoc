@@ -17,7 +17,9 @@ export interface IGetCertificatesResponse {
 export interface IGetCertificatesByCompanyResponse {
   [userId: number]: {
     user: string;
-    certificates: Certificate[];
+    certificates: {
+      [year: number]: Certificate[];
+    };
   };
 }
 

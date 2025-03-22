@@ -23,44 +23,55 @@ export class GetCertificatesByCompany
       throw new AppError('Error al obtener los documentos');
     }
 
-    const certificatesByUser = certificates.reduce(
-      (res: IGetCertificatesByCompanyResponse, cert) => {
-        const {
-          userId,
-          id,
-          endDate,
-          reason,
-          startDate,
-          type,
-          userName,
-          files,
-        } = cert;
-        if (!userId) return res;
-
-        if (!res[userId]) {
-          res[userId] = {
-            user: userName,
-            certificates: [],
-          };
-        }
-
-        res[userId].certificates.push(
-          Certificate.create({
+    try {
+      const certificatesByUser = certificates.reduce(
+        (res: IGetCertificatesByCompanyResponse, cert) => {
+          const {
+            userId,
             id,
-            startDate,
             endDate,
             reason,
+            startDate,
             type,
-            userId,
+            userName,
             files,
-          }),
-        );
+          } = cert;
+          if (!userId) return res;
 
-        return res;
-      },
-      {},
-    );
+          const year = new Date(startDate).getFullYear();
 
-    return certificatesByUser;
+          if (!res[userId]) {
+            res[userId] = {
+              user: userName,
+              certificates: {
+                [year]: [],
+              },
+            };
+          }
+
+          if (!res[userId].certificates[year])
+            res[userId].certificates[year] = [];
+
+          res[userId].certificates[year].push(
+            Certificate.create({
+              id,
+              startDate,
+              endDate,
+              reason,
+              type,
+              userId,
+              files,
+            }),
+          );
+
+          return res;
+        },
+        {},
+      );
+
+      return certificatesByUser;
+    } catch (err) {
+      throw new AppError(`Error al obtener licencias: ${err}`);
+    }
   }
 }

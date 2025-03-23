@@ -45,10 +45,12 @@ export class CertificatesServices {
   ) {}
 
   async getCertificates({
+    input,
     requestContext,
   }: IGetCertificates): Promise<IGetCertificatesDTO> {
     const certificates = await executeUseCase({
       useCase: this._getCertificates,
+      input,
       requestContext,
     });
 

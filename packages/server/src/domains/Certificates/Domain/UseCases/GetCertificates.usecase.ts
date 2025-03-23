@@ -9,9 +9,11 @@ export class GetCertificates implements IUseCase<IGetCertificatesResponse> {
   constructor(private readonly certificatesRepository: CertificateRepository) {}
 
   async execute({
+    input: filters,
     requestContext,
   }: IGetCertificates): Promise<IGetCertificatesResponse> {
     const certificates = await this.certificatesRepository.getCertificates({
+      filters,
       requestContext,
     });
 

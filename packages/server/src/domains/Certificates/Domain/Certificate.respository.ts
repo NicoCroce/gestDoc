@@ -3,7 +3,13 @@ import { Certificate } from './Certificate.entity';
 import { CertificateTypes } from './CertificateTypes.entity';
 import { ICertificate } from './Certificate.interfaces';
 
-export interface IGetCertificatesRepository extends IRequestContext {}
+export interface IGetCertificatesRepository extends IRequestContext {
+  filters?: {
+    employee?: string;
+    date?: Date;
+    type?: number;
+  };
+}
 export interface IAddCertificateRepository extends IRequestContext {
   certificate: Certificate;
 }
@@ -21,6 +27,7 @@ export interface IGetAllCompanyCertificatesRepositoryResponse
 
 export interface CertificateRepository {
   getCertificates({
+    filters,
     requestContext,
   }: IGetCertificatesRepository): Promise<Certificate[]>;
   getCertificatesTypes({

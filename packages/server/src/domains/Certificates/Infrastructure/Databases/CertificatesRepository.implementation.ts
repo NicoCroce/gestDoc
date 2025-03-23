@@ -12,6 +12,7 @@ import {
 import { CertificateTypes } from '../../Domain/CertificateTypes.entity';
 import { CertificateModel } from './Certificates.model';
 import { CertificatesTypesModel } from './CertificatesTypes.model';
+import { CertificatesFilters } from './CertificatesFilters';
 
 export class CertificatesRepositoryImplementation
   implements CertificateRepository
@@ -58,13 +59,24 @@ export class CertificatesRepositoryImplementation
   }
 
   async getCertificates({
+    filters,
     requestContext,
   }: IGetCertificatesRepository): Promise<Certificate[]> {
+    const { whereConditionUsers, whereConditionCertificates } =
+      CertificatesFilters(filters);
     const certificates = await CertificateModel.findAll({
-      where: { id_usuario: requestContext.values.userId },
+      where: {
+        id_usuario: requestContext.values.userId,
+        ...whereConditionCertificates,
+      },
       include: [
         {
           model: CertificatesTypesModel,
+        },
+        {
+          model: UserModel,
+          as: 'User',
+          where: whereConditionUsers,
         },
       ],
     });

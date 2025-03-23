@@ -17,7 +17,6 @@ import {
   TStateDocument,
 } from '../../Document.entity';
 import { DOCUMENTS_ROUTE } from '../../Documents.routes';
-import { useGetFiltersSetted } from '../../Hooks/useGetFiltersSetted';
 import { DocumentsList } from './DocumentsList';
 import { useViewDocument } from '../../Hooks/useViewDocument';
 import { useGetDocumentsTypes } from '../../Hooks/useGetDocumentsTypes';
@@ -43,7 +42,6 @@ export const DocumentsListWrapper = ({
   );
 
   const [filtersIsOpen, setFiltersIsOpen] = useState(false);
-  const hasFilters = useGetFiltersSetted();
   useViewDocument();
   useGetDocumentsTypes();
 
@@ -79,7 +77,10 @@ export const DocumentsListWrapper = ({
               Validados
             </TabsTrigger>
           </TabsList>
-          <FilterButton onClick={handleFilters} hasFilters={hasFilters} />
+          <FilterButton
+            onClick={handleFilters}
+            ignoreParams={['id', 'state']}
+          />
         </Container>
         {segmented ? (
           <DocumentsListByUser
@@ -97,7 +98,6 @@ export const DocumentsListWrapper = ({
         open={filtersIsOpen}
         closeSheet={handleFilters}
         title="Filtros de Documentos"
-        description="Puedes filtrar los documentos por los siguientes parámetros"
       >
         {<FiltersDocumentsForm />}
       </FiltersSheet>

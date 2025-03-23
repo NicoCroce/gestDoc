@@ -1,4 +1,9 @@
-import { Button, Container, useURLParams } from '@app/Aplication';
+import {
+  Container,
+  FilterButton,
+  FiltersSheet,
+  useURLParams,
+} from '@app/Aplication';
 import {
   Tabs,
   TabsList,
@@ -11,10 +16,7 @@ import {
   TDocumentSearch,
   TStateDocument,
 } from '../../Document.entity';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faFilter } from '@fortawesome/free-solid-svg-icons';
 import { DOCUMENTS_ROUTE } from '../../Documents.routes';
-import { FiltersSheet } from '../FiltersSheet/FiltersSheet';
 import { useGetFiltersSetted } from '../../Hooks/useGetFiltersSetted';
 import { DocumentsList } from './DocumentsList';
 import { useViewDocument } from '../../Hooks/useViewDocument';
@@ -23,6 +25,7 @@ import { TuseGetDocuments } from '../../Hooks';
 
 import { DocumentsListByUser } from './DocumentsListByUser';
 import { TuseGetDocumentsByCompany } from '@app/Domains/Admin/Hooks';
+import { FiltersDocumentsForm } from '../FiltersDocumentsForm';
 
 interface DocumentsListWrapperProps {
   service: TuseGetDocuments | TuseGetDocumentsByCompany;
@@ -76,12 +79,7 @@ export const DocumentsListWrapper = ({
               Validados
             </TabsTrigger>
           </TabsList>
-          <Button className="relative" onClick={handleFilters}>
-            {hasFilters && (
-              <span className="w-3 h-3 bg-red-700 rounded-full absolute top-[-4px] right-[-4px]"></span>
-            )}
-            <FontAwesomeIcon icon={faFilter}></FontAwesomeIcon>
-          </Button>
+          <FilterButton onClick={handleFilters} hasFilters={hasFilters} />
         </Container>
         {segmented ? (
           <DocumentsListByUser
@@ -95,7 +93,14 @@ export const DocumentsListWrapper = ({
           />
         )}
       </Tabs>
-      <FiltersSheet open={filtersIsOpen} closeSheet={handleFilters} />
+      <FiltersSheet
+        open={filtersIsOpen}
+        closeSheet={handleFilters}
+        title="Filtros de Documentos"
+        description="Puedes filtrar los documentos por los siguientes parámetros"
+      >
+        {<FiltersDocumentsForm />}
+      </FiltersSheet>
     </>
   );
 };

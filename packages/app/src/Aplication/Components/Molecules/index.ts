@@ -1,6 +1,7 @@
 export * from './AlertDialog';
 export * from './Button';
 export * from './ConfirmWithPassword';
+export * from './DatePicker';
 export * from './DateRange';
 export * from './FilterButton';
 export * from './Input';

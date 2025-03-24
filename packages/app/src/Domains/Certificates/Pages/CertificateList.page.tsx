@@ -1,5 +1,9 @@
 import { Container, FiltersSheet, Page, Title } from '@app/Aplication';
-import { CertificatesGrid, ActionsCertificateListPage } from '../Components';
+import {
+  CertificatesGrid,
+  ActionsCertificateListPage,
+  FiltersCertificatesForm,
+} from '../Components';
 
 import { v4 as uuidv4 } from 'uuid';
 import { useGetCertificates } from '../Hooks';
@@ -35,7 +39,7 @@ export const CertificateListPage = () => {
           closeSheet={handleFilters}
           title="Filtros de Certificados"
         >
-          <p>Es el filtro</p>
+          <FiltersCertificatesForm />
         </FiltersSheet>
       </>
     </Page>

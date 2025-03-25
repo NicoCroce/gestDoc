@@ -55,7 +55,7 @@ export const LicensesListByUser = ({ service }: DocumentsListProps) => {
                               key={uuid()}
                               className="[&:not(:first-child)]:mt-8"
                             >
-                              <Title variant="h3">
+                              <Title variant="h4">
                                 Licencias correspondientes al año {year}
                               </Title>
                               <Container className="grid gap-2 grid-cols-[repeat(auto-fit,minmax(200px,420px))] md:mx-14">

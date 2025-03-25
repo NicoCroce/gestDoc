@@ -12,10 +12,12 @@ export class GetCertificatesByCompany
   constructor(private readonly certificatesRepository: CertificateRepository) {}
 
   async execute({
+    input: filters,
     requestContext,
   }: IGetCertificatesCompany): Promise<IGetCertificatesByCompanyResponse> {
     const certificates =
       await this.certificatesRepository.getAllCompanyCertificates({
+        filters,
         requestContext,
       });
 

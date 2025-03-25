@@ -22,7 +22,7 @@ const buttonGroupActiveClass =
 const initialState: TCertificatesSearch = {
   type: undefined,
   date: undefined,
-  employee: undefined,
+  employee: '',
 };
 
 interface FiltersCertificatesFormProps {
@@ -62,16 +62,16 @@ export const FiltersCertificatesForm = ({
     setFormState((prev) => ({ ...prev, date: date.toISOString() }));
   };
 
-  const cleanFilters = () => setFormState(initialState);
+  const cleanFilters = () => setFormState({ ...initialState });
 
   return (
     <form className="grid gap-4 py-4" onSubmit={handleApplyFilters}>
       {isAdmin && (
         <Container>
-          <Label htmlFor="title">Nombre</Label>
+          <Label htmlFor="employee">Nombre</Label>
           <Input
-            id="title"
-            name="title"
+            id="employee"
+            name="employee"
             value={formState.employee}
             className="col-span-3"
             onChange={handleChangeFilters}

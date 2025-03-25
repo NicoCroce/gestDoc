@@ -32,7 +32,7 @@ export const LicensesCompanyPage = () => {
           closeSheet={handleFilters}
           title="Filtros de Certificados"
         >
-          <FiltersCertificatesForm />
+          <FiltersCertificatesForm isAdmin />
         </FiltersSheet>
       </Container>
     </Page>

@@ -3,13 +3,15 @@ import { Certificate } from './Certificate.entity';
 import { CertificateTypes } from './CertificateTypes.entity';
 import { ICertificate } from './Certificate.interfaces';
 
-export interface IGetCertificatesRepository extends IRequestContext {
+interface IFilters {
   filters?: {
     employee?: string;
     date?: Date;
     type?: number;
   };
 }
+
+export interface IGetCertificatesRepository extends IRequestContext, IFilters {}
 export interface IAddCertificateRepository extends IRequestContext {
   certificate: Certificate;
 }
@@ -19,7 +21,10 @@ export interface IAppendImagesRepository extends IRequestContext {
   files: string[];
 }
 
-export interface IGetAllCompanyCertificatesRepository extends IRequestContext {}
+export interface IGetAllCompanyCertificatesRepository
+  extends IRequestContext,
+    IFilters {}
+
 export interface IGetAllCompanyCertificatesRepositoryResponse
   extends ICertificate {
   userName: string;
@@ -43,6 +48,7 @@ export interface CertificateRepository {
     files,
   }: IAppendImagesRepository): Promise<Certificate>;
   getAllCompanyCertificates({
+    filters,
     requestContext,
   }: IGetAllCompanyCertificatesRepository): Promise<
     IGetAllCompanyCertificatesRepositoryResponse[]

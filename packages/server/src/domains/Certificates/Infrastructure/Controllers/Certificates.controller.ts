@@ -46,11 +46,13 @@ export class CertificatesController {
       ),
     );
 
-  getCertificatesByCompany = protectedProcedure.query(
-    executeService(
-      this.certificatesService.getCertificatesByCompany.bind(
-        this.certificatesService,
+  getCertificatesByCompany = protectedProcedure
+    .input(filterParams.optional())
+    .query(
+      executeService(
+        this.certificatesService.getCertificatesByCompany.bind(
+          this.certificatesService,
+        ),
       ),
-    ),
-  );
+    );
 }

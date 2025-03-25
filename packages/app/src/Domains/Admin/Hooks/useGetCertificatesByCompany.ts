@@ -8,7 +8,10 @@ export const useGetCertificatesByCompany = () => {
   const { searchParams } = useURLParams<TCertificatesSearch>();
 
   const input =
-    (searchParams && { ...searchParams, type: Number(searchParams?.type) }) ||
+    (searchParams && {
+      ...searchParams,
+      type: searchParams?.type ? Number(searchParams?.type) : undefined,
+    }) ||
     undefined;
 
   return CertificatesService.getCertificatesByCompany.useQuery(input, {

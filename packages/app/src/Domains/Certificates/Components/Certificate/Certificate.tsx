@@ -14,7 +14,7 @@ export const Certificate = ({ data }: CertificateProps) => {
   return (
     <Container
       space="small"
-      className="bg-gray-200 border border-gray-400 rounded-md p-4 certificate"
+      className="border border-gray-200 shadow-lg rounded-md p-4 certificate"
     >
       <Container className="mb-4">
         <Container row justify="between">

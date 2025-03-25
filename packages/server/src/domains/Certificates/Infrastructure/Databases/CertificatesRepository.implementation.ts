@@ -97,16 +97,24 @@ export class CertificatesRepositoryImplementation
   }
 
   async getAllCompanyCertificates({
+    filters,
     requestContext,
   }: IGetCertificatesRepository): Promise<
     IGetAllCompanyCertificatesRepositoryResponse[]
   > {
+    const { whereConditionUsers, whereConditionCertificates } =
+      CertificatesFilters(filters);
+
     const certificates = await CertificateModel.findAll({
+      where: { ...whereConditionCertificates },
       include: [
         {
           model: UserModel,
           as: 'User',
-          where: { id_propietario: requestContext.values.ownerId },
+          where: {
+            id_propietario: requestContext.values.ownerId,
+            ...whereConditionUsers,
+          },
           attributes: ['id', 'nombre', 'apellido'], // Atributos necesarios para la agrupación y ordenación
         },
         {

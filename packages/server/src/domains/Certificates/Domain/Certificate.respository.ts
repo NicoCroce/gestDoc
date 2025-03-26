@@ -1,7 +1,10 @@
 import { IRequestContext } from '@server/Application';
 import { Certificate } from './Certificate.entity';
 import { CertificateTypes } from './CertificateTypes.entity';
-import { ICertificate } from './Certificate.interfaces';
+import {
+  ICertificate,
+  IGetStatisticsCertificatesResponse,
+} from './Certificate.interfaces';
 
 interface IFilters {
   filters?: {
@@ -21,6 +24,8 @@ export interface IAppendImagesRepository extends IRequestContext {
   files: string[];
 }
 
+export interface IGetStatisticsCertificatesRepository extends IRequestContext {}
+
 export interface IGetAllCompanyCertificatesRepository
   extends IRequestContext,
     IFilters {}
@@ -29,6 +34,9 @@ export interface IGetAllCompanyCertificatesRepositoryResponse
   extends ICertificate {
   userName: string;
 }
+
+export interface IGetStatisticsCertificatesRepositoryResponse
+  extends IGetStatisticsCertificatesResponse {}
 
 export interface CertificateRepository {
   getCertificates({
@@ -53,4 +61,7 @@ export interface CertificateRepository {
   }: IGetAllCompanyCertificatesRepository): Promise<
     IGetAllCompanyCertificatesRepositoryResponse[]
   >;
+  getStatisticsCertificates({
+    requestContext,
+  }: IGetStatisticsCertificatesRepository): Promise<IGetStatisticsCertificatesRepositoryResponse>;
 }

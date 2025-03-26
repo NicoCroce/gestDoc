@@ -17,6 +17,20 @@ export interface IAddCertificate extends IRequestContext {
   input: Omit<ICertificate, 'id' | 'type'> & { type: number };
 }
 
+export interface IGetStatisticsCertificates extends IRequestContext {}
+export interface IGetStatisticsCertificatesResponse {
+  total: number;
+  actives: number;
+  types: {
+    name: string;
+    count: number;
+  }[];
+  employees: {
+    user: string;
+    count: number;
+  }[];
+}
+
 // Retorna un array ordenado por año, es decir que unifica todas las licencias de ese año en una key.
 export interface IGetCertificatesResponse {
   [key: number]: Certificate[];

@@ -16,6 +16,7 @@ import {
   IGetCertificatesByCompanyResponse,
   IGetCertificatesCompany,
   IGetCertificateTypes,
+  IGetStatisticsCertificates,
 } from '../Domain';
 import {
   CertificateDTO,
@@ -25,6 +26,7 @@ import {
 import { convertToDTO } from './digest';
 import { NextFunction, Request, Response } from 'express';
 import { AppendImages } from '../Domain/UseCases/AppendImages.usecases';
+import { GetStatisticsCertificates } from '../Domain/UseCases/GetStatisticsCertificates.usecase';
 
 interface IAddCertificateService extends IRequestContext {
   input: {
@@ -42,6 +44,7 @@ export class CertificatesServices {
     private readonly _addCertificate: AddCertificate,
     private readonly _appendImages: AppendImages,
     private readonly _getCertificatesByCompany: GetCertificatesByCompany,
+    private readonly _getStatistisCertificates: GetStatisticsCertificates,
   ) {}
 
   async getCertificates({
@@ -138,5 +141,12 @@ export class CertificatesServices {
       },
       {} as IGetCertificatesByCompanyDTO,
     );
+  }
+
+  getStatisticsByCertificates({ requestContext }: IGetStatisticsCertificates) {
+    return executeUseCase({
+      useCase: this._getStatistisCertificates,
+      requestContext,
+    });
   }
 }

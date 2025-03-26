@@ -55,4 +55,12 @@ export class CertificatesController {
         ),
       ),
     );
+
+  getStatisticsByCertificates = protectedProcedure.query(
+    executeService(
+      this.certificatesService.getStatisticsByCertificates.bind(
+        this.certificatesService,
+      ),
+    ),
+  );
 }

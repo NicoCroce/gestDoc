@@ -22,6 +22,7 @@ export const Statistics = () => {
           footer={{
             title: 'Puedes utilizar los filtros para más detalles',
           }}
+          labelCenter="Documentos"
         />
         <Container justify="center" className="p-4">
           <Container className="grid grid-cols-[auto,100px] gap-4 justify-center">

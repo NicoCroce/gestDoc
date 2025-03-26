@@ -60,6 +60,7 @@ interface PieChartComponentProps {
   total: number;
   header?: TText;
   footer?: TText;
+  labelCenter?: string;
 }
 
 export const PieChartComponent = ({
@@ -67,6 +68,7 @@ export const PieChartComponent = ({
   total,
   header,
   footer,
+  labelCenter,
 }: PieChartComponentProps) => (
   <Card className="border-0 shadow-none">
     {header && (
@@ -116,7 +118,7 @@ export const PieChartComponent = ({
                         y={(viewBox.cy || 0) + 24}
                         className="fill-muted-foreground"
                       >
-                        Documentos
+                        {labelCenter && labelCenter}
                       </tspan>
                     </text>
                   );

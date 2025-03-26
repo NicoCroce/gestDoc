@@ -3,7 +3,7 @@ import { Document } from './Document.entity';
 
 export type TStateDocument = 'validados' | 'pendientes';
 
-export interface IGetDocuments extends IRequestContext {
+interface IFilters {
   input: {
     requireSign?: boolean | null; // Si rquiere firma, si es null retora todo.
     type?: string;
@@ -14,6 +14,8 @@ export interface IGetDocuments extends IRequestContext {
     state?: TStateDocument;
   };
 }
+
+export interface IGetDocuments extends IRequestContext, IFilters {}
 
 export interface IViewDocument extends IRequestContext {
   input: number; // document Id

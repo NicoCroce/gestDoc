@@ -2,7 +2,7 @@ import { IRequestContext } from '@server/Application';
 import { Document } from './Document.entity';
 import { TStateDocument } from './Document.interfaces';
 
-export interface IGetDocumentsRepository extends IRequestContext {
+type TFilters = {
   filters: {
     requireSign?: boolean | null; // Si rquiere firma, si es null retora todo.
     type?: string;
@@ -12,7 +12,9 @@ export interface IGetDocumentsRepository extends IRequestContext {
     view?: boolean | null;
     state?: TStateDocument;
   };
-}
+};
+
+export interface IGetDocumentsRepository extends IRequestContext, TFilters {}
 export interface IViewDocumentRepository extends IRequestContext {
   id: number;
 }

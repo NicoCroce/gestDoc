@@ -1,11 +1,9 @@
 import { useURLParams } from '@app/Aplication';
-import { TDocumentSearch } from '../Document.entity';
-import { documentsService } from '../Documents.service';
+import { documentsService, TDocumentSearch } from '@app/Domains/Documents';
 
 export const useGetDocumentsByCompany = () => {
   const { searchParams } = useURLParams<TDocumentSearch>();
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { id, ...filterSearchParams } = searchParams || {};
 
   return documentsService.getAllByCompany.useQuery(

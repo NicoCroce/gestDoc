@@ -8,6 +8,7 @@ import {
   NonAttribute,
 } from 'sequelize';
 import { CertificatesTypesModel } from './CertificatesTypes.model';
+import { UserModel } from '@server/domains/Users';
 
 export class CertificateModel extends Model<
   InferAttributes<CertificateModel>,
@@ -31,6 +32,8 @@ export class CertificateModel extends Model<
   declare readonly CertificatesTypesModel: NonAttribute<
     InferAttributes<CertificatesTypesModel>
   >;
+
+  declare readonly User: NonAttribute<InferAttributes<UserModel>>;
 }
 
 CertificateModel.init(

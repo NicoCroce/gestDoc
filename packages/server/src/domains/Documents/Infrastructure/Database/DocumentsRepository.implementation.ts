@@ -187,8 +187,19 @@ export class DocumentsRepositoryImplementation implements DocumentRepository {
   }
 
   async getStatisticsDocuments({
-    requestContext: _,
+    requestContext,
   }: IGetStatisticsDocumentsRepository): Promise<IGetStatisticsDocumentsResponseRepository> {
+    const ownerId = requestContext.values.ownerId;
+
+    const includeOwner = {
+      model: UserModel,
+      as: 'User',
+      required: true,
+      where: {
+        id_propietario: ownerId,
+      },
+    };
+
     const { filterValidated: filterValidatedPending } = DocumentsFilters({
       state: 'pendientes',
     });
@@ -196,7 +207,9 @@ export class DocumentsRepositoryImplementation implements DocumentRepository {
       state: 'validados',
     });
 
-    const totalDocuments = await Documentos.count();
+    const totalDocuments = await Documentos.count({
+      include: [includeOwner],
+    });
 
     const pendingDocuments = await Documentos.count({
       where: {
@@ -207,6 +220,7 @@ export class DocumentsRepositoryImplementation implements DocumentRepository {
           model: DocumentsTypesModel,
           attributes: [],
         },
+        includeOwner,
       ],
     });
 
@@ -219,6 +233,7 @@ export class DocumentsRepositoryImplementation implements DocumentRepository {
           model: DocumentsTypesModel,
           attributes: [],
         },
+        includeOwner,
       ],
     });
 

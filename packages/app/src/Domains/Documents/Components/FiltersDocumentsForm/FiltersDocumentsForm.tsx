@@ -25,7 +25,7 @@ const initialState: TDocumentSearch = {
 const buttonGroupActiveClass =
   'data-[state=on]:!bg-primary data-[state=on]:!text-secondary';
 
-export const FiltersSheetForm = () => {
+export const FiltersDocumentsForm = () => {
   const { searchParams, updateParams } = useURLParams<TDocumentSearch>();
   const [formState, setFormState] = useState<TDocumentSearch>({
     ...initialState,

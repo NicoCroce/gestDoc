@@ -4,9 +4,9 @@ import {
   PDFPreview,
   SignedDetail,
   Statistics,
-} from '../Components';
-import { PDFPreviewMobile } from '../Components/PDFPreview/PDFPreviewMobile';
-import { useGetDocumentsByCompany } from '../Hooks/useGetDocumentsByCompany';
+} from '../../Documents/Components';
+import { PDFPreviewMobile } from '../../Documents/Components/PDFPreview/PDFPreviewMobile';
+import { useGetDocumentsByCompany } from '../Hooks';
 
 export const DocumentsCompanyPage = () => {
   const { isMobile } = useDevice();

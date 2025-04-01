@@ -4,7 +4,7 @@ import { Card } from '@app/Aplication/Components/ui/card';
 
 export const AddCertificatePage = () => {
   return (
-    <Page title="Agregar licencia" size="small">
+    <Page title="Agregar licencia" size="small" backButton>
       <Card className="p-4">
         <AddLicenseForm />
       </Card>

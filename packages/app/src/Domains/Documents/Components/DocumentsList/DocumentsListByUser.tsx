@@ -5,13 +5,14 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCircleExclamation } from '@fortawesome/free-solid-svg-icons';
 import { ScrollArea } from '@app/Aplication/Components/ui/scroll-area';
 import { Skeleton } from '@app/Aplication/Components/ui/skeleton';
-import { TuseGetDocumentsByCompany } from '../../Hooks/useGetDocumentsByCompany';
+
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
 } from '@app/Aplication/Components/ui/accordion';
+import { TuseGetDocumentsByCompany } from '@app/Domains/Admin';
 
 const SkeletonLoader = () => (
   <Container space="small">

@@ -11,6 +11,7 @@ import { Button as ButtonLib } from '../ui/button';
 import { cn } from '@app/Aplication/lib/utils';
 import { Calendar } from '../ui/calendar';
 import { Container } from '../Layout';
+import './DateRange.css';
 
 interface DatePickerWithRangeProps
   extends React.HTMLAttributes<HTMLDivElement> {
@@ -61,7 +62,7 @@ export const DatePickerWithRange = ({
             </Container>
           </ButtonLib>
         </PopoverTrigger>
-        <PopoverContent className="w-auto p-0" align="start">
+        <PopoverContent className="w-auto p-0 date-range-content" align="start">
           <Calendar
             initialFocus
             mode="range"
@@ -70,7 +71,7 @@ export const DatePickerWithRange = ({
             onSelect={setDate}
             numberOfMonths={2}
           />
-          <Container row align="center" justify="end" className="m-4">
+          <Container row align="center" justify="end" className="m-2">
             <Button
               appearance="cancel"
               onClick={() => setIsPopoverOpen(false)}

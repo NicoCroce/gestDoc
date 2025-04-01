@@ -1,3 +1,4 @@
+import { UserModel } from '@server/domains/Users';
 import {
   Certificate,
   CertificateRepository,
@@ -6,10 +7,16 @@ import {
 import {
   IAddCertificateRepository,
   IAppendImagesRepository,
+  IGetAllCompanyCertificatesRepositoryResponse,
+  IGetStatisticsCertificatesRepository,
+  IGetStatisticsCertificatesRepositoryResponse,
 } from '../../Domain/Certificate.respository';
 import { CertificateTypes } from '../../Domain/CertificateTypes.entity';
 import { CertificateModel } from './Certificates.model';
 import { CertificatesTypesModel } from './CertificatesTypes.model';
+import { CertificatesFilters } from './CertificatesFilters';
+import { Op } from 'sequelize';
+import { sequelize } from '@server/Infrastructure';
 
 export class CertificatesRepositoryImplementation
   implements CertificateRepository
@@ -56,13 +63,24 @@ export class CertificatesRepositoryImplementation
   }
 
   async getCertificates({
+    filters,
     requestContext,
   }: IGetCertificatesRepository): Promise<Certificate[]> {
+    const { whereConditionUsers, whereConditionCertificates } =
+      CertificatesFilters(filters);
     const certificates = await CertificateModel.findAll({
-      where: { id_usuario: requestContext.values.userId },
+      where: {
+        id_usuario: requestContext.values.userId,
+        ...whereConditionCertificates,
+      },
       include: [
         {
           model: CertificatesTypesModel,
+        },
+        {
+          model: UserModel,
+          as: 'User',
+          where: whereConditionUsers,
         },
       ],
     });
@@ -80,6 +98,65 @@ export class CertificatesRepositoryImplementation
         files: certificate.archivos,
       }),
     );
+  }
+
+  async getAllCompanyCertificates({
+    filters,
+    requestContext,
+  }: IGetCertificatesRepository): Promise<
+    IGetAllCompanyCertificatesRepositoryResponse[]
+  > {
+    const { whereConditionUsers, whereConditionCertificates } =
+      CertificatesFilters(filters);
+
+    const certificates = await CertificateModel.findAll({
+      where: { ...whereConditionCertificates },
+      include: [
+        {
+          model: UserModel,
+          as: 'User',
+          where: {
+            id_propietario: requestContext.values.ownerId,
+            ...whereConditionUsers,
+          },
+          attributes: ['id', 'nombre', 'apellido'], // Atributos necesarios para la agrupación y ordenación
+        },
+        {
+          model: CertificatesTypesModel,
+        },
+      ],
+      order: [
+        [{ model: UserModel, as: 'User' }, 'nombre', 'ASC'],
+        [{ model: UserModel, as: 'User' }, 'apellido', 'ASC'],
+      ],
+    });
+
+    return certificates.map((certificate) => {
+      const {
+        id,
+        fecha_inicio,
+        fecha_fin,
+        motivo,
+        archivos,
+        id_usuario,
+        CertificatesTypesModel,
+        User,
+      } = certificate;
+
+      return {
+        id,
+        startDate: fecha_inicio,
+        endDate: fecha_fin,
+        reason: motivo,
+        type: CertificateTypes.create({
+          id: CertificatesTypesModel.id,
+          name: CertificatesTypesModel.denominacion,
+        }),
+        files: archivos,
+        userId: id_usuario,
+        userName: `${User.nombre} ${User.apellido}`,
+      };
+    });
   }
 
   async getCertificatesTypes({
@@ -133,5 +210,93 @@ export class CertificatesRepositoryImplementation
       console.error('Error inserting certificate:', error);
       throw new Error('Failed to insert certificate');
     }
+  }
+
+  async getStatisticsCertificates({
+    requestContext,
+  }: IGetStatisticsCertificatesRepository): Promise<IGetStatisticsCertificatesRepositoryResponse> {
+    const ownerId = requestContext.values.ownerId;
+
+    const includeOwner = {
+      model: UserModel,
+      as: 'User',
+      required: true,
+      where: {
+        id_propietario: ownerId,
+      },
+    };
+
+    const consultDate = new Date();
+    consultDate.setHours(12, 0, 0, 0); // Mediodía para evitar problemas con zonas horarias
+
+    const totalCertificates = await CertificateModel.count({
+      include: [includeOwner],
+    });
+
+    const activesCertificates = await CertificateModel.count({
+      where: [
+        { fecha_inicio: { [Op.lte]: consultDate } }, // fecha_inicio <= fecha_consultada
+        { fecha_fin: { [Op.gte]: consultDate } }, // fecha_fin >= fecha_consultada
+      ],
+      include: [includeOwner],
+    });
+
+    const allCertificatesTypes = await CertificateModel.findAll({
+      attributes: [
+        'id_tipo_certificado',
+        [sequelize.fn('COUNT', sequelize.col('CertificateModel.id')), 'count'], // Contar certificados por tipo
+      ],
+      include: [
+        {
+          model: CertificatesTypesModel,
+          attributes: ['id', 'denominacion'], // Atributos del tipo de certificado
+        },
+        includeOwner, // Relación con el usuario propietario
+      ],
+      group: [
+        'CertificateModel.id_tipo_certificado', // Incluir id_tipo_certificado en el GROUP BY
+        'CertificatesTypesModel.id',
+        'CertificatesTypesModel.denominacion',
+        'User.id',
+        'User.nombre',
+        'User.apellido',
+      ], // Incluir todas las columnas del SELECT en el GROUP BY
+    });
+
+    const certificatesByEmployee = await CertificateModel.findAll({
+      attributes: [
+        'id_usuario', // Identificador del usuario
+        [sequelize.fn('COUNT', sequelize.col('CertificateModel.id')), 'count'], // Contar certificados por usuario
+      ],
+      include: [
+        {
+          model: UserModel,
+          as: 'User',
+          attributes: ['id', 'nombre', 'apellido'], // Atributos del usuario
+        },
+      ],
+      group: ['id_usuario', 'User.id', 'User.nombre', 'User.apellido'], // Agrupar por usuario
+    });
+
+    const allCertificatesTypesResponse = allCertificatesTypes.map(
+      (certificate) => ({
+        name: certificate.CertificatesTypesModel.denominacion,
+        count: certificate.get('count') as number,
+      }),
+    );
+
+    const certificatesByEmployeeResponse = certificatesByEmployee.map(
+      (certificate) => ({
+        user: `${certificate.User.nombre} ${certificate.User.apellido}`,
+        count: certificate.get('count') as number,
+      }),
+    );
+
+    return {
+      total: totalCertificates,
+      actives: activesCertificates,
+      types: allCertificatesTypesResponse,
+      employees: certificatesByEmployeeResponse,
+    };
   }
 }

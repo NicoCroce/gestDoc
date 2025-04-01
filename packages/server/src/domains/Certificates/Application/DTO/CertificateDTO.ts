@@ -10,3 +10,11 @@ export interface CertificateDTO {
 export interface IGetCertificatesDTO {
   [key: number]: CertificateDTO[];
 }
+export interface IGetCertificatesByCompanyDTO {
+  [userId: number]: {
+    user: string;
+    certificates: {
+      [year: number]: CertificateDTO[];
+    };
+  };
+}

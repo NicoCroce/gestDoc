@@ -26,7 +26,7 @@ export class TRPCErrorAdapter implements IErrorAdapter<TRPCError> {
     // Para errores no manejados
     return new TRPCError({
       code: 'INTERNAL_SERVER_ERROR',
-      message: 'An unexpected error occurred',
+      message: 'Error en la aplicación, vuelva a intentarlo.',
     });
   }
 

@@ -45,10 +45,12 @@ export const LicensesListByUser = ({ service }: DocumentsListProps) => {
                     <AccordionItem value={`item-${index}`}>
                       <Container className="sticky top-0 bg-slate-50 mb-4">
                         <AccordionTrigger className="px-4 ">
-                          {data[Number(userId)].user}
+                          <Title variant="h4">
+                            {data[Number(userId)].user}
+                          </Title>
                         </AccordionTrigger>
                       </Container>
-                      <AccordionContent>
+                      <AccordionContent className="px-4">
                         {Object.entries(certificates).map(
                           ([year, certificatesForYear]) => (
                             <Container

@@ -1,19 +1,19 @@
 import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { MobileMenu } from './MobileMenu/MobileMenu';
 import { Button } from '../ui/button';
 import { AccountMenu } from '../Organisms/Menu/AccountMenu';
-import { useDevice } from '@app/Aplication/Hooks';
+import { useDevice, useGlobalStore } from '@app/Aplication/Hooks';
 import { Container } from './Container';
 import img from '@app/Aplication/Images/icon-192x192.png';
 import { Title } from '../Molecules';
 
 export const Header = () => {
-  const { pathname } = useLocation();
   const navigate = useNavigate();
-  const { isDesktop } = useDevice();
-  const backButtonIsVisible = pathname.slice(1).split('/').length > 1;
+  const { isDesktop, isMobile } = useDevice();
+  const { data: backButtonIsVisible } =
+    useGlobalStore<boolean>('backButtonEnabled');
   const handleBack = () => navigate(-1);
 
   return (
@@ -44,7 +44,7 @@ export const Header = () => {
         </Container>
       </Container>
       {isDesktop && <AccountMenu />}
-      {!backButtonIsVisible && pathname !== '/' && <MobileMenu />}
+      <>{isMobile && <MobileMenu />}</>
     </header>
   );
 };

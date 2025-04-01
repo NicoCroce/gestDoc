@@ -5,12 +5,15 @@
 import clsx from 'clsx';
 import { Title } from '../Molecules/Title';
 import { Container } from './Container';
+import { useDevice, useGlobalStore } from '@app/Aplication/Hooks';
+import { useEffect } from 'react';
 
 interface PageProps {
   children: React.ReactNode;
   title: string;
   size?: 'small' | 'full';
   headerRight?: React.ReactNode;
+  backButton?: boolean;
 }
 
 export const Page = ({
@@ -18,16 +21,30 @@ export const Page = ({
   title,
   size = 'full',
   headerRight,
+  backButton = false,
 }: PageProps) => {
+  const { isMobile } = useDevice();
   const classContainer = clsx('w-full flex flex-col gap-4 md:gap-6', {
     'max-w-[600px] mx-auto': size === 'small',
   });
+  const { setQueryData } = useGlobalStore('backButtonEnabled');
+
+  useEffect(() => {
+    setQueryData(backButton);
+  }, [backButton, setQueryData]);
 
   return (
     <div className="page p-4 grid grid-rows-[min-content_auto] grid-cols-1 gap-6 max-w-[100vw] h-full bg-gray-50 md:p-6 md:pt-10">
-      <Container row justify="between" align="center" className="md:pb-6">
+      <Container
+        row={isMobile ? false : true}
+        justify="between"
+        align={isMobile ? 'start' : 'center'}
+        className="lg:pb-6"
+      >
         <Title variant="h1">{title}</Title>
-        {headerRight && <>{headerRight}</>}
+        {headerRight && (
+          <Container className="self-end">{headerRight}</Container>
+        )}
       </Container>
 
       <section className={classContainer}>{children}</section>

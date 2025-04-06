@@ -1,8 +1,5 @@
-import { Button, Container, List, Text } from '@app/Aplication';
+import { Container, EmptyScreenFilter, List, Text } from '@app/Aplication';
 import { Document } from '../Document';
-import { Alert, AlertTitle } from '@app/Aplication/Components/ui/alert';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCircleExclamation } from '@fortawesome/free-solid-svg-icons';
 import { ScrollArea } from '@app/Aplication/Components/ui/scroll-area';
 import { Skeleton } from '@app/Aplication/Components/ui/skeleton';
 
@@ -38,15 +35,7 @@ export const DocumentsListByUser = ({
   }
 
   if (data && !Object.keys(data).length)
-    return (
-      <Alert>
-        <FontAwesomeIcon icon={faCircleExclamation} size="lg" />
-        <AlertTitle>No se encontraron coincidencias</AlertTitle>
-        <Button variant="link" onClick={openFilters}>
-          Prueba cambiando los filtros
-        </Button>
-      </Alert>
-    );
+    return <EmptyScreenFilter onClick={openFilters} />;
 
   return (
     <>

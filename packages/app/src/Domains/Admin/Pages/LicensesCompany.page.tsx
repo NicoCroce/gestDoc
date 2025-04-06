@@ -1,4 +1,10 @@
-import { Container, FilterButton, FiltersSheet, Page } from '@app/Aplication';
+import {
+  Container,
+  EmptyScreenFilter,
+  FilterButton,
+  FiltersSheet,
+  Page,
+} from '@app/Aplication';
 
 import { useGetCertificatesByCompany } from '../Hooks';
 import { LicensesListWrapper, StatisticsCertificates } from '../Components';
@@ -10,9 +16,15 @@ export const LicensesCompanyPage = () => {
   const service = useGetCertificatesByCompany();
   const [filtersIsOpen, setFiltersIsOpen] = useState(false);
 
+  const { data } = service;
+
   const handleFilters = () => {
     setFiltersIsOpen((prevState) => !prevState);
   };
+
+  const isEmptyScreen = data && !Object.keys(data).length;
+
+  console.log(isEmptyScreen);
 
   return (
     <Page
@@ -22,9 +34,13 @@ export const LicensesCompanyPage = () => {
       <Container>
         <StatisticsCertificates />
         <Container row>
-          <div className="min-w-[300px] w-full">
-            <LicensesListWrapper service={service} />
-          </div>
+          {!isEmptyScreen ? (
+            <div className="min-w-[300px] w-full">
+              <LicensesListWrapper service={service} />
+            </div>
+          ) : (
+            <EmptyScreenFilter onClick={() => setFiltersIsOpen} />
+          )}
         </Container>
         <FiltersSheet
           open={filtersIsOpen}

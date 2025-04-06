@@ -3,6 +3,7 @@ export * from './Button';
 export * from './ConfirmWithPassword';
 export * from './DatePicker';
 export * from './DateRange';
+export * from './EmptyScreenFilter';
 export * from './FilterButton';
 export * from './Input';
 export * from './Link';

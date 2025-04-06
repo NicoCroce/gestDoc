@@ -6,11 +6,11 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 
 export const MenuAuth = () => {
-  const { isDesktop } = useDevice();
+  const { isMobile } = useDevice();
   return (
     <>
-      {isDesktop && (
-        <MenuItem to={USERS_CHANGE_PASSWORD} icon={faUser} text="Mi Cueta" />
+      {isMobile && (
+        <MenuItem to={USERS_CHANGE_PASSWORD} icon={faUser} text="Mi Cuenta" />
       )}
       <MenuItem to="/" icon={faArrowRightFromBracket} text="Salir" />
     </>

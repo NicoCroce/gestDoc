@@ -6,7 +6,10 @@ export const useGetCertificates = () => {
   const { searchParams } = useURLParams<TCertificatesSearch>();
 
   const input =
-    (searchParams && { ...searchParams, type: Number(searchParams?.type) }) ||
+    (searchParams && {
+      ...searchParams,
+      type: Number(searchParams?.type) || undefined,
+    }) ||
     undefined;
 
   return CertificatesService.getAll.useQuery(input, {

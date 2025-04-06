@@ -1,4 +1,10 @@
-import { Container, FiltersSheet, Page, Title } from '@app/Aplication';
+import {
+  Container,
+  EmptyScreenFilter,
+  FiltersSheet,
+  Page,
+  Title,
+} from '@app/Aplication';
 import {
   CertificatesGrid,
   ActionsCertificateListPage,
@@ -23,9 +29,12 @@ export const CertificateListPage = () => {
       headerRight={<ActionsCertificateListPage onClick={handleFilters} />}
     >
       <>
-        {data &&
+        {data && Object.keys(data).length === 0 ? (
+          <EmptyScreenFilter onClick={handleFilters} />
+        ) : (
+          data &&
           Object.entries(data).map(([year, certificates]) => (
-            <Container key={uuidv4()} space="large">
+            <Container key={uuidv4()} space="large" className="mt-8">
               <Title variant="h4">
                 Certificados correspondientes al año {year}
               </Title>
@@ -33,7 +42,8 @@ export const CertificateListPage = () => {
                 <CertificatesGrid certificatesList={certificates} />
               </Container>
             </Container>
-          ))}
+          ))
+        )}
         <FiltersSheet
           open={filtersIsOpen}
           closeSheet={handleFilters}

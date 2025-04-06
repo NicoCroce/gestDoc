@@ -15,7 +15,7 @@ export const StatisticsCertificates = () => {
       <Container className="md:flex-row justify-around">
         <PieChartComponent
           chartData={dataChartTotalActivas}
-          total={statistics?.total || 0}
+          total={statistics?.actives || 0}
           header={{
             title: 'Cantidad de licencias activas',
           }}

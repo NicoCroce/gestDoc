@@ -52,7 +52,6 @@ export const FiltersCertificatesForm = ({
 
   const handleApplyFilters = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log(formState);
     setTimeout(() => {
       updateParams({ ...formState });
     }, 300);
@@ -75,7 +74,6 @@ export const FiltersCertificatesForm = ({
             value={formState.employee}
             className="col-span-3"
             onChange={handleChangeFilters}
-            autoFocus
           />
         </Container>
       )}
@@ -101,7 +99,7 @@ export const FiltersCertificatesForm = ({
       </Container>
       <Container>
         <Label>Fecha</Label>
-        <DatePicker onClose={onCloseDatePicker} />
+        <DatePicker onClose={onCloseDatePicker} value={searchParams?.date} />
       </Container>
       <SheetFooter className="mt-16">
         <Container row className="justify-end">

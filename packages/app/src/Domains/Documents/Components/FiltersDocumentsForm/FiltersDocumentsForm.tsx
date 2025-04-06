@@ -66,7 +66,6 @@ export const FiltersDocumentsForm = () => {
           value={formState.title}
           className="col-span-3"
           onChange={handleChangeFilters}
-          autoFocus
         />
       </Container>
       <Container>

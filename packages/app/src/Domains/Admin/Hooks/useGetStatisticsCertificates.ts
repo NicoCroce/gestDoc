@@ -19,7 +19,6 @@ export const useGetStatisticsCertificates = () => {
 
   const dataChartTypes: TDataPieChart[] =
     response.data?.types.map(({ name, count }, index) => {
-      console.log(name);
       return {
         segment: name,
         data: count || 0,

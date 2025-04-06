@@ -24,9 +24,14 @@ export const Page = ({
   backButton = false,
 }: PageProps) => {
   const { isMobile } = useDevice();
-  const classContainer = clsx('w-full flex flex-col gap-4 md:gap-6', {
-    'max-w-[600px] mx-auto': size === 'small',
-  });
+
+  const small =
+    size === 'small' ? 'max-w-[600px]' : 'md:max-w-[900px] lg:max-w-[1400px]';
+
+  const classContainer = clsx(
+    'w-full flex flex-col gap-4 md:gap-6 mx-auto',
+    small,
+  );
   const { setQueryData } = useGlobalStore('backButtonEnabled');
 
   useEffect(() => {
@@ -39,7 +44,7 @@ export const Page = ({
         row={isMobile ? false : true}
         justify="between"
         align={isMobile ? 'start' : 'center'}
-        className="lg:pb-6"
+        className={clsx('lg:pb-6 mx-auto w-full', small)}
       >
         <Title variant="h1">{title}</Title>
         {headerRight && (

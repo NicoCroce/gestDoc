@@ -1,9 +1,6 @@
-import { Button, Container, List, Text } from '@app/Aplication';
+import { Container, EmptyScreenFilter, List, Text } from '@app/Aplication';
 import { TuseGetDocuments } from '../../Hooks/useGetDocuments';
 import { Document } from '../Document';
-import { Alert, AlertTitle } from '@app/Aplication/Components/ui/alert';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCircleExclamation } from '@fortawesome/free-solid-svg-icons';
 import { ScrollArea } from '@app/Aplication/Components/ui/scroll-area';
 import { Skeleton } from '@app/Aplication/Components/ui/skeleton';
 
@@ -27,16 +24,7 @@ export const DocumentsList = ({ openFilters, service }: DocumentsListProps) => {
     return <SkeletonLoader />;
   }
 
-  if (!data?.length)
-    return (
-      <Alert>
-        <FontAwesomeIcon icon={faCircleExclamation} size="lg" />
-        <AlertTitle>No se encontraron coincidencias</AlertTitle>
-        <Button variant="link" onClick={openFilters}>
-          Prueba cambiando los filtros
-        </Button>
-      </Alert>
-    );
+  if (!data?.length) return <EmptyScreenFilter onClick={openFilters} />;
 
   return (
     <>

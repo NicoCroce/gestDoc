@@ -12,6 +12,7 @@ import { cn } from '@app/Aplication/lib/utils';
 import { Calendar } from '../ui/calendar';
 import { Container } from '../Layout';
 import './DateRange.css';
+import { es } from 'date-fns/locale';
 
 interface DatePickerWithRangeProps
   extends React.HTMLAttributes<HTMLDivElement> {
@@ -50,11 +51,11 @@ export const DatePickerWithRange = ({
               {date?.from ? (
                 date.to ? (
                   <>
-                    {format(date.from, 'LLL dd, y')} -{' '}
-                    {format(date.to, 'LLL dd, y')}
+                    {format(date.from, 'LLL dd, y', { locale: es })} -{' '}
+                    {format(date.to, 'LLL dd, y', { locale: es })}
                   </>
                 ) : (
-                  format(date.from, 'LLL dd, y')
+                  format(date.from, 'LLL dd, y', { locale: es })
                 )
               ) : (
                 <span>Mostrar calendario</span>
@@ -70,6 +71,14 @@ export const DatePickerWithRange = ({
             selected={date}
             onSelect={setDate}
             numberOfMonths={2}
+            locale={es} // Añadimos el locale al calendario
+            weekStartsOn={1} // La semana empieza en lunes (opcional)
+            formatters={{
+              formatCaption: (date) =>
+                format(date, 'LLLL yyyy', { locale: es }),
+              formatWeekdayName: (date) =>
+                format(date, 'EEEEEE', { locale: es }),
+            }}
           />
           <Container row align="center" justify="end" className="m-2">
             <Button

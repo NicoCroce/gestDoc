@@ -55,7 +55,7 @@ export const LicensesListByUser = ({ service }: DocumentsListProps) => {
                           ([year, certificatesForYear]) => (
                             <Container
                               key={uuid()}
-                              className="[&:not(:first-child)]:mt-8"
+                              className="[&:not(:first-child)]:mt-10"
                             >
                               <Title variant="h4">
                                 Licencias correspondientes al año {year}

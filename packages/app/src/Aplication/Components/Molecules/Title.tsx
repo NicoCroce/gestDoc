@@ -13,7 +13,7 @@ interface TitleProps
 }
 
 const headingClasses = {
-  h1: 'scroll-m-20 text-4xl leading-[50px] tracking-tight lg:text-5xl',
+  h1: 'scroll-m-20 text-4xl leading-[46px] py-2 pt-6 tracking-tight lg:text-5xl',
   h2: 'scroll-m-20 border-b pb-2 text-3xl tracking-tight first:mt-0',
   h3: 'scroll-m-20 text-2xl tracking-tight',
   h4: 'scroll-m-20 text-xl tracking-tight',

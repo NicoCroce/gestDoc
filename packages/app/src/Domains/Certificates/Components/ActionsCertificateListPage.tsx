@@ -8,6 +8,6 @@ export const ActionsCertificateListPage = ({
 }: ActionsCertificateListPageProps) => (
   <Container row>
     <NewLicenseButton />
-    <FilterButton onClick={onClick} variant="secondary" />
+    <FilterButton onClick={onClick} />
   </Container>
 );

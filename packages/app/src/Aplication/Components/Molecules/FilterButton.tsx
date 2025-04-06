@@ -12,7 +12,7 @@ export interface FilterButtonProps {
 
 export const FilterButton = ({
   onClick,
-  variant = 'default',
+  variant = 'secondary',
   ignoreParams = [],
 }: FilterButtonProps) => {
   const hasFilters = useGetFiltersSetted(ignoreParams);

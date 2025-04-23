@@ -13,12 +13,15 @@ import {
 import { RolesModel } from './Roles.model';
 import { PermissionsModel } from './Permissions.model';
 import { Users_RolesModel } from './Users_Roles.model';
+import { Op } from 'sequelize';
 
 export class PermissionsRepositoryImplementation
   implements PermissionsRepository
 {
   async getRoles(_params: IGetRolesRepository): Promise<Roles[]> {
-    const roles = await RolesModel.findAll();
+    const roles = await RolesModel.findAll({
+      where: { id: { [Op.not]: 2 } },
+    });
 
     return roles.map((rol) =>
       Roles.create({

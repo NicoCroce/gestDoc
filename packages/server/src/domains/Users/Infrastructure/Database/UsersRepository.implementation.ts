@@ -16,16 +16,27 @@ import { UserModel } from './Users.model';
 import { CompaniesModel } from '@server/domains/Companies/Infrastructure';
 
 export class UsersRepositoryImplementation implements UserRepository {
-  async getUsers({ filters }: IGetUsersRepository): Promise<User[]> {
+  async getUsers({
+    filters,
+    requestContext,
+  }: IGetUsersRepository): Promise<User[]> {
+    const {
+      values: { ownerId },
+    } = requestContext;
+
+    const whereClause: { [key: string]: unknown } = {
+      id_propietario: ownerId, // Agrega el filtro por ownerId aquí
+    };
+
+    if (filters?.name) {
+      whereClause.nombre = {
+        [Op.substring]: filters.name,
+      };
+    }
+
     const users = await UserModel.findAll({
       attributes: ['id', 'email', 'nombre'],
-      where: filters?.name
-        ? {
-            nombre: {
-              [Op.substring]: filters?.name,
-            },
-          }
-        : {},
+      where: whereClause,
     });
     return users.map(({ id, email, nombre }) =>
       User.create({ id, mail: email, name: nombre }),

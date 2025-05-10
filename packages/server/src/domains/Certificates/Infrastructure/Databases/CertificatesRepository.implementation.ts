@@ -272,6 +272,10 @@ export class CertificatesRepositoryImplementation
         {
           model: UserModel,
           as: 'User',
+          required: true,
+          where: {
+            id_propietario: ownerId,
+          },
           attributes: ['id', 'nombre', 'apellido'], // Atributos del usuario
         },
       ],

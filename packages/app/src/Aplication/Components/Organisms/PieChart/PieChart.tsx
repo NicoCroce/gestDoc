@@ -17,6 +17,8 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from '@/Aplication/Components/ui/chart';
+import { Text } from '../../Molecules';
+import { Container } from '../../Layout';
 
 const chartConfig = {
   data: {
@@ -69,79 +71,92 @@ export const PieChartComponent = ({
   header,
   footer,
   labelCenter,
-}: PieChartComponentProps) => (
-  <Card className="border-0 shadow-none">
-    {header && (
-      <CardHeader className="items-center pb-0">
-        {header.title && <CardTitle>{header.title}</CardTitle>}
-        {header.subtitle && (
-          <CardDescription>{header.subtitle}</CardDescription>
-        )}
-      </CardHeader>
-    )}
-    <CardContent className="flex-1 pb-0">
-      <ChartContainer
-        config={chartConfig}
-        className="mx-auto aspect-square max-h-[250px]"
-      >
-        <PieChart>
-          <ChartTooltip
-            cursor={false}
-            content={<ChartTooltipContent hideLabel />}
-          />
-          <Pie
-            data={chartData}
-            dataKey="data"
-            nameKey="segment"
-            innerRadius={60}
-            strokeWidth={5}
+}: PieChartComponentProps) => {
+  console.log(chartData);
+  return (
+    <Card className="border-0 shadow-none flex flex-col">
+      {header && (
+        <CardHeader className="items-center pb-0">
+          {header.title && <CardTitle>{header.title}</CardTitle>}
+          {header.subtitle && (
+            <CardDescription>{header.subtitle}</CardDescription>
+          )}
+        </CardHeader>
+      )}
+      <CardContent className="flex-1 pb-0">
+        {chartData.length !== 0 ? (
+          <ChartContainer
+            config={chartConfig}
+            className="mx-auto aspect-square max-h-[250px]"
           >
-            <Label
-              content={({ viewBox }) => {
-                if (viewBox && 'cx' in viewBox && 'cy' in viewBox) {
-                  return (
-                    <text
-                      x={viewBox.cx}
-                      y={viewBox.cy}
-                      textAnchor="middle"
-                      dominantBaseline="middle"
-                    >
-                      <tspan
-                        x={viewBox.cx}
-                        y={viewBox.cy}
-                        className="fill-foreground text-3xl font-bold"
-                      >
-                        {total.toLocaleString()}
-                      </tspan>
-                      <tspan
-                        x={viewBox.cx}
-                        y={(viewBox.cy || 0) + 24}
-                        className="fill-muted-foreground"
-                      >
-                        {labelCenter && labelCenter}
-                      </tspan>
-                    </text>
-                  );
-                }
-              }}
-            />
-          </Pie>
-        </PieChart>
-      </ChartContainer>
-    </CardContent>
-    {footer && (
-      <CardFooter className="flex-col gap-2 text-sm">
-        {footer.title && (
-          <div className="flex items-center gap-2 font-medium leading-none">
-            {footer.title} <TrendingUp className="h-4 w-4" />
-          </div>
+            <PieChart>
+              <ChartTooltip
+                cursor={false}
+                content={<ChartTooltipContent hideLabel />}
+              />
+              <Pie
+                data={chartData}
+                dataKey="data"
+                nameKey="segment"
+                innerRadius={60}
+                strokeWidth={5}
+              >
+                <Label
+                  content={({ viewBox }) => {
+                    if (viewBox && 'cx' in viewBox && 'cy' in viewBox) {
+                      return (
+                        <text
+                          x={viewBox.cx}
+                          y={viewBox.cy}
+                          textAnchor="middle"
+                          dominantBaseline="middle"
+                        >
+                          <tspan
+                            x={viewBox.cx}
+                            y={viewBox.cy}
+                            className="fill-foreground text-3xl font-bold"
+                          >
+                            {total.toLocaleString()}
+                          </tspan>
+                          <tspan
+                            x={viewBox.cx}
+                            y={(viewBox.cy || 0) + 24}
+                            className="fill-muted-foreground"
+                          >
+                            {labelCenter && labelCenter}
+                          </tspan>
+                        </text>
+                      );
+                    }
+                  }}
+                />
+              </Pie>
+            </PieChart>
+          </ChartContainer>
+        ) : (
+          <Container
+            justify="center"
+            align="center"
+            className="h-full min-h-32"
+          >
+            <Text.Muted>Sin datos</Text.Muted>
+          </Container>
         )}
-        {footer.subtitle && (
-          <div className="leading-none text-muted-foreground">
-            {footer.subtitle}
-          </div>
-        )}
-      </CardFooter>
-    )}
-  </Card>
-);
+      </CardContent>
+      {footer && (
+        <CardFooter className="flex-col gap-2 text-sm">
+          {footer.title && (
+            <div className="flex items-center gap-2 font-medium leading-none">
+              {footer.title} <TrendingUp className="h-4 w-4" />
+            </div>
+          )}
+          {footer.subtitle && (
+            <div className="leading-none text-muted-foreground">
+              {footer.subtitle}
+            </div>
+          )}
+        </CardFooter>
+      )}
+    </Card>
+  );
+};

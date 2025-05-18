@@ -14,6 +14,7 @@ import {
   SignDocument,
   ViewDocument,
 } from '../Domain';
+import { SendEmailService } from '@server/Application/Services/SendEmail.service';
 
 export class DocumentsService {
   constructor(
@@ -23,6 +24,7 @@ export class DocumentsService {
     private readonly _viewDocument: ViewDocument,
     private readonly _getDocumentsByCompany: GetDocumentsByCompany,
     private readonly _getStatisticsDocuments: GetStatisticsDocuments,
+    private readonly sendEmailService: SendEmailService,
   ) {}
 
   getDocuments({ input, requestContext }: IGetDocuments) {
@@ -41,12 +43,24 @@ export class DocumentsService {
     });
   }
 
-  signDocument({ input, requestContext }: ISignDocument) {
-    return executeUseCase({
+  async signDocument({ input, requestContext }: ISignDocument) {
+    const documentId = await executeUseCase({
       useCase: this._signDocument,
       input,
       requestContext,
     });
+
+    const { agreement, reasonSignatureNonConformity } = input;
+
+    if (!agreement) {
+      this.sendEmailService.signDocument({
+        documentId,
+        reason: reasonSignatureNonConformity!,
+        requestContext,
+      });
+    }
+
+    return documentId;
   }
 
   viewDocument({ input, requestContext }: IViewDocument) {

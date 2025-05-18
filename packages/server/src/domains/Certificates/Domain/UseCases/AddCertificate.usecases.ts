@@ -12,7 +12,7 @@ export class AddCertificate implements IUseCase<Certificate> {
     requestContext,
   }: IAddCertificate): Promise<Certificate> {
     try {
-      const certificte = await this.certificatesRepository.addCertificate({
+      const certificate = await this.certificatesRepository.addCertificate({
         certificate: Certificate.create({
           type: CertificateTypes.create({ id: type }),
           startDate,
@@ -22,7 +22,7 @@ export class AddCertificate implements IUseCase<Certificate> {
         requestContext,
       });
 
-      return certificte;
+      return certificate;
     } catch {
       throw new AppError('El certificado no fue agregado');
     }

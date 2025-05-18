@@ -1,6 +1,7 @@
 import { UserModel } from '@server/domains/Users';
 import { PermissionsModel } from './Permissions.model';
 import { RolesModel } from './Roles.model';
+import { Users_RolesModel } from './Users_Roles.model';
 
 PermissionsModel.belongsToMany(RolesModel, {
   through: 'Roles_permisos',
@@ -24,4 +25,14 @@ RolesModel.belongsToMany(UserModel, {
   through: 'Usuarios_roles',
   foreignKey: 'id_rol',
   otherKey: 'id_usuario',
+});
+
+UserModel.hasMany(Users_RolesModel, {
+  foreignKey: 'id_usuario',
+  as: 'UsersRoles',
+});
+
+Users_RolesModel.belongsTo(UserModel, {
+  foreignKey: 'id_usuario',
+  as: 'User',
 });

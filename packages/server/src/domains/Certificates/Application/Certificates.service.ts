@@ -27,6 +27,7 @@ import { convertToDTO } from './digest';
 import { NextFunction, Request, Response } from 'express';
 import { AppendImages } from '../Domain/UseCases/AppendImages.usecases';
 import { GetStatisticsCertificates } from '../Domain/UseCases/GetStatisticsCertificates.usecase';
+import { SendEmailService } from '@server/Application/Services/SendEmail.service';
 
 interface IAddCertificateService extends IRequestContext {
   input: {
@@ -45,6 +46,7 @@ export class CertificatesServices {
     private readonly _appendImages: AppendImages,
     private readonly _getCertificatesByCompany: GetCertificatesByCompany,
     private readonly _getStatistisCertificates: GetStatisticsCertificates,
+    private readonly sendEmailService: SendEmailService,
   ) {}
 
   async getCertificates({
@@ -89,6 +91,11 @@ export class CertificatesServices {
         useCase: this._addCertificate,
         input: _input,
         requestContext,
+      });
+
+      this.sendEmailService.addLincence({
+        requestContext,
+        certificate,
       });
 
       return convertToDTO(certificate);

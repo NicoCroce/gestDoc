@@ -2,6 +2,7 @@ import { UserModel } from '@server/domains/Users';
 import {
   IAssociateUserToRoleRepository,
   IDissociateUserToRoleRepository,
+  IGetAdminsRepository,
   IGetPermissionsByUserRepository,
   IGetPermissionsRepository,
   IGetRoleByUserRepository,
@@ -128,5 +129,25 @@ export class PermissionsRepositoryImplementation
     });
 
     return roleName?.denominacion || null;
+  }
+
+  async getAdmins({ requestContext }: IGetAdminsRepository): Promise<string[]> {
+    const users = await UserModel.findAll({
+      where: { id_propietario: requestContext.values.ownerId },
+      include: [
+        {
+          model: Users_RolesModel,
+          as: 'UsersRoles',
+          where: { id_rol: 1 },
+          attributes: [], // Evita traer datos innecesarios de la relación
+        },
+      ],
+    });
+
+    if (!users) {
+      throw new Error(`No se encontraron admins`);
+    }
+
+    return users.map(({ email }) => email);
   }
 }

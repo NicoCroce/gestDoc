@@ -1,6 +1,7 @@
 import {
   IAssociateUserToRoleRepository,
   IDissociateUserToRoleRepository,
+  IGetAdminsRepository,
   IGetPermissionsByUserRepository,
   IGetPermissionsRepository,
   IGetRoleByUserRepository,
@@ -58,5 +59,11 @@ export class PermissionsRepositoryImplementationLocal
     requestContext: _,
   }: IDissociateUserToRoleRepository): Promise<void> {
     return this.Db.dissociateUserToRole(userId);
+  }
+
+  async getAdmins({
+    requestContext: _,
+  }: IGetAdminsRepository): Promise<string[]> {
+    throw new Error('Method not implemented.');
   }
 }

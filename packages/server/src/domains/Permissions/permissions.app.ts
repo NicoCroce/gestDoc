@@ -10,6 +10,7 @@ import {
 } from './Domain';
 import { PermissionsService } from './Aplication';
 import { PermissionsRepositoryImplementation } from './Infrastructure';
+import { GetAdmins } from './Domain/UseCases/GetAdmins.usecase';
 
 export const permissionsApp = {
   permissionsRepository: asClass(PermissionsRepositoryImplementation),
@@ -20,6 +21,7 @@ export const permissionsApp = {
   _getPermissionsByUser: asClass(GetPermissionsByUser),
   _associateUserToRole: asClass(AssociateUserToRole),
   _getRoleByUser: asClass(GetRoleByUser),
+  _getAdmins: asClass(GetAdmins),
 };
 
 export const permissionsController = () =>

@@ -1,5 +1,5 @@
 import { TRPCError } from '@trpc/server';
-import { IErrorAdapter } from '../Interfaces/';
+import { IErrorAdapter } from '../Interfaces';
 import { AppError, RequestContext } from '../Entities';
 import { logger, loggerContext } from '@server/utils/pino';
 

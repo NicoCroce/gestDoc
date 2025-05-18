@@ -1,5 +1,6 @@
 import { CompaniesModel } from '@server/domains/Companies/Infrastructure';
 import { RolesModel } from '@server/domains/Permissions';
+import { Users_RolesModel } from '@server/domains/Permissions/Infrastructure/Database/Users_Roles.model';
 import { sequelize } from '@server/Infrastructure';
 import {
   DataTypes,
@@ -28,6 +29,10 @@ export class UserModel extends Model<
 
   declare readonly CompaniesModel: NonAttribute<
     InferAttributes<CompaniesModel>
+  >;
+
+  declare readonly UsersRoles: NonAttribute<
+    InferAttributes<Users_RolesModel>[]
   >;
 
   declare readonly RolesModels: NonAttribute<RolesModel[]>;

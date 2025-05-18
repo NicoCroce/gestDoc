@@ -38,8 +38,8 @@ export class UsersRepositoryImplementation implements UserRepository {
       attributes: ['id', 'email', 'nombre'],
       where: whereClause,
     });
-    return users.map(({ id, email, nombre }) =>
-      User.create({ id, mail: email, name: nombre }),
+    return users.map(({ id, email, nombre, apellido }) =>
+      User.create({ id, mail: email, name: nombre, surname: apellido }),
     );
   }
 
@@ -63,8 +63,8 @@ export class UsersRepositoryImplementation implements UserRepository {
     if (!userFound) {
       return null;
     }
-    const { email, nombre } = userFound;
-    return User.create({ id, mail: email, name: nombre });
+    const { email, nombre, apellido } = userFound;
+    return User.create({ id, mail: email, name: nombre, surname: apellido });
   }
 
   async validateUser({

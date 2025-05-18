@@ -5,6 +5,7 @@ export class User {
   constructor(
     private readonly _mail: UserEmail,
     private readonly _name: UserName,
+    private readonly _surname?: string,
     private readonly _id?: UserId,
     private readonly _password?: UserPassword,
     private readonly _renewPassword?: boolean,
@@ -18,6 +19,7 @@ export class User {
     id,
     mail,
     name,
+    surname,
     password,
     renewPassword = false,
     userImage,
@@ -30,6 +32,7 @@ export class User {
     return new User(
       new UserEmail(mail),
       new UserName(name),
+      surname,
       userId,
       userPassword,
       renewPassword,
@@ -49,6 +52,7 @@ export class User {
       id: this._id?.value,
       mail: this._mail.value,
       name: this._name.value,
+      surname: this._surname,
       renewPassword: this._renewPassword,
       userImage: this._userImage,
       ownerId: this._ownerId,

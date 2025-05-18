@@ -9,7 +9,7 @@ interface ISignDocument {
   documentId: number;
 }
 
-const addLicence = ({ currentUser, reason }: IAddLincence) => ({
+const addLicense = ({ currentUser, reason }: IAddLincence) => ({
   subject: `[Aviso] Gestdoc - Nueva licencia de ${currentUser}`,
   body: `<h1> Nueva licencia</h1> 
               <p>El empleado <strong> ${currentUser} </strong> agregó una licencia<p>
@@ -32,6 +32,6 @@ const signDocument = ({ currentUser, reason, documentId }: ISignDocument) => ({
 });
 
 export const emailTemplates = {
-  addLicence,
+  addLicense,
   signDocument,
 };

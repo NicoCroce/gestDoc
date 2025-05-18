@@ -7,7 +7,7 @@ import { emailTemplates } from '../Utils/Email';
 import { IRequestContext } from '../Interfaces';
 import { RequestContext } from '../Entities';
 
-interface IAddLicence extends IRequestContext {
+interface IAddLicense extends IRequestContext {
   certificate: Certificate;
 }
 
@@ -63,10 +63,10 @@ export class SendEmailService {
     }
   }
 
-  async addLincence({ certificate, requestContext }: IAddLicence) {
+  async addLincence({ certificate, requestContext }: IAddLicense) {
     await this.sendEmailToAdmins({
       requestContext,
-      templateFn: emailTemplates.addLicence,
+      templateFn: emailTemplates.addLicense,
       templateArgs: {
         reason: certificate.values.reason,
         currentUser: '',

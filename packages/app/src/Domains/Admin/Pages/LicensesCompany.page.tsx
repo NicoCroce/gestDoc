@@ -24,8 +24,6 @@ export const LicensesCompanyPage = () => {
 
   const isEmptyScreen = data && !Object.keys(data).length;
 
-  console.log(isEmptyScreen);
-
   return (
     <Page
       title="Todos los certificados de la empresa"

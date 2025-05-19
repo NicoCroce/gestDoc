@@ -41,59 +41,57 @@ export const DateRange = <T extends FieldValues>({
     form.setValue(nameEndDate, date.to! as PathValue<T, Path<T>>);
   };
 
-  console.log(form.formState.errors);
-
-  const DesktopRender = () => (
-    <FormField
-      name={nameEndDate}
-      control={control}
-      render={() => (
-        <FormItem>
-          <FormLabel>Seleccione rango de fecha de licencia</FormLabel>
-          <FormControl>
-            <DatePickerWithRange onChangeDate={handleDate} />
-          </FormControl>
-        </FormItem>
-      )}
-    />
-  );
-
-  const MobileRender = () => (
-    <Container>
-      <Container row justify="between">
-        <FormField
-          name={nameStartDate}
-          control={form.control}
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Fecha de inicio</FormLabel>
-              <FormControl>
-                <Input type="date" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+  return (
+    <>
+      {isMobile ? (
+        <Container>
+          <Container row justify="between">
+            <FormField
+              name={nameStartDate}
+              control={form.control}
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Fecha de inicio</FormLabel>
+                  <FormControl>
+                    <Input type="date" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              name={nameEndDate}
+              control={form.control}
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Fecha de fin</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="date"
+                      {...field}
+                      disabled={startDate === undefined}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </Container>
+        </Container>
+      ) : (
         <FormField
           name={nameEndDate}
-          control={form.control}
-          render={({ field }) => (
+          control={control}
+          render={() => (
             <FormItem>
-              <FormLabel>Fecha de fin</FormLabel>
+              <FormLabel>Seleccione rango de fecha de licencia</FormLabel>
               <FormControl>
-                <Input
-                  type="date"
-                  {...field}
-                  disabled={startDate === undefined}
-                />
+                <DatePickerWithRange onChangeDate={handleDate} />
               </FormControl>
-              <FormMessage />
             </FormItem>
           )}
         />
-      </Container>
-    </Container>
+      )}
+    </>
   );
-
-  return <> {isMobile ? <MobileRender /> : <DesktopRender />} </>;
 };

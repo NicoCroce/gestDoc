@@ -67,7 +67,6 @@ export class PermissionsRepositoryImplementation
     const roles = user?.RolesModels;
 
     const permissions = roles?.flatMap((rol) => rol.PermissionsModels) || null;
-    console.log(permissions);
 
     if (!permissions) {
       throw new Error(`Permisos para Usuario con ID ${userId} no encontrado`);

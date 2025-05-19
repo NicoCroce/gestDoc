@@ -56,7 +56,6 @@ export const AddLicenseForm = () => {
   };
 
   const handleSubmit = async (values: z.infer<typeof formSchemeAddLicense>) => {
-    console.log(values);
     const { id } = await mutateAddLicence(values);
     if (values.files) await appendFiles(id, values.files);
     navigate(CERTIFICATES_ROUTES);

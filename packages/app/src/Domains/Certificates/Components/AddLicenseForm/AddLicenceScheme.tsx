@@ -62,7 +62,6 @@ export const formSchemeAddLicense = z
       }),
   })
   .superRefine((data, ctx) => {
-    console.log(data);
     // Validar archivos obligatorios según tipo
     if (data.type !== '1' && (!data.files || data.files.length === 0)) {
       ctx.addIssue({

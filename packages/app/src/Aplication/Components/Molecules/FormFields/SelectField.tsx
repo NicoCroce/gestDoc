@@ -18,7 +18,7 @@ interface SelectFieldProps<T extends FieldValues> {
   control: Control<T>;
   label: string;
   combobox: React.ReactElement<ComboboxProps>;
-  handleClean: () => void;
+  handleClean?: () => void;
 }
 
 export const SelectField = <T extends FieldValues>({
@@ -43,9 +43,11 @@ export const SelectField = <T extends FieldValues>({
                     onChangeValue: field.onChange,
                   })
                 : combobox}
-              <Button type="button" variant="outline" onClick={handleClean}>
-                <FontAwesomeIcon icon={faUnlink}></FontAwesomeIcon>
-              </Button>
+              {handleClean && (
+                <Button type="button" variant="outline" onClick={handleClean}>
+                  <FontAwesomeIcon icon={faUnlink}></FontAwesomeIcon>
+                </Button>
+              )}
             </Container>
           </FormControl>
           <FormMessage />

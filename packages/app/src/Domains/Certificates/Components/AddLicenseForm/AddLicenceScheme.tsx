@@ -5,12 +5,16 @@ export const formSchemeAddLicense = z
     reason: z.string().min(1, 'La razón es obligatoria'),
     type: z.string().min(1, 'Debe seleccionar un tipo de licencia'),
     startDate: z
-      .string()
+      .string({
+        required_error: 'La fecha de inicio es obligatoria.',
+      })
       .min(1, 'La fecha de inicio es obligatoria')
       .transform((val) => new Date(val)),
 
     endDate: z
-      .string()
+      .string({
+        required_error: 'La fecha de fin es obligatoria',
+      })
       .min(1, 'La fecha de fin es obligatoria')
       .transform((val) => new Date(val)),
 
@@ -57,23 +61,25 @@ export const formSchemeAddLicense = z
         }
       }),
   })
-  .refine(
-    (data) => {
-      // Si el tipo no es '1', los archivos son obligatorios
-      return data.type === '1' || (data.files && data.files.length > 0);
-    },
-    {
-      message: 'Los archivos son obligatorios para este tipo de licencia',
-      path: ['files'], // Esto asocia el error al campo 'files'
-    },
-  )
-  .refine(
-    (data) => {
-      // Validar que endDate sea mayor que startDate
-      return data.endDate > data.startDate;
-    },
-    {
-      message: 'La fecha de fin debe ser mayor a la de inicio',
-      path: ['endDate'],
-    },
-  );
+  .superRefine((data, ctx) => {
+    console.log(data);
+    // Validar archivos obligatorios según tipo
+    if (data.type !== '1' && (!data.files || data.files.length === 0)) {
+      ctx.addIssue({
+        path: ['files'],
+        code: z.ZodIssueCode.custom,
+        message: 'Los archivos son obligatorios para este tipo de licencia',
+      });
+    }
+
+    // Validar que la fecha de fin sea mayor a la de inicio
+    if (data.startDate instanceof Date && data.endDate instanceof Date) {
+      if (data.endDate <= data.startDate) {
+        ctx.addIssue({
+          path: ['endDate'],
+          code: z.ZodIssueCode.custom,
+          message: 'La fecha de fin debe ser mayor a la de inicio',
+        });
+      }
+    }
+  });

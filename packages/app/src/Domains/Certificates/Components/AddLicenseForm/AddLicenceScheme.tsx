@@ -4,12 +4,16 @@ export const formSchemeAddLicense = z
   .object({
     reason: z.string().min(1, 'La razón es obligatoria'),
     type: z.string().min(1, 'Debe seleccionar un tipo de licencia'),
-    startDate: z.date({
-      required_error: 'La fecha de inicio es obligatoria',
-    }),
-    endDate: z.date({
-      required_error: 'La fecha de fin es obligatoria',
-    }),
+    startDate: z
+      .string()
+      .min(1, 'La fecha de inicio es obligatoria')
+      .transform((val) => new Date(val)),
+
+    endDate: z
+      .string()
+      .min(1, 'La fecha de fin es obligatoria')
+      .transform((val) => new Date(val)),
+
     files: z
       .instanceof(FileList)
       .optional()
@@ -61,5 +65,15 @@ export const formSchemeAddLicense = z
     {
       message: 'Los archivos son obligatorios para este tipo de licencia',
       path: ['files'], // Esto asocia el error al campo 'files'
+    },
+  )
+  .refine(
+    (data) => {
+      // Validar que endDate sea mayor que startDate
+      return data.endDate > data.startDate;
+    },
+    {
+      message: 'La fecha de fin debe ser mayor a la de inicio',
+      path: ['endDate'],
     },
   );

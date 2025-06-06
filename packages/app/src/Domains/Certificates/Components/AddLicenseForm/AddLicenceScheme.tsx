@@ -2,14 +2,24 @@ import { z } from 'zod';
 
 export const formSchemeAddLicense = z
   .object({
-    reason: z.string().min(1, 'La razón es obligatoria'),
+    reason: z.string({
+      required_error: 'La razón es obligatoria',
+    }),
     type: z.string().min(1, 'Debe seleccionar un tipo de licencia'),
-    startDate: z.date({
-      required_error: 'La fecha de inicio es obligatoria',
-    }),
-    endDate: z.date({
-      required_error: 'La fecha de fin es obligatoria',
-    }),
+    startDate: z
+      .string({
+        required_error: 'La fecha de inicio es obligatoria.',
+      })
+      .min(1, 'La fecha de inicio es obligatoria')
+      .transform((val) => new Date(val)),
+
+    endDate: z
+      .string({
+        required_error: 'La fecha de fin es obligatoria',
+      })
+      .min(1, 'La fecha de fin es obligatoria')
+      .transform((val) => new Date(val)),
+
     files: z
       .instanceof(FileList)
       .optional()
@@ -53,13 +63,24 @@ export const formSchemeAddLicense = z
         }
       }),
   })
-  .refine(
-    (data) => {
-      // Si el tipo no es '1', los archivos son obligatorios
-      return data.type === '1' || (data.files && data.files.length > 0);
-    },
-    {
-      message: 'Los archivos son obligatorios para este tipo de licencia',
-      path: ['files'], // Esto asocia el error al campo 'files'
-    },
-  );
+  .superRefine((data, ctx) => {
+    // Validar archivos obligatorios según tipo
+    if (data.type !== '1' && (!data.files || data.files.length === 0)) {
+      ctx.addIssue({
+        path: ['files'],
+        code: z.ZodIssueCode.custom,
+        message: 'Los archivos son obligatorios para este tipo de licencia',
+      });
+    }
+
+    // Validar que la fecha de fin sea mayor a la de inicio
+    if (data.startDate instanceof Date && data.endDate instanceof Date) {
+      if (data.endDate <= data.startDate) {
+        ctx.addIssue({
+          path: ['endDate'],
+          code: z.ZodIssueCode.custom,
+          message: 'La fecha de fin debe ser mayor a la de inicio',
+        });
+      }
+    }
+  });

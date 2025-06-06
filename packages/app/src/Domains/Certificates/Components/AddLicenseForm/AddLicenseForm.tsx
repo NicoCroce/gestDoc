@@ -2,8 +2,8 @@ import {
   Button,
   Combobox,
   Container,
-  DatePickerWithRange,
   Input,
+  InputField,
 } from '@app/Aplication';
 import {
   Form,
@@ -18,11 +18,12 @@ import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { useGetCertificatesTypes } from '../../Hooks';
 import { useNavigate } from 'react-router-dom';
-import { DateRange } from 'react-day-picker';
 import { Textarea } from '@app/Aplication/Components/ui/textarea';
 import { useAddLicense } from '../../Hooks/useAddLicense';
 import { CERTIFICATES_ROUTES } from '../../Certificates.routes';
 import { formSchemeAddLicense } from './AddLicenceScheme';
+import { SelectField } from '@app/Aplication/Components/Molecules/FormFields/SelectField';
+import { DateRange } from '@app/Aplication/Components/Molecules/DateRange/DateRage';
 
 export const AddLicenseForm = () => {
   const { data: dataTypes } = useGetCertificatesTypes();
@@ -55,7 +56,6 @@ export const AddLicenseForm = () => {
   };
 
   const handleSubmit = async (values: z.infer<typeof formSchemeAddLicense>) => {
-    console.log(values);
     const { id } = await mutateAddLicence(values);
     if (values.files) await appendFiles(id, values.files);
     navigate(CERTIFICATES_ROUTES);
@@ -66,59 +66,35 @@ export const AddLicenseForm = () => {
     navigate(-1);
   };
 
-  const handleDate = (date: DateRange) => {
-    formLicense.setValue('startDate', date.from!);
-    formLicense.setValue('endDate', date.to!);
-  };
-
   return (
     <div>
       <Form {...formLicense}>
         <form onSubmit={formLicense.handleSubmit(handleSubmit)}>
           <Container space="large">
-            <FormField
+            <SelectField
+              control={formLicense.control}
               name="type"
-              control={formLicense.control}
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Seleccione el tipo de licencia</FormLabel>
-                  <FormControl>
-                    <Combobox
-                      options={options}
-                      value={field.value}
-                      onChangeValue={handleChangeType}
-                    />
-                  </FormControl>
-                </FormItem>
-              )}
+              label="Seleccione el tipo de licencia"
+              combobox={
+                <Combobox options={options} onChangeValue={handleChangeType} />
+              }
+            ></SelectField>
+
+            <DateRange
+              form={formLicense}
+              nameStartDate="startDate"
+              nameEndDate="endDate"
+              label="Seleccione rango de fecha de licencia"
             />
-            <FormField
-              name="endDate"
+
+            <InputField
               control={formLicense.control}
-              render={() => (
-                <FormItem>
-                  <FormLabel>Seleccione rango de fecha de licencia</FormLabel>
-                  <FormControl>
-                    <DatePickerWithRange onChangeDate={handleDate} />
-                  </FormControl>
-                </FormItem>
-              )}
-            />
-            <FormField
+              label="Ingrese descripción de la solicitud"
               name="reason"
-              control={formLicense.control}
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Ingrese descripción de la solicitud</FormLabel>
-                  <FormControl>
-                    <Textarea
-                      placeholder="Escriba el motivo de la solicitud"
-                      {...field}
-                    />
-                  </FormControl>
-                </FormItem>
-              )}
-            />
+            >
+              <Textarea placeholder="Escriba el motivo de la solicitud" />
+            </InputField>
+
             {hasFiles && (
               <FormField
                 name="files"

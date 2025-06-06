@@ -72,7 +72,6 @@ export const PieChartComponent = ({
   footer,
   labelCenter,
 }: PieChartComponentProps) => {
-  console.log(chartData);
   return (
     <Card className="border-0 shadow-none flex flex-col">
       {header && (

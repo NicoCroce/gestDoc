@@ -5,6 +5,7 @@ import {
   IDeleteUserRepository,
   IGetUserRepository,
   IGetUsersRepository,
+  IGetUsersRepositoryResponse,
   IRegisterUserRepository,
   IUpdateUserRepository,
   IValidateUserRepository,
@@ -19,7 +20,7 @@ export class UsersRepositoryImplementation implements UserRepository {
   async getUsers({
     filters,
     requestContext,
-  }: IGetUsersRepository): Promise<User[]> {
+  }: IGetUsersRepository): Promise<IGetUsersRepositoryResponse> {
     const {
       values: { ownerId },
     } = requestContext;
@@ -34,13 +35,30 @@ export class UsersRepositoryImplementation implements UserRepository {
       };
     }
 
-    const users = await UserModel.findAll({
+    const page = Number(filters?.page) || 1;
+    const limit = Number(filters?.limit) || 10;
+    const offset = (page - 1) * limit;
+
+    const { count, rows } = await UserModel.findAndCountAll({
+      limit,
+      offset,
+      order: [['createdAt', 'DESC']],
       attributes: ['id', 'email', 'nombre'],
       where: whereClause,
     });
-    return users.map(({ id, email, nombre, apellido }) =>
-      User.create({ id, mail: email, name: nombre, surname: apellido }),
-    );
+
+    const totalPages = Math.ceil(count / limit);
+
+    return {
+      data: rows.map(({ id, email, nombre, apellido }) =>
+        User.create({ id, mail: email, name: nombre, surname: apellido }),
+      ),
+      meta: {
+        totalItems: count,
+        totalPages,
+        currentPage: page,
+      },
+    };
   }
 
   async registerUser({ user }: IRegisterUserRepository): Promise<User> {

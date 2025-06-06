@@ -12,20 +12,26 @@ export const useAddUser = () => {
       const preservedState = cacheUserList.getData();
       type TData = typeof preservedState;
 
-      const setState = (state: TData): TData => [
-        ...(state || []),
-        {
-          id: state?.length,
-          name,
-          mail,
-          surname: undefined,
-          renewPassword: true,
-          companyLogo: undefined,
-          companyName: undefined,
-          userImage: undefined,
-          ownerId: 0,
-        },
-      ];
+      const setState = (state: TData): TData => {
+        if (!state) return state;
+        return {
+          ...state,
+          data: [
+            ...state.data,
+            {
+              id: state.data.length,
+              surname: undefined,
+              name,
+              mail,
+              renewPassword: true,
+              companyLogo: undefined,
+              companyName: undefined,
+              userImage: undefined,
+              ownerId: 0,
+            },
+          ],
+        };
+      };
 
       cacheUserList.setData(undefined, setState);
       return { preservedState };

@@ -81,7 +81,6 @@ export const AddLicenseForm = () => {
             ></SelectField>
 
             <DateRange
-              control={formLicense.control}
               form={formLicense}
               nameStartDate="startDate"
               nameEndDate="endDate"

@@ -2,7 +2,9 @@ import { z } from 'zod';
 
 export const formSchemeAddLicense = z
   .object({
-    reason: z.string().min(1, 'La razón es obligatoria'),
+    reason: z.string({
+      required_error: 'La razón es obligatoria',
+    }),
     type: z.string().min(1, 'Debe seleccionar un tipo de licencia'),
     startDate: z
       .string({

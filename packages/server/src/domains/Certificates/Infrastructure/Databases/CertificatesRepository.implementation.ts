@@ -180,6 +180,34 @@ export class CertificatesRepositoryImplementation
     const { startDate, endDate, type, reason } = certificate.values;
 
     try {
+      const existingCertificate = await CertificateModel.findOne({
+        where: {
+          id_usuario: requestContext.values.userId,
+          [Op.or]: [
+            // startDate está dentro del rango existente
+            {
+              fecha_inicio: { [Op.lte]: startDate },
+              fecha_fin: { [Op.gte]: startDate },
+            },
+            // endDate está dentro del rango existente
+            {
+              fecha_inicio: { [Op.lte]: endDate },
+              fecha_fin: { [Op.gte]: endDate },
+            },
+            // El nuevo rango contiene completamente un rango existente
+            {
+              fecha_inicio: { [Op.gte]: startDate },
+              fecha_fin: { [Op.lte]: endDate },
+            },
+          ],
+        },
+      });
+
+      if (existingCertificate) {
+        throw new Error(
+          'Ya existe una licencia con fechas que se solapan con las fechas proporcionadas',
+        );
+      }
       const { id, fecha_inicio, fecha_fin, motivo, id_tipo_certificado } =
         await CertificateModel.create({
           fecha_inicio: startDate,
@@ -207,8 +235,11 @@ export class CertificatesRepositoryImplementation
         }),
       });
     } catch (error) {
-      console.error('Error inserting certificate:', error);
-      throw new Error('Failed to insert certificate');
+      if (error instanceof Error) {
+        throw new Error(error.message);
+      } else {
+        throw new Error('Error al insertar certificado');
+      }
     }
   }
 

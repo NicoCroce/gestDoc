@@ -23,8 +23,10 @@ export class AddCertificate implements IUseCase<Certificate> {
       });
 
       return certificate;
-    } catch {
-      throw new AppError('El certificado no fue agregado');
+    } catch (error) {
+      throw new AppError(
+        error instanceof Error ? error.message : String(error),
+      );
     }
   }
 }

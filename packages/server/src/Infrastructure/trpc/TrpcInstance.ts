@@ -46,6 +46,7 @@ const t = initTRPC.context<Context>().create({
     const { code, httpStatus } = shape.data;
     return {
       ...shape,
+      message: shape.message.replace('TRPCError: ', ''),
       data: {
         code,
         httpStatus,

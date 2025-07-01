@@ -99,8 +99,8 @@ export class CertificatesServices {
       });
 
       return convertToDTO(certificate);
-    } catch {
-      throw new AppError('Error en las fechas');
+    } catch (error) {
+      throw new AppError(error as string);
     }
   }
 

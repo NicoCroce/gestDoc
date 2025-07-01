@@ -7,7 +7,7 @@ import { ICertificate } from '../Certificate.entity';
 
 export const useAddLicense = () => {
   const { mutate, isPending } = CertificatesService.addCertificate.useMutation({
-    onError: (_err, _variables) => toast.error('Licencia no agregada'),
+    onError: (err, _variables) => toast.error(err.message),
     onSuccess: (data) => {
       toast.success('Licencia agregada');
       return data;

@@ -16,7 +16,6 @@ import {
   TDocumentSearch,
   TStateDocument,
 } from '../../Document.entity';
-import { DOCUMENTS_ROUTE } from '../../Documents.routes';
 import { DocumentsList } from './DocumentsList';
 import { useViewDocument } from '../../Hooks/useViewDocument';
 import { useGetDocumentsTypes } from '../../Hooks/useGetDocumentsTypes';
@@ -25,6 +24,7 @@ import { TuseGetDocuments } from '../../Hooks';
 import { DocumentsListByUser } from './DocumentsListByUser';
 import { TuseGetDocumentsByCompany } from '@app/Domains/Admin/Hooks';
 import { FiltersDocumentsForm } from '../FiltersDocumentsForm';
+import { DOCUMENTS_DASHBOARD } from '@app/Domains/Admin';
 
 interface DocumentsListWrapperProps {
   service: TuseGetDocuments | TuseGetDocumentsByCompany;
@@ -36,7 +36,7 @@ export const DocumentsListWrapper = ({
   segmented = false,
 }: DocumentsListWrapperProps) => {
   const { searchParams, updateParams } =
-    useURLParams<TDocumentSearch>(DOCUMENTS_ROUTE);
+    useURLParams<TDocumentSearch>(DOCUMENTS_DASHBOARD);
   const [isState, setState] = useState<TStateDocument>(
     searchParams?.state || PENDING,
   );

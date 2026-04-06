@@ -9,6 +9,7 @@ const publicPages = new Set([
   AUTH_ROUTE,
   RESTORE_PASSWORD,
   CHANGE_PASSWORD_PUBLIC,
+  '/auth/reestablecer',
 ]);
 
 export const usePublicPages = () => {

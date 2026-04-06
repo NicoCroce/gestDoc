@@ -13,23 +13,32 @@ export const createContext = ({
   const _requestContext = {
     userId: res.getHeader('userId') as number,
     requestId: res.getHeader('requestId') as string,
+    xAppClient: req.headers['x-app-client'] as string | undefined,
   };
 
   const requestContext = new RequestContext(
     _requestContext.userId,
     _requestContext.requestId,
     123,
+    _requestContext.xAppClient,
   );
 
   logger.info('\n\n=================================\n');
   loggerContext(requestContext).info(
     `START REQUEST[${_requestContext.requestId}] => ${req.method} - ${decodeURIComponent(req.url)}`,
   );
+  loggerContext(requestContext).info(
+    {
+      xAppClient: _requestContext.xAppClient ?? null,
+    },
+    'x-app-client header received',
+  );
 
   return {
     cookies: req.cookies,
     res,
     requestContext,
+    xAppClient: _requestContext.xAppClient,
   };
 };
 

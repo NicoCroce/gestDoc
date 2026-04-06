@@ -42,8 +42,14 @@ export const authMiddleware = async (
   const ownerId = dataToken.ownerId;
 
   const requestId = res.getHeader('requestId') as string;
+  const xAppClient = req.headers['x-app-client'] as string | undefined;
 
-  const requestContext = new RequestContext(userId, requestId, ownerId);
+  const requestContext = new RequestContext(
+    userId,
+    requestId,
+    ownerId,
+    xAppClient,
+  );
 
   logger.info('\n\n=================================\n');
   loggerContext(requestContext).info(

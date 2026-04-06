@@ -23,4 +23,9 @@ export const AuthRouter = [
     path={CHANGE_PASSWORD_PUBLIC}
     element={<ChangePasswordPublicPage />}
   />,
+  <Route
+    key="change-password-alias"
+    path="/auth/reestablecer"
+    element={<ChangePasswordPublicPage />}
+  />,
 ];

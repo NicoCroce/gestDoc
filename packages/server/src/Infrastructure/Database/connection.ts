@@ -9,6 +9,10 @@ export const sequelize = new Sequelize({
   port: 3306,
   logging: false,
   timezone: '-03:00', // Configura la zona horaria a Argentina
+  define: {
+    paranoid: true,
+    timestamps: true,
+  },
 });
 
 export const connect = async () => {

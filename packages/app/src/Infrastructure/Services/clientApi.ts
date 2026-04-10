@@ -8,14 +8,23 @@ export const trpcClientApi = TrpcApi.createClient({
   links: [
     httpLink({
       url: URL_SERVER + '/api',
-      fetch: async (
-        url: URL | RequestInfo,
-        options?: RequestInit,
-      ): Promise<Response> => {
+      fetch: async (url, options) => {
         try {
-          const response = await fetch(url, {
+          const requestInit: RequestInit = {
             ...options,
-            credentials: 'include', // Incluye cookies
+            body: options?.body as BodyInit | null | undefined,
+            headers: options?.headers as HeadersInit | undefined,
+            credentials: 'include',
+          };
+
+          const response = await fetch(url, {
+            ...requestInit,
+            headers: {
+              ...(requestInit.headers || {}),
+              'x-app-client': import.meta.env.DEV
+                ? 'http://localhost:5173'
+                : window.location.origin,
+            },
           });
 
           if (!response.ok) {

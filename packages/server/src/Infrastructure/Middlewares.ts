@@ -6,10 +6,25 @@ import { logger } from '@server/utils/pino';
 import { v4 as uuidv4 } from 'uuid';
 
 export const initMiddlewares = (app: Express) => {
+  const allowedOrigins = (
+    process.env.URL_CLIENT?.split(',').map((origin) => origin.trim()) || [
+      'http://localhost:5173',
+      'http://localhost:5174',
+    ]
+  ).filter(Boolean);
+
   app.use(
     cors({
-      origin: process.env.URL_CLIENT || 'http://localhost:5173',
+      origin: (origin, callback) => {
+        if (!origin || allowedOrigins.includes(origin)) {
+          return callback(null, true);
+        }
+
+        return callback(new Error(`CORS origin not allowed: ${origin}`));
+      },
       credentials: true,
+      allowedHeaders: ['Content-Type', 'Authorization', 'x-app-client'],
+      methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
     }),
   );
 

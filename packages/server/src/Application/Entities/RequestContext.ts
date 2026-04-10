@@ -3,6 +3,7 @@ export class RequestContext {
     private userId: number,
     private readonly requestId: string,
     private ownerId: number,
+    private xAppClient?: string,
   ) {}
 
   setUserId(userId: number) {
@@ -18,6 +19,7 @@ export class RequestContext {
       userId: this.userId,
       requestId: this.requestId,
       ownerId: this.ownerId,
+      xAppClient: this.xAppClient,
     };
   }
 }

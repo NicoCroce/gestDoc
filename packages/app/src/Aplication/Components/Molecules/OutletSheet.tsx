@@ -3,26 +3,27 @@
  * Este componente es utilizado para cargar un sheet mediante navegación, por eso utiliza un Outlet como children.
  */
 
-import { Outlet, useNavigate } from 'react-router-dom';
+import { Outlet, To, useNavigate } from 'react-router-dom';
 import { Sheet } from '../ui/sheet';
 
 interface OutletSheetProps {
   open: boolean;
   setIsSheetOpen: (state: boolean) => void;
-  navigateToOnClose?: string;
+  navigateToOnClose?: To;
 }
 
 export const OutletSheet = ({
   open,
   setIsSheetOpen,
-  navigateToOnClose,
+  navigateToOnClose = -1 as To,
 }: OutletSheetProps) => {
   const navigate = useNavigate();
 
   const handleCloseSheet = () => {
     setIsSheetOpen(false);
-    if (!navigateToOnClose) return;
-    setTimeout(() => navigate(navigateToOnClose), 300);
+    setTimeout(() => {
+      navigate(navigateToOnClose);
+    }, 100);
   };
 
   return (

@@ -1,10 +1,9 @@
 import { defineConfig } from 'vitest/config';
-import react from '@vitejs/plugin-react';
-import { resolve } from 'path';
+import { resolve } from 'node:path';
 
-// Config independiente de vite.config.ts — evita conflictos con VitePWA en el entorno de test
+// Config independiente de vite.config.ts — evita conflictos con VitePWA en el entorno de test.
+// JSX se transforma via esbuild usando "jsx": "react-jsx" del tsconfig (no necesita el plugin de React).
 export default defineConfig({
-  plugins: [react()],
   resolve: {
     alias: [
       { find: '@app', replacement: resolve(__dirname, 'src') },

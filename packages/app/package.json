@@ -8,7 +8,10 @@
     "build": "tsc && vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "tsc": "tsc --project tsconfig.json"
+    "tsc": "tsc --project tsconfig.json",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage"
   },
   "dependencies": {
     "@blendverse/server": "workspace:*",
@@ -77,6 +80,12 @@
     "globals": "^17.5.0",
     "postcss": "^8.5.12",
     "tailwindcss": "^4.2.4",
-    "vite": "^8.0.10"
+    "vite": "^8.0.10",
+    "vitest": "^2.0.0",
+    "@vitest/coverage-v8": "^2.0.0",
+    "@testing-library/react": "^16.0.0",
+    "@testing-library/user-event": "^14.0.0",
+    "@testing-library/jest-dom": "^6.0.0",
+    "jsdom": "^25.0.0"
   }
 }

@@ -26,7 +26,7 @@ Monorepo de e-commerce B2B multi-tenant. La empresa puede tener múltiples propi
 4. **Conventional Commits** — `feat(articles): add price calculation use case`.
 5. **Nunca toques archivos de otro paquete** salvo los archivos de registro global indicados en cada skill.
 6. **Nunca importes el repositorio de otro dominio** — importá su caso de uso (ver skill `cross-domain-relations`).
-7. **Sin tests** — El proyecto no tiene suite de testing configurada; no generes archivos de test.
+7. **Vitest + Playwright** — El proyecto usa Vitest para tests unitarios e integración en ambos paquetes y Playwright para E2E. El agente `@qa` genera y ejecuta los tests en su flujo. No generes archivos de test fuera del flujo de `@qa`.
 
 ## Path Aliases
 
@@ -35,25 +35,64 @@ Monorepo de e-commerce B2B multi-tenant. La empresa puede tener múltiples propi
 | `@server/*` | `packages/server/src/*` |
 | `@app/*`    | `packages/app/src/*`    |
 
+## Director del Proyecto (Modo Orquestador)
+
+Cuando el Chat base recibe un requerimiento nuevo, actúa como **Director del Proyecto** antes de delegar a cualquier agente especializado:
+
+1. **Determinar el task_id** — leer `memory/history_log.json` y generar el próximo `TASK-YYYYMMDD-N`.
+2. **Invocar `@analyst`** — pasa el requerimiento del usuario y el `task_id` generado.
+3. **Supervisar la cadena** — una vez que `@analyst` entrega `01_requirements.md`, guiar al usuario para invocar `@back` o `@front` (Coder), luego `@qa`, luego `@reviewer`.
+4. **Cerrar la tarea** — cuando `@reviewer` entrega `status: APPROVED`, actualizar `memory/history_log.json` con `status: COMPLETED` y `closed_at`.
+
+Flujo completo:
+
+```
+@analyst → 01_requirements.md
+    ↓
+@back / @front → código + 02_dev_log.md
+    ↓
+@qa → 03_qa_report.md
+    ├── FAIL (máx. 3 intentos) → @back / @front
+    └── PASS → @reviewer → 04_review_log.md
+                  ├── REJECTED (máx. 3 intentos) → @back / @front
+                  └── APPROVED → Director cierra en history_log.json
+```
+
+**Break-Loop:** si cualquier agente alcanza `attempts: 3` sin resolución, el ciclo se detiene, se crea `memory/BLOCKED.md` y se notifica al desarrollador.
+
+## Sistema de Memoria (`memory/`)
+
+Todos los agentes leen y escriben en la carpeta `memory/` de la raíz del monorepo. Cada tarea tiene su propia subcarpeta `memory/TASK-YYYYMMDD-N/`. Las reglas completas de formato y schema están en `.github/instructions/memory.instructions.md`.
+
 ## Agentes Disponibles
 
-- **`@back`** — Crea/modifica dominios del servidor. Usa la skill `back-ddd-generator`.
-- **`@front`** — Crea/modifica dominios del frontend. Usa la skill `front-ddd-generator`.
+| Agente      | Rol                     | Cuándo invocarlo                                        |
+| ----------- | ----------------------- | ------------------------------------------------------- |
+| `@analyst`  | Analista Funcional y UX | Inicio de cualquier tarea nueva — genera requerimientos |
+| `@back`     | Coder Backend (DDD)     | Implementar dominios del servidor                       |
+| `@front`    | Coder Frontend (React)  | Implementar dominios del frontend                       |
+| `@qa`       | QA Híbrido              | Validar código tras cada sesión de Coder                |
+| `@reviewer` | Crítico de Estándares   | Revisar arquitectura y convenciones tras QA PASS        |
 
-Ante una tarea full-stack, `@back` construye el dominio primero y hace handoff a `@front`.
+Ante una tarea full-stack, `@back` construye el dominio primero y hace handoff a `@front`. Ambos hacen handoff a `@qa` al finalizar.
 
 ## Skills Disponibles
 
-| Skill                    | Cuándo usarla                                        |
-| ------------------------ | ---------------------------------------------------- |
-| `back-ddd-generator`     | Crear un dominio nuevo completo en el server         |
-| `front-ddd-generator`    | Crear un dominio nuevo completo en el frontend       |
-| `cross-domain-relations` | Relacionar datos de dos dominios del server          |
-| `sequelize-associations` | Definir asociaciones y eager loading en Sequelize v6 |
-| `usecases-migration`     | Mover UseCases de `Domain/` a `Application/`         |
-| `commit-conventions`     | Dudas sobre commits, hooks y lint-staged             |
+| Skill                    | Cuándo usarla                                                   |
+| ------------------------ | --------------------------------------------------------------- |
+| `back-ddd-generator`     | Crear un dominio nuevo completo en el server                    |
+| `front-ddd-generator`    | Crear un dominio nuevo completo en el frontend                  |
+| `cross-domain-relations` | Relacionar datos de dos dominios del server                     |
+| `sequelize-associations` | Definir asociaciones y eager loading en Sequelize v6            |
+| `usecases-migration`     | Mover UseCases de `Domain/` a `Application/`                    |
+| `commit-conventions`     | Dudas sobre commits, hooks y lint-staged                        |
+| `requirements-analyst`   | Usada por `@analyst` — template de `01_requirements.md`         |
+| `dev-logger`             | Usada por `@back`/`@front` — template de `02_dev_log.md`        |
+| `qa-runner`              | Usada por `@qa` — secuencia de validación + `03_qa_report.md`   |
+| `code-reviewer`          | Usada por `@reviewer` — checklist 12 ítems + `04_review_log.md` |
 
 ## Instrucciones Específicas
 
 - Backend → `.github/instructions/server.instructions.md`
 - Frontend → `.github/instructions/app.instructions.md`
+- Memoria → `.github/instructions/memory.instructions.md`

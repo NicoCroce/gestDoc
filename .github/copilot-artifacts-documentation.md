@@ -6,28 +6,38 @@
 
 ## Resumen de Artefactos
 
-| Tipo        | Nombre                    | Invocación                        | Propósito resumido                                   |
-| ----------- | ------------------------- | --------------------------------- | ---------------------------------------------------- |
-| Instrucción | `copilot-instructions.md` | Automática (global)               | Reglas universales del stack y convenciones          |
-| Instrucción | `server.instructions.md`  | Automática (`packages/server/**`) | Arquitectura Hexagonal/DDD del backend               |
-| Instrucción | `app.instructions.md`     | Automática (`packages/app/**`)    | Arquitectura por dominios del frontend               |
-| Agente      | `@back`                   | `@back` en chat                   | DDD Specialist · genera dominios de servidor         |
-| Agente      | `@front`                  | `@front` en chat                  | React Specialist · genera dominios de frontend       |
-| Skill       | `back-ddd-generator`      | automática / `@back`              | Templates completos para un dominio DDD en server    |
-| Skill       | `front-ddd-generator`     | automática / `@front`             | Templates completos para un dominio React/tRPC       |
-| Skill       | `cross-domain-relations`  | automática / `/cross-domain`      | Patrón para relacionar dominios sin acoplamiento     |
-| Skill       | `sequelize-associations`  | automática / `@back`              | Associations, eager loading y tipado en Sequelize v6 |
-| Skill       | `usecases-migration`      | automática / `/migrate-usecases`  | Mover UseCases de Domain/ → Application/             |
-| Skill       | `commit-conventions`      | automática                        | Commits Conventional, Husky, lint-staged             |
-| Prompt      | `/new-domain-server`      | `/new-domain-server`              | Crea un dominio DDD completo en `packages/server`    |
-| Prompt      | `/new-domain-app`         | `/new-domain-app`                 | Crea un dominio front en `packages/app`              |
-| Prompt      | `/new-component`          | `/new-component`                  | Crea un componente React reutilizable                |
-| Prompt      | `/new-usecase`            | `/new-usecase`                    | Agrega un use case a un dominio existente            |
-| Prompt      | `/new-hook`               | `/new-hook`                       | Agrega un React Query hook a un dominio existente    |
-| Prompt      | `/migrate-usecases`       | `/migrate-usecases`               | Ejecuta la migración de UseCases Domain→Application  |
-| Prompt      | `/cross-domain`           | `/cross-domain`                   | Conecta dos dominios con inyección de use cases      |
-| Hook        | `block-destructive`       | Automático (PreToolUse)           | Bloquea comandos destructivos irreversibles          |
-| Hook        | `format-on-edit`          | Automático (PostToolUse)          | Ejecuta `pnpm format` tras editar/crear archivos     |
+| Tipo        | Nombre                    | Invocación                        | Propósito resumido                                     |
+| ----------- | ------------------------- | --------------------------------- | ------------------------------------------------------ |
+| Instrucción | `copilot-instructions.md` | Automática (global)               | Reglas universales, Director orquestador y flujo       |
+| Instrucción | `server.instructions.md`  | Automática (`packages/server/**`) | Arquitectura Hexagonal/DDD del backend                 |
+| Instrucción | `app.instructions.md`     | Automática (`packages/app/**`)    | Arquitectura por dominios del frontend                 |
+| Instrucción | `memory.instructions.md`  | Automática (`memory/**`)          | Schema frontmatter, break-loop y estructura de memoria |
+| Agente      | `@analyst`                | `@analyst` en chat                | Analista UX · genera `01_requirements.md`              |
+| Agente      | `@back`                   | `@back` en chat                   | DDD Specialist · genera dominios de servidor           |
+| Agente      | `@front`                  | `@front` en chat                  | React Specialist · genera dominios de frontend         |
+| Agente      | `@qa`                     | `@qa` en chat                     | QA Híbrido · valida tsc + ESLint + estructura          |
+| Agente      | `@reviewer`               | `@reviewer` en chat               | Crítico de Estándares · checklist 12 ítems             |
+| Skill       | `back-ddd-generator`      | automática / `@back`              | Templates completos para un dominio DDD en server      |
+| Skill       | `front-ddd-generator`     | automática / `@front`             | Templates completos para un dominio React/tRPC         |
+| Skill       | `cross-domain-relations`  | automática / `/cross-domain`      | Patrón para relacionar dominios sin acoplamiento       |
+| Skill       | `sequelize-associations`  | automática / `@back`              | Associations, eager loading y tipado en Sequelize v6   |
+| Skill       | `usecases-migration`      | automática / `/migrate-usecases`  | Mover UseCases de Domain/ → Application/               |
+| Skill       | `commit-conventions`      | automática                        | Commits Conventional, Husky, lint-staged               |
+| Skill       | `requirements-analyst`    | automática / `@analyst`           | Template `01_requirements.md` con User Stories         |
+| Skill       | `dev-logger`              | automática / `@back` · `@front`   | Template `02_dev_log.md` al cerrar sesión de coder     |
+| Skill       | `qa-runner`               | automática / `@qa`                | Secuencia tsc + lint + estructura → `03_qa_report.md`  |
+| Skill       | `code-reviewer`           | automática / `@reviewer`          | Checklist 12 ítems → `04_review_log.md`                |
+| Prompt      | `/start-task`             | `/start-task`                     | Kickoff del flujo orquestado completo                  |
+| Prompt      | `/qa-check`               | `/qa-check`                       | Trigger manual de @qa sobre el código actual           |
+| Prompt      | `/new-domain-server`      | `/new-domain-server`              | Crea un dominio DDD completo en `packages/server`      |
+| Prompt      | `/new-domain-app`         | `/new-domain-app`                 | Crea un dominio front en `packages/app`                |
+| Prompt      | `/new-component`          | `/new-component`                  | Crea un componente React reutilizable                  |
+| Prompt      | `/new-usecase`            | `/new-usecase`                    | Agrega un use case a un dominio existente              |
+| Prompt      | `/new-hook`               | `/new-hook`                       | Agrega un React Query hook a un dominio existente      |
+| Prompt      | `/migrate-usecases`       | `/migrate-usecases`               | Ejecuta la migración de UseCases Domain→Application    |
+| Prompt      | `/cross-domain`           | `/cross-domain`                   | Conecta dos dominios con inyección de use cases        |
+| Hook        | `block-destructive`       | Automático (PreToolUse)           | Bloquea comandos destructivos irreversibles            |
+| Hook        | `format-on-edit`          | Automático (PostToolUse)          | Ejecuta `pnpm format` tras editar/crear archivos       |
 
 ---
 
@@ -78,8 +88,9 @@ Agente autónomo para el servidor. Solo trabaja en `packages/server/`. Para cual
 3. Lista el árbol de archivos y espera aprobación.
 4. Crea los archivos en orden: Domain → Application → Infrastructure → app.ts → index.ts.
 5. Actualiza `register.ts` y `Router.ts`.
-6. Verifica errores.
-7. (Opcional) Hace handoff a `@front`.
+6. Invoca skill `dev-logger` para escribir `02_dev_log.md`.
+7. Hace handoff a `@qa`.
+8. (Opcional, si tarea full-stack) Hace handoff a `@front` antes del QA.
 
 ---
 
@@ -88,7 +99,7 @@ Agente autónomo para el servidor. Solo trabaja en `packages/server/`. Para cual
 **Ruta:** `.github/agents/front.agent.md`  
 **Invocación:** `@front <tarea>` en el chat.
 
-Agente autónomo para el frontend. Solo trabaja en `packages/app/`. Ejecuta mandatoriamente `front-ddd-generator` al crear dominios. Antes de cualquier creación lee los tipos del dominio servidor. Tiene handoff hacia `@back` cuando se necesita modificar la lógica de negocio.
+Agente autónomo para el frontend. Solo trabaja en `packages/app/`. Ejecuta mandatoriamente `front-ddd-generator` al crear dominios. Antes de cualquier creación lee los tipos del dominio servidor. Tiene handoff hacia `@back` cuando se necesita modificar la lógica de negocio y hacia `@qa` al finalizar la implementación.
 
 **Flujo típico:**
 
@@ -97,12 +108,75 @@ Agente autónomo para el frontend. Solo trabaja en `packages/app/`. Ejecuta mand
 3. Crea archivos en orden: entity → service → routes → router → hooks → pages → index.ts.
 4. Actualiza `Routes.tsx` y opcionalmente `MenuAccess.tsx`.
 5. Verifica errores.
+6. Invoca skill `dev-logger` para escribir `02_dev_log.md`.
+7. Hace handoff a `@qa`.
+
+---
+
+### `@analyst` — Analista Funcional y UX
+
+**Ruta:** `.github/agents/analyst.agent.md`  
+**Invocación:** `@analyst <requerimiento>` en el chat.
+
+Primer eslabón del flujo orquestado. Transforma el input del usuario en `memory/{task_id}/01_requirements.md` con User Stories, criterios de aceptación y propuestas UX. No genera código.
+
+**Flujo típico:**
+
+1. Obtiene o genera el `task_id` activo desde `history_log.json`.
+2. Lee las instrucciones del proyecto.
+3. Ejecuta la skill `requirements-analyst`.
+4. Escribe `memory/{task_id}/01_requirements.md`.
+5. Hace handoff a `@back` o `@front` según el tipo de tarea.
+
+---
+
+### `@qa` — QA Híbrido
+
+**Ruta:** `.github/agents/qa.agent.md`  
+**Invocación:** `@qa` en el chat, o via handoff desde `@back`/`@front`.
+
+Agente de validación estática. Ejecuta TypeScript compiler + ESLint + verificación de estructura de carpetas. No genera tests — los documenta como pendientes. Activa el self-correction loop si detecta errores.
+
+**Flujo típico:**
+
+1. Lee `02_dev_log.md` para obtener los archivos a validar.
+2. Verifica `attempts` (si >= 3, ejecuta break-loop).
+3. Ejecuta `tsc --noEmit` y `pnpm lint`.
+4. Verifica estructura de carpetas.
+5. Escribe `memory/{task_id}/03_qa_report.md`.
+6. Si PASS → handoff a `@reviewer`. Si FAIL → handoff al Coder.
+
+---
+
+### `@reviewer` — Crítico de Estándares
+
+**Ruta:** `.github/agents/reviewer.agent.md`  
+**Invocación:** `@reviewer` en el chat, o via handoff desde `@qa`.
+
+Último filtro antes del cierre de tarea. Solo actúa si `03_qa_report.md` tiene `status: PASS`. Verifica 12 ítems de arquitectura, tipado, seguridad y convenciones.
+
+**Flujo típico:**
+
+1. Confirma que `03_qa_report.md` tiene `status: PASS`.
+2. Lee todos los archivos en `affected_files`.
+3. Ejecuta la skill `code-reviewer` (checklist 12 ítems).
+4. Escribe `memory/{task_id}/04_review_log.md`.
+5. Si APPROVED → indica al Director cerrar la tarea. Si REJECTED → handoff al Coder.
+
+---
+
+## Instrucciones
+
+### `memory.instructions.md`
+
+**Ruta:** `.github/instructions/memory.instructions.md`  
+**Se aplica:** Automáticamente cuando se trabaja en `memory/**`.
+
+Define el sistema de memoria multi-agente: schema YAML frontmatter obligatorio para cada tipo de archivo (`01_requirements.md`, `02_dev_log.md`, `03_qa_report.md`, `04_review_log.md`, `BLOCKED.md`), convención de IDs de tarea, mecanismo break-loop (máx. 3 intentos) y formato del `history_log.json`.
 
 ---
 
 ## Skills
-
-### `back-ddd-generator`
 
 **Ruta:** `.github/skills/back-ddd-generator/SKILL.md`
 
@@ -371,4 +445,101 @@ Ejecuta automáticamente `pnpm format` (Prettier) cada vez que el agente crea o 
 4. Agente: mv Domain/UseCases → Application/UseCases
 5. Agente: Actualiza Domain/index.ts, Application/index.ts, service.ts, app.ts, usecase.ts
 6. Agente: diagnostics/getErrors → corrige si hay errores
+```
+
+---
+
+### `/start-task`
+
+**Ruta:** `.github/prompts/start-task.prompt.md`  
+**Modo:** `agent`
+
+Kickoff del flujo orquestado completo. Actúa como Director del Proyecto: genera el `task_id`, registra la tarea en `memory/history_log.json`, delega a `@analyst` y muestra al usuario la cadena de ejecución completa.
+
+**Variables:** `{{userRequest}}`
+
+**Flujo:** genera task_id → actualiza history_log.json → invoca @analyst → informa al usuario la cadena `analyst → coder → qa → reviewer → cierre`.
+
+---
+
+### `/qa-check`
+
+**Ruta:** `.github/prompts/qa-check.prompt.md`  
+**Modo:** `agent`
+
+Trigger manual del agente `@qa` sobre el código actual. Útil para re-validar después de cambios manuales o para ejecutar QA de forma independiente sin iniciar una tarea nueva.
+
+**Variables:** `{{taskId}}`, `{{scope}}` (`server` | `app` | `both`)
+
+**Flujo:** lee `02_dev_log.md` → ejecuta tsc + lint → verifica estructura → escribe `03_qa_report.md` → handoff según resultado.
+
+---
+
+## Skills — Flujo de Agentes
+
+### `requirements-analyst`
+
+**Ruta:** `.github/skills/requirements-analyst/SKILL.md`  
+**Usada por:** `@analyst`
+
+Template y protocolo para generar `memory/{task_id}/01_requirements.md`. Define el protocolo de análisis (5 preguntas internas), el template con frontmatter + alcance + User Stories + criterios de aceptación + propuestas UX + dependencias cross-domain + estimación de complejidad. Incluye reglas de calidad (criterios verificables, máx. 3 User Stories por tarea).
+
+---
+
+### `dev-logger`
+
+**Ruta:** `.github/skills/dev-logger/SKILL.md`  
+**Usada por:** `@back`, `@front`
+
+Template y protocolo para generar `memory/{task_id}/02_dev_log.md` al finalizar una sesión de implementación. Documenta archivos creados/modificados, decisiones técnicas y deuda técnica conocida. Debe invocarse siempre como último paso antes del handoff a `@qa`.
+
+---
+
+### `qa-runner`
+
+**Ruta:** `.github/skills/qa-runner/SKILL.md`  
+**Usada por:** `@qa`
+
+Secuencia de validación estática: `tsc --noEmit` → `pnpm lint` → verificación de estructura de carpetas contra las instrucciones del proyecto. Define la tabla de determinación de status (`PASS`/`FAIL`), el template de `03_qa_report.md` con sección obligatoria de tests pendientes y reglas de calidad del reporte.
+
+---
+
+### `code-reviewer`
+
+**Ruta:** `.github/skills/code-reviewer/SKILL.md`  
+**Usada por:** `@reviewer`
+
+Checklist de 12 ítems categorizados en Arquitectura Hexagonal (3), TypeScript y Tipado (3), Validación y Seguridad OWASP (3) y Convenciones/Mantenibilidad (3). Distingue ítems críticos (🔴, bloquean aprobación) de recomendados (🟡, generan feedback sin bloquear). Define el template de `04_review_log.md` con checklist completo y sección de feedback con ejemplo de código.
+
+---
+
+## Sistema de Memoria
+
+### Estructura de la carpeta `memory/`
+
+```
+memory/
+  TASK-YYYYMMDD-N/         ← subcarpeta por tarea
+    01_requirements.md     ← @analyst
+    02_dev_log.md          ← @back / @front
+    03_qa_report.md        ← @qa
+    04_review_log.md       ← @reviewer
+  history_log.json         ← índice global (Director)
+  BLOCKED.md               ← break-loop (máx. 3 intentos)
+```
+
+### Self-Correction Loop
+
+```
+@analyst → 01_requirements.md
+     ↓
+@back / @front → código + 02_dev_log.md
+     ↓
+@qa → 03_qa_report.md
+    ├── FAIL (attempts < 3) → @back / @front (incrementa attempts)
+    ├── FAIL (attempts = 3) → BLOCKED.md + notificar humano
+    └── PASS → @reviewer → 04_review_log.md
+                  ├── REJECTED (attempts < 3) → @back / @front
+                  ├── REJECTED (attempts = 3) → BLOCKED.md
+                  └── APPROVED → Director → history_log.json COMPLETED
 ```

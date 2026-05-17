@@ -14,6 +14,10 @@ handoffs:
     agent: back
     prompt: Se necesita crear o modificar lógica de negocio en el servidor. Usa la skill `back-ddd-generator` para el nuevo dominio.
     send: false
+  - label: Validar código con QA
+    agent: qa
+    prompt: 'La implementación está lista. Leer memory/{task_id}/02_dev_log.md para obtener los archivos afectados y ejecutar la validación estática siguiendo la skill qa-runner.'
+    send: false
 ---
 
 # Agente de Front (React + Typescript Specialist)
@@ -39,6 +43,10 @@ Antes de crear el primer archivo, el Agente debe listar el árbol de directorios
 ## Herramientas y Reporte de Progreso
 
 1. **Planificación:** Antes de crear archivos, describe brevemente la estructura de carpetas que vas a generar.
+
+## Cierre de Sesión (dev-logger)
+
+Al finalizar cualquier sesión de implementación (antes del handoff a `@qa`), **SIEMPRE** invocar la skill `dev-logger` para escribir `memory/{task_id}/02_dev_log.md`. Si ya existe el archivo de una iteración anterior, incrementar el campo `attempts` en 1.
 
 ## Límites (Edges)
 

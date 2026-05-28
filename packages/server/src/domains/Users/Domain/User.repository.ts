@@ -2,6 +2,7 @@ import {
   IPagination,
   IRequestContext,
   IPaginationResponse,
+  ISelect,
 } from '@server/Application';
 import { User } from './User.entity';
 
@@ -39,6 +40,21 @@ export interface IChangePasswordPublicRepository extends IRequestContext {
 export interface IGetUsersRepositoryResponse
   extends IPaginationResponse<User[]> {}
 
+export interface IGetSelectUserRepository extends IRequestContext {
+  filters?: {
+    nombre?: string;
+  };
+}
+
+export interface IGetEmailsByUsersIdRepository extends IRequestContext {
+  userIds: number[];
+}
+
+export interface IRenewPasswordRepository extends IRequestContext {
+  mail: string;
+  password: string;
+}
+
 export interface UserRepository {
   getUsers(params: IGetUsersRepository): Promise<IGetUsersRepositoryResponse>;
   registerUser(params: IRegisterUserRepository): Promise<User>;
@@ -47,7 +63,9 @@ export interface UserRepository {
   updateUser(params: IUpdateUserRepository): Promise<number | null>;
   deleteUser(params: IDeleteUserRepository): Promise<number | null>;
   changePassword(params: IChangePasswordRepository): Promise<void | null>;
-  changePasswordPublic(
-    params: IChangePasswordPublicRepository,
-  ): Promise<void | null>;
+  getSelectUser(params: IGetSelectUserRepository): Promise<ISelect[]>;
+  getEmailsByUsersId(params: IGetEmailsByUsersIdRepository): Promise<string[]>;
+  // No queda expuesto por el servicio de Users. Solo se utiliza por medio de Auth.
+  renewPassword(params: IRenewPasswordRepository): Promise<void | null>;
+  // ---
 }

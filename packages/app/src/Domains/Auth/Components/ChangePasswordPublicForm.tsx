@@ -10,7 +10,7 @@ import {
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
-import { useChangePasswordPublic } from '../Hooks';
+import { useRenewPasswordAuth } from '../Hooks';
 import { useSearchParams } from 'react-router-dom';
 
 const formSchema = z
@@ -44,7 +44,7 @@ export const ChangePasswordFormPublic = ({
     },
   });
 
-  const { mutate, isSuccess, isPending } = useChangePasswordPublic();
+  const { mutate, isSuccess, isPending } = useRenewPasswordAuth();
   const token = searchParams.get('token') || '';
 
   if (isSuccess) {
@@ -78,7 +78,7 @@ export const ChangePasswordFormPublic = ({
             <FormItem>
               <FormLabel>Contraseña nueva</FormLabel>
               <FormControl>
-                <Input.Password {...field} />
+                <Input.Password {...field} forceEnabled />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -91,7 +91,7 @@ export const ChangePasswordFormPublic = ({
             <FormItem>
               <FormLabel>Ingrese nuevamente la contraseña nueva</FormLabel>
               <FormControl>
-                <Input.Password {...field} />
+                <Input.Password {...field} forceEnabled />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -107,7 +107,7 @@ export const ChangePasswordFormPublic = ({
               Cancelar
             </Button>
           )}
-          <Button type="submit" isLoading={isPending}>
+          <Button type="submit" isLoading={isPending} forceEnabled>
             Aceptar
           </Button>
         </Container>

@@ -1,4 +1,4 @@
-import { sequelize } from '@server/Infrastructure';
+import { sequelize } from '@server/Infrastructure/Database';
 import {
   CreationOptional,
   DataTypes,
@@ -31,6 +31,6 @@ PermissionsModel.init(
     sequelize,
     paranoid: true,
     timestamps: true,
-    tableName: 'Permisos',
+    tableName: 'permisos',
   },
 );

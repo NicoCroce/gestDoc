@@ -7,15 +7,19 @@ import { DocumentsRoutes } from '@server/domains/Documents';
 import { DocumentsTypesRoutes } from '@server/domains/DocumentsTypes';
 import { CertificatesRoutes } from '@server/domains/Certificates/Infrastructure/Routes';
 import { CertificatesRoutesExpress } from '@server/domains/Certificates/Infrastructure/Routes/CertificatesRoutesExpress';
+import { OwnersysRoutes } from '@server/domains/Ownersyss';
+import { ThemeRoutes } from '@server/domains/Themes';
 
 const MainRouter = () => {
   const AllRouters = {
+    ...OwnersysRoutes(),
     ...UserRoutes(),
     ...AuthRoutes(),
     ...PermissionsRoutes(),
     ...DocumentsRoutes(),
     ...DocumentsTypesRoutes(),
     ...CertificatesRoutes(),
+    ...ThemeRoutes(),
   };
   return router(AllRouters);
 };

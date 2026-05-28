@@ -9,11 +9,11 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
  */
 export const useURLParams = <TParams extends Record<string, string | number>>(
   baseURL: string = '',
-  debounceMs?: number,
+  debounceMs: number = 500,
 ) => {
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
-  const debounceRef = useRef<NodeJS.Timeout>();
+  const debounceRef = useRef<NodeJS.Timeout | undefined>(undefined);
 
   // Convertir searchParams a objeto tipado - se actualiza automáticamente
   const params = useMemo((): TParams | undefined => {

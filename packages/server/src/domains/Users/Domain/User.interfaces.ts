@@ -12,6 +12,7 @@ export interface IRegisterUser extends IRequestContext {
     password: string;
     rePassword: string;
     role: string | null;
+    profile: string | null;
   };
 }
 export interface IGetUser extends IRequestContext {
@@ -30,6 +31,7 @@ export interface IUpdateUser extends IRequestContext {
     mail: string;
     name: string;
     role: string | null;
+    profile: string | null;
   };
 }
 export interface IDeleteUser extends IRequestContext {
@@ -47,6 +49,7 @@ export interface IUser {
   ownerId?: number;
   companyLogo?: string;
   companyName?: string;
+  rol?: string;
 }
 
 export interface IChangePassword extends IRequestContext {
@@ -54,5 +57,27 @@ export interface IChangePassword extends IRequestContext {
     password: string;
     newPassword: string;
     rePassword: string;
+  };
+}
+
+export interface IGetSelectUser extends IRequestContext {
+  input?: {
+    nombre: string;
+  };
+}
+
+export interface IGetEmailsByUsersId extends IRequestContext {
+  input: number[];
+}
+
+export interface IRenewPassword extends IRequestContext {
+  input: { mail: string; newPassword: string; rePassword: string };
+}
+
+export interface IValidateUserPassword extends IRequestContext {
+  input: {
+    mail?: string;
+    id?: number;
+    password: string;
   };
 }

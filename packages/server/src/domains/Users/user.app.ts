@@ -11,7 +11,11 @@ import {
   DeleteUser,
   UpdateUser,
   ChangePassword,
-} from './Domain';
+  GetSelectUser,
+  GetEmailsByUsersId,
+  ValidateUserPassword,
+  RenewPassword,
+} from './Application';
 import { container } from '@server/utils/Container';
 
 export const userApp = {
@@ -24,6 +28,10 @@ export const userApp = {
   _deleteUser: asClass(DeleteUser),
   _updateUser: asClass(UpdateUser),
   _changePassword: asClass(ChangePassword),
+  _getSelectUser: asClass(GetSelectUser),
+  _getEmailsByUsersId: asClass(GetEmailsByUsersId),
+  _renewPassword: asClass(RenewPassword),
+  _validateUserPassword: asClass(ValidateUserPassword),
 };
 
 export const usersController = () =>

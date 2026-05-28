@@ -4,35 +4,28 @@ import { useAddUser, useUpdateUser } from '../../Hooks';
 import { z } from 'zod';
 import { Form } from '@app/Aplication/Components/ui/form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Input } from '@app/Aplication/Components/ui/input';
-import { Button, Container, InputField } from '@app/Aplication/Components';
-
+import {
+  Button,
+  Container,
+  InputField,
+  SelectRoles,
+  Input,
+} from '@app/Aplication/Components';
 import { USERS_ROUTE } from '../../Users.routes';
-import { useEffect, useMemo } from 'react';
+import { useEffect } from 'react';
 import { TUser } from '../../User.entity';
-import { Combobox } from '@app/Aplication/Components/Organisms';
-import { useGetRoleByUser, useGetRoles } from '@app/Domains/Auth';
+import { useGetRoleByUser } from '@app/Domains/Auth';
 import { formSchemaDefinition } from './userForm.schema';
-import { SelectField } from '@app/Aplication/Components/Molecules/FormFields/SelectField';
-import { faUnlink } from '@fortawesome/free-solid-svg-icons';
 
 interface UserFormProps {
   editData?: TUser | null;
 }
 
 export const UserForm = ({ editData = null }: UserFormProps) => {
-  const { data: rolesOptions } = useGetRoles();
-  const { mutate } = useAddUser();
+  const { mutate, isSuccess, isPending } = useAddUser();
   const { mutate: mutateUpdate } = useUpdateUser();
   const navigate = useNavigate();
   const { data: userRole } = useGetRoleByUser(editData?.id);
-
-  const options = useMemo(() => {
-    return rolesOptions?.map((rol) => ({
-      value: rol.name,
-      label: `${rol.name}`,
-    }));
-  }, [rolesOptions]);
 
   const formSchema = formSchemaDefinition(editData);
 
@@ -42,10 +35,17 @@ export const UserForm = ({ editData = null }: UserFormProps) => {
       name: '',
       mail: '',
       role: '',
+      profile: '',
       password: '',
       rePassword: '',
     },
   });
+
+  useEffect(() => {
+    if (isSuccess) {
+      navigate(USERS_ROUTE);
+    }
+  }, [isSuccess, navigate]);
 
   useEffect(() => {
     if (!editData) return;
@@ -53,6 +53,7 @@ export const UserForm = ({ editData = null }: UserFormProps) => {
     form.setValue('name', editData?.name);
     form.setValue('mail', editData?.mail);
     form.setValue('role', userRole || '');
+    form.setValue('profile', String(editData?.id || ''));
   }, [editData, form, userRole]);
 
   const handleSubmit = (values: z.infer<typeof formSchema>) => {
@@ -62,24 +63,16 @@ export const UserForm = ({ editData = null }: UserFormProps) => {
         mail: values.mail,
         name: values.name,
         role: values.role || null,
+        profile: values.profile || null,
       });
     } else {
       mutate(values);
     }
-    navigate(USERS_ROUTE);
   };
 
   const handleCancel = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     e.preventDefault();
     navigate(-1);
-  };
-
-  const handleChangeRol = (value: string) => {
-    form.setValue('role', value);
-  };
-
-  const handleCleanRol = () => {
-    form.setValue('role', undefined);
   };
 
   return (
@@ -93,23 +86,14 @@ export const UserForm = ({ editData = null }: UserFormProps) => {
           control={form.control}
           label="Nombre de Usuario"
         >
-          <Input />
+          <Input type="text" />
         </InputField>
 
         <InputField control={form.control} name="mail" label="Email de Usuario">
           <Input type="email" />
         </InputField>
 
-        <SelectField
-          control={form.control}
-          name="role"
-          label="Rol de Usuario"
-          combobox={
-            <Combobox options={options} onChangeValue={handleChangeRol} />
-          }
-          handleClean={handleCleanRol}
-          handleCleanIcon={faUnlink}
-        />
+        <SelectRoles form={form} name="role" />
 
         {!editData && (
           <>
@@ -118,14 +102,14 @@ export const UserForm = ({ editData = null }: UserFormProps) => {
               control={form.control}
               label="Contraseña de Usuario"
             >
-              <Input type="password" />
+              <Input.Password type="password" />
             </InputField>
             <InputField
               name="rePassword"
               control={form.control}
               label="Ingresse nuevamente la contraseña de Usuario"
             >
-              <Input type="password" />
+              <Input.Password type="password" />
             </InputField>
           </>
         )}
@@ -133,7 +117,7 @@ export const UserForm = ({ editData = null }: UserFormProps) => {
           <Button appearance="cancel" onClick={handleCancel}>
             Cancelar
           </Button>
-          <Button type="submit" appearance="save" />
+          <Button type="submit" appearance="save" isLoading={isPending} />
         </Container>
       </form>
     </Form>

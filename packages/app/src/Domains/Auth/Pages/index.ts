@@ -1,3 +1,3 @@
-export * from './ChangePasswordPublicPage';
-export * from './LoginPage';
-export * from './RestorePasswordPage';
+export * from './Login.page';
+export * from './RenewPassword.page';
+export * from './RestorePassword.page';

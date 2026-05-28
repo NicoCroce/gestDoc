@@ -2,9 +2,9 @@ import { IRequestContext } from '@server/Application';
 import { Permissions } from './Permissions.entity';
 import { Roles } from './Roles.entity';
 
-export interface IGetPermissionsRepository extends IRequestContext {}
-export interface IGetRolesRepository extends IRequestContext {}
-export interface IGetPermissionsByUserRepository extends IRequestContext {}
+export type IGetPermissionsRepository = IRequestContext;
+export type IGetRolesRepository = IRequestContext;
+export type IGetPermissionsByUserRepository = IRequestContext;
 export interface IAssociateUserToRoleRepository extends IRequestContext {
   userId: number;
   role: string;
@@ -17,6 +17,13 @@ export interface IGetRoleByUserRepository extends IRequestContext {
 }
 
 export interface IGetAdminsRepository extends IRequestContext {}
+export interface IGetRoleByUserIdRepository {
+  userId: number;
+}
+
+export interface IGetRolesByMaxHierarchyRepository {
+  maxHierarchy: number;
+}
 
 export interface PermissionsRepository {
   getPermissions(params: IGetPermissionsRepository): Promise<Permissions[]>;
@@ -28,4 +35,8 @@ export interface PermissionsRepository {
   dissociateUserToRole(params: IDissociateUserToRoleRepository): Promise<void>;
   getRoleByUser(params: IGetRoleByUserRepository): Promise<string | null>;
   getAdmins(params: IGetAdminsRepository): Promise<string[]>;
+  getRoleByUserId(params: IGetRoleByUserIdRepository): Promise<Roles | null>;
+  getRolesByMaxHierarchy(
+    params: IGetRolesByMaxHierarchyRepository,
+  ): Promise<Roles[]>;
 }

@@ -1,6 +1,8 @@
 import { container } from '@server/utils/Container';
 import { asClass } from 'awilix';
 import { PermissionsController } from './Infrastructure/Controllers';
+
+import { PermissionsRepositoryImplementation } from './Infrastructure';
 import {
   AssociateUserToRole,
   GetPermissions,
@@ -9,7 +11,6 @@ import {
   GetRoles,
 } from './Domain';
 import { PermissionsService } from './Aplication';
-import { PermissionsRepositoryImplementation } from './Infrastructure';
 import { GetAdmins } from './Domain/UseCases/GetAdmins.usecase';
 
 export const permissionsApp = {

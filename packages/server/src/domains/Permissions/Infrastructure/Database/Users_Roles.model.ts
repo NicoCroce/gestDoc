@@ -1,4 +1,4 @@
-import { sequelize } from '@server/Infrastructure';
+import { sequelize } from '@server/Infrastructure/Database';
 import {
   CreationOptional,
   DataTypes,
@@ -37,6 +37,6 @@ Users_RolesModel.init(
     sequelize,
     paranoid: true,
     timestamps: true,
-    tableName: 'Usuarios_roles',
+    tableName: 'usuarios_roles',
   },
 );

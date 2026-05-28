@@ -50,8 +50,6 @@ export const initMiddlewares = (app: Express) => {
         const statusCode = res.statusCode || res?.statusCode;
         if (statusCode && statusCode >= 400) {
           return `[${requestId}] => ${req.method} - ${decodeURIComponent(req.url)} - ${res.statusCode}`;
-        } else {
-          return `[${requestId}] => ${req.method} - ${decodeURIComponent(req.url)} - ${res.statusCode}`;
         }
       },
       customErrorMessage: function (req, _res, err) {

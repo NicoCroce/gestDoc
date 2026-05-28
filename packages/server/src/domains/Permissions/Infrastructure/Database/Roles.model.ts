@@ -1,4 +1,4 @@
-import { sequelize } from '@server/Infrastructure';
+import { sequelize } from '@server/Infrastructure/Database';
 import {
   CreationOptional,
   DataTypes,
@@ -15,6 +15,7 @@ export class RolesModel extends Model<
 > {
   declare id: CreationOptional<number>;
   declare denominacion: string;
+  declare jerarquia: number;
 
   declare readonly PermissionsModels: NonAttribute<
     InferAttributes<PermissionsModel>
@@ -30,11 +31,12 @@ RolesModel.init(
       allowNull: false,
     },
     denominacion: DataTypes.STRING,
+    jerarquia: DataTypes.INTEGER,
   },
   {
     sequelize,
     paranoid: true,
     timestamps: true,
-    tableName: 'Roles',
+    tableName: 'roles',
   },
 );

@@ -1,14 +1,13 @@
 import { protectedProcedure } from '@server/Infrastructure';
 import { CertificatesServices } from '../../Application';
-import { executeService } from '@server/Application';
+import { executeService, parseDateOnly } from '@server/Application';
 import z from 'zod';
 
 const filterParams = z.object({
   employee: z.string().optional(),
   date: z
-    .string()
-    .transform((arg) => new Date(arg))
-    .or(z.date())
+    .union([z.string(), z.date()])
+    .transform((arg) => parseDateOnly(arg))
     .optional(),
   type: z.number().optional(),
 });

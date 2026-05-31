@@ -1,3 +1,3 @@
 export * from './Date';
-export * from './Email/EmailSender';
+export * from './Email';
 export * from './LoadImages';

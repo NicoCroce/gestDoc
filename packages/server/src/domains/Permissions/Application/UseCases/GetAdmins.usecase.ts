@@ -1,10 +1,9 @@
 import { IUseCase } from '@server/Application/Interfaces/IUseCase';
-import { IGetRoles } from '../Roles.interfaces';
-import { PermissionsRepository } from '../Permissions.repository';
+import { IGetRoles, PermissionsRepository } from '../../Domain';
 import { AppError } from '@server/Application';
 
 export class GetAdmins implements IUseCase<string[]> {
-  constructor(private permissionsRepository: PermissionsRepository) {}
+  constructor(private readonly permissionsRepository: PermissionsRepository) {}
 
   async execute({ requestContext }: IGetRoles): Promise<string[]> {
     try {
@@ -12,7 +11,7 @@ export class GetAdmins implements IUseCase<string[]> {
         requestContext,
       });
     } catch (error) {
-      throw new AppError(`No se obtuvieorn los admins: ${error}`);
+      throw new AppError(`No se obtuvieron los admins: ${error}`);
     }
   }
 }

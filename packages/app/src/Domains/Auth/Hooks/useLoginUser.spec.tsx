@@ -6,9 +6,9 @@ import {
 } from '@tanstack/react-query';
 import { MemoryRouter } from 'react-router-dom';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { MAIN_ROUTE } from '@app/Domains/Main';
 import { AuthService } from '../Auth.service';
 import { useLoginUser } from './useLoginUser';
+import { CERTIFICATES_ROUTES } from '@app/Domains/Certificates';
 
 const {
   navigateMock,
@@ -117,7 +117,7 @@ describe('useLoginUser', () => {
 
     expect(setLoggedMock).toHaveBeenCalledTimes(1);
     expect(setQueryDataMock).toHaveBeenCalledWith(user);
-    expect(navigateMock).toHaveBeenCalledWith(MAIN_ROUTE);
+    expect(navigateMock).toHaveBeenCalledWith(CERTIFICATES_ROUTES);
   });
 
   it('shows the login error without navigating', () => {

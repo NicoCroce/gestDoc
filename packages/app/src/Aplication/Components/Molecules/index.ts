@@ -14,6 +14,7 @@ export * from './MenuItem';
 export * from './Modal';
 export * from './OutletSheet';
 export * from './Select';
+export * from './Selects';
 export * from './Spinner';
 export * from './Text';
 export * from './Title';

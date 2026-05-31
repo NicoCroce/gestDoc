@@ -3,6 +3,7 @@ import {
   executeUseCase,
   IRequestContext,
   normalizeDate,
+  normalizeEndDate,
   uploadImages,
 } from '@server/Application';
 import {
@@ -84,7 +85,7 @@ export class CertificatesServices {
       const _input = {
         ...input,
         startDate: normalizeDate(input.startDate),
-        endDate: normalizeDate(input.endDate),
+        endDate: normalizeEndDate(input.endDate),
       };
 
       const certificate = await executeUseCase({

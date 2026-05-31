@@ -14,13 +14,14 @@ import {
 } from '@app/Aplication/Components/ui/form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMemo } from 'react';
-import { useForm } from 'react-hook-form';
+import { useForm, useWatch } from 'react-hook-form';
 import { z } from 'zod';
 import { useGetCertificatesTypes } from '../../Hooks';
 import { useNavigate } from 'react-router-dom';
 import { Textarea } from '@app/Aplication/Components/ui/textarea';
 import { useAddLicense } from '../../Hooks/useAddLicense';
 import { CERTIFICATES_ROUTES } from '../../Certificates.routes';
+import { ICertificateTypes } from '@server/domains/Certificates';
 import { formSchemeAddLicense } from './AddLicenceScheme';
 import { SelectField } from '@app/Aplication/Components/Molecules/FormFields/SelectField';
 import { DateRange } from '@app/Aplication/Components/Molecules/DateRange/DateRage';
@@ -36,20 +37,21 @@ export const AddLicenseForm = () => {
     defaultValues: {
       reason: undefined,
       type: '',
-      startDate: undefined,
-      endDate: undefined,
+      startDate: '',
+      endDate: '',
       files: undefined,
     },
   });
 
   const options = useMemo(() => {
-    return dataTypes?.map(({ id, name }) => ({
+    return dataTypes?.map(({ id, name }: ICertificateTypes) => ({
       value: String(id),
       label: String(name),
     }));
   }, [dataTypes]);
 
-  const hasFiles = formLicense.watch('type') !== '1';
+  const licenseType = useWatch({ control: formLicense.control, name: 'type' });
+  const hasFiles = licenseType !== '1';
 
   const handleChangeType = (value: string) => {
     formLicense.setValue('type', value);

@@ -24,8 +24,8 @@ export const useAddLicense = () => {
       mutate(
         {
           ...data,
-          startDate: startDate.toISOString(),
-          endDate: endDate.toISOString(),
+          startDate,
+          endDate,
           type: Number(type),
         },
         {

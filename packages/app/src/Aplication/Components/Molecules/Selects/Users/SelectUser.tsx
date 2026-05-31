@@ -1,15 +1,15 @@
-﻿import { FieldValues, Path, UseFormReturn } from 'react-hook-form';
+﻿import { FieldPath, FieldValues, UseFormReturn } from 'react-hook-form';
 import { useGetUsers } from './Hooks/useGetUsers';
 import { SelectBase } from '../SelectBase';
-interface SelectUserProps<T extends FieldValues> {
-  name: Path<T>;
+interface SelectUserProps<T extends FieldValues, TName extends FieldPath<T>> {
+  name: TName;
   form: UseFormReturn<T>;
 }
 
-export const SelectUser = <T extends FieldValues>({
+export const SelectUser = <T extends FieldValues, TName extends FieldPath<T>>({
   name,
   form,
-}: SelectUserProps<T>) => {
+}: SelectUserProps<T, TName>) => {
   const { data: UserOptions, isLoading } = useGetUsers();
 
   return (

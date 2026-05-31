@@ -5,13 +5,13 @@ import { PermissionsController } from './Infrastructure/Controllers';
 import { PermissionsRepositoryImplementation } from './Infrastructure';
 import {
   AssociateUserToRole,
+  GetAdmins,
   GetPermissions,
   GetPermissionsByUser,
   GetRoleByUser,
   GetRoles,
-} from './Domain';
-import { PermissionsService } from './Aplication';
-import { GetAdmins } from './Domain/UseCases/GetAdmins.usecase';
+  PermissionsService,
+} from './Application';
 
 export const permissionsApp = {
   permissionsRepository: asClass(PermissionsRepositoryImplementation),

@@ -94,7 +94,7 @@ OwnersysModel.init(
     paranoid: true,
     modelName: 'Ownersys',
     timestamps: true,
-    tableName: 'sis_propietarios',
+    tableName: 'Sis_propietarios',
   },
 );
 

@@ -24,7 +24,6 @@ import { TuseGetDocuments } from '../../Hooks';
 import { DocumentsListByUser } from './DocumentsListByUser';
 import { TuseGetDocumentsByCompany } from '@app/Domains/Admin/Hooks';
 import { FiltersDocumentsForm } from '../FiltersDocumentsForm';
-import { DOCUMENTS_DASHBOARD } from '@app/Domains/Admin';
 
 interface DocumentsListWrapperProps {
   service: TuseGetDocuments | TuseGetDocumentsByCompany;
@@ -35,24 +34,20 @@ export const DocumentsListWrapper = ({
   service,
   segmented = false,
 }: DocumentsListWrapperProps) => {
-  const { searchParams, updateParams } =
-    useURLParams<TDocumentSearch>(DOCUMENTS_DASHBOARD);
-  const [isState, setState] = useState<TStateDocument>(
-    searchParams?.state || PENDING,
-  );
+  const { searchParams, updateParams } = useURLParams<TDocumentSearch>();
+  const isState = (searchParams?.state || PENDING) as TStateDocument;
 
   const [filtersIsOpen, setFiltersIsOpen] = useState(false);
   useViewDocument();
   useGetDocumentsTypes();
 
   useEffect(() => {
-    const value = searchParams?.state || PENDING;
-    updateParams({ state: value });
-    setState(value);
+    if (!searchParams?.state) {
+      updateParams({ state: PENDING });
+    }
   }, [searchParams?.state, updateParams]);
 
   const handleTabsChange = (value: string) => {
-    setState(value as TStateDocument);
     updateParams({ state: value, id: undefined });
   };
 
@@ -63,17 +58,16 @@ export const DocumentsListWrapper = ({
   return (
     <>
       <Tabs
-        defaultValue={isState}
         className="w-full flex flex-col gap-4"
         onValueChange={handleTabsChange}
         value={isState}
       >
         <Container row>
           <TabsList className="grid w-full grid-cols-2">
-            <TabsTrigger value={PENDING} className="flex-auto">
+            <TabsTrigger value={PENDING} className="flex-auto cursor-pointer">
               Pendientes
             </TabsTrigger>
-            <TabsTrigger value={VALIDATED} className="flex-auto">
+            <TabsTrigger value={VALIDATED} className="flex-auto cursor-pointer">
               Validados
             </TabsTrigger>
           </TabsList>

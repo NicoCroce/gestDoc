@@ -5,8 +5,6 @@ import { User } from '../../Domain/User.entity';
 import { IRegisterUser } from '../../Domain/User.interfaces';
 import { AssociateUserToRole } from '@server/domains/Permissions';
 import { AssociateUserToProfile } from '@server/domains/Userprofiles';
-import { EmailSender, emailTemplates } from '@server/Application';
-import { logger } from '@server/utils/pino';
 
 export class RegisterUser implements IUseCase<User> {
   constructor(
@@ -85,25 +83,6 @@ export class RegisterUser implements IUseCase<User> {
       } catch {
         throw new AppError('No se pudo asignar el perfil');
       }
-    }
-
-    // Enviar email de notificación al usuario
-    try {
-      const emailTemplate = emailTemplates.newUserRegistration({
-        userName: name,
-        userEmail: mail,
-      });
-
-      await EmailSender({
-        to: [mail],
-        subject: emailTemplate.subject,
-        body: emailTemplate.body,
-      });
-
-      logger.info(`Email de bienvenida enviado a ${mail}`);
-    } catch (error) {
-      logger.error(error, `Error al enviar email de bienvenida a ${mail}:`);
-      // No lanzamos error para que no falle el registro si falla el email
     }
 
     return createdUser;

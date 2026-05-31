@@ -14,6 +14,7 @@ import {
 import { v4 as uuidv4 } from 'uuid';
 import { useGetCertificates } from '../Hooks';
 import { useState } from 'react';
+import { ICertificate } from '..';
 
 export const CertificateListPage = () => {
   const { data } = useGetCertificates();
@@ -39,7 +40,9 @@ export const CertificateListPage = () => {
                 Certificados correspondientes al año {year}
               </Title>
               <Container block className="md:mx-14">
-                <CertificatesGrid certificatesList={certificates} />
+                <CertificatesGrid
+                  certificatesList={certificates as ICertificate[]}
+                />
               </Container>
             </Container>
           ))
@@ -48,6 +51,7 @@ export const CertificateListPage = () => {
           open={filtersIsOpen}
           closeSheet={handleFilters}
           title="Filtros de Certificados"
+          description="Puedes filtrar los certificados por los siguientes parámetros"
         >
           <FiltersCertificatesForm />
         </FiltersSheet>

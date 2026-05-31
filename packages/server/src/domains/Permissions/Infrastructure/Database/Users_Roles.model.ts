@@ -37,6 +37,6 @@ Users_RolesModel.init(
     sequelize,
     paranoid: true,
     timestamps: true,
-    tableName: 'usuarios_roles',
+    tableName: 'Usuarios_roles',
   },
 );

@@ -10,23 +10,34 @@ import { executeUseCase as executeUseCaseMock } from '@server/Application/Adapte
 
 describe('UsersService', () => {
   const requestContext = new RequestContext(1, 'req-1', 10);
+  const changePasswordUseCase = {} as never;
 
   beforeEach(() => vi.clearAllMocks());
 
   const buildService = () =>
-    new UsersService(
-      {} as never, // getUser
-    );
+    new UsersService(changePasswordUseCase, {} as never, {} as never);
 
   it('delegates changePassword to executeUseCase', async () => {
-    vi.mocked(executeUseCaseMock).mockResolvedValue(undefined as never);
+    vi.mocked(executeUseCaseMock).mockResolvedValue(undefined);
 
     const service = buildService();
+    const input = {
+      password: 'old',
+      newPassword: 'new',
+      rePassword: 'new',
+    };
+
     await expect(
       service.changePassword({
-        input: { password: 'old', newPassword: 'new', rePassword: 'new' },
+        input,
         requestContext,
       }),
     ).resolves.toBeUndefined();
+
+    expect(executeUseCaseMock).toHaveBeenCalledWith({
+      useCase: changePasswordUseCase,
+      input,
+      requestContext,
+    });
   });
 });

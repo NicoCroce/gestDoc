@@ -12,59 +12,30 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { useLoginUser } from '../Hooks';
-import { useState } from 'react';
-import { useRegisterUser } from '../Hooks/useRegisterUser';
 import { Link } from 'react-router-dom';
 import { RESTORE_PASSWORD } from '../Auth.routes';
 
 export const LoginForm = () => {
   const { mutate: mutateLogin, isPending } = useLoginUser();
-  const [registrationMode, setRegistrationMode] = useState(false);
-  const { mutate: mutateRegister, isPending: isPendingRegister } =
-    useRegisterUser(() => setRegistrationMode(false));
 
-  const formSchema = z
-    .object({
-      mail: z.string().min(1, { message: 'Enter an email' }).email({
-        message: 'Enter a correct format email',
-      }),
-      name: registrationMode
-        ? z.string().min(1, { message: 'Ingrese un nombre válido' })
-        : z.string(),
-      password: z.string().min(8, {
-        message: 'La contraseña debe ser mayor a 8 caracteres',
-      }),
-      rePassword: registrationMode
-        ? z.string().min(8, {
-            message: 'La contraseña debe ser mayor a 8 caracteres',
-          })
-        : z.string(),
-    })
-    .refine(
-      (data) => {
-        if (registrationMode) {
-          return data.password === data.rePassword;
-        }
-        return true;
-      },
-      {
-        message: 'Las contraseñas no coinciden',
-        path: ['rePassword'],
-      },
-    );
+  const formSchema = z.object({
+    mail: z.string().min(1, { message: 'Enter an email' }).email({
+      message: 'Enter a correct format email',
+    }),
+    password: z.string().min(8, {
+      message: 'La contraseña debe ser mayor a 8 caracteres',
+    }),
+  });
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       mail: '',
-      name: '',
       password: '',
-      rePassword: '',
     },
   });
 
   const handleSubmit = (values: z.infer<typeof formSchema>) => {
-    if (registrationMode) return mutateRegister(values);
     mutateLogin(values);
   };
 
@@ -87,21 +58,6 @@ export const LoginForm = () => {
             </FormItem>
           )}
         />
-        {registrationMode && (
-          <FormField
-            name="name"
-            control={form.control}
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Nombre de usuario</FormLabel>
-                <FormControl>
-                  <Input {...field} forceEnabled />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        )}
         <FormField
           name="password"
           control={form.control}
@@ -115,32 +71,13 @@ export const LoginForm = () => {
             </FormItem>
           )}
         />
-        {registrationMode && (
-          <FormField
-            name="rePassword"
-            control={form.control}
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Ingrese nuevamente la Constraseña</FormLabel>
-                <FormControl>
-                  <Input.Password {...field} forceEnabled />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        )}
         <Container justify="between" className="md:flex-row !mt-4">
           <Link to={RESTORE_PASSWORD} className="flex items-center">
             ¿Olvidaste tu contraseña?
           </Link>
           <Container row justify="end">
-            <Button
-              type="submit"
-              isLoading={isPending || isPendingRegister}
-              forceEnabled
-            >
-              {registrationMode ? 'Aceptar' : 'Ingresar'}
+            <Button type="submit" isLoading={isPending} forceEnabled>
+              Ingresar
             </Button>
           </Container>
         </Container>

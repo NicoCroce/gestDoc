@@ -1,41 +1,6 @@
-import { IPagination, IRequestContext } from '@server/Application';
-
-export interface IGetUsers extends IRequestContext {
-  input?: {
-    name?: string;
-  } & IPagination;
-}
-export interface IRegisterUser extends IRequestContext {
-  input: {
-    mail: string;
-    name: string;
-    password: string;
-    rePassword: string;
-    role: string | null;
-    profile: string | null;
-  };
-}
+import { IRequestContext } from '@server/Application';
 export interface IGetUser extends IRequestContext {
   input: number; // user id
-}
-export interface IValidateUser extends IRequestContext {
-  input: {
-    id?: number;
-    mail?: string;
-  };
-}
-
-export interface IUpdateUser extends IRequestContext {
-  input: {
-    id: number;
-    mail: string;
-    name: string;
-    role: string | null;
-    profile: string | null;
-  };
-}
-export interface IDeleteUser extends IRequestContext {
-  input: number; // User Id
 }
 
 export interface IUser {
@@ -57,12 +22,6 @@ export interface IChangePassword extends IRequestContext {
     password: string;
     newPassword: string;
     rePassword: string;
-  };
-}
-
-export interface IGetSelectUser extends IRequestContext {
-  input?: {
-    nombre: string;
   };
 }
 

@@ -9,7 +9,7 @@ export const LoginPage = () => {
   return (
     <AuthPageLayout
       title="Iniciar sesión"
-      left={<LeftContentPage title="MacroGest" subtitle="Macrosistemas" />}
+      left={<LeftContentPage title="GestDoc" subtitle="Macrosistemas" />}
       background={bg}
     >
       <LoginForm />

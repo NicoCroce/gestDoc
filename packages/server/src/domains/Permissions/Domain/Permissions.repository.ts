@@ -16,7 +16,7 @@ export interface IGetRoleByUserRepository extends IRequestContext {
   userId: number;
 }
 
-export interface IGetAdminsRepository extends IRequestContext {}
+export type IGetAdminsRepository = IRequestContext;
 export interface IGetRoleByUserIdRepository {
   userId: number;
 }

@@ -50,7 +50,7 @@ describe('LoginPage', () => {
       '/images/login.png',
     );
     expect(screen.getByText('Iniciar sesión')).toBeDefined();
-    expect(screen.getByText('MacroGest - Macrosistemas')).toBeDefined();
+    expect(screen.getByText('GestDoc - Macrosistemas')).toBeDefined();
     expect(screen.getByText('login-form')).toBeDefined();
   });
 });

@@ -4,18 +4,12 @@ import userEvent from '@testing-library/user-event';
 import { MemoryRouter } from 'react-router-dom';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { useLoginUser } from '../Hooks';
-import { useRegisterUser } from '../Hooks/useRegisterUser';
 import { LoginForm } from './LoginForm';
 
 const loginMutationMock = vi.fn();
-const registerMutationMock = vi.fn();
 
 vi.mock('../Hooks', () => ({
   useLoginUser: vi.fn(),
-}));
-
-vi.mock('../Hooks/useRegisterUser', () => ({
-  useRegisterUser: vi.fn(),
 }));
 
 const renderLoginForm = () =>
@@ -32,11 +26,7 @@ describe('LoginForm', () => {
     vi.mocked(useLoginUser).mockReturnValue({
       mutate: loginMutationMock,
       isPending: false,
-    } as never);
-    vi.mocked(useRegisterUser).mockReturnValue({
-      mutate: registerMutationMock,
-      isPending: false,
-    } as never);
+    } as unknown as ReturnType<typeof useLoginUser>);
   });
 
   it('renders login fields, submit action and restore password link', () => {
@@ -95,7 +85,7 @@ describe('LoginForm', () => {
     vi.mocked(useLoginUser).mockReturnValue({
       mutate: loginMutationMock,
       isPending: true,
-    } as never);
+    } as unknown as ReturnType<typeof useLoginUser>);
 
     renderLoginForm();
 

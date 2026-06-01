@@ -3,16 +3,9 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { useGetUser } from './useGetUser';
 import { UsersService } from '../Users.service';
 
-const { useQueryMock, useURLParamsMock, getCacheDataMock, refetchMock } =
-  vi.hoisted(() => ({
-    useQueryMock: vi.fn(),
-    useURLParamsMock: vi.fn(),
-    getCacheDataMock: vi.fn(),
-    refetchMock: vi.fn(),
-  }));
-
-vi.mock('@app/Aplication/Hooks/useURLParams', () => ({
-  useURLParams: useURLParamsMock,
+const { useQueryMock, refetchMock } = vi.hoisted(() => ({
+  useQueryMock: vi.fn(),
+  refetchMock: vi.fn(),
 }));
 
 vi.mock('../Users.service', () => ({
@@ -21,13 +14,6 @@ vi.mock('../Users.service', () => ({
       useQuery: useQueryMock,
     },
   },
-}));
-
-vi.mock('./useCacheUsers', () => ({
-  useCacheUsers: () => ({
-    getData: getCacheDataMock,
-    invalidate: vi.fn(),
-  }),
 }));
 
 const mockUser = { id: 1, name: 'Alice', mail: 'alice@test.com' };
@@ -40,14 +26,12 @@ const Harness = ({ id }: { id?: number }) => {
 describe('useGetUser', () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    useURLParamsMock.mockReturnValue({ searchParams: { name: '' } });
     refetchMock.mockResolvedValue({ data: mockUser });
     useQueryMock.mockReturnValue({
       isFetched: false,
       isFetching: false,
       refetch: refetchMock,
     });
-    getCacheDataMock.mockReturnValue(null);
   });
 
   it('calls useQuery with id=0 when id is undefined', () => {
@@ -66,9 +50,7 @@ describe('useGetUser', () => {
     });
   });
 
-  it('calls refetch when user is not cached and not yet fetched', async () => {
-    getCacheDataMock.mockReturnValue(null);
-
+  it('calls refetch when user is not fetched yet', async () => {
     render(<Harness id={1} />);
 
     await waitFor(() => {
@@ -76,18 +58,7 @@ describe('useGetUser', () => {
     });
   });
 
-  it('does NOT call refetch when user is found in cache', async () => {
-    getCacheDataMock.mockReturnValue({ data: [mockUser] });
-
-    render(<Harness id={1} />);
-
-    await waitFor(() => {
-      expect(refetchMock).not.toHaveBeenCalled();
-    });
-  });
-
   it('does NOT call refetch when isFetching is true', async () => {
-    getCacheDataMock.mockReturnValue(null);
     useQueryMock.mockReturnValue({
       isFetched: false,
       isFetching: true,
@@ -102,7 +73,6 @@ describe('useGetUser', () => {
   });
 
   it('does NOT call refetch when isFetched is already true', async () => {
-    getCacheDataMock.mockReturnValue(null);
     useQueryMock.mockReturnValue({
       isFetched: true,
       isFetching: false,

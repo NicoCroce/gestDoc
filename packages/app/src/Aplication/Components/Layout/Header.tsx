@@ -6,7 +6,7 @@ import { Button } from '../ui/button';
 import { AccountMenu } from '../Organisms/Menu/AccountMenu';
 import { useDevice, useGlobalStore } from '@app/Aplication/Hooks';
 import { Container } from './Container';
-import img from '@app/Aplication/Images/icon-192x192.png';
+import img from '/images/icons/launchericon-192x192.png';
 import { Title } from '../Molecules';
 
 export const Header = () => {

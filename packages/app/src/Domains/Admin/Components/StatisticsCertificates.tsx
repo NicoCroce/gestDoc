@@ -12,7 +12,7 @@ export const StatisticsCertificates = () => {
 
   return (
     <Card>
-      <Container className="md:flex-row justify-around">
+      <Container className="md:flex-row" justify="between">
         <PieChartComponent
           chartData={dataChartTotalActivas}
           total={statistics?.actives || 0}

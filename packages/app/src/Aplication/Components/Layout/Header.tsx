@@ -35,7 +35,7 @@ export const Header = () => {
         <img src={img} width={36} className="p-1 grayscale-[50%]" />
         <Container space="none">
           <Title variant="h3" className="text-primary">
-            MacroGest
+            GestDoc
           </Title>
         </Container>
       </Container>

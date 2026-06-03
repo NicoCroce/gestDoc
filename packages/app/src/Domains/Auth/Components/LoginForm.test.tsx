@@ -32,6 +32,9 @@ vi.mock('@fortawesome/free-solid-svg-icons', () => ({
   faCircleCheck: {},
   faFloppyDisk: {},
   faTrashCan: {},
+  faThumbsUp: {},
+  faThumbsDown: {},
+  faClockRotateLeft: {},
 }));
 
 const renderForm = () => renderWithProviders(<LoginForm />);

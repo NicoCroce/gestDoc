@@ -30,6 +30,9 @@ vi.mock('@fortawesome/free-solid-svg-icons', () => ({
   faTrashCan: {},
   faEdit: {},
   faTrash: {},
+  faThumbsUp: {},
+  faThumbsDown: {},
+  faClockRotateLeft: {},
 }));
 
 vi.mock('@app/Aplication/Hooks/useIsEditable', () => ({

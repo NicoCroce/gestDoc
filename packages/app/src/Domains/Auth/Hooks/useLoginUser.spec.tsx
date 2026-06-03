@@ -8,7 +8,6 @@ import { MemoryRouter } from 'react-router-dom';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { AuthService } from '../Auth.service';
 import { useLoginUser } from './useLoginUser';
-import { CERTIFICATES_ROUTES } from '@app/Domains/Certificates';
 
 const {
   navigateMock,
@@ -117,7 +116,7 @@ describe('useLoginUser', () => {
 
     expect(setLoggedMock).toHaveBeenCalledTimes(1);
     expect(setQueryDataMock).toHaveBeenCalledWith(user);
-    expect(navigateMock).toHaveBeenCalledWith(CERTIFICATES_ROUTES);
+    expect(navigateMock).toHaveBeenCalledWith('/documents');
   });
 
   it('shows the login error without navigating', () => {

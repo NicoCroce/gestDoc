@@ -1,5 +1,4 @@
 import { Container } from '@app/Aplication';
-import { MenuUsers } from './Users';
 import { MenuAuth } from './Auth';
 import { MenuDocuments } from './Documents/MenuDocuments';
 import { MenuCertificates } from './Certificates/MenuCertificates';
@@ -12,7 +11,6 @@ export const MenuAccess = () => (
   <>
     <Container id="sections" space="small">
       <MenuDashboard />
-      <MenuUsers />
       <MenuDocuments />
       <MenuCertificates />
     </Container>

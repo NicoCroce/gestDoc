@@ -1,15 +1,12 @@
 import { Route } from 'react-router-dom';
-import {
-  LoginPage,
-  RestorePasswordPage,
-  ChangePasswordPublicPage,
-} from './Pages';
+import { ChangePasswordPublicPage, LoginPage } from './Pages';
 import {
   AUTH_ROUTE,
   CHANGE_PASSWORD_PUBLIC,
+  RENEW_PASSWORD,
   RESTORE_PASSWORD,
 } from './Auth.routes';
-import {} from './Pages';
+import { RestorePasswordPage } from './Pages/RestorePassword.page';
 
 export const AuthRouter = [
   <Route key="auth" path={AUTH_ROUTE} element={<LoginPage />} />,
@@ -25,7 +22,7 @@ export const AuthRouter = [
   />,
   <Route
     key="change-password-alias"
-    path="/auth/reestablecer"
+    path={RENEW_PASSWORD}
     element={<ChangePasswordPublicPage />}
   />,
 ];

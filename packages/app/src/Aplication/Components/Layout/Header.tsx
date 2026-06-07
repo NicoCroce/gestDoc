@@ -6,7 +6,7 @@ import { Button } from '../ui/button';
 import { AccountMenu } from '../Organisms/Menu/AccountMenu';
 import { useDevice, useGlobalStore } from '@app/Aplication/Hooks';
 import { Container } from './Container';
-import img from '@app/Aplication/Images/icon-192x192.png';
+import img from '/images/icons/launchericon-192x192.png';
 import { Title } from '../Molecules';
 
 export const Header = () => {
@@ -32,11 +32,7 @@ export const Header = () => {
         space="small"
         className="relative z-10"
       >
-        <img
-          src={img}
-          width={36}
-          className="rounded-full border-2 border-primary"
-        />
+        <img src={img} width={36} className="p-1 grayscale-[50%]" />
         <Container space="none">
           <Title variant="h3" className="text-primary">
             GestDoc

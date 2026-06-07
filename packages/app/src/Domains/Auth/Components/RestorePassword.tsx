@@ -7,7 +7,7 @@ import {
   FormLabel,
   FormMessage,
 } from '@app/Aplication/Components/ui/form';
-import { Input } from '@app/Aplication/Components/ui/input';
+import { Input } from '@app/Aplication/Components';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
@@ -44,18 +44,21 @@ export const RestorePassword = () => {
             <FormItem>
               <FormLabel>Email</FormLabel>
               <FormControl>
-                <Input {...field} />
+                <Input {...field} forceEnabled />
               </FormControl>
               <FormMessage />
             </FormItem>
           )}
         />
         <Container row justify="end">
-          <Button type="submit">Recuperar contraseña</Button>
+          <Button type="submit" forceEnabled>
+            Recuperar contraseña
+          </Button>
           <Button
             type="button"
             appearance="cancel"
             onClick={() => navigate(AUTH_ROUTE)}
+            forceEnabled
           >
             Cancelar
           </Button>

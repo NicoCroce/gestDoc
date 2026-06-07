@@ -1,8 +1,7 @@
 import { Request, RequestHandler } from 'express';
-
-import fs from 'fs';
+import fs from 'node:fs';
 import multer from 'multer';
-import path from 'path';
+import path from 'node:path';
 
 const storage = (userId: number) =>
   multer.diskStorage({

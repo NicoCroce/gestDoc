@@ -1,13 +1,15 @@
 import { axios } from '@server/utils/axios';
 import { AuthRepository, IRestorePasswordRepository } from '../../Domain';
 
+const RESTORE_PASSWORD_ENDPOINT = '/nuevousuario/sendReestablecer';
+
 export class AuthRepositoryImplementation implements AuthRepository {
   async restorePassword({
     mail,
     requestContext,
   }: IRestorePasswordRepository): Promise<void> {
     await axios.post(
-      '/nuevousuario/sendReestablecer',
+      RESTORE_PASSWORD_ENDPOINT,
       { email: mail },
       {
         headers: {

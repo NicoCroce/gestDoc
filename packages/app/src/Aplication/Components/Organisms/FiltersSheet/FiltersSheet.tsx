@@ -20,17 +20,15 @@ export const FiltersSheet = ({
   closeSheet,
   children,
   description = 'Puedes filtrar los documentos por los siguientes parámetros',
-  title,
+  title = 'Filtros de Documentos',
 }: IFiltersSheet) => {
   return (
     <Sheet defaultOpen={false} open={open} onOpenChange={closeSheet}>
       <SheetContent>
         {description && title && (
           <SheetHeader className="text-left">
-            {title && <SheetTitle>Filtros de Documentos</SheetTitle>}
-            <SheetDescription>
-              Puedes filtrar los documentos por los siguientes parámetros
-            </SheetDescription>
+            {title && <SheetTitle>{title}</SheetTitle>}
+            <SheetDescription>{description}</SheetDescription>
           </SheetHeader>
         )}
         {children && children}

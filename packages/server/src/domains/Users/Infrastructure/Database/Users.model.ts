@@ -1,7 +1,7 @@
+import { sequelize } from '@server/Infrastructure/Database';
 import { CompaniesModel } from '@server/domains/Companies/Infrastructure';
 import { RolesModel } from '@server/domains/Permissions';
 import { Users_RolesModel } from '@server/domains/Permissions/Infrastructure/Database/Users_Roles.model';
-import { sequelize } from '@server/Infrastructure';
 import {
   DataTypes,
   InferAttributes,
@@ -36,6 +36,7 @@ export class UserModel extends Model<
   >;
 
   declare readonly RolesModels: NonAttribute<RolesModel[]>;
+  declare readonly UserProfileModels: NonAttribute<unknown[]>;
 
   declare createdAt: CreationOptional<Date>;
   declare updatedAt?: CreationOptional<Date>;

@@ -1,5 +1,6 @@
 export * from './AlertDialog';
 export * from './Button';
+export * from './Checkbox';
 export * from './ConfirmWithPassword';
 export * from './DatePicker';
 export * from './DateRange';
@@ -13,6 +14,7 @@ export * from './MenuItem';
 export * from './Modal';
 export * from './OutletSheet';
 export * from './Select';
+export * from './Selects';
 export * from './Spinner';
 export * from './Text';
 export * from './Title';

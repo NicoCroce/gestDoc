@@ -51,7 +51,7 @@ export const EmailSender = async ({ to, body, subject }: SendEmailProps) => {
 
     return response.data;
   } catch (error) {
-    logger.error('Error al enviar el email:', error);
+    logger.error({ err: error }, 'Error al enviar el email');
     throw error;
   }
 };

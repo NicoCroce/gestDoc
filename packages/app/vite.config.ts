@@ -15,10 +15,13 @@ export default defineConfig({
       // add this to cache all the
       // static assets in the public folder
       includeAssets: ['**/*'],
+      devOptions: {
+        enabled: false,
+      },
       manifest: {
-        name: 'Macrosistemas',
-        short_name: 'Macrosistemas',
-        theme_color: '#3c3c3c',
+        name: 'GestDoc',
+        short_name: 'GestDoc',
+        theme_color: '#000000',
         background_color: '#ffffff',
         display: 'standalone',
         orientation: 'portrait',
@@ -26,42 +29,47 @@ export default defineConfig({
         start_url: '/',
         icons: [
           {
-            src: 'images/icons/icon-72x72.png',
+            src: 'images/icons/launchericon-48x48.png',
+            sizes: '48x48',
+            type: 'image/png',
+          },
+          {
+            src: 'images/icons/launchericon-72x72.png',
             sizes: '72x72',
             type: 'image/png',
           },
           {
-            src: 'images/icons/icon-96x96.png',
+            src: 'images/icons/launchericon-96x96.png',
             sizes: '96x96',
             type: 'image/png',
           },
           {
-            src: 'images/icons/icon-128x128.png',
+            src: 'images/icons/launchericon-128x128.png',
             sizes: '128x128',
             type: 'image/png',
           },
           {
-            src: 'images/icons/icon-144x144.png',
+            src: 'images/icons/launchericon-144x144.png',
             sizes: '144x144',
             type: 'image/png',
           },
           {
-            src: 'images/icons/icon-152x152.png',
+            src: 'images/icons/launchericon-152x152.png',
             sizes: '152x152',
             type: 'image/png',
           },
           {
-            src: 'images/icons/icon-192x192.png',
+            src: 'images/icons/launchericon-192x192.png',
             sizes: '192x192',
             type: 'image/png',
           },
           {
-            src: 'images/icons/icon-384x384.png',
+            src: 'images/icons/launchericon-384x384.png',
             sizes: '384x384',
             type: 'image/png',
           },
           {
-            src: 'images/icons/icon-512x512.png',
+            src: 'images/icons/launchericon-512x512.png',
             sizes: '512x512',
             type: 'image/png',
           },

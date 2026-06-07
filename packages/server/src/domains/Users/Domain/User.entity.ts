@@ -13,6 +13,8 @@ export class User {
     private readonly _ownerId?: number,
     private readonly _companyLogo?: string,
     private readonly _companyName?: string,
+    private readonly _rol?: string,
+    private readonly _tema?: number,
   ) {}
 
   static create({
@@ -26,6 +28,7 @@ export class User {
     ownerId,
     companyLogo,
     companyName,
+    rol,
   }: IUser) {
     const userId = id ? new UserId(id) : undefined;
     const userPassword = password ? new UserPassword(password) : undefined;
@@ -40,6 +43,7 @@ export class User {
       ownerId,
       companyLogo,
       companyName,
+      rol,
     );
   }
 
@@ -58,6 +62,7 @@ export class User {
       ownerId: this._ownerId,
       companyLogo: this._companyLogo,
       companyName: this._companyName,
+      rol: this._rol,
     };
   }
 

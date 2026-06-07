@@ -12,7 +12,7 @@ export const StatisticsCertificates = () => {
 
   return (
     <Card>
-      <Container className="md:flex-row justify-around">
+      <Container className="md:flex-row" justify="between">
         <PieChartComponent
           chartData={dataChartTotalActivas}
           total={statistics?.actives || 0}
@@ -46,24 +46,6 @@ export const StatisticsCertificates = () => {
           }}
           labelCenter="Empleado/s"
         />
-        {/*  <Container justify="center" className="p-4">
-          <Container className="grid grid-cols-[auto,100px] gap-4 justify-center">
-            <Title variant="h4">Total de Documentos:</Title>
-            <Badge variant="secondary" className="justify-center">
-              {statistics?.total}
-            </Badge>
-
-            <Title variant="h4">Documentos pendientes:</Title>
-            <Badge variant="secondary" className="justify-center">
-              {statistics?.pending}
-            </Badge>
-
-            <Title variant="h4">Documentos validados:</Title>
-            <Badge variant="secondary" className="justify-center">
-              {statistics?.validated}
-            </Badge>
-          </Container>
-        </Container> */}
       </Container>
     </Card>
   );

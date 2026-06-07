@@ -1,17 +1,15 @@
-import {
-  Container,
-  PieChartComponent,
-  Title,
-} from '@app/Aplication/Components';
-import { Badge } from '@app/Aplication/Components/ui/badge';
+import { Container, PieChartComponent } from '@app/Aplication/Components';
 import { Card } from '@app/Aplication/Components/ui/card';
+import { CheckCircle2, Clock, FileText } from 'lucide-react';
+import { StatCard } from './StatCard';
 import { useGetStatisticsDocuments } from '../Hooks';
 
 export const Statistics = () => {
   const { dataChart, data: statistics } = useGetStatisticsDocuments();
+
   return (
     <Card>
-      <Container className="md:flex-row justify-around">
+      <Container className="md:flex-row justify-around items-center">
         <PieChartComponent
           chartData={dataChart}
           total={statistics?.total || 0}
@@ -24,23 +22,34 @@ export const Statistics = () => {
           }}
           labelCenter="Documentos"
         />
-        <Container justify="center" className="p-4">
-          <Container className="grid grid-cols-[auto,100px] gap-4 justify-center">
-            <Title variant="h4">Total de Documentos:</Title>
-            <Badge variant="secondary" className="justify-center">
-              {statistics?.total}
-            </Badge>
 
-            <Title variant="h4">Documentos pendientes:</Title>
-            <Badge variant="secondary" className="justify-center">
-              {statistics?.pending}
-            </Badge>
-
-            <Title variant="h4">Documentos validados:</Title>
-            <Badge variant="secondary" className="justify-center">
-              {statistics?.validated}
-            </Badge>
-          </Container>
+        <Container className="flex-row flex-wrap gap-3 p-4 flex-1">
+          <StatCard
+            icon={<FileText size={20} />}
+            label="Total de documentos"
+            value={statistics?.total}
+            colorClass="text-blue-600"
+            bgClass="bg-blue-50 dark:bg-blue-950/30"
+            progressColor="bg-blue-600"
+          />
+          <StatCard
+            icon={<Clock size={20} />}
+            label="Documentos pendientes"
+            value={statistics?.pending}
+            total={statistics?.total}
+            colorClass="text-amber-600"
+            bgClass="bg-amber-50 dark:bg-amber-950/30"
+            progressColor="bg-amber-500"
+          />
+          <StatCard
+            icon={<CheckCircle2 size={20} />}
+            label="Documentos validados"
+            value={statistics?.validated}
+            total={statistics?.total}
+            colorClass="text-emerald-600"
+            bgClass="bg-emerald-50 dark:bg-emerald-950/30"
+            progressColor="bg-emerald-500"
+          />
         </Container>
       </Container>
     </Card>

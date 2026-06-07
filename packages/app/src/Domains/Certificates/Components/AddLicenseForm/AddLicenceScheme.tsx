@@ -3,22 +3,20 @@ import { z } from 'zod';
 export const formSchemeAddLicense = z
   .object({
     reason: z.string({
-      required_error: 'La razón es obligatoria',
+      message: 'La razón es obligatoria',
     }),
     type: z.string().min(1, 'Debe seleccionar un tipo de licencia'),
     startDate: z
       .string({
-        required_error: 'La fecha de inicio es obligatoria.',
+        message: 'La fecha de inicio es obligatoria.',
       })
-      .min(1, 'La fecha de inicio es obligatoria')
-      .transform((val) => new Date(val)),
+      .min(1, 'La fecha de inicio es obligatoria'),
 
     endDate: z
       .string({
-        required_error: 'La fecha de fin es obligatoria',
+        message: 'La fecha de fin es obligatoria',
       })
-      .min(1, 'La fecha de fin es obligatoria')
-      .transform((val) => new Date(val)),
+      .min(1, 'La fecha de fin es obligatoria'),
 
     files: z
       .instanceof(FileList)
@@ -74,8 +72,14 @@ export const formSchemeAddLicense = z
     }
 
     // Validar que la fecha de fin sea mayor a la de inicio
-    if (data.startDate instanceof Date && data.endDate instanceof Date) {
-      if (data.endDate <= data.startDate) {
+    const startDate = new Date(data.startDate);
+    const endDate = new Date(data.endDate);
+
+    if (
+      !Number.isNaN(startDate.getTime()) &&
+      !Number.isNaN(endDate.getTime())
+    ) {
+      if (endDate <= startDate) {
         ctx.addIssue({
           path: ['endDate'],
           code: z.ZodIssueCode.custom,

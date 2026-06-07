@@ -1,11 +1,11 @@
 import { Certificate } from '@server/domains/Certificates';
-import { GetAdmins } from '@server/domains/Permissions/Domain/UseCases/GetAdmins.usecase';
 import { GetUser } from '@server/domains/Users';
 import { executeUseCase } from '../Adapters';
 import { EmailSender } from '../Utils';
 import { emailTemplates } from '../Utils/Email';
 import { IRequestContext } from '../Interfaces';
 import { RequestContext } from '../Entities';
+import { GetAdmins } from '@server/domains/Permissions/Application';
 
 interface IAddLicense extends IRequestContext {
   certificate: Certificate;

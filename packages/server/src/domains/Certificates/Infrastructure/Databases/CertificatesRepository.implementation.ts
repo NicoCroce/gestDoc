@@ -15,12 +15,11 @@ import { CertificateTypes } from '../../Domain/CertificateTypes.entity';
 import { CertificateModel } from './Certificates.model';
 import { CertificatesTypesModel } from './CertificatesTypes.model';
 import { CertificatesFilters } from './CertificatesFilters';
+import { endOfDay, startOfDay } from '@server/Application';
 import { Op } from 'sequelize';
 import { sequelize } from '@server/Infrastructure';
 
-export class CertificatesRepositoryImplementation
-  implements CertificateRepository
-{
+export class CertificatesRepositoryImplementation implements CertificateRepository {
   async appendImages({
     requestContext: _,
     certificateId,
@@ -58,7 +57,9 @@ export class CertificatesRepositoryImplementation
       });
     } catch (error) {
       console.error('Error appending images to certificate:', error);
-      throw new Error('Failed to append images to certificate');
+      throw new Error('Failed to append images to certificate', {
+        cause: error,
+      });
     }
   }
 
@@ -236,9 +237,9 @@ export class CertificatesRepositoryImplementation
       });
     } catch (error) {
       if (error instanceof Error) {
-        throw new Error(error.message);
+        throw new Error(error.message, { cause: error });
       } else {
-        throw new Error('Error al insertar certificado');
+        throw new Error('Error al insertar certificado', { cause: error });
       }
     }
   }
@@ -257,8 +258,8 @@ export class CertificatesRepositoryImplementation
       },
     };
 
-    const consultDate = new Date();
-    consultDate.setHours(12, 0, 0, 0); // Mediodía para evitar problemas con zonas horarias
+    const todayStart = startOfDay(new Date());
+    const todayEnd = endOfDay(new Date());
 
     const totalCertificates = await CertificateModel.count({
       include: [includeOwner],
@@ -266,8 +267,8 @@ export class CertificatesRepositoryImplementation
 
     const activesCertificates = await CertificateModel.count({
       where: [
-        { fecha_inicio: { [Op.lte]: consultDate } }, // fecha_inicio <= fecha_consultada
-        { fecha_fin: { [Op.gte]: consultDate } }, // fecha_fin >= fecha_consultada
+        { fecha_inicio: { [Op.lte]: todayEnd } },
+        { fecha_fin: { [Op.gte]: todayStart } },
       ],
       include: [includeOwner],
     });

@@ -1,96 +1,49 @@
-import { Op } from 'sequelize';
 import {
-  IChangePasswordPublicRepository,
+  IRenewPasswordRepository,
   IChangePasswordRepository,
-  IDeleteUserRepository,
-  IGetUserRepository,
-  IGetUsersRepository,
-  IGetUsersRepositoryResponse,
-  IRegisterUserRepository,
-  IUpdateUserRepository,
+  IGetEmailsByUsersIdRepository,
   IValidateUserRepository,
   User,
   UserRepository,
+  IGetUserRepository,
 } from '../../Domain';
 
 import { UserModel } from './Users.model';
 import { CompaniesModel } from '@server/domains/Companies/Infrastructure';
 
 export class UsersRepositoryImplementation implements UserRepository {
-  async getUsers({
-    filters,
+  async getUser({
+    id,
     requestContext,
-  }: IGetUsersRepository): Promise<IGetUsersRepositoryResponse> {
-    const {
-      values: { ownerId },
-    } = requestContext;
+  }: IGetUserRepository): Promise<User | null> {
+    const whereClause: { [key: string]: unknown } = { id };
 
-    const whereClause: { [key: string]: unknown } = {
-      id_propietario: ownerId, // Agrega el filtro por ownerId aquí
-    };
-
-    if (filters?.name) {
-      whereClause.nombre = {
-        [Op.substring]: filters.name,
-      };
+    if (requestContext?.values.ownerId) {
+      whereClause.id_propietario = requestContext.values.ownerId;
     }
 
-    const page = Number(filters?.page) || 1;
-    const limit = Number(filters?.limit) || 10;
-    const offset = (page - 1) * limit;
-
-    const { count, rows } = await UserModel.findAndCountAll({
-      limit,
-      offset,
-      order: [['createdAt', 'DESC']],
-      attributes: ['id', 'email', 'nombre'],
-      where: whereClause,
-    });
-
-    const totalPages = Math.ceil(count / limit);
-
-    return {
-      data: rows.map(({ id, email, nombre, apellido }) =>
-        User.create({ id, mail: email, name: nombre, surname: apellido }),
-      ),
-      meta: {
-        totalItems: count,
-        totalPages,
-        currentPage: page,
-      },
-    };
-  }
-
-  async registerUser({ user }: IRegisterUserRepository): Promise<User> {
-    const newUser = await UserModel.create({
-      nombre: user.mail,
-      apellido: '',
-      clave: user.password!,
-      renovar_clave: user.values.renewPassword || false,
-      email: user.mail,
-    });
-    return User.create({
-      id: newUser.id,
-      mail: newUser.email,
-      name: newUser.nombre,
-    });
-  }
-
-  async getUser({ id }: IGetUserRepository): Promise<User | null> {
-    const userFound = await UserModel.findOne({ where: { id } });
+    const userFound = await UserModel.findOne({ where: whereClause });
     if (!userFound) {
       return null;
     }
-    const { email, nombre, apellido } = userFound;
-    return User.create({ id, mail: email, name: nombre, surname: apellido });
+    const { email, nombre } = userFound;
+    return User.create({
+      id,
+      mail: email,
+      name: nombre,
+      ownerId: userFound.id_propietario,
+    });
   }
-
   async validateUser({
     mail,
     id,
   }: IValidateUserRepository): Promise<User | null> {
+    const whereClause: { [key: string]: unknown } = mail
+      ? { email: mail }
+      : { id };
+
     const user = await UserModel.findOne<UserModel>({
-      where: mail ? { email: mail } : { id },
+      where: whereClause,
       include: [
         {
           model: CompaniesModel,
@@ -114,40 +67,52 @@ export class UsersRepositoryImplementation implements UserRepository {
     });
   }
 
-  async updateUser({ user }: IUpdateUserRepository): Promise<number | null> {
-    const { id, mail, name } = user.values;
-    const rowsAffected = await UserModel.update(
-      { nombre: name, email: mail },
-      { where: { id } },
-    );
-
-    if (!id || !rowsAffected[0]) return null;
-    return id;
-  }
-
-  async deleteUser({ id }: IDeleteUserRepository): Promise<number | null> {
-    const rowsAffected = await UserModel.destroy({ where: { id } });
-    if (rowsAffected === 0) return null;
-    return id;
-  }
-
   async changePassword({
     password,
     requestContext,
   }: IChangePasswordRepository): Promise<void | null> {
     const id = requestContext.values.userId;
+    const whereClause: { [key: string]: unknown } = { id };
+
+    if (requestContext.values.ownerId) {
+      whereClause.id_propietario = requestContext.values.ownerId;
+    }
 
     const rowsAffected = await UserModel.update(
       { clave: password, renovar_clave: false },
-      { where: { id } },
+      { where: whereClause },
     );
 
     if (!id || !rowsAffected[0]) return null;
   }
 
-  async changePasswordPublic(
-    params: IChangePasswordPublicRepository,
-  ): Promise<void | null> {
+  async getEmailsByUsersId({
+    userIds,
+    requestContext,
+  }: IGetEmailsByUsersIdRepository): Promise<string[]> {
+    const {
+      values: { ownerId },
+    } = requestContext;
+
+    const whereClause: { [key: string]: unknown } = {
+      id: userIds,
+    };
+
+    if (ownerId) {
+      whereClause.id_propietario = ownerId;
+    }
+
+    const users = await UserModel.findAll({
+      attributes: ['email'],
+      where: whereClause,
+    });
+
+    return users
+      .map((user) => user.email)
+      .filter((email) => email && email.trim() !== '');
+  }
+
+  async renewPassword(params: IRenewPasswordRepository): Promise<void | null> {
     const { mail, password } = params;
 
     const rowsAffected = await UserModel.update(

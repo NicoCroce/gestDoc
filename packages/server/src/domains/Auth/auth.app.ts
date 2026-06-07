@@ -1,12 +1,11 @@
 import { AuthService } from './Application';
 import { AuthController } from './Infrastructure';
 import { asClass } from 'awilix';
-import { Login } from './Domain';
 import {
-  ValidateUserPassword,
+  Login,
   RestorePassword,
-  ChangePasswordPublic,
-} from './Domain/UseCases';
+  RenewPasswordAuth,
+} from './Application/UseCases';
 import { AuthRepositoryImplementation } from './Infrastructure/Repository/AuthRepository.implementation';
 import { container } from '@server/utils/Container';
 
@@ -15,9 +14,8 @@ export const authApp = {
   authService: asClass(AuthService),
   authController: asClass(AuthController),
   _login: asClass(Login),
-  _validateUserPassword: asClass(ValidateUserPassword),
   _restorePassword: asClass(RestorePassword),
-  _changePasswordPublic: asClass(ChangePasswordPublic),
+  _renewPasswordAuth: asClass(RenewPasswordAuth),
 };
 
 export const authController = () =>

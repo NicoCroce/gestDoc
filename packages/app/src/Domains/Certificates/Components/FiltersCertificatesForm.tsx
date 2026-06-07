@@ -1,13 +1,8 @@
-import {
-  Button,
-  Container,
-  DatePicker,
-  Input,
-  useURLParams,
-} from '@app/Aplication';
+import { Button, Container, Input, useURLParams } from '@app/Aplication';
 import { Label } from '@app/Aplication/Components/ui/label';
 import { SheetClose, SheetFooter } from '@app/Aplication/Components/ui/sheet';
 import { useState } from 'react';
+import { ICertificateTypes } from '@server/domains/Certificates';
 import { TCertificatesSearch } from '../Certificate.entity';
 import { useGetCertificatesTypes } from '../Hooks';
 import {
@@ -23,6 +18,13 @@ const initialState: TCertificatesSearch = {
   type: undefined,
   date: undefined,
   employee: '',
+};
+
+const toDateInputValue = (date?: string) => {
+  if (!date) return '';
+  const parsed = new Date(date);
+  if (Number.isNaN(parsed.getTime())) return '';
+  return parsed.toISOString().split('T')[0];
 };
 
 interface FiltersCertificatesFormProps {
@@ -57,10 +59,6 @@ export const FiltersCertificatesForm = ({
     }, 300);
   };
 
-  const onCloseDatePicker = (date: Date) => {
-    setFormState((prev) => ({ ...prev, date: date.toISOString() }));
-  };
-
   const cleanFilters = () => setFormState({ ...initialState });
 
   return (
@@ -86,11 +84,14 @@ export const FiltersCertificatesForm = ({
           onValueChange={handleType}
           value={formState.type}
         >
-          {certificatesTypes?.map(({ name, id }) => (
+          {certificatesTypes?.map(({ name, id }: ICertificateTypes) => (
             <ToggleGroupItem
               key={id}
               value={String(id)}
-              className={clsx('capitalize', buttonGroupActiveClass)}
+              className={clsx(
+                'capitalize cursor-pointer',
+                buttonGroupActiveClass,
+              )}
             >
               {name}
             </ToggleGroupItem>
@@ -98,8 +99,15 @@ export const FiltersCertificatesForm = ({
         </ToggleGroup>
       </Container>
       <Container>
-        <Label>Fecha</Label>
-        <DatePicker onClose={onCloseDatePicker} value={searchParams?.date} />
+        <Label htmlFor="date">Fecha</Label>
+        <Input
+          id="date"
+          name="date"
+          type="date"
+          value={toDateInputValue(formState.date)}
+          className="col-span-3"
+          onChange={handleChangeFilters}
+        />
       </Container>
       <SheetFooter className="mt-16">
         <Container row className="justify-end">

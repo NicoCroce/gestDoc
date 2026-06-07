@@ -1,3 +1,4 @@
+import { endOfDay, startOfDay } from '@server/Application';
 import { Op, WhereOptions } from 'sequelize';
 import { IGetCertificatesRepository } from '../../Domain';
 import { CertificateModel } from './Certificates.model';
@@ -25,12 +26,12 @@ export const CertificatesFilters = (
 
   // Si hay un filtro de fecha, buscamos certificados que incluyan esa fecha
   if (filters?.date) {
-    const consultDate = new Date(filters.date);
-    consultDate.setHours(12, 0, 0, 0); // Mediodía para evitar problemas con zonas horarias
+    const dayStart = startOfDay(filters.date);
+    const dayEnd = endOfDay(filters.date);
 
     whereConditionCertificates[Op.and as keyof TWhereConditionCertificates] = [
-      { fecha_inicio: { [Op.lte]: consultDate } }, // fecha_inicio <= fecha_consultada
-      { fecha_fin: { [Op.gte]: consultDate } }, // fecha_fin >= fecha_consultada
+      { fecha_inicio: { [Op.lte]: dayEnd } },
+      { fecha_fin: { [Op.gte]: dayStart } },
     ];
   }
 

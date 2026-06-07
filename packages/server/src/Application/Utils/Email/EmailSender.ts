@@ -1,5 +1,5 @@
-import { logger } from '@server/utils/pino';
 import axios from 'axios';
+import { logger } from '@server/Infrastructure/utils/pino';
 
 const _body = {
   settings: {

@@ -5,10 +5,10 @@ import {
   Ilogin,
   IRenewPasswordAuth,
   IRestorePassword,
-} from '../Domain/auth.interfaces';
+} from './auth.types';
 import { RestorePassword } from './UseCases';
 import { RenewPasswordAuth } from './UseCases/RenewPasswordAuth.usecase';
-import { verifyToken } from '@server/utils';
+import { verifyToken } from '@server/Infrastructure/utils/JWT';
 
 export class AuthService {
   constructor(

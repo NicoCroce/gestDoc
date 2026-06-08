@@ -1,5 +1,4 @@
 ---
-name: unify-project
 description: Inicia el flujo completo de unificación arquitectónica del proyecto. Audita todos los dominios, detecta desvíos DDD/Hexagonal y los corrige automáticamente con confirmación por dominio.
 agent: agent
 tools:

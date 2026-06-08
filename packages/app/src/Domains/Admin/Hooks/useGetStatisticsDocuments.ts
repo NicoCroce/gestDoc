@@ -1,4 +1,4 @@
-import { TDataPieChart } from '@app/Aplication/Components/Organisms/PieChart/PieChart';
+import { TDataPieChart } from '@app/Application/Components/Organisms/PieChart/PieChart';
 import { documentsService } from '@app/Domains/Documents';
 
 export const useGetStatisticsDocuments = () => {

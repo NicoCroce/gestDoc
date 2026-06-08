@@ -1,5 +1,5 @@
-import { Container, PieChartComponent } from '@app/Aplication/Components';
-import { Card } from '@app/Aplication/Components/ui/card';
+import { Container, PieChartComponent } from '@app/Application/Components';
+import { Card } from '@app/Application/Components/ui/card';
 import { CheckCircle2, Clock, FileText } from 'lucide-react';
 import { StatCard } from './StatCard';
 import { useGetStatisticsDocuments } from '../Hooks';

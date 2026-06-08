@@ -1,4 +1,4 @@
-import { Button, Container, useURLParams } from '@app/Aplication';
+import { Button, Container, useURLParams } from '@app/Application';
 import { SignDocument } from '../SignDocument';
 
 import {
@@ -8,32 +8,28 @@ import {
   DrawerFooter,
   DrawerHeader,
   DrawerTitle,
-} from '@app/Aplication/Components/ui/drawer';
+} from '@app/Application/Components/ui/drawer';
 import { TDocumentSearch } from '../../Document.entity';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { SignedDetail } from '../SignedDetail';
 import { useGetDocument } from '../../Hooks';
 import {
   Alert,
   AlertDescription,
   AlertTitle,
-} from '@app/Aplication/Components/ui/alert';
+} from '@app/Application/Components/ui/alert';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowDown, faHourglass } from '@fortawesome/free-solid-svg-icons';
 
-/* import image from '@app/Aplication/Images/recibo.jpg';
+/* import image from '@app/Application/Images/recibo.jpg';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowDown, faEye } from '@fortawesome/free-solid-svg-icons'; */
 
 export const PDFPreviewMobile = () => {
   const { searchParams } = useURLParams<TDocumentSearch>();
   const { currentDocument } = useGetDocument(searchParams?.id);
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(!!searchParams?.id);
   const [isLoading, setIsLoading] = useState(true);
-
-  useEffect(() => {
-    if (searchParams?.id) setIsOpen(true);
-  }, [searchParams?.id]);
 
   if (!currentDocument) return null;
 

@@ -1,4 +1,4 @@
-import { Container, Page, useDevice } from '@app/Aplication';
+import { Container, Page, useDevice } from '@app/Application';
 import {
   DocumentsListWrapper,
   PDFPreview,

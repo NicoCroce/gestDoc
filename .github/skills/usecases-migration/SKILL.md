@@ -31,49 +31,41 @@ Utiliza esta Skill cuando se solicite `mover UseCase en el dominio adjunto`.
 Debes seguir este orden estrictamente:
 
 0. **Verificación Previa (si es un listado de dominios):**
-
    - Verifica que dentro de la carpeta `[domain]/Domain/UseCases` existan casos de uso.
    - Si existen, lista los dominios que requieren migración.
    - Solicita confirmación del usuario antes de continuar.
 
 1. **Leer Contexto del Dominio:**
-
    - Leer `Domain/index.ts` para ver exports de UseCases
    - Leer `Application/index.ts` para ver estructura actual
    - Leer `Application/*.service.ts` para identificar imports de UseCases
-   - Leer `[domain].app.ts` para identificar imports de UseCases
+   - Leer `[domain].di.ts` para identificar imports de UseCases
    - Listar archivos en `Domain/UseCases/` para conocer todos los casos de uso
 
 2. **Mover la carpeta UseCases:**
-
    - Usar comando `mv` para mover desde `Domain/UseCases` a `Application/UseCases`
    - Verificar que el movimiento fue exitoso
 
 3. **Actualizar Domain/index.ts:**
-
    - Remover la línea `export * from './UseCases';`
    - Mantener todos los demás exports intactos
 
 4. **Actualizar Application/index.ts:**
-
    - Agregar la línea `export * from './UseCases';`
    - Mantener todos los demás exports intactos
 
 5. **Actualizar \*.service.ts en Application:**
-
    - Cambiar imports de UseCases desde `../Domain` a `./UseCases`
    - Mantener imports de entidades e interfaces desde `../Domain`
    - Verificar que todos los casos de uso estén correctamente importados
 
 6. **Actualizar archivos \*.usecase.ts en Application/UseCases:**
-
    - Cambiar todos los imports de entidades desde `../../Domain/`
    - Cambiar todos los imports de interfaces desde `../../Domain/`
    - Cambiar todos los imports de repositorios desde `../../Domain/`
    - Mantener imports de `@server/Application` sin cambios
 
-7. **Actualizar [domain].app.ts:**
-
+7. **Actualizar [domain].di.ts:**
    - Cambiar imports de UseCases desde `./Domain` a `./Application`
    - Mantener imports de Infrastructure sin cambios
 

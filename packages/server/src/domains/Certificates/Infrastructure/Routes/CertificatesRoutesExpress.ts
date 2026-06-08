@@ -1,4 +1,4 @@
-import { saveImagesController } from '../../certificates.app';
+import { saveImagesController } from '../../certificates.di';
 
 export const CertificatesRoutesExpress = () => {
   const { appendImages } = saveImagesController();

@@ -4,7 +4,7 @@ import {
   FilterButton,
   FiltersSheet,
   Page,
-} from '@app/Aplication';
+} from '@app/Application';
 
 import { useGetCertificatesByCompany } from '../Hooks';
 import { LicensesListWrapper, StatisticsCertificates } from '../Components';

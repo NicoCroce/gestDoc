@@ -1,4 +1,4 @@
-import { certificatesController } from '../../certificates.app';
+import { certificatesController } from '../../certificates.di';
 
 export const CertificatesRoutes = () => {
   const {

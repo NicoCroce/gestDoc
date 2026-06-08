@@ -1,6 +1,6 @@
-import { Button, Container, useURLParams } from '@app/Aplication';
-import { Input } from '@app/Aplication/Components/ui/input';
-import { Label } from '@app/Aplication/Components/ui/label';
+import { Button, Container, useURLParams } from '@app/Application';
+import { Input } from '@app/Application/Components/ui/input';
+import { Label } from '@app/Application/Components/ui/label';
 import {
   PENDING,
   VALIDATED,
@@ -8,11 +8,11 @@ import {
   TStateDocument,
 } from '../../Document.entity';
 import { useState } from 'react';
-import { SheetClose, SheetFooter } from '@app/Aplication/Components/ui/sheet';
+import { SheetClose, SheetFooter } from '@app/Application/Components/ui/sheet';
 import {
   ToggleGroup,
   ToggleGroupItem,
-} from '@app/Aplication/Components/ui/toggle-group';
+} from '@app/Application/Components/ui/toggle-group';
 import { useGetDocumentsTypes } from '../../Hooks/useGetDocumentsTypes';
 import clsx from 'clsx';
 

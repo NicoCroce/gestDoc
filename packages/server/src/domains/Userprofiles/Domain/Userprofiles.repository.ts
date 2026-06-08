@@ -9,8 +9,9 @@ export interface IUpdateUserprofileRepository extends IRequestContext {
 export interface IDeleteUserprofileRepository extends IRequestContext {
   id: number;
 }
-export interface IGetUserprofilesRepositoryResponse
-  extends IPaginationResponse<Userprofile[]> {}
+export type IGetUserprofilesRepositoryResponse = IPaginationResponse<
+  Userprofile[]
+>;
 export interface UserprofilesRepository {
   getAllProfilesByUser(params: IRequestContext): Promise<Userprofile[] | null>;
   createUserprofile(

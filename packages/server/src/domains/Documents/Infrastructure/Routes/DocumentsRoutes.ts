@@ -1,4 +1,4 @@
-import { documentsController } from '../../documents.app';
+import { documentsController } from '../../documents.di';
 
 export const DocumentsRoutes = () => {
   const {

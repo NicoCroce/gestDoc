@@ -1,11 +1,10 @@
 import { Routes } from 'react-router-dom';
-import { Toaster } from './Aplication/Components/ui/sonner';
+import { Toaster } from './Application/Components/ui/sonner';
 
 import { AllRoutes } from './Infrastructure';
 
-import './App.css';
 import { ChangePasswordModal } from './Domains/Users/Components/ChangePassword/ChangePasswordModal';
-import { usePublicPages } from './Aplication/Hooks/usePublicPages';
+import { usePublicPages } from './Application/Hooks/usePublicPages';
 
 export const App = () => {
   const isPublicPage = usePublicPages();

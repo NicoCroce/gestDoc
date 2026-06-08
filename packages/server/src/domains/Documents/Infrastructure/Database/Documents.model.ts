@@ -1,4 +1,4 @@
-import { DocumentsTypesModel } from '@server/domains/DocumentsTypes/Infraestructure';
+import { DocumentsTypesModel } from '@server/domains/DocumentsTypes/Infrastructure';
 import { UserModel } from '@server/domains/Users';
 import { sequelize } from '@server/Infrastructure';
 import {

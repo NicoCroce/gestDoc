@@ -1,8 +1,12 @@
-import { CertificateDTO } from '@server/domains/Certificates';
+import { inferRouterOutputs } from '@trpc/server';
+import { TCertificatesRouter } from '@server/domains/Certificates';
 
-export interface ICertificate extends CertificateDTO {
-  type: string;
-}
+type TCertificatesOutput = inferRouterOutputs<TCertificatesRouter>;
+
+export type ICertificate =
+  TCertificatesOutput['certificates']['addCertificate'];
+export type TCertificateType =
+  TCertificatesOutput['certificates']['getCertificateTypes'][number];
 
 export type TCertificatesSearch = {
   employee?: string;

@@ -4,7 +4,7 @@ import { CertificateTypes } from './CertificateTypes.entity';
 import {
   ICertificate,
   IGetStatisticsCertificatesResponse,
-} from './Certificate.interfaces';
+} from './Certificate.types';
 
 interface IFilters {
   filters?: {
@@ -24,19 +24,17 @@ export interface IAppendImagesRepository extends IRequestContext {
   files: string[];
 }
 
-export interface IGetStatisticsCertificatesRepository extends IRequestContext {}
+export type IGetStatisticsCertificatesRepository = IRequestContext;
 
 export interface IGetAllCompanyCertificatesRepository
-  extends IRequestContext,
-    IFilters {}
+  extends IRequestContext, IFilters {}
 
-export interface IGetAllCompanyCertificatesRepositoryResponse
-  extends ICertificate {
+export interface IGetAllCompanyCertificatesRepositoryResponse extends ICertificate {
   userName: string;
 }
 
-export interface IGetStatisticsCertificatesRepositoryResponse
-  extends IGetStatisticsCertificatesResponse {}
+export type IGetStatisticsCertificatesRepositoryResponse =
+  IGetStatisticsCertificatesResponse;
 
 export interface CertificateRepository {
   getCertificates({

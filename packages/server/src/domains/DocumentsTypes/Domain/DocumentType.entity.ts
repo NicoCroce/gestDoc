@@ -1,4 +1,4 @@
-import { IDocumentType } from './DocumentType.interfaces';
+import { IDocumentType } from './DocumentType.types';
 
 export class DocumentType {
   constructor(

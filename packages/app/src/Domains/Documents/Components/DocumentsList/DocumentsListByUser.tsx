@@ -1,14 +1,14 @@
-import { Container, EmptyScreenFilter, List, Text } from '@app/Aplication';
+import { Container, EmptyScreenFilter, List, Text } from '@app/Application';
 import { Document } from '../Document';
-import { ScrollArea } from '@app/Aplication/Components/ui/scroll-area';
-import { Skeleton } from '@app/Aplication/Components/ui/skeleton';
+import { ScrollArea } from '@app/Application/Components/ui/scroll-area';
+import { Skeleton } from '@app/Application/Components/ui/skeleton';
 
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
-} from '@app/Aplication/Components/ui/accordion';
+} from '@app/Application/Components/ui/accordion';
 import { TuseGetDocumentsByCompany } from '@app/Domains/Admin';
 
 const SkeletonLoader = () => (

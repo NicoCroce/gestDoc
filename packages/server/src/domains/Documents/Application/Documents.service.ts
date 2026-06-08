@@ -4,6 +4,10 @@ import {
   GetDocuments,
   GetDocumentsByCompany,
   GetStatisticsDocuments,
+  SignDocument,
+  ViewDocument,
+} from './UseCases';
+import {
   IGetDocument,
   IGetDocuments,
   IGetDocumentsByCompany,
@@ -11,9 +15,7 @@ import {
   IGetStatisticsDocumentsResponse,
   ISignDocument,
   IViewDocument,
-  SignDocument,
-  ViewDocument,
-} from '../Domain';
+} from './documents.types';
 import { SendEmailService } from '@server/Application/Services/SendEmail.service';
 
 export class DocumentsService {

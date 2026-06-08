@@ -1,7 +1,7 @@
 import { toast } from 'sonner';
 import { documentsService } from '../Documents.service';
 import { useCacheDocuments } from './useCacheDocuments';
-import { useURLParams } from '@app/Aplication';
+import { useURLParams } from '@app/Application';
 import { DOCUMENTS_ROUTE } from '../Documents.routes';
 import { TDocumentSearch } from '../Document.entity';
 

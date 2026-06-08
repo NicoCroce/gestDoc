@@ -1,8 +1,7 @@
 import { Certificate } from '@server/domains/Certificates';
 import { GetUser } from '@server/domains/Users';
 import { executeUseCase } from '../Adapters';
-import { EmailSender } from '../Utils';
-import { emailTemplates } from '../Utils/Email';
+import { EmailSender, emailTemplates } from '@server/Infrastructure';
 import { IRequestContext } from '../Interfaces';
 import { RequestContext } from '../Entities';
 import { GetAdmins } from '@server/domains/Permissions/Application';

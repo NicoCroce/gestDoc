@@ -3,7 +3,7 @@ import {
   CardContent,
   CardHeader,
   CardTitle,
-} from '@app/Aplication/Components/ui/card';
+} from '@app/Application/Components/ui/card';
 
 export interface StatCardProps {
   icon: React.ReactNode;

@@ -1,4 +1,4 @@
-import { useGlobalStore } from '@app/Aplication';
+import { useGlobalStore } from '@app/Application';
 import { documentsService } from '../Documents.service';
 import { useCacheDocuments } from './useCacheDocuments';
 import { useGetDocument } from './useGetDocument';

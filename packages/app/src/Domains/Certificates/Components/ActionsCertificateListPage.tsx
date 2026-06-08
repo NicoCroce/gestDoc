@@ -1,7 +1,7 @@
-import { Container, FilterButton, FilterButtonProps } from '@app/Aplication';
+import { Container, FilterButton, FilterButtonProps } from '@app/Application';
 import { NewLicenseButton } from './NewLicenseButton';
 
-interface ActionsCertificateListPageProps extends FilterButtonProps {}
+type ActionsCertificateListPageProps = FilterButtonProps;
 
 export const ActionsCertificateListPage = ({
   onClick,

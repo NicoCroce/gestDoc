@@ -1,4 +1,4 @@
-import { Button } from '@app/Aplication';
+import { Button } from '@app/Application';
 import { faAdd } from '@fortawesome/free-solid-svg-icons';
 import { Link } from 'react-router-dom';
 import { CERTIFICATES_ROUTES_ADD } from '../Certificates.routes';

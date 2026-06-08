@@ -1,10 +1,6 @@
 import { executeUseCase } from '@server/Application/Adapters/ExecuteUseCase';
 import { ChangePassword, GetEmailsByUsersId, GetUser } from './';
-import {
-  IChangePassword,
-  IGetEmailsByUsersId,
-  IGetUser,
-} from '../Domain/User.interfaces';
+import { IChangePassword, IGetEmailsByUsersId, IGetUser } from './users.types';
 import { User } from '../Domain';
 
 export class UsersService {

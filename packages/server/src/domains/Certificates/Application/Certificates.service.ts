@@ -4,21 +4,25 @@ import {
   IRequestContext,
   normalizeDate,
   normalizeEndDate,
-  uploadImages,
 } from '@server/Application';
+import { uploadImages } from '@server/Infrastructure';
+import { Certificate } from '../Domain/Certificate.entity';
 import {
-  AddCertificate,
-  Certificate,
-  GetCertificates,
-  GetCertificatesByCompany,
-  GetCertificateTypes,
   IAppendImages,
   IGetCertificates,
   IGetCertificatesByCompanyResponse,
   IGetCertificatesCompany,
   IGetCertificateTypes,
   IGetStatisticsCertificates,
-} from '../Domain';
+} from './certificates.types';
+import {
+  AddCertificate,
+  AppendImages,
+  GetCertificates,
+  GetCertificatesByCompany,
+  GetCertificateTypes,
+  GetStatisticsCertificates,
+} from './UseCases';
 import {
   CertificateDTO,
   IGetCertificatesByCompanyDTO,
@@ -26,8 +30,6 @@ import {
 } from './DTO/CertificateDTO';
 import { convertToDTO } from './digest';
 import { NextFunction, Request, Response } from 'express';
-import { AppendImages } from '../Domain/UseCases/AppendImages.usecases';
-import { GetStatisticsCertificates } from '../Domain/UseCases/GetStatisticsCertificates.usecase';
 import { SendEmailService } from '@server/Application/Services/SendEmail.service';
 
 interface IAddCertificateService extends IRequestContext {

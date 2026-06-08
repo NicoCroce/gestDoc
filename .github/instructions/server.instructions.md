@@ -11,13 +11,13 @@ applyTo: 'packages/server/**'
 packages/server/src/domains/[Domain]/
 ├── Domain/
 │   ├── [Entity].entity.ts                    # Entidad de dominio
-│   ├── [Entity].interfaces.ts                # Input/Output interfaces de use cases
 │   ├── [Entity].repository.ts                # Puerto abstracto de repositorio
 │   └── index.ts                              # Barrel export de la capa
 ├── Application/
 │   ├── UseCases/
 │   │   ├── [Action][Entity].usecase.ts       # Implementa IUseCase<TOutput>
 │   │   └── index.ts
+│   ├── [domain].types.ts                     # z.infer<> schemas + tipos Input/Output
 │   ├── [Domain].service.ts                   # Orquesta casos de uso
 │   └── index.ts
 ├── Infrastructure/
@@ -32,8 +32,45 @@ packages/server/src/domains/[Domain]/
 │   │   ├── [Domain].routes.ts                # Exporta el tRPC router del dominio
 │   │   └── index.ts
 │   └── index.ts
-├── [domain].app.ts                           # Registro Awilix del dominio
+├── [domain].di.ts                           # Registro Awilix del dominio
 └── index.ts                                  # Barrel export público
+```
+
+## Estructura de Specs
+
+Todos los archivos de test (`.spec.ts`, `.test.ts`) deben organizarse en una carpeta `specs/` manteniendo la misma estructura del directorio padre.
+
+✅ **CORRECTO:**
+
+```
+packages/server/src/domains/Articles/
+├── Domain/
+│   ├── Article.entity.ts
+│   └── specs/
+│       └── Article.entity.spec.ts
+├── Application/
+│   ├── UseCases/
+│   │   ├── CreateArticle.usecase.ts
+│   │   └── specs/
+│   │       └── CreateArticle.usecase.spec.ts
+│   └── [domain].types.ts
+└── Infrastructure/
+    ├── Controllers/
+    │   ├── Article.controller.ts
+    │   └── specs/
+    │       └── Article.controller.spec.ts
+    └── Database/
+        ├── Article.model.ts
+        └── specs/
+            └── Article.model.spec.ts
+```
+
+❌ **PROHIBIDO** — Mezclar specs con archivos fuente:
+
+```
+Domain/
+├── Article.entity.ts
+├── Article.entity.spec.ts      # ← INCORRECTO
 ```
 
 ## Domain Layer
@@ -62,30 +99,6 @@ export class Entity {
 }
 ```
 
-### Interfaces de Entrada/Salida
-
-Siempre extendén `IRequestContext`. El campo `input` lleva los datos de la operación.
-
-```typescript
-import { IRequestContext, IPagination } from '@server/Application';
-
-export interface IGetAllEntities extends IRequestContext {
-  input?: { search?: string } & IPagination;
-}
-export interface ICreateEntity extends IRequestContext {
-  input: { field1: string; field2: number };
-}
-export interface IGetEntity extends IRequestContext {
-  input: number;
-}
-export interface IUpdateEntity extends IRequestContext {
-  input: { id: number; field1: string };
-}
-export interface IDeleteEntity extends IRequestContext {
-  input: number;
-}
-```
-
 ### Repositorio Abstracto (Puerto)
 
 ```typescript
@@ -100,13 +113,78 @@ export interface EntityRepository {
 }
 ```
 
+### Interfaces con Members
+
+Las interfaces en la capa Domain **nunca deben estar vacías** ni ser equivalentes a su supertype. Siempre deben declarar al menos un member propio.
+
+❌ **PROHIBIDO** — Interface vacía:
+
+```typescript
+export interface IGetUserRepository extends IRequestContext {
+  // vacía = error
+}
+```
+
+✅ **CORRECTO** — Interface con members:
+
+```typescript
+export interface IGetUserRepository extends IRequestContext {
+  id: number;
+}
+```
+
+**Razonamiento:** Una interface que solo hereda no suma información de tipos. Si no tienes properties propias que agregar, no necesitás una interface separada — usá directamente el tipo heredado en el parámetro.
+
 ## Application Layer
+
+### Types (`[domain].types.ts`)
+
+Usa `z.infer<typeof Schema>` como fuente de verdad. **No definas interfaces manualmente** si ya existe un Zod schema en el controller — derivá el tipo de él para eliminar redundancia.
+
+```typescript
+import { IRequestContext, IPagination } from '@server/Application';
+import z from 'zod';
+
+// Schemas (fuente de verdad)
+export const GetAllEntitiesSchema = z
+  .object({ search: z.string().optional() })
+  .merge(
+    z.object({ page: z.number().optional(), limit: z.number().optional() }),
+  )
+  .optional();
+
+export const CreateEntitySchema = z.object({
+  field1: z.string().min(1),
+  field2: z.number(),
+});
+
+export const UpdateEntitySchema = z.object({
+  id: z.number(),
+  field1: z.string().min(1),
+});
+
+// Tipos inferidos — nunca duplicar a mano
+export type IGetAllEntities = IRequestContext & {
+  input?: z.infer<typeof GetAllEntitiesSchema>;
+};
+export type ICreateEntity = IRequestContext & {
+  input: z.infer<typeof CreateEntitySchema>;
+};
+export type IGetEntity = IRequestContext & { input: number };
+export type IUpdateEntity = IRequestContext & {
+  input: z.infer<typeof UpdateEntitySchema>;
+};
+export type IDeleteEntity = IRequestContext & { input: number };
+```
+
+> **Regla:** Si el tipo de `input` es primitivo (`number`, `string`) se declara inline. Si es un objeto, siempre existe un Zod schema del cual derivar.
 
 ### Use Case
 
 ```typescript
 import { AppError, IUseCase } from '@server/Application';
 import { EntityRepository } from '../../Domain/Entity.repository';
+import { ICreateEntity } from '../[domain].types';
 
 export class CreateEntity implements IUseCase<Entity> {
   constructor(private readonly entityRepository: EntityRepository) {}
@@ -175,7 +253,7 @@ export class EntityController {
 
 ## Registro DI (Awilix)
 
-### `[domain].app.ts`
+### `[domain].di.ts`
 
 ```typescript
 import { asClass } from 'awilix';
@@ -212,7 +290,7 @@ export const entityApp = {
 | Controller           | `[Domain].controller.ts`               | `Articles.controller.ts`               |
 | Modelo Sequelize     | `[Entity].model.ts`                    | `Article.model.ts`                     |
 | Repo Impl            | `[Entity]Repository.implementation.ts` | `ArticlesRepository.implementation.ts` |
-| App.ts               | `[domain].app.ts`                      | `article.app.ts`                       |
+| App.ts               | `[domain].di.ts`                       | `article.di.ts`                        |
 | DI - repositorio     | `[domain]Repository`                   | `articlesRepository`                   |
 | DI - servicio        | `[domain]Service`                      | `articlesService`                      |
 | DI - controlador     | `[domain]Controller`                   | `articlesController`                   |

@@ -1,4 +1,4 @@
-import { Container } from '@app/Aplication';
+import { Container } from '@app/Application';
 import { MenuAuth } from './Auth';
 import { MenuDocuments } from './Documents/MenuDocuments';
 import { MenuCertificates } from './Certificates/MenuCertificates';

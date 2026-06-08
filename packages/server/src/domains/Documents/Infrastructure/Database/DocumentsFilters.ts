@@ -2,7 +2,7 @@ import { Op, WhereOptions } from 'sequelize';
 import { Documentos } from './';
 import { Literal } from 'sequelize/lib/utils';
 import { IGetDocumentsRepository } from '../../Domain';
-import { DocumentsTypesModel } from '@server/domains/DocumentsTypes/Infraestructure';
+import { DocumentsTypesModel } from '@server/domains/DocumentsTypes/Infrastructure';
 
 export const DocumentsFilters = (
   filters: IGetDocumentsRepository['filters'],

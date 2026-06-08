@@ -1,3 +1,4 @@
 export * from './Application';
 export * from './Domain';
-export * from './Infraestructure';
+export * from './Infrastructure';
+export * from './documentstypes.di';

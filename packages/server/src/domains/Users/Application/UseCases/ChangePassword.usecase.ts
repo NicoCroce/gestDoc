@@ -1,8 +1,8 @@
 import { AppError, executeUseCase, IUseCase } from '@server/Application';
 import { ValidateUserPassword } from './ValidateUserPassword.usecase';
-import { IChangePassword } from '../../Domain/User.interfaces';
+import { IChangePassword } from '../users.types';
 import { UserRepository } from '../../Domain/User.repository';
-import { getCryptedPassword } from '@server/utils/bcrypt';
+import { getCryptedPassword } from '@server/Infrastructure/utils/bcrypt';
 
 export class ChangePassword implements IUseCase<void> {
   constructor(

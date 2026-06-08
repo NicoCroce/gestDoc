@@ -1,8 +1,8 @@
-import { Container, Text } from '@app/Aplication';
+import { Container, Text } from '@app/Application';
 import { ICertificate } from '../../Certificate.entity';
 
 import './certificate.css';
-import { Badge } from '@app/Aplication/Components/ui/badge';
+import { Badge } from '@app/Application/Components/ui/badge';
 
 interface CertificateProps {
   data: ICertificate;

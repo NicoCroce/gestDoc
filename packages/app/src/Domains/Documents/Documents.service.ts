@@ -1,5 +1,5 @@
 import { TDocumentRouter } from '@server/domains/Documents';
-import { TDocumentsTypeRouter } from '@server/domains/DocumentsTypes/Infraestructure';
+import { TDocumentsTypeRouter } from '@server/domains/DocumentsTypes';
 import { createTRPCReact } from '@trpc/react-query';
 
 export const _documentsService = createTRPCReact<TDocumentRouter>();

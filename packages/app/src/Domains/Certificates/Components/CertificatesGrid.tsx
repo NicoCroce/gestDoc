@@ -1,4 +1,4 @@
-import { Container } from '@app/Aplication/Components';
+import { Container } from '@app/Application/Components';
 import { Certificate } from './Certificate/Certificate';
 import { ICertificate } from '../Certificate.entity';
 

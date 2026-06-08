@@ -1,16 +1,16 @@
-import { Container, List, Text, Title } from '@app/Aplication';
-import { ScrollArea } from '@app/Aplication/Components/ui/scroll-area';
-import { Skeleton } from '@app/Aplication/Components/ui/skeleton';
+import { Container, List, Text, Title } from '@app/Application';
+import { ScrollArea } from '@app/Application/Components/ui/scroll-area';
+import { Skeleton } from '@app/Application/Components/ui/skeleton';
 
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
-} from '@app/Aplication/Components/ui/accordion';
+} from '@app/Application/Components/ui/accordion';
 import { TuseGetCertificatesByCompany } from '../../Hooks';
 import { Certificate } from '@app/Domains/Certificates/Components';
-import { uuid } from '@app/Aplication/Helpers/uuid';
+import { uuid } from '@app/Application/Helpers/uuid';
 
 const SkeletonLoader = () => (
   <Container space="small">

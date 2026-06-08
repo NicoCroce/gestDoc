@@ -1,8 +1,8 @@
-import { Container, EmptyScreenFilter, List, Text } from '@app/Aplication';
+import { Container, EmptyScreenFilter, List, Text } from '@app/Application';
 import { TuseGetDocuments } from '../../Hooks/useGetDocuments';
 import { Document } from '../Document';
-import { ScrollArea } from '@app/Aplication/Components/ui/scroll-area';
-import { Skeleton } from '@app/Aplication/Components/ui/skeleton';
+import { ScrollArea } from '@app/Application/Components/ui/scroll-area';
+import { Skeleton } from '@app/Application/Components/ui/skeleton';
 
 const SkeletonLoader = () => (
   <Container space="small">

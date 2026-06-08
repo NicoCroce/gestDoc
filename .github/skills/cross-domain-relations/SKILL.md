@@ -73,8 +73,7 @@ export interface IGetAllCustomeruserssByCustomerId extends IRequestContext {
 **Interfaz del Repositorio**: `packages/server/src/domains/Customeruserss/Domain/Customeruserss.repository.ts`
 
 ```typescript
-export interface IGetCustomeruserssByCustomerIdRepository
-  extends IRequestContext {
+export interface IGetCustomeruserssByCustomerIdRepository extends IRequestContext {
   customerId: number;
 }
 
@@ -255,7 +254,7 @@ async execute({ input, requestContext }: ICreateRecipt): Promise<IRecipt> {
 
 ### Paso 4: Registrar en el Contenedor de DI
 
-**En el dominio que expone los casos de uso** (`Customeruserss/customerusers.app.ts`):
+**En el dominio que expone los casos de uso** (`Customeruserss/customerusers.di.ts`):
 
 ```typescript
 export const customerusersApp = {
@@ -267,7 +266,7 @@ export const customerusersApp = {
 };
 ```
 
-**En el dominio de Users** (`Users/user.app.ts`):
+**En el dominio de Users** (`Users/user.di.ts`):
 
 ```typescript
 export const userApp = {
@@ -279,7 +278,7 @@ export const userApp = {
 };
 ```
 
-**En el dominio que los consume** (`Recipt/recipt.app.ts`):
+**En el dominio que los consume** (`Recipt/recipt.di.ts`):
 
 ```typescript
 import { GetAllUsersByCustomerId } from '@server/domains/Customeruserss';
@@ -496,7 +495,7 @@ Cuando necesites relacionar dominios:
 
 ### Inyección de Dependencias
 
-- [ ] ¿El caso de uso está registrado en el contenedor DI del dominio origen (`[domain].app.ts`)?
+- [ ] ¿El caso de uso está registrado en el contenedor DI del dominio origen (`[domain].di.ts`)?
 - [ ] ¿El dominio consumidor importa el caso de uso del dominio correcto?
 - [ ] ¿El caso de uso está registrado en el contenedor DI del dominio consumidor?
 - [ ] ¿El caso de uso está inyectado en el constructor del consumidor?

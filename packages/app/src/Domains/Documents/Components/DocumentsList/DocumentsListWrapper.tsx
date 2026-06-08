@@ -3,12 +3,12 @@ import {
   FilterButton,
   FiltersSheet,
   useURLParams,
-} from '@app/Aplication';
+} from '@app/Application';
 import {
   Tabs,
   TabsList,
   TabsTrigger,
-} from '@app/Aplication/Components/ui/tabs';
+} from '@app/Application/Components/ui/tabs';
 import { useEffect, useState } from 'react';
 import {
   PENDING,

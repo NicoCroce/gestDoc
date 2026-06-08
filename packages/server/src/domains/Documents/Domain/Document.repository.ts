@@ -1,6 +1,6 @@
 import { IRequestContext } from '@server/Application';
 import { Document } from './Document.entity';
-import { TStateDocument } from './Document.interfaces';
+import { TStateDocument } from './Document.types';
 
 type TFilters = {
   filters: {
@@ -29,10 +29,9 @@ export interface IGetDocumentRepository extends IRequestContext {
   id: number;
 }
 
-export interface IGetDocumentsByCompanyRepository
-  extends IGetDocumentsRepository {}
+export type IGetDocumentsByCompanyRepository = IGetDocumentsRepository;
 
-export interface IGetStatisticsDocumentsRepository extends IRequestContext {}
+export type IGetStatisticsDocumentsRepository = IRequestContext;
 export interface IGetStatisticsDocumentsResponseRepository {
   total: number;
   pending: number;

@@ -1,4 +1,8 @@
-import { ICertificateTypes } from './Certificate.interfaces';
+export interface ICertificateTypes {
+  id: number;
+  name?: string;
+  description?: string;
+}
 
 export class CertificateTypes {
   constructor(

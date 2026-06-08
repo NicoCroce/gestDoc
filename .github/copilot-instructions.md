@@ -26,7 +26,7 @@ Monorepo de e-commerce B2B multi-tenant. La empresa puede tener múltiples propi
 4. **Conventional Commits** — `feat(articles): add price calculation use case`.
 5. **Nunca toques archivos de otro paquete** salvo los archivos de registro global indicados en cada skill.
 6. **Nunca importes el repositorio de otro dominio** — importá su caso de uso (ver skill `cross-domain-relations`).
-7. **Vitest + Playwright** — El proyecto usa Vitest para tests unitarios e integración en ambos paquetes y Playwright para E2E. El agente `@qa` genera y ejecuta los tests en su flujo. No generes archivos de test fuera del flujo de `@qa`.
+7. **Vitest + Playwright** — El proyecto usa Vitest para tests unitarios e integración en ambos paquetes y Playwright para E2E. El agente `@blendverse.qa` genera y ejecuta los tests en su flujo. No generes archivos de test fuera del flujo de `@blendverse.qa`.
 
 ## Path Aliases
 
@@ -40,23 +40,23 @@ Monorepo de e-commerce B2B multi-tenant. La empresa puede tener múltiples propi
 Cuando el Chat base recibe un requerimiento nuevo, actúa como **Director del Proyecto** antes de delegar a cualquier agente especializado:
 
 1. **Determinar el task_id** — leer `memory/history_log.json` y generar el próximo `TASK-YYYYMMDD-N`.
-2. **Invocar `@analyst`** — pasa el requerimiento del usuario y el `task_id` generado.
-3. **Supervisar la cadena** — una vez que `@analyst` entrega `01_requirements.md`, guiar al usuario para invocar `@back` o `@front` (Coder), luego `@qa`, luego `@reviewer`.
-4. **Cerrar la tarea** — cuando `@reviewer` entrega `status: APPROVED`, actualizar `memory/history_log.json` con `status: COMPLETED` y `closed_at`.
+2. **Invocar `@blendverse.analyst`** — pasa el requerimiento del usuario y el `task_id` generado.
+3. **Supervisar la cadena** — una vez que `@blendverse.analyst` entrega `01_requirements.md`, guiar al usuario para invocar `@blendverse.back` o `@blendverse.front` (Coder), luego `@blendverse.qa`, luego `@blendverse.reviewer`.
+4. **Cerrar la tarea** — cuando `@blendverse.reviewer` entrega `status: APPROVED`, actualizar `memory/history_log.json` con `status: COMPLETED` y `closed_at`.
 
 Flujo completo:
 
 ```
-@analyst → 01_requirements.md
+@blendverse.analyst → 01_requirements.md
     ↓
-@back / @front → código + 02_dev_log.md
+@blendverse.back / @blendverse.front → código + 02_dev_log.md
     ↓
-@tester → tests por regla de negocio + 05_test_log.md
+@blendverse.tester → tests por regla de negocio + 05_test_log.md
     ↓
-@qa → 03_qa_report.md
-    ├── FAIL (máx. 3 intentos) → @back / @front
-    └── PASS → @reviewer → 04_review_log.md
-                  ├── REJECTED (máx. 3 intentos) → @back / @front
+@blendverse.qa → 03_qa_report.md
+    ├── FAIL (máx. 3 intentos) → @blendverse.back / @blendverse.front
+    └── PASS → @blendverse.reviewer → 04_review_log.md
+                  ├── REJECTED (máx. 3 intentos) → @blendverse.back / @blendverse.front
                   └── APPROVED → Director cierra en history_log.json
 ```
 
@@ -68,35 +68,122 @@ Todos los agentes leen y escriben en la carpeta `memory/` de la raíz del monore
 
 ## Agentes Disponibles
 
-| Agente      | Rol                     | Cuándo invocarlo                                                          |
-| ----------- | ----------------------- | ------------------------------------------------------------------------- |
-| `@analyst`  | Analista Funcional y UX | Inicio de cualquier tarea nueva — genera requerimientos                   |
-| `@back`     | Coder Backend (DDD)     | Implementar dominios del servidor                                         |
-| `@front`    | Coder Frontend (React)  | Implementar dominios del frontend                                         |
-| `@tester`   | Especialista en Tests   | Analizar reglas de negocio y generar tests sobre archivos con lógica real |
-| `@qa`       | QA Híbrido              | Validar código (tsc + lint + vitest) tras cada sesión de Coder            |
-| `@reviewer` | Crítico de Estándares   | Revisar arquitectura y convenciones tras QA PASS                          |
+| Agente                   | Rol                       | Cuándo invocarlo                                                          |
+| ------------------------ | ------------------------- | ------------------------------------------------------------------------- |
+| `@blendverse.analyst`    | Analista Funcional y UX   | Inicio de cualquier tarea nueva — genera requerimientos                   |
+| `@blendverse.back`       | Coder Backend (DDD)       | Implementar dominios del servidor                                         |
+| `@blendverse.front`      | Coder Frontend (React)    | Implementar dominios del frontend                                         |
+| `@blendverse.tester`     | Especialista en Tests     | Analizar reglas de negocio y generar tests sobre archivos con lógica real |
+| `@blendverse.qa`         | QA Híbrido                | Validar código (tsc + lint + vitest) tras cada sesión de Coder            |
+| `@blendverse.reviewer`   | Crítico de Estándares     | Revisar arquitectura y convenciones tras QA PASS                          |
+| `@blendverse.arch-fixer` | Unificador Arquitectónico | Corregir desvíos DDD/Hexagonal en dominios existentes — ver flujo abajo   |
 
-Ante una tarea full-stack, `@back` construye el dominio primero y hace handoff a `@front`. Ambos hacen handoff a `@qa` al finalizar.
+Ante una tarea full-stack, `@blendverse.back` construye el dominio primero y hace handoff a `@blendverse.front`. Ambos hacen handoff a `@blendverse.qa` al finalizar.
+
+## Flujo Alternativo — Unificación Arquitectónica
+
+Cuando el usuario exprese alguna de estas intenciones (o similares), **el Director debe invocar directamente `@blendverse.arch-fixer`** sin pasar por `@blendverse.analyst`:
+
+- "unificar criterios"
+- "corregir arquitectura"
+- "estandarizar el proyecto"
+- "hay desvíos de arquitectura"
+- "los dominios no siguen el patrón"
+- "aplicar las convenciones a los dominios existentes"
+- `/unify-project`
+
+Flujo:
+
+```
+Usuario (intención de unificación)
+    ↓
+Director → @blendverse.arch-fixer
+    ↓
+[skill arch-audit] → reporte + confirmación usuario
+    ↓ (por cada dominio, con confirmación)
+[skill interfaces-to-application] + [skill domain-consolidation]
+    ↓
+tsc --noEmit (verificación de imports)
+    ↓
+vitest run (corrección de tests rotos por la migración)
+    ↓
+Reporte final → Director cierra
+```
+
+> `@blendverse.arch-fixer` **nunca** modifica archivos de `packages/app/` de forma automática. Los desvíos del frontend se reportan para acción manual.
 
 ## Skills Disponibles
 
-| Skill                    | Cuándo usarla                                                   |
-| ------------------------ | --------------------------------------------------------------- |
-| `back-ddd-generator`     | Crear un dominio nuevo completo en el server                    |
-| `front-ddd-generator`    | Crear un dominio nuevo completo en el frontend                  |
-| `cross-domain-relations` | Relacionar datos de dos dominios del server                     |
-| `sequelize-associations` | Definir asociaciones y eager loading en Sequelize v6            |
-| `usecases-migration`     | Mover UseCases de `Domain/` a `Application/`                    |
-| `test-generator`         | Analizar reglas de negocio y generar tests completos por capa   |
-| `commit-conventions`     | Dudas sobre commits, hooks y lint-staged                        |
-| `requirements-analyst`   | Usada por `@analyst` — template de `01_requirements.md`         |
-| `dev-logger`             | Usada por `@back`/`@front` — template de `02_dev_log.md`        |
-| `qa-runner`              | Usada por `@qa` — secuencia de validación + `03_qa_report.md`   |
-| `code-reviewer`          | Usada por `@reviewer` — checklist 12 ítems + `04_review_log.md` |
+| Skill                       | Cuándo usarla                                                                         |
+| --------------------------- | ------------------------------------------------------------------------------------- |
+| `back-ddd-generator`        | Crear un dominio nuevo completo en el server                                          |
+| `front-ddd-generator`       | Crear un dominio nuevo completo en el frontend                                        |
+| `cross-domain-relations`    | Relacionar datos de dos dominios del server                                           |
+| `sequelize-associations`    | Definir asociaciones y eager loading en Sequelize v6                                  |
+| `usecases-migration`        | Mover UseCases de `Domain/` a `Application/`                                          |
+| `test-generator`            | Analizar reglas de negocio y generar tests completos por capa                         |
+| `commit-conventions`        | Dudas sobre commits, hooks y lint-staged                                              |
+| `arch-audit`                | Auditar todos los dominios y reportar desvíos arquitectónicos                         |
+| `interfaces-to-application` | Migrar `Domain/*.interfaces.ts` → `Application/[domain].types.ts`                     |
+| `domain-consolidation`      | Extraer lógica DI de `index.ts` a `[domain].di.ts`; dejar `index.ts` como barrel puro |
+| `requirements-analyst`      | Usada por `@blendverse.analyst` — template de `01_requirements.md`                    |
+| `dev-logger`                | Usada por `@blendverse.back`/`@blendverse.front` — template de `02_dev_log.md`        |
+| `qa-runner`                 | Usada por `@blendverse.qa` — secuencia de validación + `03_qa_report.md`              |
+| `code-reviewer`             | Usada por `@blendverse.reviewer` — checklist 12 ítems + `04_review_log.md`            |
 
 ## Instrucciones Específicas
 
 - Backend → `.github/instructions/server.instructions.md`
 - Frontend → `.github/instructions/app.instructions.md`
 - Memoria → `.github/instructions/memory.instructions.md`
+
+## Integración Speckit — Pipeline de Diseño
+
+Speckit gestiona la fase de **especificación y planificación** antes de que los agentes de Blendverse implementen.
+Es la capa de diseño; Blendverse es la capa de ejecución. **Nunca usar `speckit.implement`** — es reemplazado por los coders especializados.
+
+### Cuándo usar Speckit
+
+| Fase                             | Agente                                      | Output                                |
+| -------------------------------- | ------------------------------------------- | ------------------------------------- |
+| Especificación                   | `speckit.specify`                           | `specs/{feature}/spec.md`             |
+| Aclaración (si hay ambigüedades) | `speckit.clarify`                           | `spec.md` actualizado                 |
+| Diseño técnico                   | `speckit.plan`                              | `plan.md`, `data-model.md`, contratos |
+| Desglose de tareas               | `speckit.tasks`                             | `tasks.md` → handoff a Blendverse     |
+| Git workflow                     | `speckit.git.feature`, `speckit.git.commit` | rama + commits                        |
+
+### Flujo Unificado Speckit + Blendverse
+
+```
+[DISEÑO — Speckit]
+speckit.git.feature   → crea rama
+speckit.specify       → spec.md
+speckit.clarify       → (opcional) refina spec.md
+speckit.plan          → plan.md + data-model + contracts
+speckit.tasks         → tasks.md
+                           ↓ handoff a Blendverse
+[IMPLEMENTACIÓN — Blendverse]
+@blendverse.analyst   → 01_requirements.md (usa spec.md como input)
+@blendverse.back      → código servidor DDD
+@blendverse.front     → código React
+@blendverse.tester    → tests de reglas de negocio
+@blendverse.qa        → tsc + lint + vitest
+@blendverse.reviewer  → checklist 12 ítems
+speckit.git.commit    → commit automático
+```
+
+**Comando para arrancar el pipeline completo de punta a punta:**
+`/blendverse.start-feature "descripción de la feature"`
+
+Este prompt orquesta Speckit hasta `tasks.md` y luego hace handoff automático a `@blendverse.analyst`,
+sin modificar ningún archivo de Speckit.
+
+> **`speckit.implement` está bloqueado** — configurado en `.github/hooks/block-destructive.json`.
+> Para gobernanza y principios no negociables ver `.specify/memory/constitution.md`.
+
+<!-- SPECKIT START -->
+
+For additional context about technologies to be used, project structure,
+shell commands, and other important information, read the current plan
+
+<!-- SPECKIT END -->

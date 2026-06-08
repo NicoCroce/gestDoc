@@ -11,7 +11,7 @@ import {
 } from '../../Domain';
 import { DocumentsFilters } from './DocumentsFilters';
 import { Documentos } from './';
-import { DocumentsTypesModel } from '@server/domains/DocumentsTypes/Infraestructure';
+import { DocumentsTypesModel } from '@server/domains/DocumentsTypes/Infrastructure';
 import { UserModel } from '@server/domains/Users';
 
 export class DocumentsRepositoryImplementation implements DocumentRepository {

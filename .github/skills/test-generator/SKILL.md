@@ -2,7 +2,7 @@
 
 ## Propósito
 
-Guía al agente `@tester` en el análisis de reglas de negocio y la generación de tests completos (no stubs) para las cuatro capas de un dominio DDD: Entity, Use Case, Service y Controller en el backend, y Hooks en el frontend.
+Guía al agente `@blendverse.tester` en el análisis de reglas de negocio y la generación de tests completos (no stubs) para las cuatro capas de un dominio DDD: Entity, Use Case, Service y Controller en el backend, y Hooks en el frontend.
 
 ---
 
@@ -368,7 +368,7 @@ vi.mock('@app/Domains/{Domain}/{Domain}.service', () => ({
 }));
 
 // Si el hook lee useURLParams, mockearlo también
-vi.mock('@app/Aplication/Hooks/useURLParams', () => ({
+vi.mock('@app/Application/Hooks/useURLParams', () => ({
   useURLParams: vi.fn().mockReturnValue({ searchParams: {} }),
 }));
 
@@ -395,7 +395,7 @@ describe('use{Action}{Entities} hook', () => {
 
   it('passes search params to the query', () => {
     const { useURLParams } = vi.mocked(
-      await import('@app/Aplication/Hooks/useURLParams'),
+      await import('@app/Application/Hooks/useURLParams'),
     );
     useURLParams.mockReturnValue({ searchParams: { search: 'test', page: 1 } });
 
@@ -507,7 +507,7 @@ cd packages/server && npx vitest run 2>&1
 cd packages/app && npx vitest run 2>&1
 ```
 
-Todos los tests generados deben pasar (0 failed). Si alguno falla, corregirlo antes de hacer handoff a `@qa`. No se requiere flag `--coverage` ni alcanzar umbrales de porcentaje.
+Todos los tests generados deben pasar (0 failed). Si alguno falla, corregirlo antes de hacer handoff a `@blendverse.qa`. No se requiere flag `--coverage` ni alcanzar umbrales de porcentaje.
 
 ---
 
@@ -519,7 +519,7 @@ Los siguientes archivos **no tienen lógica de negocio propia** y no deben recib
 
 - `*.model.ts` — modelos Sequelize: son declaraciones de esquema, sin comportamiento
 - `*.routes.ts` — registro de rutas tRPC: solo conectan piezas, sin lógica
-- `*.app.ts` — registro Awilix: configuración de DI, sin lógica
+- `*.di.ts` — registro Awilix: configuración de DI, sin lógica
 - `index.ts` — barrel exports: sin lógica
 
 **Frontend:**

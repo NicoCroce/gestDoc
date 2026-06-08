@@ -1,4 +1,4 @@
-import { useURLParams } from '@app/Aplication';
+import { useURLParams } from '@app/Application';
 import { documentsService, TDocumentSearch } from '@app/Domains/Documents';
 
 export const useGetDocumentsByCompany = () => {

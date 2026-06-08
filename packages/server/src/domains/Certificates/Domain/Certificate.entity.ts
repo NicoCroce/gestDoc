@@ -1,4 +1,4 @@
-import { ICertificate } from './Certificate.interfaces';
+import { ICertificate } from './Certificate.types';
 import { CertificateTypes } from './CertificateTypes.entity';
 
 export class Certificate {

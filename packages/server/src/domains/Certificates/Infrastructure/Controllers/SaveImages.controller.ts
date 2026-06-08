@@ -1,7 +1,7 @@
 import { Express, Request, Response } from 'express';
 import { CertificatesServices } from '../../Application';
 import { authMiddleware } from '@server/Infrastructure/Auth/Auth';
-import { IAppendImages } from '../../Domain';
+import { IAppendImages } from '../../Application';
 
 export class SaveImagesController {
   constructor(

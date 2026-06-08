@@ -3,7 +3,7 @@ export * from './Button';
 export * from './Checkbox';
 export * from './ConfirmWithPassword';
 export * from './DatePicker';
-export * from './DateRange';
+export * from './DateRange/DateRange';
 export * from './EmptyScreenFilter';
 export * from './FilterButton';
 export * from './FormFields';

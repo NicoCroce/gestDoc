@@ -1,4 +1,4 @@
-import { HalfPage, Title } from '@app/Aplication';
+import { HalfPage, Title } from '@app/Application';
 import { ChangePasswordFormPublic } from '../Components/ChangePasswordPublicForm';
 import { LeftContentPage } from '../Components/LeftContentPage';
 

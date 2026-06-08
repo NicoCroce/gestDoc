@@ -1,4 +1,4 @@
-import { LICENSES_ACCESS, MenuItem } from '@app/Aplication';
+import { LICENSES_ACCESS, MenuItem } from '@app/Application';
 import { CERTIFICATES_ROUTES } from './Certificates.routes';
 import { faFileContract } from '@fortawesome/free-solid-svg-icons';
 

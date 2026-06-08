@@ -4,27 +4,27 @@ import {
   Container,
   Input,
   InputField,
-} from '@app/Aplication';
+} from '@app/Application';
 import {
   Form,
   FormControl,
   FormField,
   FormItem,
   FormLabel,
-} from '@app/Aplication/Components/ui/form';
+} from '@app/Application/Components/ui/form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMemo } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
 import { z } from 'zod';
 import { useGetCertificatesTypes } from '../../Hooks';
 import { useNavigate } from 'react-router-dom';
-import { Textarea } from '@app/Aplication/Components/ui/textarea';
+import { Textarea } from '@app/Application/Components/ui/textarea';
 import { useAddLicense } from '../../Hooks/useAddLicense';
 import { CERTIFICATES_ROUTES } from '../../Certificates.routes';
-import { ICertificateTypes } from '@server/domains/Certificates';
+import { TCertificateType } from '../../Certificate.entity';
 import { formSchemeAddLicense } from './AddLicenceScheme';
-import { SelectField } from '@app/Aplication/Components/Molecules/FormFields/SelectField';
-import { DateRange } from '@app/Aplication/Components/Molecules/DateRange/DateRage';
+import { SelectField } from '@app/Application/Components/Molecules/FormFields/SelectField';
+import { DateRange } from '@app/Application/Components/Molecules/DateRange/';
 
 export const AddLicenseForm = () => {
   const { data: dataTypes } = useGetCertificatesTypes();
@@ -44,7 +44,7 @@ export const AddLicenseForm = () => {
   });
 
   const options = useMemo(() => {
-    return dataTypes?.map(({ id, name }: ICertificateTypes) => ({
+    return dataTypes?.map(({ id, name }: TCertificateType) => ({
       value: String(id),
       label: String(name),
     }));

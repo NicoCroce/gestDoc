@@ -4,7 +4,7 @@ import {
   FiltersSheet,
   Page,
   Title,
-} from '@app/Aplication';
+} from '@app/Application';
 import {
   CertificatesGrid,
   ActionsCertificateListPage,

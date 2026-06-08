@@ -1,5 +1,6 @@
 import { IUseCase } from '@server/Application/Interfaces/IUseCase';
-import { IGetRoles, PermissionsRepository } from '../../Domain';
+import { PermissionsRepository } from '../../Domain';
+import { IGetRoles } from '../../Application';
 import { AppError } from '@server/Application';
 
 export class GetAdmins implements IUseCase<string[]> {

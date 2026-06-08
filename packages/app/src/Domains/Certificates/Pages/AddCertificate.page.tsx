@@ -1,6 +1,6 @@
-import { Page } from '@app/Aplication';
+import { Page } from '@app/Application';
 import { AddLicenseForm } from '../Components/AddLicenseForm/AddLicenseForm';
-import { Card } from '@app/Aplication/Components/ui/card';
+import { Card } from '@app/Application/Components/ui/card';
 
 export const AddCertificatePage = () => {
   return (

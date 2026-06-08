@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { TDocument, TDocumentSearch } from '../Document.entity';
 import { documentsService } from '../Documents.service';
 import { useCacheDocuments } from './useCacheDocuments';
-import { useURLParams } from '@app/Aplication';
+import { useURLParams } from '@app/Application';
 
 export const useGetDocument = (id: string | undefined) => {
   const [currentDocument, setCurrentDocument] = useState<TDocument | null>(
@@ -28,11 +28,15 @@ export const useGetDocument = (id: string | undefined) => {
   }, [cacheDocumentsList, searchParams]);
 
   useEffect(() => {
-    if (!searchParams?.id) return setCurrentDocument(null);
+    if (!searchParams?.id) {
+      const timer = setTimeout(() => setCurrentDocument(null), 0);
+      return () => clearTimeout(timer);
+    }
 
     // Si el documento está en caché, lo usamos, de lo contrario, hacemos fetch
     if (cachedDocuments) {
-      setCurrentDocument(cachedDocuments);
+      const timer = setTimeout(() => setCurrentDocument(cachedDocuments), 0);
+      return () => clearTimeout(timer);
     } else if (!isFetching && !isFetched && id && searchParams?.id) {
       refetch().then((res) => {
         setCurrentDocument(res.data || null);

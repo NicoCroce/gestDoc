@@ -1,11 +1,11 @@
-import { useURLParams } from '@app/Aplication';
+import { useURLParams } from '@app/Application';
 import { TDocumentSearch } from '../../Document.entity';
 import { useGetDocument } from '../../Hooks';
 import {
   Alert,
   AlertDescription,
   AlertTitle,
-} from '@app/Aplication/Components/ui/alert';
+} from '@app/Application/Components/ui/alert';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faCircleExclamation,
@@ -19,10 +19,11 @@ export const PDFPreview = () => {
   const [onLoad, setOnload] = useState(false);
 
   useEffect(() => {
-    setOnload(false);
-    setTimeout(() => {
-      setOnload(true);
-    }, 500);
+    const timer = setTimeout(() => setOnload(true), 500);
+    return () => {
+      clearTimeout(timer);
+      setOnload(false);
+    };
   }, [currentDocument]);
 
   if (!currentDocument) {

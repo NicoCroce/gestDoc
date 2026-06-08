@@ -1,14 +1,13 @@
-import { Button, Container, Input, useURLParams } from '@app/Aplication';
-import { Label } from '@app/Aplication/Components/ui/label';
-import { SheetClose, SheetFooter } from '@app/Aplication/Components/ui/sheet';
+import { Button, Container, Input, useURLParams } from '@app/Application';
+import { Label } from '@app/Application/Components/ui/label';
+import { SheetClose, SheetFooter } from '@app/Application/Components/ui/sheet';
 import { useState } from 'react';
-import { ICertificateTypes } from '@server/domains/Certificates';
-import { TCertificatesSearch } from '../Certificate.entity';
+import { TCertificatesSearch, TCertificateType } from '../Certificate.entity';
 import { useGetCertificatesTypes } from '../Hooks';
 import {
   ToggleGroup,
   ToggleGroupItem,
-} from '@app/Aplication/Components/ui/toggle-group';
+} from '@app/Application/Components/ui/toggle-group';
 import clsx from 'clsx';
 
 const buttonGroupActiveClass =
@@ -84,7 +83,7 @@ export const FiltersCertificatesForm = ({
           onValueChange={handleType}
           value={formState.type}
         >
-          {certificatesTypes?.map(({ name, id }: ICertificateTypes) => (
+          {certificatesTypes?.map(({ name, id }: TCertificateType) => (
             <ToggleGroupItem
               key={id}
               value={String(id)}

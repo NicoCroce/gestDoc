@@ -1,22 +1,18 @@
-import { Button, Container, useURLParams } from '@app/Aplication';
+import { Button, Container, useURLParams } from '@app/Application';
 import { TDocumentSearch, VALIDATED } from '../Document.entity';
 import { useGetDocument } from '../Hooks';
 import { faThumbsDown, faThumbsUp } from '@fortawesome/free-solid-svg-icons';
-import { ConfirmWithPassword } from '@app/Aplication/Components/Molecules';
+import { ConfirmWithPassword } from '@app/Application/Components/Molecules';
 import { useSignDocument } from '../Hooks/useSignDocument';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
 export const SignDocument = () => {
   const { searchParams } = useURLParams<TDocumentSearch>();
   const { currentDocument } = useGetDocument(searchParams?.id);
-  const { mutate, isPending, isSuccess } = useSignDocument();
+  const { mutate, isPending } = useSignDocument();
   const [sign, setSign] = useState<boolean | 'agreement' | 'disagreement'>(
     false,
   );
-
-  useEffect(() => {
-    isSuccess && setSign(false);
-  }, [isSuccess]);
 
   if (!currentDocument) return null;
   if (searchParams?.state === VALIDATED) return null;
@@ -24,12 +20,15 @@ export const SignDocument = () => {
   const disabled = !currentDocument.requireSign;
 
   const signDocument = (password: string, reason: string) =>
-    mutate({
-      documentId: Number(searchParams?.id),
-      password,
-      agreement: sign === 'agreement',
-      reasonSignatureNonConformity: reason,
-    });
+    mutate(
+      {
+        documentId: Number(searchParams?.id),
+        password,
+        agreement: sign === 'agreement',
+        reasonSignatureNonConformity: reason,
+      },
+      { onSuccess: () => setSign(false) },
+    );
 
   const onCloseDialog = () => setSign(false);
 

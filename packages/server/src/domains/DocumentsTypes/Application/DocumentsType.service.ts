@@ -1,5 +1,7 @@
 import { executeUseCase } from '@server/Application';
-import { DocumentType, GetDocumentsTypes, IGetDocumentsTypes } from '../Domain';
+import { DocumentType } from '../Domain/DocumentType.entity';
+import { GetDocumentsTypes } from './UseCases';
+import { IGetDocumentsTypes } from './documentstypes.types';
 
 export class DocumentTypesService {
   constructor(private readonly _getDocumentsTypes: GetDocumentsTypes) {}

@@ -1,4 +1,4 @@
-import { useURLParams } from '@app/Aplication';
+import { useURLParams } from '@app/Application';
 import { CertificatesService } from '../Certificates.service';
 import { TCertificatesSearch } from '../Certificate.entity';
 

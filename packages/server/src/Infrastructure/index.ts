@@ -6,3 +6,5 @@ export * from './utils/bcrypt';
 export * from './utils/axios';
 export * from './utils/pino';
 export * from './utils/pagination';
+export * from './utils/Email';
+export * from './utils/LoadImages';

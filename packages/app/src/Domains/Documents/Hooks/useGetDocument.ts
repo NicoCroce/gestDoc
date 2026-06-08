@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { TDocument, TDocumentSearch } from '../Document.entity';
 import { documentsService } from '../Documents.service';
 import { useCacheDocuments } from './useCacheDocuments';
@@ -14,7 +14,10 @@ export const useGetDocument = (id: string | undefined) => {
   const { searchParams } = useURLParams<TDocumentSearch>();
 
   const cacheDocumentsList = useCacheDocuments();
-  const { isFetched, isFetching, refetch } = queryDocument;
+  const { isFetching, refetch } = queryDocument;
+  // Rastrea el último id ya gestionado para evitar fetches duplicados
+  // y permitir refetch cuando el id cambia (aunque ya haya sido fetched antes).
+  const lastHandledId = useRef<string | undefined>(undefined);
 
   // Extraemos los datos de la caché si es que existe.
   const cachedDocuments = useMemo(() => {
@@ -29,20 +32,23 @@ export const useGetDocument = (id: string | undefined) => {
 
   useEffect(() => {
     if (!searchParams?.id) {
+      lastHandledId.current = undefined;
       const timer = setTimeout(() => setCurrentDocument(null), 0);
       return () => clearTimeout(timer);
     }
 
     // Si el documento está en caché, lo usamos, de lo contrario, hacemos fetch
     if (cachedDocuments) {
+      lastHandledId.current = searchParams.id;
       const timer = setTimeout(() => setCurrentDocument(cachedDocuments), 0);
       return () => clearTimeout(timer);
-    } else if (!isFetching && !isFetched && id && searchParams?.id) {
+    } else if (!isFetching && id && id !== lastHandledId.current) {
+      lastHandledId.current = id;
       refetch().then((res) => {
         setCurrentDocument(res.data || null);
       });
     }
-  }, [id, isFetching, isFetched, refetch, cachedDocuments, searchParams]);
+  }, [id, isFetching, refetch, cachedDocuments, searchParams]);
 
   return {
     currentDocument,

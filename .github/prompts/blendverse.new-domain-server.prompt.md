@@ -12,7 +12,7 @@ El usuario quiere crear un nuevo dominio en `packages/server`.
 
 1. Ejecuta el Protocolo de Preguntas de la skill si no tienes toda la información.
 2. Lista el árbol de archivos completo y espera aprobación.
-3. Crea los archivos en orden: Domain → Application → Infrastructure → [domain].app.ts → index.ts.
+3. Crea los archivos en orden: Domain → Application → Infrastructure → [domain].di.ts → index.ts.
 4. Actualiza los dos archivos globales de registro.
 5. Verifica que no haya errores de TypeScript en los archivos creados.
 

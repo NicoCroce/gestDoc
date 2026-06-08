@@ -32,7 +32,7 @@ packages/server/src/domains/[Domain]/
 │   │   ├── [Domain].routes.ts                # Exporta el tRPC router del dominio
 │   │   └── index.ts
 │   └── index.ts
-├── [domain].app.ts                           # Registro Awilix del dominio
+├── [domain].di.ts                           # Registro Awilix del dominio
 └── index.ts                                  # Barrel export público
 ```
 
@@ -253,7 +253,7 @@ export class EntityController {
 
 ## Registro DI (Awilix)
 
-### `[domain].app.ts`
+### `[domain].di.ts`
 
 ```typescript
 import { asClass } from 'awilix';
@@ -290,7 +290,7 @@ export const entityApp = {
 | Controller           | `[Domain].controller.ts`               | `Articles.controller.ts`               |
 | Modelo Sequelize     | `[Entity].model.ts`                    | `Article.model.ts`                     |
 | Repo Impl            | `[Entity]Repository.implementation.ts` | `ArticlesRepository.implementation.ts` |
-| App.ts               | `[domain].app.ts`                      | `article.app.ts`                       |
+| App.ts               | `[domain].di.ts`                       | `article.di.ts`                        |
 | DI - repositorio     | `[domain]Repository`                   | `articlesRepository`                   |
 | DI - servicio        | `[domain]Service`                      | `articlesService`                      |
 | DI - controlador     | `[domain]Controller`                   | `articlesController`                   |

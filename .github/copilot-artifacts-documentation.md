@@ -57,7 +57,7 @@ Define el contexto general del proyecto (monorepo B2B multi-tenant), las reglas 
 **Ruta:** `.github/instructions/server.instructions.md`  
 **Se aplica:** Automáticamente cuando se trabaja en `packages/server/**`.
 
-Documenta la estructura completa de un dominio hexagonal en el servidor: capas Domain, Application e Infrastructure, templates de código reales para cada capa, el registro Awilix (`[domain].app.ts`), y los archivos globales a actualizar al crear un dominio.
+Documenta la estructura completa de un dominio hexagonal en el servidor: capas Domain, Application e Infrastructure, templates de código reales para cada capa, el registro Awilix (`[domain].di.ts`), y los archivos globales a actualizar al crear un dominio.
 
 ---
 
@@ -186,7 +186,7 @@ Genera un dominio DDD completo en el servidor con todos los templates necesarios
 
 - Protocolo de preguntas al usuario si faltan datos.
 - Validación de estructura (árbol de archivos) antes de crear.
-- Templates para: entidad, interfaces, repositorio abstracto, 5 use cases (GetAll, Get, Create, Update, Delete), service, controller tRPC, modelo Sequelize, implementación de repositorio, rutas tRPC, `[domain].app.ts` e `index.ts`.
+- Templates para: entidad, interfaces, repositorio abstracto, 5 use cases (GetAll, Get, Create, Update, Delete), service, controller tRPC, modelo Sequelize, implementación de repositorio, rutas tRPC, `[domain].di.ts` e `index.ts`.
 - Instrucciones para actualizar `register.ts` y `Router.ts`.
 - Checklist final de verificación.
 
@@ -219,7 +219,7 @@ Patrón para relacionar datos entre dominios del servidor sin romper el aislamie
 1. Crear use case en el dominio proveedor que exponga solo lo necesario.
 2. Crear use case en el dominio de datos por IDs.
 3. Inyectar los use cases en el constructor del dominio consumidor y usar `executeUseCase`.
-4. Registrar los use cases del proveedor en el `[consumer].app.ts`.
+4. Registrar los use cases del proveedor en el `[consumer].di.ts`.
 
 **Anti-patrones documentados:**
 
@@ -432,7 +432,7 @@ Ejecuta automáticamente `pnpm format` (Prettier) cada vez que el agente crea o 
 2. Agente: Lee archivos del proveedor (Users) y del consumidor (Recipt)
 3. Agente: Crea GetEmailsByUsersId.usecase.ts en Users/Application/UseCases/ (si no existe)
 4. Agente: Inyecta el use case en CreateRecipt.usecase.ts
-5. Agente: Agrega _getEmailsByUsersId en recipt.app.ts
+5. Agente: Agrega _getEmailsByUsersId en recipt.di.ts
 6. Agente: Verifica errores
 ```
 

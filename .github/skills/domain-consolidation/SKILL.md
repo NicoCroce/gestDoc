@@ -51,7 +51,7 @@ import {
   UpdateEntity,
   DeleteEntity,
 } from './Application';
-import { container } from '@server/utils/Container';
+import { container } from '@server/Infrastructure/di/Container';
 
 export const [domainApp] = {
   entityRepository: asClass(EntityRepositoryImplementation),

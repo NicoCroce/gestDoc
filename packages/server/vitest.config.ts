@@ -17,7 +17,7 @@ export default defineConfig({
         'src/domains/**/index.ts',
         'src/domains/**/*.model.ts',
         'src/domains/**/*.routes.ts',
-        'src/domains/**/*.app.ts',
+        'src/domains/**/*.di.ts',
       ],
     },
   },

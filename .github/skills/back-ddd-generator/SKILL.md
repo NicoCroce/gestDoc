@@ -81,7 +81,7 @@ packages/server/src/domains/[Domain]/
 │   │   ├── [Domain].routes.ts
 │   │   └── index.ts
 │   └── index.ts
-├── [domain].app.ts
+├── [domain].di.ts
 └── index.ts
 
 Archivos globales a actualizar:
@@ -623,7 +623,7 @@ export * from './Routes';
 
 ---
 
-## Template: `[domain].app.ts`
+## Template: `[domain].di.ts`
 
 ```typescript
 import { asClass } from 'awilix';
@@ -636,7 +636,7 @@ import {
   Delete[Entity],
 } from './Application';
 import { [Domain]Controller, [Entity]RepositoryImplementation } from './Infrastructure';
-import { container } from '@server/utils/Container';
+import { container } from '@server/Infrastructure/di/Container';
 
 export const [domain]App = {
   [domain]Repository: asClass([Entity]RepositoryImplementation),
@@ -709,7 +709,7 @@ Tras crear todos los archivos, ejecuta `diagnostics/getErrors` y verifica:
 
 - [ ] No hay errores de TypeScript
 - [ ] Los imports usan `@server/*` (no rutas relativas entre dominios)
-- [ ] El `[domain].app.ts` exporta todos los use cases con prefijo `_`
+- [ ] El `[domain].di.ts` exporta todos los use cases con prefijo `_`
 - [ ] `register.ts` incluye el nuevo dominio
 - [ ] `Router.ts` incluye las nuevas rutas
 - [ ] El repositorio filtra por `ownerId` en cada método que corresponde

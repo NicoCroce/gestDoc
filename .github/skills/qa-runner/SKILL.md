@@ -83,7 +83,7 @@ domains/{domain}/
       {Entity}.model.ts
       {Entity}Repository.implementation.ts
     Routes/{Domain}.routes.ts
-  {domain}.app.ts
+  {domain}.di.ts
   index.ts
 ```
 

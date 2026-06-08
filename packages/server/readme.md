@@ -366,13 +366,13 @@ Awilix en modo **CLASSIC** resuelve las dependencias del constructor en orden po
 **Flujo:**
 
 ```
-[dominio].app.ts → domains/register.ts → Infrastructure/di/register.ts → container.register()
+[dominio].di.ts → domains/register.ts → Infrastructure/di/register.ts → container.register()
 ```
 
 Ejemplo del dominio Users:
 
 ```typescript
-// user.app.ts
+// user.di.ts
 export const userApp = {
   usersRepositoryImpl: asClass(UsersRepositoryImplementation).singleton(),
   getUsersUseCase: asClass(GetUsersUseCase).singleton(),

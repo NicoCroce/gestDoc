@@ -13,7 +13,7 @@ Actúa como el agente `@blendverse.back`. Vas a agregar un nuevo caso de uso a u
    - `Domain/{{entity}}.repository.ts` → para ver los métodos de repositorio disponibles
    - `Application/UseCases/index.ts` → para ver los use cases existentes
    - `Application/{{domain}}.service.ts` → para ver cómo inyectar el nuevo use case
-   - `{{domainLower}}.app.ts` → para ver el registro Awilix actual
+   - `{{domainLower}}.di.ts` → para ver el registro Awilix actual
 
 2. Crea el nuevo use case:
    - Archivo: `Application/UseCases/{{useCaseName}}.usecase.ts`
@@ -31,7 +31,7 @@ Actúa como el agente `@blendverse.back`. Vas a agregar un nuevo caso de uso a u
    - Agrega el use case como parámetro del constructor
    - Agrega el método público que llama a `executeUseCase`
 
-6. Actualiza `{{domainLower}}.app.ts`:
+6. Actualiza `{{domainLower}}.di.ts`:
    - Agrega `_{{useCaseCamel}}: asClass({{UseCaseName}})` al objeto del dominio
 
 7. Si el use case debe ser accesible vía API, agrega el procedure en el Controller y en las Routes.

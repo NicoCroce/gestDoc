@@ -30,7 +30,7 @@ description: Migra los DTOs de Input/Output de un dominio del server desde `Doma
 3. Leer `Infrastructure/Controllers/[Domain].controller.ts` para identificar los Zod schemas existentes.
 4. Leer `Application/[Domain].service.ts` para ver qué tipos usa.
 5. Leer todos los `Application/UseCases/*.usecase.ts` para ver los imports de interfaces.
-6. Leer `[domain].app.ts` para contexto de imports.
+6. Leer `[domain].di.ts` para contexto de imports.
 
 Presentar al usuario:
 

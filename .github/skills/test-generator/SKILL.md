@@ -519,7 +519,7 @@ Los siguientes archivos **no tienen lógica de negocio propia** y no deben recib
 
 - `*.model.ts` — modelos Sequelize: son declaraciones de esquema, sin comportamiento
 - `*.routes.ts` — registro de rutas tRPC: solo conectan piezas, sin lógica
-- `*.app.ts` — registro Awilix: configuración de DI, sin lógica
+- `*.di.ts` — registro Awilix: configuración de DI, sin lógica
 - `index.ts` — barrel exports: sin lógica
 
 **Frontend:**

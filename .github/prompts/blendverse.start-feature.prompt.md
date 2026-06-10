@@ -26,6 +26,8 @@ Esperar confirmación antes de continuar.
 
 Invocar `@speckit.specify` con la descripción de la feature.
 
+** Siempre que la implementación a realizar no esté relacionada con un dominio existe, pregunta el nombre. **
+
 Output esperado: `specs/{feature}/spec.md`
 
 ** Esperar confirmación antes de continuar. Debes darle la posibilidad de iterar, corregir y agregar todo lo necesario sobre el `spec` antes de continuar. Siempre pregunta todas las dudas que puedas tener y compórtate en `modo plan` **

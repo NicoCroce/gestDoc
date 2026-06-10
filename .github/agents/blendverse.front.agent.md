@@ -10,10 +10,6 @@ tools:
     'search/fileSearch',
   ]
 handoffs:
-  - label: Crear o modificar dominio en el servidor
-    agent: blendverse.back
-    prompt: Se necesita crear o modificar lógica de negocio en el servidor. Usa la skill `back-ddd-generator` para el nuevo dominio.
-    send: false
   - label: Generar tests de negocio con @blendverse.tester
     agent: blendverse.tester
     prompt: 'La implementación está lista. Leer memory/{task_id}/02_dev_log.md para obtener los archivos afectados y generar los tests de reglas de negocio con la skill test-generator.'

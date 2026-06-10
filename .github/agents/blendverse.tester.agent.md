@@ -45,8 +45,8 @@ Para cada dominio, leer:
 
 ```
 packages/server/src/domains/{Domain}/Domain/{Entity}.entity.ts
-packages/server/src/domains/{Domain}/Domain/{Entity}.interfaces.ts
 packages/server/src/domains/{Domain}/Domain/{Entity}.repository.ts
+packages/server/src/domains/{Domain}/Application/{domain}.types.ts
 packages/server/src/domains/{Domain}/Application/UseCases/
 packages/server/src/domains/{Domain}/Application/{Domain}.service.ts
 packages/server/src/domains/{Domain}/Infrastructure/Controllers/{Domain}.controller.ts

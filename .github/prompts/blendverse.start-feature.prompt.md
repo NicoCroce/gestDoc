@@ -78,17 +78,18 @@ Una vez completadas y aprobadas por el usuario todas las fases Speckit, presenta
 📁 Artefactos en: specs/{feature}/
 ```
 
-Invocar `@blendverse.analyst` con el siguiente contexto:
+Ejecutar el micro-prompt `.github/prompts/speckit-to-blendverse.prompt.md` para convertir los artefactos Speckit en `memory/{task_id}/01_requirements.md`.
 
-> Los artefactos de diseño Speckit están listos en `specs/{feature}/`.
-> Activa tu **Modo Speckit**: lee `specs/{feature}/spec.md` como fuente de user stories y criterios de aceptación, y `specs/{feature}/plan.md` para el diseño técnico. Consolida la información en `memory/{task_id}/01_requirements.md` y haz handoff al agente Coder correspondiente.
+Luego indicar al usuario que invoque `@blendverse.implement`:
+
+```
+@blendverse.implement Los requerimientos están en memory/{task_id}/01_requirements.md. Detectar el alcance y coordinar la cadena de implementación.
+```
 
 ## Notas
 
 - **DETENTE ESTRICTAMENTE después de cada fase y espera la confirmación explícita del usuario mediante el prompt. NO pases a la siguiente fase sin que el usuario diga 'ok' o apruebe la fase anterior.**
-- `speckit.implement` está bloqueado en este proyecto — la implementación la
-  realizan exclusivamente los agentes Blendverse especializados en DDD.
-- Si el usuario quiere saltear las fases de diseño (ya tiene `spec.md` y `plan.md`),
-  puede invocar directamente `@blendverse.analyst` sin este prompt.
+- `speckit.implement` redirige automáticamente a `@blendverse.implement` — la implementación la realizan exclusivamente los agentes Blendverse especializados en DDD.
+- Si el usuario quiere saltear las fases de diseño (ya tiene `spec.md`, `plan.md` y `tasks.md`), puede ejecutar directamente el micro-prompt `.github/prompts/speckit-to-blendverse.prompt.md` y luego invocar `@blendverse.implement`.
 - Recuerda detenerte en cada Fase para poder iterar sobre la misma.
 - Todas las fases se comportarán como modo `plan`.

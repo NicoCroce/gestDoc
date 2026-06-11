@@ -244,3 +244,6 @@ Antes de crear cualquier componente nuevo, verificar en `packages/app/src/Applic
 1. No debes llamar un servicio (TRPC, o de la carpeta Service) desde un componente tsx.
 2. No debes escribir grandes bloqeues de código directamente en \*.page. Debes colocarlo en la carpeta `Components` del dominio.
 3. Evita utilizar `magics strings`.
+4. No debes crear componentes genéricos que no sean específicos de tu dominio. Si necesitas un componente compartido, colócalo en `packages/app/src/Application/Components/` y avisa al equipo.
+5. No debes escribir lógica de negocio en los componentes. Toda la lógica debe ir en los hooks o servicios.
+6. No debes utilizar `<div>` con class `flex` en su lugar usa <Container> con las props que tiene el componente.

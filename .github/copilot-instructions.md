@@ -187,13 +187,12 @@ y hace handoff a `@blendverse.implement`, sin modificar ningún archivo de Speck
 
 For additional context about technologies to be used, project structure,
 shell commands, and other important information, read the current plan:
-`specs/003-multiempresas/plan.md`
+`specs/multiempresas-usuarios/plan.md`
 
-Key artifacts for the active feature (003-multiempresas):
+Key artifacts for the active feature (multiempresas-usuarios):
 
-- Plan: `specs/003-multiempresas/plan.md`
-- Data model: `specs/003-multiempresas/data-model.md`
-- API contracts: `specs/003-multiempresas/contracts/auth.contracts.ts`
-- Quickstart: `specs/003-multiempresas/quickstart.md`
+- Plan: `specs/multiempresas-usuarios/plan.md`
+- Data model: `specs/multiempresas-usuarios/data-model.md`
+- API contracts: `specs/multiempresas-usuarios/contracts/empresas-usuarios.contracts.ts`
 
 <!-- SPECKIT END -->

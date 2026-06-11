@@ -80,18 +80,19 @@ Una vez completadas y aprobadas por el usuario todas las fases Speckit, presenta
 📁 Artefactos en: specs/{feature}/
 ```
 
-Ejecutar el micro-prompt `.github/prompts/speckit-to-blendverse.prompt.md` para convertir los artefactos Speckit en `memory/{task_id}/01_requirements.md`.
+Luego, **sin esperar intervención del usuario**:
 
-Luego indicar al usuario que invoque `@blendverse.implement`:
-
-```
-@blendverse.implement Los requerimientos están en memory/{task_id}/01_requirements.md. Detectar el alcance y coordinar la cadena de implementación.
-```
+1. Leer `memory/history_log.json` para determinar el próximo `task_id` con formato `TASK-YYYYMMDD-N`.
+2. Crear la carpeta `memory/{task_id}/`.
+3. Leer `specs/{feature}/spec.md` y `specs/{feature}/tasks.md`.
+4. Escribir `memory/{task_id}/01_requirements.md` siguiendo el template de la skill `requirements-analyst`, consolidando la información de los artefactos Speckit sin análisis adicional ni preguntas.
+5. Invocar directamente `@blendverse.implement` — el orquestador detectará el alcance e iniciará la cadena `back → front → qa` de forma autónoma.
 
 ## Notas
 
-- **DETENTE ESTRICTAMENTE después de cada fase y espera la confirmación explícita del usuario mediante el prompt. NO pases a la siguiente fase sin que el usuario diga 'ok' o apruebe la fase anterior.**
+- **DETENTE ESTRICTAMENTE después de cada fase (1–5) y espera la confirmación explícita del usuario. NO pases a la siguiente fase sin que el usuario diga 'ok' o apruebe la fase anterior.**
+- La Fase 6 es completamente automática — no requiere intervención del usuario.
 - `speckit.implement` redirige automáticamente a `@blendverse.implement` — la implementación la realizan exclusivamente los agentes Blendverse especializados en DDD.
-- Si el usuario quiere saltear las fases de diseño (ya tiene `spec.md`, `plan.md` y `tasks.md`), puede ejecutar directamente el micro-prompt `.github/prompts/speckit-to-blendverse.prompt.md` y luego invocar `@blendverse.implement`.
-- Recuerda detenerte en cada Fase para poder iterar sobre la misma.
-- Todas las fases se comportarán como modo `plan`.
+- Si el usuario quiere saltear las fases de diseño (ya tiene `spec.md`, `plan.md` y `tasks.md`), puede invocar directamente `@blendverse.implement` — éste generará `01_requirements.md` inline si no existe.
+- Recuerda detenerte en cada Fase (1–5) para poder iterar sobre la misma.
+- Todas las fases 1–5 se comportarán como modo `plan`.

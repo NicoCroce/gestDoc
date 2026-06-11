@@ -189,4 +189,11 @@ For additional context about technologies to be used, project structure,
 shell commands, and other important information, read the current plan:
 `specs/003-multiempresas/plan.md`
 
+Key artifacts for the active feature (003-multiempresas):
+
+- Plan: `specs/003-multiempresas/plan.md`
+- Data model: `specs/003-multiempresas/data-model.md`
+- API contracts: `specs/003-multiempresas/contracts/auth.contracts.ts`
+- Quickstart: `specs/003-multiempresas/quickstart.md`
+
 <!-- SPECKIT END -->

@@ -7,6 +7,7 @@ import { certificatesApp } from './Certificates';
 import { ownersysApp } from './Ownersyss';
 import { userprofileApp } from './Userprofiles';
 import { themeApp } from './Themes';
+import { empresasUsuariosApp } from './Empresas_usuarios';
 
 export const registerDomains = () => ({
   ...ownersysApp,
@@ -18,4 +19,5 @@ export const registerDomains = () => ({
   ...certificatesApp,
   ...userprofileApp,
   ...themeApp,
+  ...empresasUsuariosApp,
 });

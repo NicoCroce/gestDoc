@@ -15,12 +15,14 @@ const {
   setQueryDataMock,
   toastErrorMock,
   useMutationMock,
+  fetchEmpresasMock,
 } = vi.hoisted(() => ({
   navigateMock: vi.fn(),
   setLoggedMock: vi.fn(),
   setQueryDataMock: vi.fn(),
   toastErrorMock: vi.fn(),
   useMutationMock: vi.fn(),
+  fetchEmpresasMock: vi.fn().mockResolvedValue([]),
 }));
 
 vi.mock('react-router-dom', async () => {
@@ -56,6 +58,18 @@ vi.mock('../../Auth.service', () => ({
     login: {
       useMutation: useMutationMock,
     },
+  },
+}));
+
+vi.mock('@app/Infrastructure/Services/clientApi', () => ({
+  TrpcApi: {
+    useUtils: vi.fn(() => ({
+      empresasUsuarios: {
+        getByUsuario: {
+          fetch: fetchEmpresasMock,
+        },
+      },
+    })),
   },
 }));
 
@@ -98,7 +112,7 @@ describe('useLoginUser', () => {
     useMutationMock.mockImplementation((options: unknown) => options);
   });
 
-  it('stores the logged user and navigates to the main route on success', () => {
+  it('stores the logged user and navigates to the main route on success', async () => {
     render(<Harness />, { wrapper: createWrapper() });
 
     const options = vi.mocked(AuthService.login.useMutation).mock
@@ -112,7 +126,7 @@ describe('useLoginUser', () => {
       theme: 1,
     };
 
-    options.onSuccess?.(user, loginVariables, undefined, mutationContext);
+    await options.onSuccess?.(user, loginVariables, undefined, mutationContext);
 
     expect(setLoggedMock).toHaveBeenCalledTimes(1);
     expect(setQueryDataMock).toHaveBeenCalledWith(user);

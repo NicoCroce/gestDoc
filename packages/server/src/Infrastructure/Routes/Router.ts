@@ -9,6 +9,7 @@ import { CertificatesRoutes } from '@server/domains/Certificates/Infrastructure/
 import { CertificatesRoutesExpress } from '@server/domains/Certificates/Infrastructure/Routes/CertificatesRoutesExpress';
 import { OwnersysRoutes } from '@server/domains/Ownersyss';
 import { ThemeRoutes } from '@server/domains/Themes';
+import { EmpresasUsuariosRoutes } from '@server/domains/Empresas_usuarios';
 
 const MainRouter = () => {
   const AllRouters = {
@@ -20,6 +21,7 @@ const MainRouter = () => {
     ...DocumentsTypesRoutes(),
     ...CertificatesRoutes(),
     ...ThemeRoutes(),
+    ...EmpresasUsuariosRoutes(),
   };
   return router(AllRouters);
 };

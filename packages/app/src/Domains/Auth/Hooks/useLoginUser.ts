@@ -5,19 +5,33 @@ import { setLogged } from '@app/Application/Helpers/isLogged';
 import { useGlobalStore } from '@app/Application';
 import { DOCUMENTS_ROUTE } from '@app/Domains/Documents';
 import { TUserLogged } from '@app/Domains/Users';
+import { SELECCIONAR_EMPRESA_ROUTE } from '@app/Domains/EmpresasUsuarios';
+import { TrpcApi } from '@app/Infrastructure/Services/clientApi';
 
 export const useLoginUser = () => {
   const navigate = useNavigate();
   const { setQueryData } = useGlobalStore<TUserLogged>('dataUser');
+  const utils = TrpcApi.useUtils();
 
   return AuthService.login.useMutation({
     onError(error) {
       toast.error(error.message);
     },
-    onSuccess: (data) => {
+    onSuccess: async (data) => {
       setLogged();
       setQueryData(data);
-      navigate(DOCUMENTS_ROUTE);
+      try {
+        const empresas = await utils.empresasUsuarios.getByUsuario.fetch({
+          userId: data.id ?? 0,
+        });
+        if ((empresas ?? []).length >= 2) {
+          navigate(SELECCIONAR_EMPRESA_ROUTE);
+        } else {
+          navigate(DOCUMENTS_ROUTE);
+        }
+      } catch {
+        navigate(DOCUMENTS_ROUTE);
+      }
     },
   });
 };

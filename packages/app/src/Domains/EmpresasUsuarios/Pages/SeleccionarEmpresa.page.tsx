@@ -1,25 +1,41 @@
-import { useGlobalStore } from '@app/Application';
+import { useGlobalStore, Container, Title } from '@app/Application';
+import { HalfPage } from '@app/Application/Components/Layout';
 import { TUserLogged } from '@app/Domains/Users';
 import { EmpresaCard } from '../Components';
-import { useGetEmpresasByUsuario } from '../Hooks';
+import { useGetEmpresasByUsuario, useSelectEmpresa } from '../Hooks';
+import { LeftContentPage } from '@app/Domains/Auth';
+
+const bg = '/images/login.png';
 
 export const SeleccionarEmpresaPage = () => {
   const { data: dataUser } = useGlobalStore<TUserLogged>('dataUser');
   const { data: empresas = [] } = useGetEmpresasByUsuario(dataUser?.id ?? 0);
+  const { mutate: selectEmpresa, isPending } = useSelectEmpresa();
 
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center bg-gray-50 p-8">
-      <h1 className="mb-2 text-2xl font-bold text-gray-800">
-        Seleccioná tu empresa
-      </h1>
-      <p className="mb-8 text-gray-500">
-        Tu usuario tiene acceso a las siguientes empresas
-      </p>
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+    <HalfPage
+      title="Seleccioná tu empresa"
+      left={<LeftContentPage title="GestDoc" subtitle="Macrosistemas" />}
+      background={bg}
+    >
+      <Container block className="mb-4">
+        <Title variant="h4" className="text-primary mb-2">
+          Bienvenido, {dataUser?.name}
+        </Title>
+        <p className="text-gray-500">
+          Tu usuario tiene acceso a las siguientes empresas
+        </p>
+      </Container>
+      <Container row>
         {(empresas ?? []).map((empresa) => (
-          <EmpresaCard key={empresa.id} empresa={empresa} />
+          <EmpresaCard
+            key={empresa.id}
+            empresa={empresa}
+            onSelect={(empresaId) => selectEmpresa({ empresaId })}
+            isLoading={isPending}
+          />
         ))}
-      </div>
-    </div>
+      </Container>
+    </HalfPage>
   );
 };

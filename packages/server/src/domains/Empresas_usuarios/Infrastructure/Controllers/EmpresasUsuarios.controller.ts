@@ -1,7 +1,10 @@
 import { protectedProcedure } from '@server/Infrastructure';
-import { executeService } from '@server/Application';
 import { EmpresasUsuariosService } from '../../Application/EmpresasUsuarios.service';
-import { GetEmpresasByUsuarioInputSchema } from '../../Application/empresasUsuarios.types';
+import {
+  GetEmpresasByUsuarioInputSchema,
+  SelectEmpresaInputSchema,
+} from '../../Application/empresasUsuarios.types';
+import { executeService, executeServiceWithCookie } from '@server/Application';
 
 export class EmpresasUsuariosController {
   constructor(
@@ -14,6 +17,17 @@ export class EmpresasUsuariosController {
       .query(
         executeService(
           this.empresasUsuariosService.getByUsuario.bind(
+            this.empresasUsuariosService,
+          ),
+        ),
+      );
+
+  selectEmpresa = () =>
+    protectedProcedure
+      .input(SelectEmpresaInputSchema)
+      .mutation(
+        executeServiceWithCookie(
+          this.empresasUsuariosService.selectEmpresa.bind(
             this.empresasUsuariosService,
           ),
         ),

@@ -9,8 +9,7 @@ export const GetEmpresasByUsuarioInputSchema = z.object({
 
 export const EmpresaItemSchema = z.object({
   id: z.number().int().positive(),
-  razon_social: z.string(),
-  cuit: z.number().int(),
+  denominacion: z.string(),
   logo: z.string().nullable(),
 });
 
@@ -26,3 +25,20 @@ export type IGetEmpresasByUsuarioOutput = z.infer<
 export type IGetEmpresasByUsuarioInput = IRequestContext & {
   input: z.infer<typeof GetEmpresasByUsuarioInputSchema>;
 };
+
+// ─── SelectEmpresa ────────────────────────────────────────────────────────────
+
+export const SelectEmpresaInputSchema = z.object({
+  empresaId: z.number().int().positive(),
+});
+
+export const SelectEmpresaOutputSchema = z.object({
+  token: z.string(),
+  ownerId: z.number(),
+});
+
+export type ISelectEmpresaInput = IRequestContext & {
+  input: z.infer<typeof SelectEmpresaInputSchema>;
+};
+
+export type ISelectEmpresaOutput = z.infer<typeof SelectEmpresaOutputSchema>;

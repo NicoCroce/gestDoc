@@ -8,3 +8,4 @@ export * from './utils/pino';
 export * from './utils/pagination';
 export * from './utils/Email';
 export * from './utils/LoadImages';
+export * from './utils/cookie';

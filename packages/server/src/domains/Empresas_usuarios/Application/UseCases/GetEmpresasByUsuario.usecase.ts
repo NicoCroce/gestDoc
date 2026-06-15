@@ -19,18 +19,13 @@ export class GetEmpresasByUsuario implements IUseCase<IGetEmpresasByUsuarioOutpu
 
     const empresas: EmpresaItem[] = empresasUsuarios
       .map((eu) => {
-        const { id_empresa, razon_social, cuit, logo } = eu.values;
-        if (
-          razon_social === undefined ||
-          cuit === undefined ||
-          logo === undefined
-        ) {
+        const { id_empresa, denominacion, logo } = eu.values;
+        if (denominacion === undefined || logo === undefined) {
           return null;
         }
         return {
           id: id_empresa,
-          razon_social,
-          cuit,
+          denominacion,
           logo: logo ?? null,
         };
       })

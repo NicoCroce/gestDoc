@@ -5,8 +5,7 @@ export class EmpresaUsuario {
     protected readonly _id_empresa: number,
     protected readonly _id_usuario: number,
     protected readonly _id?: number,
-    protected readonly _razon_social?: string,
-    protected readonly _cuit?: number,
+    protected readonly _denominacion?: string,
     protected readonly _logo?: string | null,
   ) {}
 
@@ -15,8 +14,7 @@ export class EmpresaUsuario {
       props.id_empresa,
       props.id_usuario,
       props.id,
-      props.razon_social,
-      props.cuit,
+      props.denominacion,
       props.logo,
     );
   }
@@ -30,8 +28,7 @@ export class EmpresaUsuario {
       id: this._id,
       id_empresa: this._id_empresa,
       id_usuario: this._id_usuario,
-      razon_social: this._razon_social,
-      cuit: this._cuit,
+      denominacion: this._denominacion,
       logo: this._logo,
     };
   }

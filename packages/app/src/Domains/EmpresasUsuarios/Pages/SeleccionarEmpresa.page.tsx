@@ -31,7 +31,13 @@ export const SeleccionarEmpresaPage = () => {
           <EmpresaCard
             key={empresa.id}
             empresa={empresa}
-            onSelect={(empresaId) => selectEmpresa({ empresaId })}
+            onSelect={(empresaId) =>
+              selectEmpresa({
+                empresaId,
+                companyName: empresa.denominacion,
+                companyLogo: empresa.logo,
+              })
+            }
             isLoading={isPending}
           />
         ))}

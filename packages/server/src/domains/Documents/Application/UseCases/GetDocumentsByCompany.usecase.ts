@@ -22,28 +22,29 @@ export class GetDocumentsByCompany implements IUseCase<IGetDocumentsByCompanyRes
       throw new AppError('Error al obtener los documentos');
     }
 
-    const documentsByUser = documents.reduce(
-      (
-        res: { [userId: number]: { user: string; documents: Document[] } },
-        doc,
-      ) => {
+    // Use Map to preserve insertion order (already sorted by apellido from Sequelize)
+    const documentsByUserMap = documents.reduce(
+      (map: Map<number, { user: string; documents: Document[] }>, doc) => {
         const userId = doc.values.user?.id;
-        if (!userId) return res;
+        if (!userId) return map;
 
-        if (!res[userId]) {
-          res[userId] = {
+        if (!map.has(userId)) {
+          map.set(userId, {
             user: `${doc.values.user?.surname} ${doc.values.user?.name}`,
             documents: [],
-          };
+          });
         }
 
-        res[userId].documents.push(doc);
-
-        return res;
+        map.get(userId)!.documents.push(doc);
+        return map;
       },
-      {},
+      new Map(),
     );
 
-    return documentsByUser;
+    // Return as array to preserve Sequelize sort order (numeric object keys lose order in JS)
+    return Array.from(documentsByUserMap.entries()).map(([userId, value]) => ({
+      userId,
+      ...value,
+    }));
   }
 }

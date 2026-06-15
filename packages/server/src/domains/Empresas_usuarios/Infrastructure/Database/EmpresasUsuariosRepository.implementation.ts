@@ -4,6 +4,13 @@ import { EmpresasUsuariosModel } from './EmpresasUsuarios.model';
 import { OwnersysModel } from '@server/domains/Ownersyss/Infrastructure/Database/Ownersys.model';
 
 export class EmpresasUsuariosRepositoryImplementation implements IEmpresasUsuariosRepository {
+  async belongsToEmpresa(userId: number, empresaId: number): Promise<boolean> {
+    const count = await EmpresasUsuariosModel.count({
+      where: { id_usuario: userId, id_empresa: empresaId },
+    });
+    return count > 0;
+  }
+
   async findByUsuario(userId: number): Promise<EmpresaUsuario[]> {
     const rows = await EmpresasUsuariosModel.findAll({
       where: { id_usuario: userId },
@@ -11,7 +18,7 @@ export class EmpresasUsuariosRepositoryImplementation implements IEmpresasUsuari
         {
           model: OwnersysModel,
           as: 'Empresa',
-          attributes: ['id', 'razon_social', 'cuit', 'logo'],
+          attributes: ['id', 'denominacion', 'logo'],
         },
       ],
     });
@@ -21,8 +28,7 @@ export class EmpresasUsuariosRepositoryImplementation implements IEmpresasUsuari
         id: row.id,
         id_empresa: row.id_empresa,
         id_usuario: row.id_usuario,
-        razon_social: row.Empresa?.razon_social,
-        cuit: row.Empresa?.cuit,
+        denominacion: row.Empresa?.denominacion,
         logo: row.Empresa?.logo ?? null,
       }),
     );

@@ -34,23 +34,28 @@ export const DocumentsListByUser = ({
     return <SkeletonLoader />;
   }
 
-  if (data && !Object.keys(data).length)
-    return <EmptyScreenFilter onClick={openFilters} />;
+  if (data && !data.length) return <EmptyScreenFilter onClick={openFilters} />;
 
   return (
     <>
       {data ? (
         <ScrollArea className="h-[74vh] w-full">
           <List>
-            {Object.keys(data)?.map((userId, index) => {
-              const documents = data[Number(userId)].documents;
-
+            {data?.map(({ userId, user, documents }, index) => {
               return (
                 <List.Li key={userId}>
-                  <Accordion type="single" collapsible defaultValue="item-0">
-                    <AccordionItem value={`item-${index}`}>
-                      <AccordionTrigger className="px-4">
-                        {data[Number(userId)].user}
+                  <Accordion
+                    type="single"
+                    collapsible
+                    defaultValue="item-0"
+                    className="cursor-pointer"
+                  >
+                    <AccordionItem
+                      value={`item-${index}`}
+                      className="cursor-pointer"
+                    >
+                      <AccordionTrigger className="px-4 cursor-pointer">
+                        {user}
                       </AccordionTrigger>
                       <AccordionContent>
                         <List>

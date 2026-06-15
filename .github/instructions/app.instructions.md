@@ -65,6 +65,8 @@ Components/
 3. Si vas a utilizar un `Input`, `Button`, etc. Debes verificar primero en `Layout`, `Molecules`, `Organisms`.
 4. Si vas a utilizar un componente de `packages/app/src/Application/Components/ui` debes informarlo antes de utilizarlo.
 5. El componente `Container` es estrucutral, por lo que si lo utilizas por defecto ya es flex column. Esto facilita el layout. **SI VAS A UTILIZARLO ANALIZA BIEN SU COMPORTAMIENTO PARA NO AGREGAR BLOCK INNECESARIAMENTE** También ten en cuenta `space` los valores correctos.
+6. **Todo archivo `.page.tsx` DEBE usar el componente `<Page />` como nodo raíz.** Nunca retornes un `<div>`, `<>` o cualquier otro elemento como raíz en una página — siempre `<Page title="...">...</Page>`.
+7. **PROHIBIDO usar `<div className="flex ...">`.** En su lugar, usa siempre el componente `<Container />` con sus props (`direction`, `space`, `align`, etc.). Aplica tanto en páginas como en componentes de dominio.
 
 ### Entity (tipos)
 
@@ -246,4 +248,4 @@ Antes de crear cualquier componente nuevo, verificar en `packages/app/src/Applic
 3. Evita utilizar `magics strings`.
 4. No debes crear componentes genéricos que no sean específicos de tu dominio. Si necesitas un componente compartido, colócalo en `packages/app/src/Application/Components/` y avisa al equipo.
 5. No debes escribir lógica de negocio en los componentes. Toda la lógica debe ir en los hooks o servicios.
-6. No debes utilizar `<div>` con class `flex` en su lugar usa <Container> con las props que tiene el componente.
+6. **NUNCA uses `<div>` con className `flex` (ni `flex-col`, `flex-row`, etc.).** Usa `<Container>` con sus props correspondientes. Ver Regla de oro #7.

@@ -26,7 +26,7 @@ export const SeleccionarEmpresaPage = () => {
           Tu usuario tiene acceso a las siguientes empresas
         </p>
       </Container>
-      <Container row>
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         {(empresas ?? []).map((empresa) => (
           <EmpresaCard
             key={empresa.id}
@@ -41,7 +41,7 @@ export const SeleccionarEmpresaPage = () => {
             isLoading={isPending}
           />
         ))}
-      </Container>
+      </div>
     </HalfPage>
   );
 };

@@ -55,7 +55,7 @@ EmpresasUsuariosModel.init(
     paranoid: true,
     modelName: 'EmpresasUsuarios',
     timestamps: true,
-    tableName: 'Empresas_usuarios',
+    tableName: 'empresas_usuarios',
   },
 );
 

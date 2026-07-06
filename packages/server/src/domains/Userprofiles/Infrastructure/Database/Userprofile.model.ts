@@ -40,6 +40,6 @@ UserprofileModel.init(
     paranoid: true,
     modelName: 'Userprofile',
     timestamps: true,
-    tableName: 'Usuarios_perfiles',
+    tableName: 'usuarios_perfiles',
   },
 );

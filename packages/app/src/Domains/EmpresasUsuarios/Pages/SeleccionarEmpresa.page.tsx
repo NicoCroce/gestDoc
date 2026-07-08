@@ -1,9 +1,11 @@
+import { useEffect } from 'react';
 import { useGlobalStore, Container, Title } from '@app/Application';
 import { HalfPage } from '@app/Application/Components/Layout';
 import { TUserLogged } from '@app/Domains/Users';
 import { EmpresaCard } from '../Components';
 import { useGetEmpresasByUsuario, useSelectEmpresa } from '../Hooks';
 import { LeftContentPage } from '@app/Domains/Auth';
+import { TrpcApi } from '@app/Infrastructure/Services/clientApi';
 
 const bg = '/images/login.png';
 
@@ -11,6 +13,12 @@ export const SeleccionarEmpresaPage = () => {
   const { data: dataUser } = useGlobalStore<TUserLogged>('dataUser');
   const { data: empresas = [] } = useGetEmpresasByUsuario(dataUser?.id ?? 0);
   const { mutate: selectEmpresa, isPending } = useSelectEmpresa();
+  const utils = TrpcApi.useUtils();
+
+  useEffect(() => {
+    utils.documents.invalidate();
+    utils.certificates.invalidate();
+  }, []);
 
   return (
     <HalfPage

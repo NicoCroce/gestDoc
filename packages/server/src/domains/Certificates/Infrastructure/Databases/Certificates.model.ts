@@ -54,6 +54,7 @@ CertificateModel.init(
     fecha_fin: {
       type: DataTypes.DATE,
       allowNull: false,
+      field: 'fecha_final',
     },
     motivo: {
       type: DataTypes.STRING,

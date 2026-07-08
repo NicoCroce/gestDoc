@@ -1,5 +1,6 @@
 import {
   Container,
+  EmptyScreenError,
   EmptyScreenFilter,
   FiltersSheet,
   Page,
@@ -17,7 +18,7 @@ import { useState } from 'react';
 import { ICertificate } from '..';
 
 export const CertificateListPage = () => {
-  const { data } = useGetCertificates();
+  const { data, isError, error } = useGetCertificates();
   const [filtersIsOpen, setFiltersIsOpen] = useState(false);
 
   const handleFilters = () => {
@@ -30,7 +31,9 @@ export const CertificateListPage = () => {
       headerRight={<ActionsCertificateListPage onClick={handleFilters} />}
     >
       <>
-        {data && Object.keys(data).length === 0 ? (
+        {isError ? (
+          <EmptyScreenError message={error?.message} />
+        ) : data && Object.keys(data).length === 0 ? (
           <EmptyScreenFilter onClick={handleFilters} />
         ) : (
           data &&

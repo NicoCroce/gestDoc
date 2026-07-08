@@ -4,6 +4,7 @@ export * from './Checkbox';
 export * from './ConfirmWithPassword';
 export * from './DatePicker';
 export * from './DateRange/DateRange';
+export * from './EmptyScreenError';
 export * from './EmptyScreenFilter';
 export * from './FilterButton';
 export * from './FormFields';

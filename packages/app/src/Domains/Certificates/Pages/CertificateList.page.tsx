@@ -4,7 +4,6 @@ import {
   EmptyScreenFilter,
   FiltersSheet,
   Page,
-  Title,
 } from '@app/Application';
 import {
   CertificatesGrid,
@@ -12,7 +11,6 @@ import {
   FiltersCertificatesForm,
 } from '../Components';
 
-import { v4 as uuidv4 } from 'uuid';
 import { useGetCertificates } from '../Hooks';
 import { useState } from 'react';
 import { ICertificate } from '..';
@@ -37,18 +35,30 @@ export const CertificateListPage = () => {
           <EmptyScreenFilter onClick={handleFilters} />
         ) : (
           data &&
-          Object.entries(data).map(([year, certificates]) => (
-            <Container key={uuidv4()} space="large" className="mt-8">
-              <Title variant="h4">
-                Certificados correspondientes al año {year}
-              </Title>
-              <Container block>
-                <CertificatesGrid
-                  certificatesList={certificates as ICertificate[]}
-                />
+          Object.entries(data).map(([year, certificates]) => {
+            const list = certificates as ICertificate[];
+            return (
+              <Container key={year} block className="mt-10 first:mt-0">
+                <div className="flex items-end justify-between gap-4 pb-3 border-b">
+                  <div className="flex items-baseline gap-3">
+                    <span className="text-3xl font-semibold tracking-tight tabular-nums text-foreground">
+                      {year}
+                    </span>
+                    <span className="text-sm text-muted-foreground">
+                      {list.length}{' '}
+                      {list.length === 1 ? 'licencia' : 'licencias'}
+                    </span>
+                  </div>
+                </div>
+                <Container block className="mt-6">
+                  <CertificatesGrid
+                    certificatesList={list}
+                    year={Number(year)}
+                  />
+                </Container>
               </Container>
-            </Container>
-          ))
+            );
+          })
         )}
         <FiltersSheet
           open={filtersIsOpen}

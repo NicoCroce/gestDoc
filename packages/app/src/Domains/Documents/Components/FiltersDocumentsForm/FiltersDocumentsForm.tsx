@@ -107,7 +107,7 @@ export const FiltersDocumentsForm = () => {
       </Container>
 
       <SheetFooter className="mt-16">
-        <Container row className="w-full flex-wrap sm:justify-end">
+        <Container row className="w-full">
           <Button
             variant="outline"
             onClick={cleanFilters}

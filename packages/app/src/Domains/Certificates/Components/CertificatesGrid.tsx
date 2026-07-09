@@ -4,17 +4,19 @@ import { ICertificate } from '../Certificate.entity';
 
 export interface CertificatesGridProps {
   certificatesList: ICertificate[];
+  year: number;
 }
 
 export const CertificatesGrid = ({
   certificatesList,
+  year,
 }: CertificatesGridProps) => {
   return (
-    <Container className="grid gap-2 grid-cols-[repeat(auto-fit,minmax(300px,1fr))]">
+    <Container className="grid grid-cols-[repeat(auto-fit,minmax(320px,1fr))] gap-4">
       {certificatesList &&
         certificatesList.map((certificate) => (
           <div key={certificate.id} className="min-w-0 h-full">
-            <Certificate data={certificate} />
+            <Certificate data={certificate} year={year} />
           </div>
         ))}
     </Container>

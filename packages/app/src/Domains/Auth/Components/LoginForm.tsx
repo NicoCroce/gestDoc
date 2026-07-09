@@ -72,12 +72,12 @@ export const LoginForm = () => {
               </FormItem>
             )}
           />
-          <Container justify="between" className="md:flex-row !mt-4">
+          <Container justify="between" className="md:flex-row mt-4!">
             <Link to={RESTORE_PASSWORD} className="flex items-center">
               ¿Olvidaste tu contraseña?
             </Link>
             <Container row justify="end">
-              <Button type="submit" isLoading={isPending}>
+              <Button type="submit" isLoading={isPending} className="w-full">
                 Ingresar
               </Button>
             </Container>

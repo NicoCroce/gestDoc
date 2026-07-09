@@ -63,7 +63,10 @@ export const LicensesListByUser = ({ service }: DocumentsListProps) => {
                               <Container className="grid gap-2 grid-cols-[repeat(auto-fit,minmax(200px,420px))]">
                                 {certificatesForYear.map((cert) => (
                                   <Container block key={cert.id}>
-                                    <Certificate data={cert} />
+                                    <Certificate
+                                      data={cert}
+                                      year={Number(year)}
+                                    />
                                   </Container>
                                 ))}
                               </Container>

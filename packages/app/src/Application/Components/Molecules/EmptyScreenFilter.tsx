@@ -1,18 +1,17 @@
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { Alert, AlertTitle } from '../ui/alert';
-import { faCircleExclamation } from '@fortawesome/free-solid-svg-icons';
-import { Button } from './Button';
+import { AlertMessage } from '../Organisms/AlertMessage';
 
 interface EmptyScreenFilterProps {
   onClick?: () => void;
 }
 
 export const EmptyScreenFilter = ({ onClick }: EmptyScreenFilterProps) => (
-  <Alert>
-    <FontAwesomeIcon icon={faCircleExclamation} size="lg" />
-    <AlertTitle>No se encontraron coincidencias</AlertTitle>
-    <Button variant="link" onClick={onClick}>
-      Prueba cambiando los filtros
-    </Button>
-  </Alert>
+  <AlertMessage
+    variant="search"
+    title="No se encontraron coincidencias"
+    action={
+      onClick
+        ? { label: 'Actualizar filtros', onClick, variant: 'link' }
+        : undefined
+    }
+  />
 );

@@ -10,10 +10,10 @@ export const CertificatesGrid = ({
   certificatesList,
 }: CertificatesGridProps) => {
   return (
-    <Container className="grid gap-2 grid-cols-[repeat(auto-fit,minmax(200px,420px))]">
+    <Container className="grid gap-2 grid-cols-[repeat(auto-fit,minmax(300px,1fr))]">
       {certificatesList &&
         certificatesList.map((certificate) => (
-          <div key={certificate.id}>
+          <div key={certificate.id} className="min-w-0 h-full">
             <Certificate data={certificate} />
           </div>
         ))}

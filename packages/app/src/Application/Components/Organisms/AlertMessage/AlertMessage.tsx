@@ -83,7 +83,7 @@ const defaultDescriptions: Record<string, string> = {
 
 interface EmptyStateProps extends VariantProps<typeof emptyStateVariants> {
   title?: string;
-  description?: string;
+  description?: string | null;
   icon?: IconDefinition;
   action?: {
     label: string;
@@ -105,7 +105,9 @@ export const AlertMessage = ({
   const displayIcon = icon || defaultIcons[variant || 'empty'];
   const displayTitle = title || defaultTitles[variant || 'empty'];
   const displayDescription =
-    description || defaultDescriptions[variant || 'empty'];
+    description === undefined
+      ? defaultDescriptions[variant || 'empty']
+      : description;
 
   return (
     <Container
@@ -122,16 +124,18 @@ export const AlertMessage = ({
         <h3 className="text-lg font-semibold text-foreground">
           {displayTitle}
         </h3>
-
-        <p className="text-sm text-muted-foreground max-w-sm leading-relaxed">
-          {displayDescription}
-        </p>
+        {displayDescription && (
+          <p className="text-sm text-muted-foreground leading-relaxed">
+            {displayDescription}
+          </p>
+        )}
 
         {action && (
           <Button
             variant={action.variant || 'default'}
             onClick={action.onClick}
             showIcon={false}
+            className="p-0 leading-relaxed h-auto mt-2"
           >
             {action.label}
           </Button>

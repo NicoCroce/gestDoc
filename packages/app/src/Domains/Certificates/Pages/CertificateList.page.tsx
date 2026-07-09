@@ -42,7 +42,7 @@ export const CertificateListPage = () => {
               <Title variant="h4">
                 Certificados correspondientes al año {year}
               </Title>
-              <Container block className="md:mx-14">
+              <Container block>
                 <CertificatesGrid
                   certificatesList={certificates as ICertificate[]}
                 />

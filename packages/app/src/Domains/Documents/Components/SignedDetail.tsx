@@ -1,12 +1,6 @@
+import { AlertMessage } from '@app/Application';
 import { useSearchParams } from 'react-router-dom';
 import { useGetDocument } from '../Hooks';
-import {
-  Alert,
-  AlertDescription,
-  AlertTitle,
-} from '@app/Application/Components/ui/alert';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCircleInfo } from '@fortawesome/free-solid-svg-icons';
 
 export const SignedDetail = () => {
   const [searchParams] = useSearchParams();
@@ -16,17 +10,15 @@ export const SignedDetail = () => {
 
   if (!currentDocument || !currentDocument?.signed) return null;
 
-  const alertTitle = currentDocument.agreedment
+  const title = currentDocument.agreedment
     ? 'Firmado bajo conformidad'
     : 'Firmado sin conformidad';
 
   return (
-    <Alert>
-      <FontAwesomeIcon icon={faCircleInfo} />
-      <AlertTitle>{alertTitle}</AlertTitle>
-      <AlertDescription>
-        {currentDocument.reasonSignatureNonConformity}
-      </AlertDescription>
-    </Alert>
+    <AlertMessage
+      variant="info"
+      title={title}
+      description={currentDocument.reasonSignatureNonConformity ?? undefined}
+    />
   );
 };

@@ -60,7 +60,7 @@ export const LicensesListByUser = ({ service }: DocumentsListProps) => {
                               <Title variant="h4">
                                 Licencias correspondientes al año {year}
                               </Title>
-                              <Container className="grid gap-2 grid-cols-[repeat(auto-fit,minmax(200px,420px))] md:mx-14">
+                              <Container className="grid gap-2 grid-cols-[repeat(auto-fit,minmax(200px,420px))]">
                                 {certificatesForYear.map((cert) => (
                                   <Container block key={cert.id}>
                                     <Certificate data={cert} />

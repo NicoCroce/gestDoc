@@ -22,7 +22,7 @@ export const Certificate = ({ data }: CertificateProps) => {
     <>
       <Container
         space="small"
-        className="border-l-4 border-primary border bg-card rounded-lg shadow-sm p-4 transition duration-200 hover:-translate-y-0.5 hover:shadow-md"
+        className="h-full w-full border-l-4 border-primary border bg-card rounded-lg shadow-sm p-4 transition duration-200"
       >
         <Container row justify="between" align="center" className="mb-1">
           <span className="text-xs font-semibold uppercase tracking-wide text-primary">
@@ -48,7 +48,7 @@ export const Certificate = ({ data }: CertificateProps) => {
                   <img
                     src={file}
                     alt={`Adjunto del certificado ${type}`}
-                    className="h-full w-full object-cover"
+                    className="h-full w-full object-cover cursor-pointer"
                   />
                 </button>
               ))}

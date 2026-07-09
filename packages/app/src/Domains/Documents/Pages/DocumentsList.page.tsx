@@ -1,4 +1,4 @@
-import { Container, Page, useDevice } from '@app/Application';
+import { Container, Page, useDevice, useURLParams } from '@app/Application';
 import {
   DocumentsListWrapper,
   PDFPreview,
@@ -7,10 +7,12 @@ import {
 } from '../Components';
 import { PDFPreviewMobile } from '../Components/PDFPreview/PDFPreviewMobile';
 import { useGetDocuments } from '../Hooks';
+import { TDocumentSearch } from '../Document.entity';
 
 export const DocumentsListPage = () => {
   const { isMobile } = useDevice();
   const service = useGetDocuments();
+  const { searchParams } = useURLParams<TDocumentSearch>();
 
   return (
     <Page title="Documentos" headerRight={!isMobile && <SignDocument />}>
@@ -19,7 +21,7 @@ export const DocumentsListPage = () => {
           <DocumentsListWrapper service={service} />
         </div>
         {isMobile ? (
-          <PDFPreviewMobile />
+          <PDFPreviewMobile key={searchParams?.id} />
         ) : (
           <Container className="w-full">
             <SignedDetail />

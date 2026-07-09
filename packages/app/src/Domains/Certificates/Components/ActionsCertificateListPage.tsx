@@ -6,8 +6,8 @@ type ActionsCertificateListPageProps = FilterButtonProps;
 export const ActionsCertificateListPage = ({
   onClick,
 }: ActionsCertificateListPageProps) => (
-  <Container row>
+  <Container row space="small">
     <NewLicenseButton />
-    <FilterButton onClick={onClick} />
+    <FilterButton onClick={onClick} variant="outline" />
   </Container>
 );

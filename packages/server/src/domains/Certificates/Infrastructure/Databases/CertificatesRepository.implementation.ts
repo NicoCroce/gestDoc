@@ -15,7 +15,6 @@ import { CertificateTypes } from '../../Domain/CertificateTypes.entity';
 import { CertificateModel } from './Certificates.model';
 import { CertificatesTypesModel } from './CertificatesTypes.model';
 import { CertificatesFilters } from './CertificatesFilters';
-import { endOfDay, startOfDay } from '@server/Application';
 import { Op } from 'sequelize';
 import { sequelize } from '@server/Infrastructure';
 
@@ -258,18 +257,15 @@ export class CertificatesRepositoryImplementation implements CertificateReposito
       },
     };
 
-    const todayStart = startOfDay(new Date());
-    const todayEnd = endOfDay(new Date());
+    const { whereConditionCertificates: activeCertificatesWhere } =
+      CertificatesFilters({ date: new Date() });
 
     const totalCertificates = await CertificateModel.count({
       include: [includeOwner],
     });
 
     const activesCertificates = await CertificateModel.count({
-      where: [
-        { fecha_inicio: { [Op.lte]: todayEnd } },
-        { fecha_fin: { [Op.gte]: todayStart } },
-      ],
+      where: activeCertificatesWhere,
       include: [includeOwner],
     });
 

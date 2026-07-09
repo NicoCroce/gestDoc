@@ -54,7 +54,6 @@ CertificateModel.init(
     fecha_fin: {
       type: DataTypes.DATE,
       allowNull: false,
-      field: 'fecha_final',
     },
     motivo: {
       type: DataTypes.STRING,
@@ -67,6 +66,28 @@ CertificateModel.init(
     archivos: {
       type: DataTypes.JSON,
       allowNull: true,
+      get() {
+        const value = this.getDataValue('archivos');
+
+        if (value == null) {
+          return value;
+        }
+
+        if (Array.isArray(value)) {
+          return value;
+        }
+
+        if (typeof value === 'string') {
+          try {
+            const parsed: unknown = JSON.parse(value);
+            return Array.isArray(parsed) ? parsed : [value];
+          } catch {
+            return [value];
+          }
+        }
+
+        return value;
+      },
     },
 
     createdAt: DataTypes.DATE,

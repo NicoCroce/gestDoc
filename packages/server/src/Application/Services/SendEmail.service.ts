@@ -2,6 +2,7 @@ import { Certificate } from '@server/domains/Certificates';
 import { GetUser } from '@server/domains/Users';
 import { executeUseCase } from '../Adapters';
 import { EmailSender, emailTemplates } from '@server/Infrastructure';
+import { loggerContext } from '@server/Infrastructure/utils/pino';
 import { IRequestContext } from '../Interfaces';
 import { RequestContext } from '../Entities';
 import { GetAdmins } from '@server/domains/Permissions/Application';
@@ -46,19 +47,27 @@ export class SendEmailService {
     templateFn,
     templateArgs,
   }: ISendEmailsToAdmin<Targs>) {
-    const currentUser = await this.getCurrentUser(requestContext);
-    const admins = await this.getAdmins(requestContext);
+    try {
+      const currentUser = await this.getCurrentUser(requestContext);
+      const admins = await this.getAdmins(requestContext);
 
-    if (admins) {
-      const { body, subject } = templateFn({
-        ...templateArgs,
-        currentUser: `${currentUser.values.name} ${currentUser.values.surname}`,
-      });
-      EmailSender({
-        to: admins,
-        body,
-        subject,
-      });
+      if (admins) {
+        const { body, subject } = templateFn({
+          ...templateArgs,
+          currentUser:
+            `${currentUser.values.name} ${currentUser.values.surname ?? ''}`.trim(),
+        });
+        EmailSender({
+          to: admins,
+          body,
+          subject,
+        });
+      }
+    } catch (error) {
+      loggerContext(requestContext.values).error(
+        error,
+        'Failed to send email to admins',
+      );
     }
   }
 

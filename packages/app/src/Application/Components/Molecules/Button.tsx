@@ -64,7 +64,7 @@ export const Button = React.forwardRef<
         ref={ref}
         onClick={onClick}
         variant={_variant ? _variant : variant}
-        className={`flex gap-2 p-[14px] h-0 cursor-pointer ${className}`}
+        className={`flex gap-2 p-[14px] h-control px-4 cursor-pointer ${className}`}
         disabled={disabled || isLoading}
         type={type}
       >

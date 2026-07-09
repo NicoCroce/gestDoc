@@ -11,7 +11,7 @@ export const NewLicenseButton = () => {
       to={CERTIFICATES_ROUTES_ADD}
       className={cn(
         buttonVariants({ variant: 'default' }),
-        'flex gap-2 p-[14px] h-0 cursor-pointer',
+        'flex gap-2 p-[14px] h-control px-4 cursor-pointer',
       )}
     >
       <FontAwesomeIcon icon={faAdd} size="1x" />

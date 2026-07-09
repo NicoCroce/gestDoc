@@ -107,12 +107,18 @@ export const FiltersDocumentsForm = () => {
       </Container>
 
       <SheetFooter className="mt-16">
-        <Container row className="justify-end">
-          <Button variant="outline" onClick={cleanFilters}>
+        <Container row className="w-full flex-wrap sm:justify-end">
+          <Button
+            variant="outline"
+            onClick={cleanFilters}
+            className="w-full sm:w-auto"
+          >
             Limpiar filtros
           </Button>
           <SheetClose asChild>
-            <Button type="submit">Aplicar filtros</Button>
+            <Button type="submit" className="w-full sm:w-auto">
+              Aplicar filtros
+            </Button>
           </SheetClose>
         </Container>
       </SheetFooter>

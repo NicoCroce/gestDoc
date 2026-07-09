@@ -32,6 +32,9 @@
   --radius-lg: var(--radius);
   --radius-md: calc(var(--radius) - 2px);
   --radius-sm: calc(var(--radius) - 4px);
+  --height-control: 2.6rem;
+  --height-control-2x: calc(var(--height-control) * 2);
+  --width-control: var(--height-control);
 }
 
 @layer base {

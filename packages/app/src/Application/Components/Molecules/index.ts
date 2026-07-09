@@ -19,3 +19,4 @@ export * from './Selects';
 export * from './Spinner';
 export * from './Text';
 export * from './Title';
+export * from './UploadFile';

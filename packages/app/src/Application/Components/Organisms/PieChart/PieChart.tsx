@@ -1,5 +1,6 @@
 'use client';
 
+import { useMemo } from 'react';
 import { TrendingUp } from 'lucide-react';
 import { Label, Pie, PieChart } from 'recharts';
 
@@ -20,41 +21,35 @@ import {
 import { Text } from '../../Molecules';
 import { Container } from '../../Layout';
 
-const chartConfig = {
-  data: {
-    label: 'data',
-  },
-  chrome: {
-    label: 'Chrome',
-    color: 'hsl(var(--chart-1))',
-  },
-  safari: {
-    label: 'Safari',
-    color: 'hsl(var(--chart-2))',
-  },
-  firefox: {
-    label: 'Firefox',
-    color: 'hsl(var(--chart-3))',
-  },
-  edge: {
-    label: 'Edge',
-    color: 'hsl(var(--chart-4))',
-  },
-  other: {
-    label: 'Other',
-    color: 'hsl(var(--chart-5))',
-  },
-} satisfies ChartConfig;
+export type TDataPieChart = {
+  segment: string;
+  data: number | string;
+  fill?: string;
+};
+
+const PRIMARY_OPACITY_SCALE = [1, 0.82, 0.64, 0.46, 0.88, 0.7, 0.52, 0.34];
+
+const getPrimaryChartColor = (index: number) => {
+  const opacity = PRIMARY_OPACITY_SCALE[index % PRIMARY_OPACITY_SCALE.length];
+
+  return opacity === 1
+    ? 'hsl(var(--primary))'
+    : `hsl(var(--primary) / ${opacity})`;
+};
+
+const buildChartConfig = (chartData: Pick<TDataPieChart, 'segment'>[]) =>
+  chartData.reduce<ChartConfig>((config, { segment }, index) => {
+    config[segment] = {
+      label: segment,
+      color: getPrimaryChartColor(index),
+    };
+
+    return config;
+  }, {});
 
 type TText = {
   title?: string;
   subtitle?: string;
-};
-
-export type TDataPieChart = {
-  segment: string;
-  data: number | string;
-  fill: string;
 };
 
 interface PieChartComponentProps {
@@ -72,6 +67,17 @@ export const PieChartComponent = ({
   footer,
   labelCenter,
 }: PieChartComponentProps) => {
+  const chartConfig = useMemo(() => buildChartConfig(chartData), [chartData]);
+
+  const chartDataWithColors = useMemo(
+    () =>
+      chartData.map((item, index) => ({
+        ...item,
+        fill: getPrimaryChartColor(index),
+      })),
+    [chartData],
+  );
+
   return (
     <Card className="border-0 shadow-none flex flex-col">
       {header && (
@@ -94,7 +100,7 @@ export const PieChartComponent = ({
                 content={<ChartTooltipContent hideLabel />}
               />
               <Pie
-                data={chartData}
+                data={chartDataWithColors}
                 dataKey="data"
                 nameKey="segment"
                 innerRadius={60}

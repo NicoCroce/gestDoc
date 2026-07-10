@@ -28,7 +28,7 @@ export const StatCard = ({
     total && value ? Math.min(Math.round((value / total) * 100), 100) : 0;
 
   return (
-    <Card className={`flex-1 border-0 ${bgClass}`}>
+    <Card className={`flex-1 border-0 h-full ${bgClass}`}>
       <CardHeader className="pb-2 pt-4 px-4">
         <div className="flex items-center justify-between">
           <CardTitle className="text-sm font-medium text-muted-foreground">

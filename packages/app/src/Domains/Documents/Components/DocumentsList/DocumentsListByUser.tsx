@@ -1,4 +1,12 @@
-import { Container, EmptyScreenFilter, List, Text } from '@app/Application';
+import { useMemo, useState } from 'react';
+import {
+  Container,
+  EmptyScreenFilter,
+  Input,
+  List,
+  Text,
+} from '@app/Application';
+import { MagnifyingGlassIcon, Cross2Icon } from '@radix-ui/react-icons';
 import { Document } from '../Document';
 import { ScrollArea } from '@app/Application/Components/ui/scroll-area';
 import { Skeleton } from '@app/Application/Components/ui/skeleton';
@@ -29,6 +37,14 @@ export const DocumentsListByUser = ({
   service,
 }: DocumentsListProps) => {
   const { data, isLoading } = service;
+  const [query, setQuery] = useState('');
+
+  const filteredData = useMemo(() => {
+    if (!data) return data;
+    const trimmed = query.trim().toLowerCase();
+    if (!trimmed) return data;
+    return data.filter((entry) => entry.user.toLowerCase().includes(trimmed));
+  }, [data, query]);
 
   if (isLoading) {
     return <SkeletonLoader />;
@@ -36,12 +52,35 @@ export const DocumentsListByUser = ({
 
   if (data && !data.length) return <EmptyScreenFilter onClick={openFilters} />;
 
-  return (
+  return data ? (
     <>
-      {data ? (
+      <Container className="sticky top-0 z-1 bg-slate-50 pb-2">
+        <Container className="relative w-full">
+          <MagnifyingGlassIcon className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-slate-400 pointer-events-none" />
+          <Input
+            type="text"
+            value={query}
+            placeholder="Buscar por empleado"
+            onChange={(e) => setQuery(e.target.value)}
+            className="pl-9 pr-9"
+            aria-label="Buscar por empleado"
+          />
+          {query && (
+            <button
+              type="button"
+              onClick={() => setQuery('')}
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
+              aria-label="Limpiar búsqueda"
+            >
+              <Cross2Icon className="size-4" />
+            </button>
+          )}
+        </Container>
+      </Container>
+      {filteredData && filteredData.length ? (
         <ScrollArea className="h-[74vh] w-full">
           <List>
-            {data?.map(({ userId, user, documents }, index) => {
+            {filteredData.map(({ userId, user, documents }, index) => {
               return (
                 <List.Li key={userId}>
                   <Accordion
@@ -74,8 +113,12 @@ export const DocumentsListByUser = ({
           </List>
         </ScrollArea>
       ) : (
-        <Text.Muted>Cargando</Text.Muted>
+        <Container className="py-10 text-center">
+          <Text.Muted>No se encontraron empleados para «{query}».</Text.Muted>
+        </Container>
       )}
     </>
+  ) : (
+    <Text.Muted>Cargando</Text.Muted>
   );
 };

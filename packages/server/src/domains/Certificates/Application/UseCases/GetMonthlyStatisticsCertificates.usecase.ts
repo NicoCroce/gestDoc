@@ -8,11 +8,13 @@ export class GetMonthlyStatisticsCertificates implements IUseCase<IGetMonthlySta
 
   async execute({
     requestContext,
+    input,
   }: IGetMonthlyStatisticsCertificates): Promise<IGetMonthlyStatisticsCertificatesResponse> {
     try {
       return await this.certificatesRepository.getMonthlyStatisticsCertificates(
         {
           requestContext,
+          year: input?.year,
         },
       );
     } catch (error) {

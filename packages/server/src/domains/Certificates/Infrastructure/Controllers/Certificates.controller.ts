@@ -63,11 +63,13 @@ export class CertificatesController {
     ),
   );
 
-  getStatisticsByCertificatesMonthly = protectedProcedure.query(
-    executeService(
-      this.certificatesService.getMonthlyStatisticsByCertificates.bind(
-        this.certificatesService,
+  getStatisticsByCertificatesMonthly = protectedProcedure
+    .input(z.object({ year: z.number().optional() }).optional())
+    .query(
+      executeService(
+        this.certificatesService.getMonthlyStatisticsByCertificates.bind(
+          this.certificatesService,
+        ),
       ),
-    ),
-  );
+    );
 }

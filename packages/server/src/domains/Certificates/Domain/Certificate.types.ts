@@ -37,4 +37,5 @@ export interface IMonthlyStatistic {
 export interface IGetMonthlyStatisticsCertificatesResponse {
   year: number;
   months: IMonthlyStatistic[];
+  availableYears: number[];
 }

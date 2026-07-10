@@ -26,11 +26,36 @@ export type TMonthlyLicensesData = {
   byType: TMonthlyLicensesByType[];
 };
 
-export const useGetMonthlyStatisticsCertificates = () => {
-  const response = CertificatesService.getStatisticsMonthly.useQuery();
+const getDefaultYear = (availableYears: number[]) => {
+  const currentYear = new Date().getFullYear();
+  if (availableYears.includes(currentYear)) return currentYear;
+  return availableYears[0] ?? currentYear;
+};
+
+export const useGetMonthlyStatisticsCertificates = (selectedYear?: number) => {
+  const bootstrapQuery = CertificatesService.getStatisticsMonthly.useQuery({
+    year: undefined,
+  });
+
+  const availableYears = bootstrapQuery.data?.availableYears ?? [];
+  const resolvedYear =
+    selectedYear ??
+    (bootstrapQuery.isSuccess && availableYears.length > 0
+      ? getDefaultYear(availableYears)
+      : undefined);
+
+  const response = CertificatesService.getStatisticsMonthly.useQuery(
+    { year: resolvedYear },
+    { enabled: selectedYear !== undefined || bootstrapQuery.isSuccess },
+  );
+
+  const activeResponse =
+    selectedYear !== undefined || bootstrapQuery.isSuccess
+      ? response
+      : bootstrapQuery;
 
   const dataChart: TMonthlyLicensesData[] =
-    response.data?.months.map(({ month, count, byType }) => ({
+    activeResponse.data?.months.map(({ month, count, byType }) => ({
       month: MONTH_NAMES[month - 1] ?? String(month),
       count,
       byType,
@@ -38,7 +63,8 @@ export const useGetMonthlyStatisticsCertificates = () => {
 
   return {
     dataChart,
-    year: response.data?.year ?? new Date().getFullYear(),
-    ...response,
+    year: activeResponse.data?.year ?? new Date().getFullYear(),
+    availableYears,
+    ...activeResponse,
   };
 };

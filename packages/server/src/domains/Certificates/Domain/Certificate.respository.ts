@@ -26,7 +26,9 @@ export interface IAppendImagesRepository extends IRequestContext {
 }
 
 export type IGetStatisticsCertificatesRepository = IRequestContext;
-export type IGetMonthlyStatisticsCertificatesRepository = IRequestContext;
+export interface IGetMonthlyStatisticsCertificatesRepository extends IRequestContext {
+  year?: number;
+}
 
 export interface IGetAllCompanyCertificatesRepository
   extends IRequestContext, IFilters {}

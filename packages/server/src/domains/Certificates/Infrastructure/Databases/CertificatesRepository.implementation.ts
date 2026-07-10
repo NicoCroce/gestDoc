@@ -336,9 +336,11 @@ export class CertificatesRepositoryImplementation implements CertificateReposito
 
   async getMonthlyStatisticsCertificates({
     requestContext,
+    year,
   }: IGetMonthlyStatisticsCertificatesRepository): Promise<IGetMonthlyStatisticsCertificatesRepositoryResponse> {
     const ownerId = requestContext.values.ownerId;
     const currentYear = new Date().getFullYear();
+    const selectedYear = year ?? currentYear;
 
     const includeOwner = {
       model: UserModel,
@@ -350,12 +352,21 @@ export class CertificatesRepositoryImplementation implements CertificateReposito
       },
     };
 
+    const availableYearsRaw = (await CertificateModel.findAll({
+      attributes: [
+        [sequelize.fn('YEAR', sequelize.col('fecha_inicio')), 'year'],
+      ],
+      include: [includeOwner],
+      group: [sequelize.fn('YEAR', sequelize.col('fecha_inicio'))],
+      order: [[sequelize.fn('YEAR', sequelize.col('fecha_inicio')), 'DESC']],
+      raw: true,
+    })) as unknown as { year: string }[];
+
+    const availableYears = availableYearsRaw.map((row) => Number(row.year));
+
     const monthlyByTypeRaw = (await CertificateModel.findAll({
       attributes: [
-        [
-          sequelize.fn('MONTH', sequelize.col('CertificateModel.createdAt')),
-          'month',
-        ],
+        [sequelize.fn('MONTH', sequelize.col('fecha_inicio')), 'month'],
         [sequelize.fn('COUNT', sequelize.col('CertificateModel.id')), 'count'],
       ],
       include: [
@@ -368,13 +379,13 @@ export class CertificatesRepositoryImplementation implements CertificateReposito
       where: {
         [Op.and]: [
           sequelize.where(
-            sequelize.fn('YEAR', sequelize.col('CertificateModel.createdAt')),
-            currentYear,
+            sequelize.fn('YEAR', sequelize.col('fecha_inicio')),
+            selectedYear,
           ),
         ],
       },
       group: [
-        sequelize.fn('MONTH', sequelize.col('CertificateModel.createdAt')),
+        sequelize.fn('MONTH', sequelize.col('fecha_inicio')),
         'CertificatesTypesModel.id',
         'CertificatesTypesModel.denominacion',
       ],
@@ -419,8 +430,9 @@ export class CertificatesRepositoryImplementation implements CertificateReposito
     });
 
     return {
-      year: currentYear,
+      year: selectedYear,
       months,
+      availableYears,
     };
   }
 }

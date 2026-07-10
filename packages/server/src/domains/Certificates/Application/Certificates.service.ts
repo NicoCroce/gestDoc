@@ -165,10 +165,12 @@ export class CertificatesServices {
 
   getMonthlyStatisticsByCertificates({
     requestContext,
+    input,
   }: IGetMonthlyStatisticsCertificates) {
     return executeUseCase({
       useCase: this._getMonthlyStatistisCertificates,
       requestContext,
+      input,
     });
   }
 }

@@ -15,18 +15,25 @@ const MONTH_NAMES = [
   'Diciembre',
 ];
 
+export type TMonthlyLicensesByType = {
+  name: string;
+  count: number;
+};
+
 export type TMonthlyLicensesData = {
   month: string;
   count: number;
+  byType: TMonthlyLicensesByType[];
 };
 
 export const useGetMonthlyStatisticsCertificates = () => {
   const response = CertificatesService.getStatisticsMonthly.useQuery();
 
   const dataChart: TMonthlyLicensesData[] =
-    response.data?.months.map(({ month, count }) => ({
+    response.data?.months.map(({ month, count, byType }) => ({
       month: MONTH_NAMES[month - 1] ?? String(month),
       count,
+      byType,
     })) ?? [];
 
   return {

@@ -41,12 +41,14 @@ interface AreaChartComponentProps {
   chartData: TDataAreaChart[];
   header?: TText;
   footer?: TText;
+  tooltipContent?: React.ReactElement;
 }
 
 export const AreaChartComponent = ({
   chartData,
   header,
   footer,
+  tooltipContent,
 }: AreaChartComponentProps) => {
   return (
     <Card className="border-0 shadow-none flex flex-col w-full">
@@ -89,7 +91,9 @@ export const AreaChartComponent = ({
               <YAxis allowDecimals={false} tickLine={false} axisLine={false} />
               <ChartTooltip
                 cursor={false}
-                content={<ChartTooltipContent indicator="line" />}
+                content={
+                  tooltipContent || <ChartTooltipContent indicator="line" />
+                }
               />
               <Area
                 dataKey="count"

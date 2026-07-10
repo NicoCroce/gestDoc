@@ -18,6 +18,7 @@ export interface IAddCertificate extends IRequestContext {
 }
 
 export type IGetStatisticsCertificates = IRequestContext;
+export type IGetMonthlyStatisticsCertificates = IRequestContext;
 
 export interface IGetCertificatesResponse {
   [key: number]: Certificate[];

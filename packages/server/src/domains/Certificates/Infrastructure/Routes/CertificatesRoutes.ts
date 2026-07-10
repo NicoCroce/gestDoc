@@ -7,6 +7,7 @@ export const CertificatesRoutes = () => {
     addCertificate,
     getCertificatesByCompany,
     getStatisticsByCertificates,
+    getStatisticsByCertificatesMonthly,
   } = certificatesController();
 
   return {
@@ -16,6 +17,7 @@ export const CertificatesRoutes = () => {
       addCertificate,
       getCertificatesByCompany,
       getStatistics: getStatisticsByCertificates,
+      getStatisticsMonthly: getStatisticsByCertificatesMonthly,
     },
   };
 };

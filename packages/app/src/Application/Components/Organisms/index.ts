@@ -1,3 +1,4 @@
+export * from './AreaChart';
 export * from './AlertMessage';
 export * from './Combobox';
 export * from './ComboboxBigSearch';

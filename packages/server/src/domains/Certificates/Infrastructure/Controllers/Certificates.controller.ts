@@ -62,4 +62,12 @@ export class CertificatesController {
       ),
     ),
   );
+
+  getStatisticsByCertificatesMonthly = protectedProcedure.query(
+    executeService(
+      this.certificatesService.getMonthlyStatisticsByCertificates.bind(
+        this.certificatesService,
+      ),
+    ),
+  );
 }

@@ -3,6 +3,7 @@ import { Certificate } from './Certificate.entity';
 import { CertificateTypes } from './CertificateTypes.entity';
 import {
   ICertificate,
+  IGetMonthlyStatisticsCertificatesResponse,
   IGetStatisticsCertificatesResponse,
 } from './Certificate.types';
 
@@ -25,6 +26,7 @@ export interface IAppendImagesRepository extends IRequestContext {
 }
 
 export type IGetStatisticsCertificatesRepository = IRequestContext;
+export type IGetMonthlyStatisticsCertificatesRepository = IRequestContext;
 
 export interface IGetAllCompanyCertificatesRepository
   extends IRequestContext, IFilters {}
@@ -35,6 +37,9 @@ export interface IGetAllCompanyCertificatesRepositoryResponse extends ICertifica
 
 export type IGetStatisticsCertificatesRepositoryResponse =
   IGetStatisticsCertificatesResponse;
+
+export type IGetMonthlyStatisticsCertificatesRepositoryResponse =
+  IGetMonthlyStatisticsCertificatesResponse;
 
 export interface CertificateRepository {
   getCertificates({
@@ -62,4 +67,7 @@ export interface CertificateRepository {
   getStatisticsCertificates({
     requestContext,
   }: IGetStatisticsCertificatesRepository): Promise<IGetStatisticsCertificatesRepositoryResponse>;
+  getMonthlyStatisticsCertificates({
+    requestContext,
+  }: IGetMonthlyStatisticsCertificatesRepository): Promise<IGetMonthlyStatisticsCertificatesRepositoryResponse>;
 }

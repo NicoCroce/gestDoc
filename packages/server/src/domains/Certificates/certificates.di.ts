@@ -6,6 +6,7 @@ import {
   GetCertificatesByCompany,
   GetCertificateTypes,
   AppendImages,
+  GetMonthlyStatisticsCertificates,
   GetStatisticsCertificates,
 } from './Application';
 import {
@@ -26,6 +27,7 @@ export const certificatesApp = {
   _appendImages: asClass(AppendImages),
   _getCertificatesByCompany: asClass(GetCertificatesByCompany),
   _getStatistisCertificates: asClass(GetStatisticsCertificates),
+  _getMonthlyStatistisCertificates: asClass(GetMonthlyStatisticsCertificates),
 };
 
 export const certificatesController = () =>

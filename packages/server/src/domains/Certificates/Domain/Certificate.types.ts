@@ -22,3 +22,19 @@ export interface IGetStatisticsCertificatesResponse {
     count: number;
   }[];
 }
+
+export interface IMonthlyStatisticByType {
+  name: string;
+  count: number;
+}
+
+export interface IMonthlyStatistic {
+  month: number; // 1-12
+  count: number;
+  byType: IMonthlyStatisticByType[];
+}
+
+export interface IGetMonthlyStatisticsCertificatesResponse {
+  year: number;
+  months: IMonthlyStatistic[];
+}

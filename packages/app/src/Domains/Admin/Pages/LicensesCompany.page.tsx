@@ -7,7 +7,11 @@ import {
 } from '@app/Application';
 
 import { useGetCertificatesByCompany } from '../Hooks';
-import { LicensesListWrapper, StatisticsCertificates } from '../Components';
+import {
+  LicensesListWrapper,
+  MonthlyLicensesChart,
+  StatisticsCertificates,
+} from '../Components';
 import { useState } from 'react';
 import { FiltersCertificatesForm } from '@app/Domains/Certificates';
 
@@ -31,6 +35,7 @@ export const LicensesCompanyPage = () => {
     >
       <Container>
         <StatisticsCertificates />
+        <MonthlyLicensesChart />
         <Container row>
           {!isEmptyScreen ? (
             <div className="min-w-[300px] w-full">

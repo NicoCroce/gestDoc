@@ -40,7 +40,7 @@ export const List = ({
 };
 
 const ListLi = ({ children }: ListLiProps) => (
-  <li className="py-1">{children}</li>
+  <li className="py-0">{children}</li>
 );
 
 List.Li = ListLi;

@@ -15,6 +15,7 @@ export class CertificatesTypesModel extends Model<
 
   declare denominacion: string;
   declare descripcion: string;
+  declare reposo: boolean;
 
   // Timestamps
   declare readonly createdAt: CreationOptional<Date>;
@@ -36,6 +37,10 @@ CertificatesTypesModel.init(
     descripcion: {
       type: DataTypes.STRING,
       allowNull: true,
+    },
+    reposo: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: false,
     },
 
     createdAt: DataTypes.DATE,

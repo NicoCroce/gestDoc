@@ -4,9 +4,11 @@ export interface ICertificate {
   id?: number;
   startDate: Date;
   endDate: Date;
+  returnDate: Date;
   reason: string;
   type: CertificateTypes;
   files?: string[];
+  requiresRest: boolean;
   userId?: number;
 }
 

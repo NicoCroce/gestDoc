@@ -18,6 +18,8 @@ export class CertificateModel extends Model<
   declare id_usuario: number;
   declare fecha_inicio: Date;
   declare fecha_fin: Date;
+  declare fecha_reintegro: Date;
+  declare requiere_reposo: boolean;
 
   declare motivo: string;
   declare id_tipo_certificado: number;
@@ -54,6 +56,14 @@ CertificateModel.init(
     fecha_fin: {
       type: DataTypes.DATE,
       allowNull: false,
+    },
+    fecha_reintegro: {
+      type: DataTypes.DATEONLY,
+      allowNull: false,
+    },
+    requiere_reposo: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: false,
     },
     motivo: {
       type: DataTypes.STRING,

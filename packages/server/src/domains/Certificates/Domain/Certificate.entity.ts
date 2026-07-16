@@ -5,8 +5,10 @@ export class Certificate {
   constructor(
     private readonly _startDate: Date,
     private readonly _endDate: Date,
+    private readonly _returnDate: Date,
     private readonly _reason: string,
     private readonly _type: CertificateTypes,
+    private readonly _requiresRest: boolean,
     private readonly _files?: string[],
     private readonly _id?: number,
     private readonly _userId?: number,
@@ -16,11 +18,22 @@ export class Certificate {
     id,
     startDate,
     endDate,
+    returnDate,
     reason,
     type,
     files,
+    requiresRest,
     userId,
   }: ICertificate) {
+    if (startDate >= endDate) {
+      throw new Error('La fecha de inicio debe ser anterior a la fecha de fin');
+    }
+    if (endDate >= returnDate) {
+      throw new Error(
+        'La fecha de fin debe ser anterior a la fecha de reintegro',
+      );
+    }
+
     const typeInstance = CertificateTypes.create({
       id: type?.values.id,
       name: type.values.name,
@@ -28,8 +41,10 @@ export class Certificate {
     return new Certificate(
       startDate,
       endDate,
+      returnDate,
       reason,
       typeInstance,
+      requiresRest ?? false,
       files,
       id,
       userId,
@@ -45,8 +60,10 @@ export class Certificate {
       id: this._id,
       startDate: this._startDate,
       endDate: this._endDate,
+      returnDate: this._returnDate,
       reason: this._reason,
       type: this._type,
+      requiresRest: this._requiresRest,
       files: this._files,
     };
   }

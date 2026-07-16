@@ -36,8 +36,10 @@ export class CertificatesController {
       z.object({
         startDate: z.string(),
         endDate: z.string(),
+        returnDate: z.string(),
         reason: z.string(),
         type: z.number(),
+        requiresRest: z.boolean().optional().default(false),
       }),
     )
     .mutation(

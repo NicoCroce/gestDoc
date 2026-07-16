@@ -4,6 +4,7 @@ import {
   IRequestContext,
   normalizeDate,
   normalizeEndDate,
+  parseDateOnly,
 } from '@server/Application';
 import { uploadImages } from '@server/Infrastructure';
 import { Certificate } from '../Domain/Certificate.entity';
@@ -38,8 +39,10 @@ interface IAddCertificateService extends IRequestContext {
   input: {
     startDate: string;
     endDate: string;
+    returnDate: string;
     type: number;
     reason: string;
+    requiresRest: boolean;
   };
 }
 
@@ -91,6 +94,7 @@ export class CertificatesServices {
         ...input,
         startDate: normalizeDate(input.startDate),
         endDate: normalizeEndDate(input.endDate),
+        returnDate: parseDateOnly(input.returnDate),
       };
 
       const certificate = await executeUseCase({

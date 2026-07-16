@@ -57,9 +57,11 @@ export class GetCertificatesByCompany implements IUseCase<IGetCertificatesByComp
               id,
               startDate,
               endDate,
+              returnDate: cert.returnDate ?? endDate,
               reason,
               type,
               userId,
+              requiresRest: cert.requiresRest ?? false,
               files,
             }),
           );

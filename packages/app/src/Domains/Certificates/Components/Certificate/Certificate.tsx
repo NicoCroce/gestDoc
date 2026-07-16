@@ -5,7 +5,13 @@ import {
   DialogContent,
   DialogTitle,
 } from '@app/Application/Components/ui/dialog';
-import { FileText, CalendarRange, Paperclip } from 'lucide-react';
+import {
+  FileText,
+  CalendarRange,
+  Paperclip,
+  CalendarCheck,
+  BedDouble,
+} from 'lucide-react';
 import { ICertificate } from '../../Certificate.entity';
 
 interface CertificateProps {
@@ -68,7 +74,8 @@ const computeSpan = (
 };
 
 export const Certificate = ({ data, year }: CertificateProps) => {
-  const { startDate, endDate, reason, type, files } = data;
+  const { startDate, endDate, returnDate, reason, type, requiresRest, files } =
+    data;
   const [activeFile, setActiveFile] = useState<string | null>(null);
   const hasFiles = Array.isArray(files) && files.length > 0;
   const span = computeSpan(startDate, endDate, year);
@@ -91,6 +98,22 @@ export const Certificate = ({ data, year }: CertificateProps) => {
             <CalendarRange className="h-3.5 w-3.5" strokeWidth={2} />
             {startDate} → {endDate}
           </span>
+        </Container>
+
+        <Container row justify="between" align="start" className="gap-3">
+          <span
+            className="inline-flex items-center gap-1 text-xs tabular-nums text-muted-foreground"
+            title={`Reintegro: ${returnDate}`}
+          >
+            <CalendarCheck className="h-3.5 w-3.5" strokeWidth={2} />
+            Reintegro: {returnDate}
+          </span>
+          {requiresRest && (
+            <span className="inline-flex items-center gap-1 text-xs text-muted-foreground">
+              <BedDouble className="h-3.5 w-3.5" strokeWidth={2} />
+              Requiere reposo
+            </span>
+          )}
         </Container>
 
         {span && (

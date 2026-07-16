@@ -6,6 +6,7 @@ import {
   FormField,
   FormItem,
   FormLabel,
+  FormMessage,
 } from '@app/Application/Components/ui/form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMemo } from 'react';
@@ -20,6 +21,8 @@ import { TCertificateType } from '../../Certificate.entity';
 import { formSchemeAddLicense } from './AddLicenceScheme';
 import { SelectField } from '@app/Application/Components/Molecules/FormFields/SelectField';
 import { DateRange } from '@app/Application/Components/Molecules/DateRange/';
+import { Input } from '@app/Application/Components/Molecules/Input';
+import { Checkbox } from '@app/Application/Components/Molecules/Checkbox';
 
 export const AddLicenseForm = () => {
   const { data: dataTypes } = useGetCertificatesTypes();
@@ -34,6 +37,8 @@ export const AddLicenseForm = () => {
       type: '',
       startDate: '',
       endDate: '',
+      returnDate: '',
+      requiresRest: false,
       files: undefined,
     },
   });
@@ -47,6 +52,11 @@ export const AddLicenseForm = () => {
 
   const licenseType = useWatch({ control: formLicense.control, name: 'type' });
   const hasFiles = licenseType !== '1';
+
+  const selectedType = dataTypes?.find(
+    (t: TCertificateType) => String(t.id) === licenseType,
+  );
+  const showRequiresRest = selectedType?.rest === true;
 
   const handleChangeType = (value: string) => {
     formLicense.setValue('type', value);
@@ -83,6 +93,47 @@ export const AddLicenseForm = () => {
               nameEndDate="endDate"
               label="Seleccione rango de fecha de licencia"
             />
+
+            <FormField
+              name="returnDate"
+              control={formLicense.control}
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Fecha de reintegro</FormLabel>
+                  <FormControl>
+                    <Input
+                      {...field}
+                      type="date"
+                      className="block"
+                      value={field.value || ''}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            {showRequiresRest && (
+              <FormField
+                name="requiresRest"
+                control={formLicense.control}
+                render={({ field }) => (
+                  <FormItem>
+                    <FormControl>
+                      <Checkbox
+                        label="Requiere reposo"
+                        value="requiresRest"
+                        checked={field.value}
+                        onCheckedChange={(checked) =>
+                          field.onChange(Boolean(checked))
+                        }
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            )}
 
             <InputField
               control={formLicense.control}

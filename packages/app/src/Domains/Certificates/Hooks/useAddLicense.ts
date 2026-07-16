@@ -17,7 +17,7 @@ export const useAddLicense = () => {
   const mutateAddLicence = (
     data: z.infer<typeof formSchemeAddLicense>,
   ): Promise<ICertificate> => {
-    const { startDate, endDate, type } = data;
+    const { startDate, endDate, returnDate, type, requiresRest } = data;
 
     // Crear una promesa que se resolverá con los datos de la respuesta
     return new Promise((resolve, reject) => {
@@ -26,7 +26,9 @@ export const useAddLicense = () => {
           ...data,
           startDate,
           endDate,
+          returnDate,
           type: Number(type),
+          requiresRest: requiresRest ?? false,
         },
         {
           onSuccess: (responseData) => {

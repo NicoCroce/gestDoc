@@ -24,7 +24,7 @@ export const formSchemeAddLicense = z
       })
       .min(1, 'La fecha de reintegro es obligatoria'),
 
-    requiresRest: z.boolean().optional().default(false),
+    requiresRest: z.boolean().optional(),
 
     files: z
       .instanceof(FileList)

@@ -107,7 +107,7 @@ export const ChangePasswordFormPublic = ({
               Cancelar
             </Button>
           )}
-          <Button type="submit" isLoading={isPending} forceEnabled>
+          <Button type="submit" isLoading={isPending}>
             Aceptar
           </Button>
         </Container>

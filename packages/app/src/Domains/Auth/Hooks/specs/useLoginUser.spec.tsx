@@ -15,12 +15,16 @@ const {
   setQueryDataMock,
   toastErrorMock,
   useMutationMock,
+  fetchEmpresasMock,
+  fetchPermissionsMock,
 } = vi.hoisted(() => ({
   navigateMock: vi.fn(),
   setLoggedMock: vi.fn(),
   setQueryDataMock: vi.fn(),
   toastErrorMock: vi.fn(),
   useMutationMock: vi.fn(),
+  fetchEmpresasMock: vi.fn().mockResolvedValue([]),
+  fetchPermissionsMock: vi.fn().mockResolvedValue([]),
 }));
 
 vi.mock('react-router-dom', async () => {
@@ -56,6 +60,23 @@ vi.mock('../../Auth.service', () => ({
     login: {
       useMutation: useMutationMock,
     },
+  },
+}));
+
+vi.mock('@app/Infrastructure/Services/clientApi', () => ({
+  TrpcApi: {
+    useUtils: vi.fn(() => ({
+      empresasUsuarios: {
+        getByUsuario: {
+          fetch: fetchEmpresasMock,
+        },
+      },
+      permissions: {
+        getPermissionByUser: {
+          fetch: fetchPermissionsMock,
+        },
+      },
+    })),
   },
 }));
 
@@ -96,9 +117,11 @@ describe('useLoginUser', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     useMutationMock.mockImplementation((options: unknown) => options);
+    fetchEmpresasMock.mockResolvedValue([]);
+    fetchPermissionsMock.mockResolvedValue([]);
   });
 
-  it('stores the logged user and navigates to the main route on success', () => {
+  it('stores the logged user and navigates to the main route on success', async () => {
     render(<Harness />, { wrapper: createWrapper() });
 
     const options = vi.mocked(AuthService.login.useMutation).mock
@@ -112,11 +135,52 @@ describe('useLoginUser', () => {
       theme: 1,
     };
 
-    options.onSuccess?.(user, loginVariables, undefined, mutationContext);
+    await options.onSuccess?.(user, loginVariables, undefined, mutationContext);
 
     expect(setLoggedMock).toHaveBeenCalledTimes(1);
     expect(setQueryDataMock).toHaveBeenCalledWith(user);
     expect(navigateMock).toHaveBeenCalledWith('/documents');
+  });
+
+  it('navigates to the admin dashboard when the user has dashboard access', async () => {
+    fetchPermissionsMock.mockResolvedValue(['dashboard-access']);
+    render(<Harness />, { wrapper: createWrapper() });
+
+    const options = vi.mocked(AuthService.login.useMutation).mock
+      .calls[0][0] as TLoginMutationOptions;
+    const user = {
+      id: 1,
+      ownerId: 10,
+      name: 'John',
+      mail: 'john@example.com',
+      rol: 'Full Admin',
+      theme: 1,
+    };
+
+    await options.onSuccess?.(user, loginVariables, undefined, mutationContext);
+
+    expect(navigateMock).toHaveBeenCalledWith('/admin/dashboard');
+  });
+
+  it('navigates to the empresa selection route when the user has multiple companies, even if admin', async () => {
+    fetchEmpresasMock.mockResolvedValue([{ id: 1 }, { id: 2 }]);
+    fetchPermissionsMock.mockResolvedValue(['dashboard-access']);
+    render(<Harness />, { wrapper: createWrapper() });
+
+    const options = vi.mocked(AuthService.login.useMutation).mock
+      .calls[0][0] as TLoginMutationOptions;
+    const user = {
+      id: 1,
+      ownerId: 10,
+      name: 'John',
+      mail: 'john@example.com',
+      rol: 'Full Admin',
+      theme: 1,
+    };
+
+    await options.onSuccess?.(user, loginVariables, undefined, mutationContext);
+
+    expect(navigateMock).toHaveBeenCalledWith('/seleccionar-empresa');
   });
 
   it('shows the login error without navigating', () => {

@@ -1,4 +1,4 @@
-import { useURLParams } from '@app/Application';
+import { AlertMessage, useURLParams } from '@app/Application';
 import { TDocumentSearch } from '../../Document.entity';
 import { useGetDocument } from '../../Hooks';
 import {
@@ -7,10 +7,7 @@ import {
   AlertTitle,
 } from '@app/Application/Components/ui/alert';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import {
-  faCircleExclamation,
-  faHourglass,
-} from '@fortawesome/free-solid-svg-icons';
+import { faHourglass } from '@fortawesome/free-solid-svg-icons';
 import { useEffect, useState } from 'react';
 
 export const PDFPreview = () => {
@@ -28,13 +25,11 @@ export const PDFPreview = () => {
 
   if (!currentDocument) {
     return (
-      <Alert className="max-w-lg">
-        <FontAwesomeIcon icon={faCircleExclamation} size="lg" />
-        <AlertTitle>Para visualizarlo debe seleccionar un documento</AlertTitle>
-        <AlertDescription>
-          Una vez lo selecciona podrá firmarlo
-        </AlertDescription>
-      </Alert>
+      <AlertMessage
+        variant="info"
+        title="Para visualizarlo debe seleccionar un documento"
+        description="Una vez lo selecciona podrá firmarlo"
+      />
     );
   }
 

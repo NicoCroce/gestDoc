@@ -4,6 +4,7 @@ import cookieParser from 'cookie-parser';
 import { pinoHttp } from 'pino-http';
 import { logger } from '@server/Infrastructure/utils/pino';
 import { v4 as uuidv4 } from 'uuid';
+import { initExpress } from './Express/LoadFiles';
 
 export const initMiddlewares = (app: Express) => {
   const allowedOrigins = (
@@ -29,6 +30,8 @@ export const initMiddlewares = (app: Express) => {
   );
 
   app.use(cookieParser());
+
+  initExpress(app);
 
   app.use((_req, res, next) => {
     res.setHeader('requestId', uuidv4());

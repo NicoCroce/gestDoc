@@ -73,6 +73,6 @@ UserModel.init(
     paranoid: true,
     modelName: 'User',
     timestamps: true,
-    tableName: 'Usuarios',
+    tableName: 'usuarios',
   },
 );

@@ -12,15 +12,15 @@ export interface FilterButtonProps {
 
 export const FilterButton = ({
   onClick,
-  variant = 'secondary',
+  variant = 'outline',
   ignoreParams = [],
 }: FilterButtonProps) => {
   const hasFilters = useGetFiltersSetted(ignoreParams);
 
   return (
-    <Button className="relative" onClick={onClick} variant={variant}>
+    <Button className="relative p-4" onClick={onClick} variant={variant}>
       {hasFilters && (
-        <span className="w-3 h-3 bg-red-700 rounded-full absolute top-[-4px] right-[-4px]"></span>
+        <span className="w-2.5 h-2.5 bg-destructive rounded-full absolute top-[-3px] right-[-3px] ring-2 ring-background"></span>
       )}
       <FontAwesomeIcon icon={faFilter}></FontAwesomeIcon>
     </Button>

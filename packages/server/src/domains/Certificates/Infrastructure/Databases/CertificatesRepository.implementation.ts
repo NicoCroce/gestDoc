@@ -8,6 +8,8 @@ import {
   IAddCertificateRepository,
   IAppendImagesRepository,
   IGetAllCompanyCertificatesRepositoryResponse,
+  IGetMonthlyStatisticsCertificatesRepository,
+  IGetMonthlyStatisticsCertificatesRepositoryResponse,
   IGetStatisticsCertificatesRepository,
   IGetStatisticsCertificatesRepositoryResponse,
 } from '../../Domain/Certificate.respository';
@@ -15,7 +17,6 @@ import { CertificateTypes } from '../../Domain/CertificateTypes.entity';
 import { CertificateModel } from './Certificates.model';
 import { CertificatesTypesModel } from './CertificatesTypes.model';
 import { CertificatesFilters } from './CertificatesFilters';
-import { endOfDay, startOfDay } from '@server/Application';
 import { Op } from 'sequelize';
 import { sequelize } from '@server/Infrastructure';
 
@@ -258,18 +259,15 @@ export class CertificatesRepositoryImplementation implements CertificateReposito
       },
     };
 
-    const todayStart = startOfDay(new Date());
-    const todayEnd = endOfDay(new Date());
+    const { whereConditionCertificates: activeCertificatesWhere } =
+      CertificatesFilters({ date: new Date() });
 
     const totalCertificates = await CertificateModel.count({
       include: [includeOwner],
     });
 
     const activesCertificates = await CertificateModel.count({
-      where: [
-        { fecha_inicio: { [Op.lte]: todayEnd } },
-        { fecha_fin: { [Op.gte]: todayStart } },
-      ],
+      where: activeCertificatesWhere,
       include: [includeOwner],
     });
 
@@ -333,6 +331,108 @@ export class CertificatesRepositoryImplementation implements CertificateReposito
       actives: activesCertificates,
       types: allCertificatesTypesResponse,
       employees: certificatesByEmployeeResponse,
+    };
+  }
+
+  async getMonthlyStatisticsCertificates({
+    requestContext,
+    year,
+  }: IGetMonthlyStatisticsCertificatesRepository): Promise<IGetMonthlyStatisticsCertificatesRepositoryResponse> {
+    const ownerId = requestContext.values.ownerId;
+    const currentYear = new Date().getFullYear();
+    const selectedYear = year ?? currentYear;
+
+    const includeOwner = {
+      model: UserModel,
+      as: 'User',
+      required: true,
+      attributes: [],
+      where: {
+        id_propietario: ownerId,
+      },
+    };
+
+    const availableYearsRaw = (await CertificateModel.findAll({
+      attributes: [
+        [sequelize.fn('YEAR', sequelize.col('fecha_inicio')), 'year'],
+      ],
+      include: [includeOwner],
+      group: [sequelize.fn('YEAR', sequelize.col('fecha_inicio'))],
+      order: [[sequelize.fn('YEAR', sequelize.col('fecha_inicio')), 'DESC']],
+      raw: true,
+    })) as unknown as { year: string }[];
+
+    const availableYears = availableYearsRaw.map((row) => Number(row.year));
+
+    const monthlyByTypeRaw = (await CertificateModel.findAll({
+      attributes: [
+        [sequelize.fn('MONTH', sequelize.col('fecha_inicio')), 'month'],
+        [sequelize.fn('COUNT', sequelize.col('CertificateModel.id')), 'count'],
+      ],
+      include: [
+        includeOwner,
+        {
+          model: CertificatesTypesModel,
+          attributes: ['denominacion'],
+        },
+      ],
+      where: {
+        [Op.and]: [
+          sequelize.where(
+            sequelize.fn('YEAR', sequelize.col('fecha_inicio')),
+            selectedYear,
+          ),
+        ],
+      },
+      group: [
+        sequelize.fn('MONTH', sequelize.col('fecha_inicio')),
+        'CertificatesTypesModel.id',
+        'CertificatesTypesModel.denominacion',
+      ],
+      raw: true,
+    })) as unknown as {
+      month: string;
+      count: string;
+      'CertificatesTypesModel.denominacion': string;
+    }[];
+
+    const monthMap = new Map<
+      number,
+      { count: number; byType: Map<string, number> }
+    >();
+
+    for (const row of monthlyByTypeRaw) {
+      const monthNumber = Number(row.month);
+      const typeName = row['CertificatesTypesModel.denominacion'];
+      const count = Number(row.count);
+
+      if (!monthMap.has(monthNumber)) {
+        monthMap.set(monthNumber, { count: 0, byType: new Map() });
+      }
+      const entry = monthMap.get(monthNumber)!;
+      entry.count += count;
+      entry.byType.set(typeName, (entry.byType.get(typeName) ?? 0) + count);
+    }
+
+    const months = Array.from({ length: 12 }, (_, index) => {
+      const monthNumber = index + 1;
+      const entry = monthMap.get(monthNumber);
+      return {
+        month: monthNumber,
+        count: entry?.count ?? 0,
+        byType: entry
+          ? Array.from(entry.byType.entries()).map(([name, typeCount]) => ({
+              name,
+              count: typeCount,
+            }))
+          : [],
+      };
+    });
+
+    return {
+      year: selectedYear,
+      months,
+      availableYears,
     };
   }
 }

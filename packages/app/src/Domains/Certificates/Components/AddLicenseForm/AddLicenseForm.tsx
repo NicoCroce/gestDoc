@@ -1,10 +1,5 @@
-import {
-  Button,
-  Combobox,
-  Container,
-  Input,
-  InputField,
-} from '@app/Application';
+import { Button, Combobox, Container, InputField } from '@app/Application';
+import { UploadFile } from '@app/Application/Components/Molecules/UploadFile';
 import {
   Form,
   FormControl,
@@ -105,10 +100,10 @@ export const AddLicenseForm = () => {
                   <FormItem>
                     <FormLabel>Cargue el archivo de la licencia</FormLabel>
                     <FormControl>
-                      <Input
-                        type="file"
+                      <UploadFile
+                        value={value}
+                        helperText="Arrastre la imagen aquí o haga clic para seleccionarla"
                         accept="image/*"
-                        className="cursor-pointer"
                         onChange={(e) => onChange(e.target.files)}
                         {...fieldProps}
                       />

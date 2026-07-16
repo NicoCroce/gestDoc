@@ -45,40 +45,42 @@ export const LoginForm = () => {
         onSubmit={form.handleSubmit(handleSubmit)}
         className="my-8 space-y-4 md:space-y-6 md:my-16 w-full"
       >
-        <FormField
-          name="mail"
-          control={form.control}
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Email</FormLabel>
-              <FormControl>
-                <Input {...field} forceEnabled />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          name="password"
-          control={form.control}
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Constraseña</FormLabel>
-              <FormControl>
-                <Input.Password {...field} forceEnabled />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <Container justify="between" className="md:flex-row !mt-4">
-          <Link to={RESTORE_PASSWORD} className="flex items-center">
-            ¿Olvidaste tu contraseña?
-          </Link>
-          <Container row justify="end">
-            <Button type="submit" isLoading={isPending} forceEnabled>
-              Ingresar
-            </Button>
+        <Container space="large">
+          <FormField
+            name="mail"
+            control={form.control}
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Email</FormLabel>
+                <FormControl>
+                  <Input {...field} forceEnabled />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            name="password"
+            control={form.control}
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Constraseña</FormLabel>
+                <FormControl>
+                  <Input.Password {...field} forceEnabled />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <Container justify="between" className="md:flex-row mt-4!">
+            <Link to={RESTORE_PASSWORD} className="flex items-center">
+              ¿Olvidaste tu contraseña?
+            </Link>
+            <Container row justify="end">
+              <Button type="submit" isLoading={isPending} className="w-full">
+                Ingresar
+              </Button>
+            </Container>
           </Container>
         </Container>
       </form>

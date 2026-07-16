@@ -12,4 +12,5 @@ export type TCertificatesSearch = {
   employee?: string;
   date?: string;
   type?: string;
+  year?: string;
 };

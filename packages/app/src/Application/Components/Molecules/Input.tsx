@@ -20,7 +20,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
     return (
       <InputLib
         ref={ref}
-        className={`h-8 bg-white ${dateClass} ${className ?? ''}`}
+        className={`bg-white ${dateClass} ${className ?? ''}`}
         disabled={forceEnabled ? false : (disabled ?? !isEditable)}
         {...props}
       />
@@ -44,7 +44,6 @@ const InputPassword = forwardRef<HTMLInputElement, InputProps>((props, ref) => {
         className="absolute right-0 top-[2px] p-[13px]"
         onClick={() => setShow((prev) => !prev)}
         type="button"
-        forceEnabled
       >
         <FontAwesomeIcon icon={show ? faEyeSlash : faEye} />
       </Button>

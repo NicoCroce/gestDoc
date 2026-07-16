@@ -19,6 +19,7 @@ export class Documentos extends Model<
   declare Usuario_id: number;
   declare titulo: string;
   declare archivo: string;
+  declare extension: CreationOptional<string | null>;
   declare fecha_de_subida: Date;
   declare firmado: CreationOptional<Date>;
   declare motivo_firma_sin_conformidad: string | null;
@@ -46,7 +47,7 @@ Documentos.init(
       primaryKey: true,
     },
     tipo: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.BIGINT,
       allowNull: false,
     },
     Usuario_id: {
@@ -64,6 +65,10 @@ Documentos.init(
     archivo: {
       type: DataTypes.STRING(500),
       allowNull: false,
+    },
+    extension: {
+      type: DataTypes.CHAR(10),
+      allowNull: true,
     },
     firmado: {
       type: DataTypes.DATE,
@@ -95,6 +100,6 @@ Documentos.init(
     modelName: 'Documentos',
     paranoid: true,
     timestamps: true,
-    tableName: 'Documentos',
+    tableName: 'documentos',
   },
 );

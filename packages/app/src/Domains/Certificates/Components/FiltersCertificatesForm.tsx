@@ -1,6 +1,13 @@
 import { Button, Container, Input, useURLParams } from '@app/Application';
 import { Label } from '@app/Application/Components/ui/label';
 import { SheetClose, SheetFooter } from '@app/Application/Components/ui/sheet';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@app/Application/Components/ui/select';
 import { useState } from 'react';
 import { TCertificatesSearch, TCertificateType } from '../Certificate.entity';
 import { useGetCertificatesTypes } from '../Hooks';
@@ -17,6 +24,7 @@ const initialState: TCertificatesSearch = {
   type: undefined,
   date: undefined,
   employee: '',
+  year: undefined,
 };
 
 const toDateInputValue = (date?: string) => {
@@ -28,10 +36,12 @@ const toDateInputValue = (date?: string) => {
 
 interface FiltersCertificatesFormProps {
   isAdmin?: boolean;
+  availableYears: number[];
 }
 
 export const FiltersCertificatesForm = ({
   isAdmin = false,
+  availableYears,
 }: FiltersCertificatesFormProps) => {
   const { searchParams, updateParams } = useURLParams<TCertificatesSearch>();
   const [formState, setFormState] = useState<TCertificatesSearch>({
@@ -49,6 +59,13 @@ export const FiltersCertificatesForm = ({
 
   const handleType = (value: string) => {
     setFormState((prev) => ({ ...prev, type: value }));
+  };
+
+  const handleYearChange = (value: string) => {
+    setFormState((prev) => ({
+      ...prev,
+      year: value === '__all__' ? undefined : value,
+    }));
   };
 
   const handleApplyFilters = (e: React.FormEvent<HTMLFormElement>) => {
@@ -108,13 +125,35 @@ export const FiltersCertificatesForm = ({
           onChange={handleChangeFilters}
         />
       </Container>
+      <Container>
+        <Label>Año</Label>
+        <Select value={formState.year ?? ''} onValueChange={handleYearChange}>
+          <SelectTrigger className="col-span-3">
+            <SelectValue placeholder="Todos los años" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="__all__">Todos los años</SelectItem>
+            {availableYears.map((year) => (
+              <SelectItem key={year} value={String(year)}>
+                {year}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      </Container>
       <SheetFooter className="mt-16">
-        <Container row className="justify-end">
-          <Button variant="outline" onClick={cleanFilters}>
+        <Container row className="w-full sm:justify-end">
+          <Button
+            variant="outline"
+            onClick={cleanFilters}
+            className="w-full sm:w-auto"
+          >
             Limpiar filtros
           </Button>
           <SheetClose asChild>
-            <Button type="submit">Aplicar filtros</Button>
+            <Button type="submit" className="w-full sm:w-auto">
+              Aplicar filtros
+            </Button>
           </SheetClose>
         </Container>
       </SheetFooter>

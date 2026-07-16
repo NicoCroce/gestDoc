@@ -10,6 +10,7 @@ const filterParams = z.object({
     .transform((arg) => parseDateOnly(arg))
     .optional(),
   type: z.number().optional(),
+  year: z.number().optional(),
 });
 export class CertificatesController {
   constructor(private readonly certificatesService: CertificatesServices) {}
@@ -62,4 +63,14 @@ export class CertificatesController {
       ),
     ),
   );
+
+  getStatisticsByCertificatesMonthly = protectedProcedure
+    .input(z.object({ year: z.number().optional() }).optional())
+    .query(
+      executeService(
+        this.certificatesService.getMonthlyStatisticsByCertificates.bind(
+          this.certificatesService,
+        ),
+      ),
+    );
 }

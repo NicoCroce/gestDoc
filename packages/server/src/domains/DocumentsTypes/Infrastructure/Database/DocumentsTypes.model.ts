@@ -49,6 +49,6 @@ DocumentsTypesModel.init(
     sequelize,
     paranoid: true,
     modelName: 'DocumentsTypesModel',
-    tableName: 'Sis_tipo_documentos',
+    tableName: 'sis_tipo_documentos',
   },
 );

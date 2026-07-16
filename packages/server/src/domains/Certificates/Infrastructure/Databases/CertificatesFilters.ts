@@ -1,4 +1,5 @@
 import { endOfDay, startOfDay } from '@server/Application';
+import { sequelize } from '@server/Infrastructure';
 import { Op, WhereOptions } from 'sequelize';
 import { IGetCertificatesRepository } from '../../Domain';
 import { CertificateModel } from './Certificates.model';
@@ -24,15 +25,31 @@ export const CertificatesFilters = (
   if (filters?.type)
     whereConditionCertificates.id_tipo_certificado = filters.type;
 
+  // Acumulamos condiciones AND para fecha y año sin pisarlas entre sí
+  const andConditions: WhereOptions<CertificateModel>[] = [];
+
   // Si hay un filtro de fecha, buscamos certificados que incluyan esa fecha
   if (filters?.date) {
     const dayStart = startOfDay(filters.date);
     const dayEnd = endOfDay(filters.date);
 
-    whereConditionCertificates[Op.and as keyof TWhereConditionCertificates] = [
-      { fecha_inicio: { [Op.lte]: dayEnd } },
-      { fecha_fin: { [Op.gte]: dayStart } },
-    ];
+    andConditions.push({ fecha_inicio: { [Op.lte]: dayEnd } });
+    andConditions.push({ fecha_fin: { [Op.gte]: dayStart } });
+  }
+
+  // Si hay un filtro de año, filtramos por YEAR(fecha_inicio)
+  if (filters?.year != null) {
+    andConditions.push(
+      sequelize.where(
+        sequelize.fn('YEAR', sequelize.col('fecha_inicio')),
+        filters.year,
+      ),
+    );
+  }
+
+  if (andConditions.length > 0) {
+    whereConditionCertificates[Op.and as keyof TWhereConditionCertificates] =
+      andConditions;
   }
 
   return {

@@ -26,17 +26,23 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowDown, faEye } from '@fortawesome/free-solid-svg-icons'; */
 
 export const PDFPreviewMobile = () => {
-  const { searchParams } = useURLParams<TDocumentSearch>();
+  const { searchParams, clearParams } = useURLParams<TDocumentSearch>();
   const { currentDocument } = useGetDocument(searchParams?.id);
-  const [isOpen, setIsOpen] = useState(!!searchParams?.id);
   const [isLoading, setIsLoading] = useState(true);
+
+  const isOpen = !!searchParams?.id;
+
+  const handleClose = () => {
+    clearParams();
+    setIsLoading(true);
+  };
 
   if (!currentDocument) return null;
 
   // const urlPDF = `https://docs.google.com/viewer?url=${currentDocument.file}`;
 
   return (
-    <Drawer open={isOpen} onOpenChange={() => setIsOpen(false)}>
+    <Drawer open={isOpen} onOpenChange={handleClose}>
       <DrawerContent className="h-[90%]">
         <DrawerHeader className="justify-start">
           <DrawerTitle>Detalle del documento</DrawerTitle>

@@ -2,6 +2,25 @@ import clsx from 'clsx';
 
 type AlignValues = 'start' | 'end' | 'center' | 'strech' | 'baseline';
 
+const ALIGN = {
+  start: 'items-start',
+  end: 'items-end',
+  center: 'items-center',
+  strech: 'items-stretch',
+  baseline: 'items-baseline',
+} as const;
+
+const JUSTIFY = {
+  start: 'justify-start',
+  end: 'justify-end',
+  center: 'justify-center',
+  strech: 'justify-stretch',
+  baseline: 'justify-baseline',
+  between: 'justify-between',
+  evenly: 'justify-evenly',
+  around: 'justify-around',
+} as const;
+
 const SPACE = {
   small: 'gap-2',
   medium: 'gap-4',
@@ -36,7 +55,9 @@ export const Container = ({
 
   const _classNameFlex = clsx(
     'flex',
-    `items-${align} justify-${justify} ${SPACE[space]}`,
+    ALIGN[align],
+    JUSTIFY[justify],
+    SPACE[space],
     className,
     {
       'flex-row': row,

@@ -5,25 +5,25 @@ import { Users_RolesModel } from './Users_Roles.model';
 
 export const relatePermissions = () => {
   PermissionsModel.belongsToMany(RolesModel, {
-    through: 'Roles_permisos',
+    through: 'roles_permisos',
     foreignKey: 'id_permiso',
     otherKey: 'id_rol',
   });
 
   RolesModel.belongsToMany(PermissionsModel, {
-    through: 'Roles_permisos',
+    through: 'roles_permisos',
     foreignKey: 'id_rol',
     otherKey: 'id_permiso',
   });
 
   UserModel.belongsToMany(RolesModel, {
-    through: 'Usuarios_roles',
+    through: 'usuarios_roles',
     foreignKey: 'id_usuario',
     otherKey: 'id_rol',
   });
 
   RolesModel.belongsToMany(UserModel, {
-    through: 'Usuarios_roles',
+    through: 'usuarios_roles',
     foreignKey: 'id_rol',
     otherKey: 'id_usuario',
   });

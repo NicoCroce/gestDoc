@@ -282,7 +282,7 @@ export const entityApp = {
 | Carpeta dominio      | PascalCase                             | `Articles/`                            |
 | Entidad clase        | PascalCase                             | `Article`                              |
 | Archivo entidad      | `[Entity].entity.ts`                   | `Article.entity.ts`                    |
-| Archivo interfaces   | `[Entity].interfaces.ts`               | `Articles.interfaces.ts`               |
+| Archivo tipos        | `[domain].types.ts`                    | `articles.types.ts`                    |
 | Repositorio abstract | `[Entity].repository.ts`               | `Articles.repository.ts`               |
 | Use Case archivo     | `[Action][Entity].usecase.ts`          | `CreateArticle.usecase.ts`             |
 | Use Case clase       | PascalCase                             | `CreateArticle`                        |

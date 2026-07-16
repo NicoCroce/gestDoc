@@ -1,4 +1,4 @@
-import { procedure } from '@server/Infrastructure';
+import { procedure, setAuthCookie } from '@server/Infrastructure';
 import { AuthService } from '../../Application';
 import z from 'zod';
 import { executeService } from '@server/Application';
@@ -20,11 +20,7 @@ export class AuthController {
           requestContext: ctx.requestContext,
         });
 
-        ctx.res.cookie('auth_token', token, {
-          httpOnly: true,
-          secure: false, //process.env.NODE_ENV === 'production',
-          maxAge: 7 * 24 * 60 * 60 * 1000, // 7 días
-        });
+        setAuthCookie(ctx.res, token);
 
         return { ...user.values, theme };
       });

@@ -51,6 +51,6 @@ ProfileModel.init(
     paranoid: true,
     modelName: 'Profile',
     timestamps: true,
-    tableName: 'Perfiles',
+    tableName: 'perfiles',
   },
 );

@@ -18,7 +18,8 @@ export class UsersRepositoryImplementation implements UserRepository {
   }: IGetUserRepository): Promise<User | null> {
     const whereClause: { [key: string]: unknown } = { id };
 
-    if (requestContext?.values.ownerId) {
+    const isCurrentUser = requestContext?.values.userId === id;
+    if (requestContext?.values.ownerId && !isCurrentUser) {
       whereClause.id_propietario = requestContext.values.ownerId;
     }
 
@@ -26,11 +27,12 @@ export class UsersRepositoryImplementation implements UserRepository {
     if (!userFound) {
       return null;
     }
-    const { email, nombre } = userFound;
+    const { email, nombre, apellido } = userFound;
     return User.create({
       id,
       mail: email,
       name: nombre,
+      surname: apellido,
       ownerId: userFound.id_propietario,
     });
   }

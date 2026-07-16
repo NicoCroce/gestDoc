@@ -11,6 +11,8 @@ import {
 import { TuseGetCertificatesByCompany } from '../../Hooks';
 import { Certificate } from '@app/Domains/Certificates/Components';
 import { uuid } from '@app/Application/Helpers/uuid';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faUser } from '@fortawesome/free-solid-svg-icons';
 
 const SkeletonLoader = () => (
   <Container space="small">
@@ -20,64 +22,88 @@ const SkeletonLoader = () => (
   </Container>
 );
 
+type TServiceData = NonNullable<TuseGetCertificatesByCompany['data']>;
+
 interface DocumentsListProps {
   service: TuseGetCertificatesByCompany;
+  filteredData?: TServiceData;
+  query?: string;
 }
 
-export const LicensesListByUser = ({ service }: DocumentsListProps) => {
-  const { data, isLoading } = service;
+export const LicensesListByUser = ({
+  service,
+  filteredData,
+  query,
+}: DocumentsListProps) => {
+  const { isLoading } = service;
 
   if (isLoading) {
     return <SkeletonLoader />;
   }
 
+  const dataToIterate: TServiceData | undefined = filteredData ?? service.data;
+
   return (
     <>
-      {data ? (
-        <ScrollArea className="h-[74vh] w-full">
-          <List>
-            {Object.keys(data)?.map((userId, index) => {
-              const certificates = data[Number(userId)].certificates;
+      {dataToIterate ? (
+        Object.keys(dataToIterate).length === 0 ? (
+          <Container className="py-10 text-center">
+            <Text.Muted>
+              No se encontraron licencias para «{query ?? ''}».
+            </Text.Muted>
+          </Container>
+        ) : (
+          <ScrollArea className="h-[74vh] w-full">
+            <List>
+              {Object.keys(dataToIterate)?.map((userId, index) => {
+                const certificates = dataToIterate[Number(userId)].certificates;
 
-              return (
-                <List.Li key={userId}>
-                  <Accordion type="single" collapsible defaultValue="item-0">
-                    <AccordionItem value={`item-${index}`}>
-                      <Container className="sticky top-0 bg-slate-50 mb-4">
-                        <AccordionTrigger className="px-4 ">
-                          <Title variant="h4">
-                            {data[Number(userId)].user}
-                          </Title>
-                        </AccordionTrigger>
-                      </Container>
-                      <AccordionContent className="px-4">
-                        {Object.entries(certificates).map(
-                          ([year, certificatesForYear]) => (
-                            <Container
-                              key={uuid()}
-                              className="[&:not(:first-child)]:mt-10"
-                            >
-                              <Title variant="h4">
-                                Licencias correspondientes al año {year}
+                return (
+                  <List.Li key={userId}>
+                    <Accordion type="single" collapsible defaultValue="item-0">
+                      <AccordionItem value={`item-${index}`}>
+                        <Container className="sticky top-0 bg-slate-50">
+                          <AccordionTrigger className="px-4 cursor-pointer">
+                            <Container row align="center">
+                              <FontAwesomeIcon icon={faUser} />
+                              <Title variant="h4" className="text-sm!">
+                                {dataToIterate[Number(userId)].user}
                               </Title>
-                              <Container className="grid gap-2 grid-cols-[repeat(auto-fit,minmax(200px,420px))] md:mx-14">
-                                {certificatesForYear.map((cert) => (
-                                  <Container block key={cert.id}>
-                                    <Certificate data={cert} />
-                                  </Container>
-                                ))}
-                              </Container>
                             </Container>
-                          ),
-                        )}
-                      </AccordionContent>
-                    </AccordionItem>
-                  </Accordion>
-                </List.Li>
-              );
-            })}
-          </List>
-        </ScrollArea>
+                          </AccordionTrigger>
+                        </Container>
+                        <AccordionContent className="px-4">
+                          {Object.entries(certificates).map(
+                            ([year, certificatesForYear]) => (
+                              <Container
+                                key={uuid()}
+                                className="[&:not(:first-child)]:mt-10"
+                              >
+                                <Title variant="h4" className="mt-4">
+                                  Licencias correspondientes al año {year}
+                                </Title>
+                                <Container className="grid gap-2 grid-cols-[repeat(auto-fit,minmax(200px,420px))]">
+                                  {certificatesForYear.map((cert) => (
+                                    <Container block key={cert.id}>
+                                      <Certificate
+                                        data={cert}
+                                        year={Number(year)}
+                                      />
+                                    </Container>
+                                  ))}
+                                </Container>
+                              </Container>
+                            ),
+                          )}
+                        </AccordionContent>
+                      </AccordionItem>
+                    </Accordion>
+                  </List.Li>
+                );
+              })}
+            </List>
+          </ScrollArea>
+        )
       ) : (
         <Text.Muted>Cargando</Text.Muted>
       )}

@@ -13,6 +13,7 @@ import {
   IGetCertificatesByCompanyResponse,
   IGetCertificatesCompany,
   IGetCertificateTypes,
+  IGetMonthlyStatisticsCertificates,
   IGetStatisticsCertificates,
 } from './certificates.types';
 import {
@@ -21,6 +22,7 @@ import {
   GetCertificates,
   GetCertificatesByCompany,
   GetCertificateTypes,
+  GetMonthlyStatisticsCertificates,
   GetStatisticsCertificates,
 } from './UseCases';
 import {
@@ -49,6 +51,7 @@ export class CertificatesServices {
     private readonly _appendImages: AppendImages,
     private readonly _getCertificatesByCompany: GetCertificatesByCompany,
     private readonly _getStatistisCertificates: GetStatisticsCertificates,
+    private readonly _getMonthlyStatistisCertificates: GetMonthlyStatisticsCertificates,
     private readonly sendEmailService: SendEmailService,
   ) {}
 
@@ -157,6 +160,17 @@ export class CertificatesServices {
     return executeUseCase({
       useCase: this._getStatistisCertificates,
       requestContext,
+    });
+  }
+
+  getMonthlyStatisticsByCertificates({
+    requestContext,
+    input,
+  }: IGetMonthlyStatisticsCertificates) {
+    return executeUseCase({
+      useCase: this._getMonthlyStatistisCertificates,
+      requestContext,
+      input,
     });
   }
 }

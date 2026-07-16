@@ -35,12 +35,11 @@ export type IGetDocumentsByCompany = IGetDocuments;
 
 export type IGetStatisticsDocuments = IRequestContext;
 
-export interface IGetDocumentsByCompanyResponse {
-  [userId: number]: {
-    user: string;
-    documents: Document[];
-  };
-}
+export type IGetDocumentsByCompanyResponse = Array<{
+  userId: number;
+  user: string;
+  documents: Document[];
+}>;
 
 export interface IGetStatisticsDocumentsResponse {
   total: number;

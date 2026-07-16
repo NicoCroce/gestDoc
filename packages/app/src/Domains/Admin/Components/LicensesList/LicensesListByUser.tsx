@@ -79,7 +79,7 @@ export const LicensesListByUser = ({
                                 key={uuid()}
                                 className="[&:not(:first-child)]:mt-10"
                               >
-                                <Title variant="h4">
+                                <Title variant="h4" className="mt-4">
                                   Licencias correspondientes al año {year}
                                 </Title>
                                 <Container className="grid gap-2 grid-cols-[repeat(auto-fit,minmax(200px,420px))]">

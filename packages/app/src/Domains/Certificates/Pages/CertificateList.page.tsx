@@ -16,7 +16,7 @@ import { useState } from 'react';
 import { ICertificate } from '..';
 
 export const CertificateListPage = () => {
-  const { data, isError, error } = useGetCertificates();
+  const { data, isError, error, availableYears } = useGetCertificates();
   const [filtersIsOpen, setFiltersIsOpen] = useState(false);
 
   const handleFilters = () => {
@@ -66,7 +66,7 @@ export const CertificateListPage = () => {
           title="Filtros de Certificados"
           description="Puedes filtrar los certificados por los siguientes parámetros"
         >
-          <FiltersCertificatesForm />
+          <FiltersCertificatesForm availableYears={availableYears} />
         </FiltersSheet>
       </>
     </Page>

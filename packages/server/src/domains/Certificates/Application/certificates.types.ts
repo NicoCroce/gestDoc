@@ -7,6 +7,7 @@ interface IFilters {
     employee?: string;
     date?: Date;
     type?: number;
+    year?: number;
   };
 }
 

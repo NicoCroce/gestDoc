@@ -16,7 +16,7 @@ interface LicensesListSearchProps {
 }
 
 export const LicensesListSearch = ({ service }: LicensesListSearchProps) => {
-  const { data } = service;
+  const { data, availableYears } = service;
   const [query, setQuery] = useState('');
   const [filtersIsOpen, setFiltersIsOpen] = useState(false);
 
@@ -42,7 +42,7 @@ export const LicensesListSearch = ({ service }: LicensesListSearchProps) => {
 
   return (
     <>
-      <Container className="sticky top-0 z-10 bg-slate-50 py-2" row>
+      <Container className="sticky top-0 z-1 py-2" row>
         <Container className="relative w-full">
           <MagnifyingGlassIcon className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-slate-400 pointer-events-none" />
           <Input
@@ -80,7 +80,7 @@ export const LicensesListSearch = ({ service }: LicensesListSearchProps) => {
         closeSheet={handleFilters}
         title="Filtros de Certificados"
       >
-        <FiltersCertificatesForm isAdmin />
+        <FiltersCertificatesForm isAdmin availableYears={availableYears} />
       </FiltersSheet>
     </>
   );

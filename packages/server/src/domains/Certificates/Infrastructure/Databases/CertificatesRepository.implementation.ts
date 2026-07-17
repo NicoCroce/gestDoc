@@ -352,7 +352,17 @@ export class CertificatesRepositoryImplementation implements CertificateReposito
         'estado',
         [sequelize.fn('COUNT', sequelize.col('CertificateModel.id')), 'count'],
       ],
-      include: [includeOwner],
+      include: [
+        {
+          model: UserModel,
+          as: 'User',
+          required: true,
+          attributes: [], // No traer columnas de User
+          where: {
+            id_propietario: ownerId,
+          },
+        },
+      ],
       group: ['estado'],
     });
 

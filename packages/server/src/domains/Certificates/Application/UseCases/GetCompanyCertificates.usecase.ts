@@ -62,6 +62,7 @@ export class GetCertificatesByCompany implements IUseCase<IGetCertificatesByComp
               type,
               userId,
               requiresRest: cert.requiresRest ?? false,
+              status: cert.status,
               files,
             }),
           );

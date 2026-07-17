@@ -119,6 +119,7 @@ export const AddLicenseForm = () => {
                           className="block"
                           value={field.value || ''}
                           disabled={!formLicense.watch('startDate')}
+                          min={formLicense.watch('startDate') || undefined}
                         />
                       </FormControl>
                       <FormMessage />
@@ -138,6 +139,7 @@ export const AddLicenseForm = () => {
                           className="block"
                           value={field.value || ''}
                           disabled={!formLicense.watch('endDate')}
+                          min={formLicense.watch('endDate') || undefined}
                         />
                       </FormControl>
                       <FormMessage />

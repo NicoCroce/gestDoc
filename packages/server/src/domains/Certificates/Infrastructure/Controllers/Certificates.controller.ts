@@ -11,6 +11,9 @@ const filterParams = z.object({
     .optional(),
   type: z.number().optional(),
   year: z.number().optional(),
+  status: z
+    .enum(['aprobado', 'rechazado', 'en validación', 'pendiente'])
+    .optional(),
 });
 export class CertificatesController {
   constructor(private readonly certificatesService: CertificatesServices) {}

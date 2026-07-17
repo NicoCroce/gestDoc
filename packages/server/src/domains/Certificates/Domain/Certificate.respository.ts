@@ -5,6 +5,7 @@ import {
   ICertificate,
   IGetMonthlyStatisticsCertificatesResponse,
   IGetStatisticsCertificatesResponse,
+  CertificateStatus,
 } from './Certificate.types';
 
 interface IFilters {
@@ -13,6 +14,7 @@ interface IFilters {
     date?: Date;
     type?: number;
     year?: number;
+    status?: CertificateStatus;
   };
 }
 

@@ -11,6 +11,9 @@ const mockRepository: CertificateRepository = {
   getAllCompanyCertificates: vi.fn(),
   getStatisticsCertificates: vi.fn(),
   getMonthlyStatisticsCertificates: vi.fn(),
+  deleteCertificate: vi.fn(),
+  updateCertificateStatus: vi.fn(),
+  getCertificate: vi.fn(),
 };
 
 const requestContext = new RequestContext(1, 'req-test', 10);

@@ -78,4 +78,29 @@ export class CertificatesController {
         ),
       ),
     );
+
+  deleteCertificate = protectedProcedure
+    .input(z.object({ id: z.number() }))
+    .mutation(
+      executeService(
+        this.certificatesService.deleteCertificate.bind(
+          this.certificatesService,
+        ),
+      ),
+    );
+
+  updateCertificateStatus = protectedProcedure
+    .input(
+      z.object({
+        id: z.number(),
+        status: z.enum(['aprobado', 'rechazado', 'en validación', 'pendiente']),
+      }),
+    )
+    .mutation(
+      executeService(
+        this.certificatesService.updateCertificateStatus.bind(
+          this.certificatesService,
+        ),
+      ),
+    );
 }

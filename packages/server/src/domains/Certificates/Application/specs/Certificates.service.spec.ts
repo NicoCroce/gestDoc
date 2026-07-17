@@ -35,6 +35,8 @@ const buildService = () =>
     {} as never, // getStatistisCertificates
     {} as never, // getMonthlyStatistisCertificates
     { addLincence: vi.fn() } as never, // sendEmailService
+    {} as never, // deleteCertificate
+    {} as never, // updateCertificateStatus
   );
 
 describe('CertificatesServices', () => {

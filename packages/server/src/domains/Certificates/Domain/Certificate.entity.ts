@@ -80,6 +80,22 @@ export class Certificate {
     return this._userId;
   }
 
+  get status() {
+    return this._status;
+  }
+
+  get id() {
+    return this._id;
+  }
+
+  assertOwnerCanDelete(): void {
+    if (this._status !== 'pendiente') {
+      throw new Error(
+        'Solo se pueden eliminar certificados con estado pendiente',
+      );
+    }
+  }
+
   get type() {
     return this._type.values.name;
   }

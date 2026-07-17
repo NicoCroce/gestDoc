@@ -17,6 +17,7 @@ import { ICertificate } from '../../Certificate.entity';
 interface CertificateProps {
   data: ICertificate;
   year: number;
+  actions?: React.ReactNode;
 }
 
 const MONTHS_ES: Record<string, number> = {
@@ -73,7 +74,7 @@ const computeSpan = (
   return { leftPct, widthPct };
 };
 
-export const Certificate = ({ data, year }: CertificateProps) => {
+export const Certificate = ({ data, year, actions }: CertificateProps) => {
   const {
     startDate,
     endDate,
@@ -187,6 +188,12 @@ export const Certificate = ({ data, year }: CertificateProps) => {
               <Paperclip className="h-3 w-3" strokeWidth={2} />
               {files!.length} {files!.length === 1 ? 'adjunto' : 'adjuntos'}
             </Text.Label>
+          </Container>
+        )}
+
+        {actions && (
+          <Container block className="mt-auto border-t pt-2">
+            {actions}
           </Container>
         )}
       </Container>

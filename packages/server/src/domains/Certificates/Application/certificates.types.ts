@@ -47,3 +47,11 @@ export interface IAppendImages extends IRequestContext {
     id: number;
   };
 }
+
+export interface IDeleteCertificate extends IRequestContext {
+  input: { id: number };
+}
+
+export interface IUpdateCertificateStatus extends IRequestContext {
+  input: { id: number; status: CertificateStatus };
+}

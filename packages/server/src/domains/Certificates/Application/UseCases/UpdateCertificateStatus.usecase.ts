@@ -1,0 +1,53 @@
+import { AppError, IUseCase, RequestContext } from '@server/Application';
+import { CertificateRepository } from '../../Domain/Certificate.respository';
+import { IUpdateCertificateStatus } from '../certificates.types';
+import { Certificate } from '../../Domain/Certificate.entity';
+import { GetRoleByUser } from '@server/domains/Permissions/Application/UseCases/GetRoleByUser.usecase';
+
+export class UpdateCertificateStatus implements IUseCase<Certificate> {
+  constructor(
+    private readonly certificatesRepository: CertificateRepository,
+    private readonly getRoleByUser: GetRoleByUser,
+  ) {}
+
+  async execute({
+    input,
+    requestContext,
+  }: IUpdateCertificateStatus): Promise<Certificate> {
+    const certificate = await this.certificatesRepository.getCertificate({
+      id: input.id,
+      requestContext,
+    });
+
+    if (!certificate) {
+      throw new AppError('Certificado no encontrado', 404);
+    }
+
+    const isAdmin = await this.checkAdmin(requestContext);
+
+    if (!isAdmin) {
+      throw new AppError(
+        'No tienes permiso para cambiar el estado del certificado',
+        403,
+      );
+    }
+
+    return this.certificatesRepository.updateCertificateStatus({
+      id: input.id,
+      status: input.status,
+      requestContext,
+    });
+  }
+
+  private async checkAdmin(requestContext: RequestContext): Promise<boolean> {
+    try {
+      const roleName = await this.getRoleByUser.execute({
+        input: requestContext.values.userId,
+        requestContext,
+      });
+      return roleName === 'Full Admin' || roleName === 'admin';
+    } catch {
+      return false;
+    }
+  }
+}

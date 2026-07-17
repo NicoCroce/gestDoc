@@ -2,12 +2,14 @@ import { asClass } from 'awilix';
 import { CertificatesServices } from './Application';
 import {
   AddCertificate,
+  DeleteCertificate,
   GetCertificates,
   GetCertificatesByCompany,
   GetCertificateTypes,
   AppendImages,
   GetMonthlyStatisticsCertificates,
   GetStatisticsCertificates,
+  UpdateCertificateStatus,
 } from './Application';
 import {
   CertificatesController,
@@ -28,6 +30,8 @@ export const certificatesApp = {
   _getCertificatesByCompany: asClass(GetCertificatesByCompany),
   _getStatistisCertificates: asClass(GetStatisticsCertificates),
   _getMonthlyStatistisCertificates: asClass(GetMonthlyStatisticsCertificates),
+  _deleteCertificate: asClass(DeleteCertificate),
+  _updateCertificateStatus: asClass(UpdateCertificateStatus),
 };
 
 export const certificatesController = () =>

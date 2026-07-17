@@ -7,11 +7,14 @@ import {
 import {
   IAddCertificateRepository,
   IAppendImagesRepository,
+  IDeleteCertificateRepository,
   IGetAllCompanyCertificatesRepositoryResponse,
+  IGetCertificateRepository,
   IGetMonthlyStatisticsCertificatesRepository,
   IGetMonthlyStatisticsCertificatesRepositoryResponse,
   IGetStatisticsCertificatesRepository,
   IGetStatisticsCertificatesRepositoryResponse,
+  IUpdateCertificateStatusRepository,
 } from '../../Domain/Certificate.respository';
 import { CertificateTypes } from '../../Domain/CertificateTypes.entity';
 import { CertificateStatus } from '../../Domain/Certificate.types';
@@ -496,5 +499,82 @@ export class CertificatesRepositoryImplementation implements CertificateReposito
       months,
       availableYears,
     };
+  }
+
+  async deleteCertificate({
+    id,
+    requestContext: _,
+  }: IDeleteCertificateRepository): Promise<void> {
+    await CertificateModel.destroy({
+      where: { id },
+    });
+  }
+
+  async getCertificate({
+    id,
+    requestContext,
+  }: IGetCertificateRepository): Promise<Certificate | null> {
+    const certificate = await CertificateModel.findOne({
+      where: { id },
+      include: [
+        { model: CertificatesTypesModel },
+        {
+          model: UserModel,
+          as: 'User',
+          where: { id_propietario: requestContext.values.ownerId },
+        },
+      ],
+    });
+
+    if (!certificate) return null;
+
+    return Certificate.create({
+      id: certificate.id,
+      startDate: certificate.fecha_inicio,
+      endDate: certificate.fecha_fin,
+      returnDate: certificate.fecha_reintegro,
+      reason: certificate.motivo,
+      type: CertificateTypes.create({
+        id: certificate.CertificatesTypesModel.id,
+        name: certificate.CertificatesTypesModel.denominacion,
+      }),
+      requiresRest: Boolean(certificate.requiere_reposo),
+      status: certificate.estado,
+      files: certificate.archivos,
+      userId: certificate.id_usuario,
+    });
+  }
+
+  async updateCertificateStatus({
+    id,
+    status,
+    requestContext: _,
+  }: IUpdateCertificateStatusRepository): Promise<Certificate> {
+    const certificate = await CertificateModel.findOne({
+      where: { id },
+      include: [{ model: CertificatesTypesModel }],
+    });
+
+    if (!certificate) {
+      throw new Error('Certificate not found');
+    }
+
+    await certificate.update({ estado: status });
+
+    return Certificate.create({
+      id: certificate.id,
+      startDate: certificate.fecha_inicio,
+      endDate: certificate.fecha_fin,
+      returnDate: certificate.fecha_reintegro,
+      reason: certificate.motivo,
+      type: CertificateTypes.create({
+        id: certificate.CertificatesTypesModel.id,
+        name: certificate.CertificatesTypesModel.denominacion,
+      }),
+      requiresRest: Boolean(certificate.requiere_reposo),
+      status: certificate.estado,
+      files: certificate.archivos,
+      userId: certificate.id_usuario,
+    });
   }
 }

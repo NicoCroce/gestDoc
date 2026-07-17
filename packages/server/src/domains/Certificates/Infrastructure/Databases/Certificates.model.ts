@@ -20,6 +20,7 @@ export class CertificateModel extends Model<
   declare fecha_fin: Date;
   declare fecha_reintegro: Date;
   declare requiere_reposo: boolean;
+  declare estado: 'aprobado' | 'rechazado' | 'en validación' | 'pendiente';
 
   declare motivo: string;
   declare id_tipo_certificado: number;
@@ -64,6 +65,16 @@ CertificateModel.init(
     requiere_reposo: {
       type: DataTypes.BOOLEAN,
       defaultValue: false,
+    },
+    estado: {
+      type: DataTypes.ENUM(
+        'aprobado',
+        'rechazado',
+        'en validación',
+        'pendiente',
+      ),
+      defaultValue: 'pendiente',
+      allowNull: false,
     },
     motivo: {
       type: DataTypes.STRING,

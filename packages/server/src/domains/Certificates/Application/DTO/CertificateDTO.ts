@@ -1,3 +1,5 @@
+import { CertificateStatus } from '../../Domain/Certificate.types';
+
 export interface CertificateDTO {
   id: number;
   startDate: string;
@@ -6,6 +8,7 @@ export interface CertificateDTO {
   reason: string;
   type: string;
   requiresRest: boolean;
+  status: CertificateStatus;
   files?: string[];
 }
 

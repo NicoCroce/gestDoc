@@ -1,5 +1,11 @@
 import { CertificateTypes } from './CertificateTypes.entity';
 
+export type CertificateStatus =
+  | 'aprobado'
+  | 'rechazado'
+  | 'en validación'
+  | 'pendiente';
+
 export interface ICertificate {
   id?: number;
   startDate: Date;
@@ -9,6 +15,7 @@ export interface ICertificate {
   type: CertificateTypes;
   files?: string[];
   requiresRest: boolean;
+  status?: CertificateStatus;
   userId?: number;
 }
 

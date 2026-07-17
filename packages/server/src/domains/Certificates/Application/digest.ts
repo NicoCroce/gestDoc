@@ -10,6 +10,7 @@ export const convertToDTO = (certificate: Certificate) => {
     type,
     reason,
     requiresRest,
+    status,
     files,
   } = certificate.values;
 
@@ -21,6 +22,7 @@ export const convertToDTO = (certificate: Certificate) => {
     reason,
     type: type.values.name || '',
     requiresRest,
+    status: status ?? 'pendiente',
     files,
   };
 };

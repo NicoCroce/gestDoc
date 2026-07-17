@@ -9,6 +9,11 @@ export class Certificate {
     private readonly _reason: string,
     private readonly _type: CertificateTypes,
     private readonly _requiresRest: boolean,
+    private readonly _status:
+      | 'aprobado'
+      | 'rechazado'
+      | 'en validación'
+      | 'pendiente',
     private readonly _files?: string[],
     private readonly _id?: number,
     private readonly _userId?: number,
@@ -23,6 +28,7 @@ export class Certificate {
     type,
     files,
     requiresRest,
+    status,
     userId,
   }: ICertificate) {
     if (startDate >= endDate) {
@@ -45,6 +51,7 @@ export class Certificate {
       reason,
       typeInstance,
       requiresRest ?? false,
+      status ?? 'pendiente',
       files,
       id,
       userId,
@@ -64,6 +71,7 @@ export class Certificate {
       reason: this._reason,
       type: this._type,
       requiresRest: this._requiresRest,
+      status: this._status,
       files: this._files,
     };
   }

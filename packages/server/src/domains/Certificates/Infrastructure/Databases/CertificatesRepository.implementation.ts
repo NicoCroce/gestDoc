@@ -56,6 +56,7 @@ export class CertificatesRepositoryImplementation implements CertificateReposito
           name: certificateType.denominacion,
         }),
         requiresRest: Boolean(certificate.requiere_reposo),
+        status: certificate.estado,
         files: updatedFiles,
       });
     } catch (error) {
@@ -101,6 +102,7 @@ export class CertificatesRepositoryImplementation implements CertificateReposito
           name: certificate.CertificatesTypesModel.denominacion,
         }),
         requiresRest: Boolean(certificate.requiere_reposo),
+        status: certificate.estado,
         files: certificate.archivos,
       }),
     );
@@ -147,6 +149,7 @@ export class CertificatesRepositoryImplementation implements CertificateReposito
         archivos,
         id_usuario,
         requiere_reposo,
+        estado,
         CertificatesTypesModel,
         User,
       } = certificate;
@@ -162,6 +165,7 @@ export class CertificatesRepositoryImplementation implements CertificateReposito
           name: CertificatesTypesModel.denominacion,
         }),
         requiresRest: Boolean(requiere_reposo),
+        status: estado,
         files: archivos,
         userId: id_usuario,
         userName: `${User.nombre} ${User.apellido}`,
@@ -188,8 +192,15 @@ export class CertificatesRepositoryImplementation implements CertificateReposito
     requestContext,
     certificate,
   }: IAddCertificateRepository): Promise<Certificate> {
-    const { startDate, endDate, returnDate, type, reason, requiresRest } =
-      certificate.values;
+    const {
+      startDate,
+      endDate,
+      returnDate,
+      type,
+      reason,
+      requiresRest,
+      status,
+    } = certificate.values;
 
     try {
       const existingCertificate = await CertificateModel.findOne({
@@ -227,12 +238,14 @@ export class CertificatesRepositoryImplementation implements CertificateReposito
         fecha_reintegro,
         motivo,
         id_tipo_certificado,
+        estado,
       } = await CertificateModel.create({
         fecha_inicio: startDate,
         fecha_fin: endDate,
         fecha_reintegro: returnDate,
         motivo: reason,
         requiere_reposo: requiresRest,
+        estado: status ?? 'pendiente',
         id_tipo_certificado: type.values.id,
         id_usuario: requestContext.values.userId,
       });
@@ -255,6 +268,7 @@ export class CertificatesRepositoryImplementation implements CertificateReposito
           name: certificateType.denominacion,
         }),
         requiresRest: Boolean(requiresRest),
+        status: estado,
       });
     } catch (error) {
       if (error instanceof Error) {

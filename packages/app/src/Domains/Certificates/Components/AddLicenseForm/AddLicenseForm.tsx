@@ -20,7 +20,6 @@ import { CERTIFICATES_ROUTES } from '../../Certificates.routes';
 import { TCertificateType } from '../../Certificate.entity';
 import { formSchemeAddLicense } from './AddLicenceScheme';
 import { SelectField } from '@app/Application/Components/Molecules/FormFields/SelectField';
-import { DateRange } from '@app/Application/Components/Molecules/DateRange/';
 import { Input } from '@app/Application/Components/Molecules/Input';
 import { Checkbox } from '@app/Application/Components/Molecules/Checkbox';
 
@@ -87,31 +86,66 @@ export const AddLicenseForm = () => {
               }
             ></SelectField>
 
-            <DateRange
-              form={formLicense}
-              nameStartDate="startDate"
-              nameEndDate="endDate"
-              label="Seleccione rango de fecha de licencia"
-            />
-
-            <FormField
-              name="returnDate"
-              control={formLicense.control}
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Fecha de reintegro</FormLabel>
-                  <FormControl>
-                    <Input
-                      {...field}
-                      type="date"
-                      className="block"
-                      value={field.value || ''}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+            <Container>
+              <Container row justify="between" className="[&>*]:flex-1">
+                <FormField
+                  name="startDate"
+                  control={formLicense.control}
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Fecha de inicio</FormLabel>
+                      <FormControl>
+                        <Input
+                          {...field}
+                          type="date"
+                          className="block"
+                          value={field.value || ''}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  name="endDate"
+                  control={formLicense.control}
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Fecha de fin</FormLabel>
+                      <FormControl>
+                        <Input
+                          {...field}
+                          type="date"
+                          className="block"
+                          value={field.value || ''}
+                          disabled={!formLicense.watch('startDate')}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  name="returnDate"
+                  control={formLicense.control}
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Fecha de reintegro</FormLabel>
+                      <FormControl>
+                        <Input
+                          {...field}
+                          type="date"
+                          className="block"
+                          value={field.value || ''}
+                          disabled={!formLicense.watch('endDate')}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </Container>
+            </Container>
 
             {showRequiresRest && (
               <FormField

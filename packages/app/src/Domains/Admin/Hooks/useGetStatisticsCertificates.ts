@@ -1,6 +1,13 @@
 import { TDataPieChart } from '@app/Application/Components/Organisms/PieChart/PieChart';
 import { CertificatesService } from '@app/Domains/Certificates';
 
+const statusColors: Record<string, string> = {
+  pendiente: 'hsl(45, 93%, 58%)', // amarillo
+  'en validación': 'hsl(217, 91%, 60%)', // azul
+  aprobado: 'hsl(142, 71%, 45%)', // verde
+  rechazado: 'hsl(0, 84%, 60%)', // rojo
+};
+
 export const useGetStatisticsCertificates = () => {
   const response = CertificatesService.getStatistics.useQuery();
 
@@ -35,10 +42,20 @@ export const useGetStatisticsCertificates = () => {
       };
     }) || [];
 
+  const dataChartStatus: TDataPieChart[] =
+    response.data?.status.map(({ status, count }) => {
+      return {
+        segment: status,
+        data: count || 0,
+        fill: statusColors[status] || 'hsl(0, 0%, 50%)',
+      };
+    }) || [];
+
   return {
     dataChartTotalActivas,
     dataChartEmployess,
     dataChartTypes,
+    dataChartStatus,
     ...response,
   };
 };

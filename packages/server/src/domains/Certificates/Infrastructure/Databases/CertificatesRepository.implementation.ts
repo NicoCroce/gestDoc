@@ -14,6 +14,7 @@ import {
   IGetStatisticsCertificatesRepositoryResponse,
 } from '../../Domain/Certificate.respository';
 import { CertificateTypes } from '../../Domain/CertificateTypes.entity';
+import { CertificateStatus } from '../../Domain/Certificate.types';
 import { CertificateModel } from './Certificates.model';
 import { CertificatesTypesModel } from './CertificatesTypes.model';
 import { CertificatesFilters } from './CertificatesFilters';
@@ -346,6 +347,15 @@ export class CertificatesRepositoryImplementation implements CertificateReposito
       group: ['id_usuario', 'User.id', 'User.nombre', 'User.apellido'], // Agrupar por usuario
     });
 
+    const certificatesByStatus = await CertificateModel.findAll({
+      attributes: [
+        'estado',
+        [sequelize.fn('COUNT', sequelize.col('CertificateModel.id')), 'count'],
+      ],
+      include: [includeOwner],
+      group: ['estado'],
+    });
+
     const allCertificatesTypesResponse = allCertificatesTypes.map(
       (certificate) => ({
         name: certificate.CertificatesTypesModel.denominacion,
@@ -360,11 +370,19 @@ export class CertificatesRepositoryImplementation implements CertificateReposito
       }),
     );
 
+    const certificatesByStatusResponse = certificatesByStatus.map(
+      (certificate) => ({
+        status: certificate.get('estado') as CertificateStatus,
+        count: certificate.get('count') as number,
+      }),
+    );
+
     return {
       total: totalCertificates,
       actives: activesCertificates,
       types: allCertificatesTypesResponse,
       employees: certificatesByEmployeeResponse,
+      status: certificatesByStatusResponse,
     };
   }
 

@@ -30,6 +30,10 @@ export interface IGetStatisticsCertificatesResponse {
     user: string;
     count: number;
   }[];
+  status: {
+    status: CertificateStatus;
+    count: number;
+  }[];
 }
 
 export interface IMonthlyStatisticByType {

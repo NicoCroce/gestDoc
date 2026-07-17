@@ -24,13 +24,16 @@ export const useUpdateCertificateStatus = () => {
         {
           onSuccess: () => {
             toast.success('Estado actualizado');
-            queryClient.invalidateQueries({ queryKey: ['certificates'] });
-            queryClient.invalidateQueries({ queryKey: ['certificatesYears'] });
+            // Invalidar todas las queries de certificates (estructura anidada de tRPC v11)
             queryClient.invalidateQueries({
-              queryKey: ['certificatesYears', 'admin'],
-            });
-            queryClient.invalidateQueries({
-              queryKey: ['certificates', 'getCertificatesByCompany'],
+              predicate: (query) => {
+                const queryKey = query.queryKey[0];
+                return (
+                  Array.isArray(queryKey) &&
+                  queryKey.length > 0 &&
+                  queryKey[0] === 'certificates'
+                );
+              },
             });
             resolve();
           },

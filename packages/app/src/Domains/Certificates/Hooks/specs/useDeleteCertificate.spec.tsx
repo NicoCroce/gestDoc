@@ -87,17 +87,23 @@ describe('useDeleteCertificate hook', () => {
     });
 
     expect(invalidateMock).toHaveBeenCalledWith({
-      queryKey: ['certificates'],
+      predicate: expect.any(Function),
     });
-    expect(invalidateMock).toHaveBeenCalledWith({
-      queryKey: ['certificatesYears'],
-    });
-    expect(invalidateMock).toHaveBeenCalledWith({
-      queryKey: ['certificatesYears', 'admin'],
-    });
-    expect(invalidateMock).toHaveBeenCalledWith({
-      queryKey: ['certificates', 'getCertificatesByCompany'],
-    });
+
+    // Verificar que el predicate matchea correctamente las queries de certificates
+    const invalidateCall = invalidateMock.mock.calls[0][0];
+    const mockQuery = {
+      queryKey: [
+        ['certificates', 'getCertificatesByCompany'],
+        { input: undefined },
+      ],
+    };
+    expect(invalidateCall.predicate(mockQuery)).toBe(true);
+
+    const nonMatchingQuery = {
+      queryKey: [['documents', 'getDocumentsByCompany'], { input: undefined }],
+    };
+    expect(invalidateCall.predicate(nonMatchingQuery)).toBe(false);
   });
 
   it('exposes isPending state', () => {

@@ -54,12 +54,12 @@ export const StatisticsCertificates = () => {
             0
           }
           header={{
-            title: 'Estado de licencias',
+            title: 'Cantidad de certificados por estado',
           }}
           footer={{
             title: 'Distribución por estado',
           }}
-          labelCenter="Estado"
+          labelCenter="Total"
         />
       </Container>
     </Card>

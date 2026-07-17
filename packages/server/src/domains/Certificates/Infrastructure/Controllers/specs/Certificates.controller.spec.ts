@@ -24,7 +24,10 @@ import { router } from '@server/Infrastructure';
 
 const requestContext = new RequestContext(1, 'req-test', 10);
 
-const buildCaller = (addCertificate = vi.fn()) => {
+const buildCaller = (
+  addCertificate = vi.fn(),
+  updateCertificateStatus = vi.fn(),
+) => {
   const service = {
     getCertificates: vi.fn(),
     getCertificateTypes: vi.fn(),
@@ -32,14 +35,18 @@ const buildCaller = (addCertificate = vi.fn()) => {
     getCertificatesByCompany: vi.fn(),
     getStatisticsByCertificates: vi.fn(),
     getMonthlyStatisticsByCertificates: vi.fn(),
+    deleteCertificate: vi.fn(),
+    updateCertificateStatus,
   } as never;
   const controller = new CertificatesController(service);
   const certificatesRouter = router({
     addCertificate: controller.addCertificate,
+    updateCertificateStatus: controller.updateCertificateStatus,
   });
 
   return {
     addCertificate,
+    updateCertificateStatus,
     caller: certificatesRouter.createCaller({
       requestContext,
       cookies: { auth_token: 'mock-token' },
@@ -130,5 +137,18 @@ describe('CertificatesController', () => {
         }),
       }),
     );
+  });
+
+  it('rejects invalid status value before calling the service', async () => {
+    const { caller, updateCertificateStatus } = buildCaller();
+
+    await expect(
+      caller.updateCertificateStatus({
+        id: 1,
+        status: 'invalid-status',
+      } as never),
+    ).rejects.toBeInstanceOf(TRPCError);
+
+    expect(updateCertificateStatus).not.toHaveBeenCalled();
   });
 });

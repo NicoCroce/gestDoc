@@ -40,20 +40,13 @@ const createWrapper = () => {
 };
 
 describe('useDeleteCertificate hook', () => {
-  let mutationCallbacks: {
-    onSuccess?: () => void;
-    onError?: (err: Error) => void;
-  };
-
   beforeEach(() => {
     mutateMock.mockClear();
     useMutationMock.mockClear();
     invalidateMock.mockClear();
-    mutationCallbacks = {};
 
     useMutationMock.mockImplementation(
-      (callbacks: typeof mutationCallbacks) => {
-        mutationCallbacks = callbacks;
+      (_callbacks: { onError?: (err: Error) => void }) => {
         return {
           mutate: mutateMock,
           isPending: false,
@@ -63,8 +56,11 @@ describe('useDeleteCertificate hook', () => {
     );
 
     mutateMock.mockImplementation(
-      (_data: unknown, opts: { onSuccess: () => void }) => {
-        opts.onSuccess();
+      (
+        _data: unknown,
+        opts: { onSuccess?: () => void; onError?: (err: Error) => void },
+      ) => {
+        opts.onSuccess?.();
       },
     );
   });
@@ -82,13 +78,12 @@ describe('useDeleteCertificate hook', () => {
   });
 
   it('invalidates certificate cache keys on success', async () => {
-    renderHook(() => useDeleteCertificate(), {
+    const { result } = renderHook(() => useDeleteCertificate(), {
       wrapper: createWrapper(),
     });
 
-    // Trigger the useMutation's onSuccess callback
     await act(async () => {
-      mutationCallbacks.onSuccess?.();
+      await result.current.mutateDelete(42);
     });
 
     expect(invalidateMock).toHaveBeenCalledWith({

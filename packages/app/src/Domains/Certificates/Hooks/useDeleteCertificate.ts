@@ -11,17 +11,6 @@ export const useDeleteCertificate = () => {
   const { mutate, isPending } =
     CertificatesService.deleteCertificate.useMutation({
       onError: (err: CertificatesRouterError) => toast.error(err.message),
-      onSuccess: () => {
-        toast.success('Licencia eliminada');
-        queryClient.invalidateQueries({ queryKey: ['certificates'] });
-        queryClient.invalidateQueries({ queryKey: ['certificatesYears'] });
-        queryClient.invalidateQueries({
-          queryKey: ['certificatesYears', 'admin'],
-        });
-        queryClient.invalidateQueries({
-          queryKey: ['certificates', 'getCertificatesByCompany'],
-        });
-      },
     });
 
   const mutateDelete = (id: number): Promise<void> => {
@@ -29,7 +18,18 @@ export const useDeleteCertificate = () => {
       mutate(
         { id },
         {
-          onSuccess: () => resolve(),
+          onSuccess: () => {
+            toast.success('Licencia eliminada');
+            queryClient.invalidateQueries({ queryKey: ['certificates'] });
+            queryClient.invalidateQueries({ queryKey: ['certificatesYears'] });
+            queryClient.invalidateQueries({
+              queryKey: ['certificatesYears', 'admin'],
+            });
+            queryClient.invalidateQueries({
+              queryKey: ['certificates', 'getCertificatesByCompany'],
+            });
+            resolve();
+          },
           onError: (error: CertificatesRouterError) => reject(error),
         },
       );

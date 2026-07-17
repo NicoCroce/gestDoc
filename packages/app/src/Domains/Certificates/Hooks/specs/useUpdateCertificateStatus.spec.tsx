@@ -40,20 +40,13 @@ const createWrapper = () => {
 };
 
 describe('useUpdateCertificateStatus hook', () => {
-  let mutationCallbacks: {
-    onSuccess?: () => void;
-    onError?: (err: Error) => void;
-  };
-
   beforeEach(() => {
     mutateMock.mockClear();
     useMutationMock.mockClear();
     invalidateMock.mockClear();
-    mutationCallbacks = {};
 
     useMutationMock.mockImplementation(
-      (callbacks: typeof mutationCallbacks) => {
-        mutationCallbacks = callbacks;
+      (_callbacks: { onError?: (err: Error) => void }) => {
         return {
           mutate: mutateMock,
           isPending: false,
@@ -63,8 +56,11 @@ describe('useUpdateCertificateStatus hook', () => {
     );
 
     mutateMock.mockImplementation(
-      (_data: unknown, opts: { onSuccess: () => void }) => {
-        opts.onSuccess();
+      (
+        _data: unknown,
+        opts: { onSuccess?: () => void; onError?: (err: Error) => void },
+      ) => {
+        opts.onSuccess?.();
       },
     );
   });
@@ -85,12 +81,12 @@ describe('useUpdateCertificateStatus hook', () => {
   });
 
   it('invalidates certificate cache keys on success', async () => {
-    renderHook(() => useUpdateCertificateStatus(), {
+    const { result } = renderHook(() => useUpdateCertificateStatus(), {
       wrapper: createWrapper(),
     });
 
     await act(async () => {
-      mutationCallbacks.onSuccess?.();
+      await result.current.mutateUpdate(42, 'aprobado');
     });
 
     expect(invalidateMock).toHaveBeenCalledWith({

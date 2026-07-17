@@ -12,17 +12,6 @@ export const useUpdateCertificateStatus = () => {
   const { mutate, isPending } =
     CertificatesService.updateCertificateStatus.useMutation({
       onError: (err: CertificatesRouterError) => toast.error(err.message),
-      onSuccess: () => {
-        toast.success('Estado actualizado');
-        queryClient.invalidateQueries({ queryKey: ['certificates'] });
-        queryClient.invalidateQueries({ queryKey: ['certificatesYears'] });
-        queryClient.invalidateQueries({
-          queryKey: ['certificatesYears', 'admin'],
-        });
-        queryClient.invalidateQueries({
-          queryKey: ['certificates', 'getCertificatesByCompany'],
-        });
-      },
     });
 
   const mutateUpdate = (
@@ -33,7 +22,18 @@ export const useUpdateCertificateStatus = () => {
       mutate(
         { id, status },
         {
-          onSuccess: () => resolve(),
+          onSuccess: () => {
+            toast.success('Estado actualizado');
+            queryClient.invalidateQueries({ queryKey: ['certificates'] });
+            queryClient.invalidateQueries({ queryKey: ['certificatesYears'] });
+            queryClient.invalidateQueries({
+              queryKey: ['certificatesYears', 'admin'],
+            });
+            queryClient.invalidateQueries({
+              queryKey: ['certificates', 'getCertificatesByCompany'],
+            });
+            resolve();
+          },
           onError: (error: CertificatesRouterError) => reject(error),
         },
       );

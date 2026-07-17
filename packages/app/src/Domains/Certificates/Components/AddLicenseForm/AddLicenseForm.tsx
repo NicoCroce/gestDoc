@@ -57,6 +57,13 @@ export const AddLicenseForm = () => {
   );
   const showRequiresRest = selectedType?.rest === true;
 
+  const endDate = formLicense.watch('endDate');
+  const minReturnDate = endDate
+    ? new Date(new Date(endDate).getTime() + 86400000)
+        .toISOString()
+        .split('T')[0]
+    : undefined;
+
   const handleChangeType = (value: string) => {
     formLicense.setValue('type', value);
   };
@@ -139,7 +146,7 @@ export const AddLicenseForm = () => {
                           className="block"
                           value={field.value || ''}
                           disabled={!formLicense.watch('endDate')}
-                          min={formLicense.watch('endDate') || undefined}
+                          min={minReturnDate}
                         />
                       </FormControl>
                       <FormMessage />

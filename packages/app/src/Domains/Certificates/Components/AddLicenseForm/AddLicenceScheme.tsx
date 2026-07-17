@@ -97,16 +97,20 @@ export const formSchemeAddLicense = z
       }
     }
 
-    // Validar que la fecha de reintegro sea mayor a la de fin
+    // Validar que la fecha de reintegro sea al menos 1 día mayor a la de fin
     if (
       !Number.isNaN(endDate.getTime()) &&
       !Number.isNaN(returnDate.getTime())
     ) {
-      if (returnDate <= endDate) {
+      const minReturnDate = new Date(endDate);
+      minReturnDate.setDate(minReturnDate.getDate() + 1);
+
+      if (returnDate < minReturnDate) {
         ctx.addIssue({
           path: ['returnDate'],
           code: z.ZodIssueCode.custom,
-          message: 'La fecha de reintegro debe ser mayor a la fecha de fin',
+          message:
+            'La fecha de reintegro debe ser al menos 1 día posterior a la fecha de fin',
         });
       }
     }

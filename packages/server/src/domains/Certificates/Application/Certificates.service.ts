@@ -4,26 +4,31 @@ import {
   IRequestContext,
   normalizeDate,
   normalizeEndDate,
+  parseDateOnly,
 } from '@server/Application';
 import { uploadImages } from '@server/Infrastructure';
 import { Certificate } from '../Domain/Certificate.entity';
 import {
   IAppendImages,
+  IDeleteCertificate,
   IGetCertificates,
   IGetCertificatesByCompanyResponse,
   IGetCertificatesCompany,
   IGetCertificateTypes,
   IGetMonthlyStatisticsCertificates,
   IGetStatisticsCertificates,
+  IUpdateCertificateStatus,
 } from './certificates.types';
 import {
   AddCertificate,
   AppendImages,
+  DeleteCertificate,
   GetCertificates,
   GetCertificatesByCompany,
   GetCertificateTypes,
   GetMonthlyStatisticsCertificates,
   GetStatisticsCertificates,
+  UpdateCertificateStatus,
 } from './UseCases';
 import {
   CertificateDTO,
@@ -38,8 +43,10 @@ interface IAddCertificateService extends IRequestContext {
   input: {
     startDate: string;
     endDate: string;
+    returnDate: string;
     type: number;
     reason: string;
+    requiresRest: boolean;
   };
 }
 
@@ -53,6 +60,8 @@ export class CertificatesServices {
     private readonly _getStatistisCertificates: GetStatisticsCertificates,
     private readonly _getMonthlyStatistisCertificates: GetMonthlyStatisticsCertificates,
     private readonly sendEmailService: SendEmailService,
+    private readonly _deleteCertificate: DeleteCertificate,
+    private readonly _updateCertificateStatus: UpdateCertificateStatus,
   ) {}
 
   async getCertificates({
@@ -91,6 +100,7 @@ export class CertificatesServices {
         ...input,
         startDate: normalizeDate(input.startDate),
         endDate: normalizeEndDate(input.endDate),
+        returnDate: parseDateOnly(input.returnDate),
       };
 
       const certificate = await executeUseCase({
@@ -172,5 +182,31 @@ export class CertificatesServices {
       requestContext,
       input,
     });
+  }
+
+  async deleteCertificate({
+    input,
+    requestContext,
+  }: IDeleteCertificate): Promise<void> {
+    await executeUseCase({
+      useCase: this._deleteCertificate,
+      input,
+      requestContext,
+      inputLog: { id: input.id },
+    });
+  }
+
+  async updateCertificateStatus({
+    input,
+    requestContext,
+  }: IUpdateCertificateStatus): Promise<CertificateDTO> {
+    const certificate = await executeUseCase({
+      useCase: this._updateCertificateStatus,
+      input,
+      requestContext,
+      inputLog: { id: input.id, status: input.status },
+    });
+
+    return convertToDTO(certificate);
   }
 }

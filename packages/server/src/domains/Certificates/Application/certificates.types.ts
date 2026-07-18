@@ -1,6 +1,6 @@
 import { IRequestContext } from '@server/Application';
 import { Certificate } from '../Domain/Certificate.entity';
-import { ICertificate } from '../Domain/Certificate.types';
+import { ICertificate, CertificateStatus } from '../Domain/Certificate.types';
 
 interface IFilters {
   input?: {
@@ -8,6 +8,7 @@ interface IFilters {
     date?: Date;
     type?: number;
     year?: number;
+    status?: CertificateStatus;
   };
 }
 
@@ -45,4 +46,12 @@ export interface IAppendImages extends IRequestContext {
     host: string;
     id: number;
   };
+}
+
+export interface IDeleteCertificate extends IRequestContext {
+  input: { id: number };
+}
+
+export interface IUpdateCertificateStatus extends IRequestContext {
+  input: { id: number; status: CertificateStatus };
 }

@@ -1,5 +1,6 @@
 import { inferRouterOutputs } from '@trpc/server';
 import { TCertificatesRouter } from '@server/domains/Certificates';
+import { CertificateStatus } from '@server/domains/Certificates/Domain/Certificate.types';
 
 type TCertificatesOutput = inferRouterOutputs<TCertificatesRouter>;
 
@@ -13,4 +14,5 @@ export type TCertificatesSearch = {
   date?: string;
   type?: string;
   year?: string;
+  status?: CertificateStatus;
 };

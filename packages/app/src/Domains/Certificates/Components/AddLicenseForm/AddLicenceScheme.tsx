@@ -18,6 +18,14 @@ export const formSchemeAddLicense = z
       })
       .min(1, 'La fecha de fin es obligatoria'),
 
+    returnDate: z
+      .string({
+        message: 'La fecha de reintegro es obligatoria',
+      })
+      .min(1, 'La fecha de reintegro es obligatoria'),
+
+    requiresRest: z.boolean().optional(),
+
     files: z
       .instanceof(FileList)
       .optional()
@@ -74,6 +82,7 @@ export const formSchemeAddLicense = z
     // Validar que la fecha de fin sea mayor a la de inicio
     const startDate = new Date(data.startDate);
     const endDate = new Date(data.endDate);
+    const returnDate = new Date(data.returnDate);
 
     if (
       !Number.isNaN(startDate.getTime()) &&
@@ -84,6 +93,24 @@ export const formSchemeAddLicense = z
           path: ['endDate'],
           code: z.ZodIssueCode.custom,
           message: 'La fecha de fin debe ser mayor a la de inicio',
+        });
+      }
+    }
+
+    // Validar que la fecha de reintegro sea al menos 1 día mayor a la de fin
+    if (
+      !Number.isNaN(endDate.getTime()) &&
+      !Number.isNaN(returnDate.getTime())
+    ) {
+      const minReturnDate = new Date(endDate);
+      minReturnDate.setDate(minReturnDate.getDate() + 1);
+
+      if (returnDate < minReturnDate) {
+        ctx.addIssue({
+          path: ['returnDate'],
+          code: z.ZodIssueCode.custom,
+          message:
+            'La fecha de reintegro debe ser al menos 1 día posterior a la fecha de fin',
         });
       }
     }

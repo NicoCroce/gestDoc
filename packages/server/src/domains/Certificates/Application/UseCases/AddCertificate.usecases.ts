@@ -8,7 +8,7 @@ export class AddCertificate implements IUseCase<Certificate> {
   constructor(private readonly certificatesRepository: CertificateRepository) {}
 
   async execute({
-    input: { type, startDate, endDate, reason },
+    input: { type, startDate, endDate, returnDate, reason, requiresRest },
     requestContext,
   }: IAddCertificate): Promise<Certificate> {
     try {
@@ -17,7 +17,9 @@ export class AddCertificate implements IUseCase<Certificate> {
           type: CertificateTypes.create({ id: type }),
           startDate,
           endDate,
+          returnDate,
           reason,
+          requiresRest,
         }),
         requestContext,
       });
@@ -26,6 +28,7 @@ export class AddCertificate implements IUseCase<Certificate> {
     } catch (error) {
       throw new AppError(
         error instanceof Error ? error.message : String(error),
+        400,
       );
     }
   }

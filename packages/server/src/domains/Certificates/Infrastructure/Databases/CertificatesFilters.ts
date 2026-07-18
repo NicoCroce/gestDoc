@@ -25,6 +25,8 @@ export const CertificatesFilters = (
   if (filters?.type)
     whereConditionCertificates.id_tipo_certificado = filters.type;
 
+  if (filters?.status) whereConditionCertificates.estado = filters.status;
+
   // Acumulamos condiciones AND para fecha y año sin pisarlas entre sí
   const andConditions: WhereOptions<CertificateModel>[] = [];
 

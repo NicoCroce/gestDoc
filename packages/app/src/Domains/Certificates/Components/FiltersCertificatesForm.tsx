@@ -16,6 +16,7 @@ import {
   ToggleGroupItem,
 } from '@app/Application/Components/ui/toggle-group';
 import clsx from 'clsx';
+import { CertificateStatus } from '@server/domains/Certificates/Domain/Certificate.types';
 
 const buttonGroupActiveClass =
   'data-[state=on]:!bg-primary data-[state=on]:!text-secondary';
@@ -25,7 +26,35 @@ const initialState: TCertificatesSearch = {
   date: undefined,
   employee: '',
   year: undefined,
+  status: undefined,
 };
+
+const statusOptions = [
+  {
+    value: 'pendiente',
+    label: 'Pendiente',
+    color:
+      'data-[state=on]:!bg-yellow-100 data-[state=on]:!text-yellow-800 data-[state=on]:!border-yellow-300',
+  },
+  {
+    value: 'en validación',
+    label: 'En validación',
+    color:
+      'data-[state=on]:!bg-blue-100 data-[state=on]:!text-blue-800 data-[state=on]:!border-blue-300',
+  },
+  {
+    value: 'aprobado',
+    label: 'Aprobado',
+    color:
+      'data-[state=on]:!bg-green-100 data-[state=on]:!text-green-800 data-[state=on]:!border-green-300',
+  },
+  {
+    value: 'rechazado',
+    label: 'Rechazado',
+    color:
+      'data-[state=on]:!bg-red-100 data-[state=on]:!text-red-800 data-[state=on]:!border-red-300',
+  },
+];
 
 const toDateInputValue = (date?: string) => {
   if (!date) return '';
@@ -65,6 +94,13 @@ export const FiltersCertificatesForm = ({
     setFormState((prev) => ({
       ...prev,
       year: value === '__all__' ? undefined : value,
+    }));
+  };
+
+  const handleStatusChange = (value: string) => {
+    setFormState((prev) => ({
+      ...prev,
+      status: (value as CertificateStatus) || undefined,
     }));
   };
 
@@ -140,6 +176,26 @@ export const FiltersCertificatesForm = ({
             ))}
           </SelectContent>
         </Select>
+      </Container>
+      <Container>
+        <Label>Estado</Label>
+        <ToggleGroup
+          type="single"
+          variant="outline"
+          className="justify-start gap-4 flex-wrap"
+          onValueChange={handleStatusChange}
+          value={formState.status}
+        >
+          {statusOptions.map(({ value, label, color }) => (
+            <ToggleGroupItem
+              key={value}
+              value={value}
+              className={clsx('cursor-pointer', buttonGroupActiveClass, color)}
+            >
+              {label}
+            </ToggleGroupItem>
+          ))}
+        </ToggleGroup>
       </Container>
       <SheetFooter className="mt-16">
         <Container row className="w-full sm:justify-end">

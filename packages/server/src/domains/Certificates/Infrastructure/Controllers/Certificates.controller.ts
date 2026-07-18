@@ -11,6 +11,9 @@ const filterParams = z.object({
     .optional(),
   type: z.number().optional(),
   year: z.number().optional(),
+  status: z
+    .enum(['aprobado', 'rechazado', 'en validación', 'pendiente'])
+    .optional(),
 });
 export class CertificatesController {
   constructor(private readonly certificatesService: CertificatesServices) {}
@@ -36,8 +39,10 @@ export class CertificatesController {
       z.object({
         startDate: z.string(),
         endDate: z.string(),
+        returnDate: z.string(),
         reason: z.string(),
         type: z.number(),
+        requiresRest: z.boolean().optional().default(false),
       }),
     )
     .mutation(
@@ -69,6 +74,31 @@ export class CertificatesController {
     .query(
       executeService(
         this.certificatesService.getMonthlyStatisticsByCertificates.bind(
+          this.certificatesService,
+        ),
+      ),
+    );
+
+  deleteCertificate = protectedProcedure
+    .input(z.object({ id: z.number() }))
+    .mutation(
+      executeService(
+        this.certificatesService.deleteCertificate.bind(
+          this.certificatesService,
+        ),
+      ),
+    );
+
+  updateCertificateStatus = protectedProcedure
+    .input(
+      z.object({
+        id: z.number(),
+        status: z.enum(['aprobado', 'rechazado', 'en validación', 'pendiente']),
+      }),
+    )
+    .mutation(
+      executeService(
+        this.certificatesService.updateCertificateStatus.bind(
           this.certificatesService,
         ),
       ),

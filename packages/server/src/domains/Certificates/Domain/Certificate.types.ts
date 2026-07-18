@@ -1,12 +1,21 @@
 import { CertificateTypes } from './CertificateTypes.entity';
 
+export type CertificateStatus =
+  | 'aprobado'
+  | 'rechazado'
+  | 'en validación'
+  | 'pendiente';
+
 export interface ICertificate {
   id?: number;
   startDate: Date;
   endDate: Date;
+  returnDate: Date;
   reason: string;
   type: CertificateTypes;
   files?: string[];
+  requiresRest: boolean;
+  status?: CertificateStatus;
   userId?: number;
 }
 
@@ -19,6 +28,10 @@ export interface IGetStatisticsCertificatesResponse {
   }[];
   employees: {
     user: string;
+    count: number;
+  }[];
+  status: {
+    status: CertificateStatus;
     count: number;
   }[];
 }

@@ -7,13 +7,17 @@ import {
 import {
   IAddCertificateRepository,
   IAppendImagesRepository,
+  IDeleteCertificateRepository,
   IGetAllCompanyCertificatesRepositoryResponse,
+  IGetCertificateRepository,
   IGetMonthlyStatisticsCertificatesRepository,
   IGetMonthlyStatisticsCertificatesRepositoryResponse,
   IGetStatisticsCertificatesRepository,
   IGetStatisticsCertificatesRepositoryResponse,
+  IUpdateCertificateStatusRepository,
 } from '../../Domain/Certificate.respository';
 import { CertificateTypes } from '../../Domain/CertificateTypes.entity';
+import { CertificateStatus } from '../../Domain/Certificate.types';
 import { CertificateModel } from './Certificates.model';
 import { CertificatesTypesModel } from './CertificatesTypes.model';
 import { CertificatesFilters } from './CertificatesFilters';
@@ -49,11 +53,14 @@ export class CertificatesRepositoryImplementation implements CertificateReposito
         id: certificate.id,
         startDate: certificate.fecha_inicio,
         endDate: certificate.fecha_fin,
+        returnDate: certificate.fecha_reintegro,
         reason: certificate.motivo,
         type: CertificateTypes.create({
           id: certificateType.id,
           name: certificateType.denominacion,
         }),
+        requiresRest: Boolean(certificate.requiere_reposo),
+        status: certificate.estado,
         files: updatedFiles,
       });
     } catch (error) {
@@ -92,11 +99,14 @@ export class CertificatesRepositoryImplementation implements CertificateReposito
         id: certificate.id,
         startDate: certificate.fecha_inicio,
         endDate: certificate.fecha_fin,
+        returnDate: certificate.fecha_reintegro,
         reason: certificate.motivo,
         type: CertificateTypes.create({
           id: certificate.CertificatesTypesModel.id,
           name: certificate.CertificatesTypesModel.denominacion,
         }),
+        requiresRest: Boolean(certificate.requiere_reposo),
+        status: certificate.estado,
         files: certificate.archivos,
       }),
     );
@@ -138,9 +148,12 @@ export class CertificatesRepositoryImplementation implements CertificateReposito
         id,
         fecha_inicio,
         fecha_fin,
+        fecha_reintegro,
         motivo,
         archivos,
         id_usuario,
+        requiere_reposo,
+        estado,
         CertificatesTypesModel,
         User,
       } = certificate;
@@ -149,11 +162,14 @@ export class CertificatesRepositoryImplementation implements CertificateReposito
         id,
         startDate: fecha_inicio,
         endDate: fecha_fin,
+        returnDate: fecha_reintegro,
         reason: motivo,
         type: CertificateTypes.create({
           id: CertificatesTypesModel.id,
           name: CertificatesTypesModel.denominacion,
         }),
+        requiresRest: Boolean(requiere_reposo),
+        status: estado,
         files: archivos,
         userId: id_usuario,
         userName: `${User.nombre} ${User.apellido}`,
@@ -171,6 +187,7 @@ export class CertificatesRepositoryImplementation implements CertificateReposito
         id: certificateType.id,
         name: certificateType.denominacion,
         description: certificateType.descripcion,
+        rest: Boolean(certificateType.reposo),
       }),
     );
   }
@@ -179,7 +196,15 @@ export class CertificatesRepositoryImplementation implements CertificateReposito
     requestContext,
     certificate,
   }: IAddCertificateRepository): Promise<Certificate> {
-    const { startDate, endDate, type, reason } = certificate.values;
+    const {
+      startDate,
+      endDate,
+      returnDate,
+      type,
+      reason,
+      requiresRest,
+      status,
+    } = certificate.values;
 
     try {
       const existingCertificate = await CertificateModel.findOne({
@@ -189,17 +214,17 @@ export class CertificatesRepositoryImplementation implements CertificateReposito
             // startDate está dentro del rango existente
             {
               fecha_inicio: { [Op.lte]: startDate },
-              fecha_fin: { [Op.gte]: startDate },
+              fecha_reintegro: { [Op.gte]: startDate },
             },
-            // endDate está dentro del rango existente
+            // returnDate está dentro del rango existente
             {
-              fecha_inicio: { [Op.lte]: endDate },
-              fecha_fin: { [Op.gte]: endDate },
+              fecha_inicio: { [Op.lte]: returnDate },
+              fecha_reintegro: { [Op.gte]: returnDate },
             },
             // El nuevo rango contiene completamente un rango existente
             {
               fecha_inicio: { [Op.gte]: startDate },
-              fecha_fin: { [Op.lte]: endDate },
+              fecha_reintegro: { [Op.lte]: returnDate },
             },
           ],
         },
@@ -210,14 +235,24 @@ export class CertificatesRepositoryImplementation implements CertificateReposito
           'Ya existe una licencia con fechas que se solapan con las fechas proporcionadas',
         );
       }
-      const { id, fecha_inicio, fecha_fin, motivo, id_tipo_certificado } =
-        await CertificateModel.create({
-          fecha_inicio: startDate,
-          fecha_fin: endDate,
-          motivo: reason,
-          id_tipo_certificado: type.values.id,
-          id_usuario: requestContext.values.userId,
-        });
+      const {
+        id,
+        fecha_inicio,
+        fecha_fin,
+        fecha_reintegro,
+        motivo,
+        id_tipo_certificado,
+        estado,
+      } = await CertificateModel.create({
+        fecha_inicio: startDate,
+        fecha_fin: endDate,
+        fecha_reintegro: returnDate,
+        motivo: reason,
+        requiere_reposo: requiresRest,
+        estado: status ?? 'pendiente',
+        id_tipo_certificado: type.values.id,
+        id_usuario: requestContext.values.userId,
+      });
 
       const certificateType =
         await CertificatesTypesModel.findByPk(id_tipo_certificado);
@@ -230,11 +265,14 @@ export class CertificatesRepositoryImplementation implements CertificateReposito
         id,
         startDate: fecha_inicio,
         endDate: fecha_fin,
+        returnDate: fecha_reintegro,
         reason: motivo,
         type: CertificateTypes.create({
           id: certificateType.id,
           name: certificateType.denominacion,
         }),
+        requiresRest: Boolean(requiresRest),
+        status: estado,
       });
     } catch (error) {
       if (error instanceof Error) {
@@ -312,6 +350,25 @@ export class CertificatesRepositoryImplementation implements CertificateReposito
       group: ['id_usuario', 'User.id', 'User.nombre', 'User.apellido'], // Agrupar por usuario
     });
 
+    const certificatesByStatus = await CertificateModel.findAll({
+      attributes: [
+        'estado',
+        [sequelize.fn('COUNT', sequelize.col('CertificateModel.id')), 'count'],
+      ],
+      include: [
+        {
+          model: UserModel,
+          as: 'User',
+          required: true,
+          attributes: [], // No traer columnas de User
+          where: {
+            id_propietario: ownerId,
+          },
+        },
+      ],
+      group: ['estado'],
+    });
+
     const allCertificatesTypesResponse = allCertificatesTypes.map(
       (certificate) => ({
         name: certificate.CertificatesTypesModel.denominacion,
@@ -326,11 +383,19 @@ export class CertificatesRepositoryImplementation implements CertificateReposito
       }),
     );
 
+    const certificatesByStatusResponse = certificatesByStatus.map(
+      (certificate) => ({
+        status: certificate.get('estado') as CertificateStatus,
+        count: certificate.get('count') as number,
+      }),
+    );
+
     return {
       total: totalCertificates,
       actives: activesCertificates,
       types: allCertificatesTypesResponse,
       employees: certificatesByEmployeeResponse,
+      status: certificatesByStatusResponse,
     };
   }
 
@@ -434,5 +499,82 @@ export class CertificatesRepositoryImplementation implements CertificateReposito
       months,
       availableYears,
     };
+  }
+
+  async deleteCertificate({
+    id,
+    requestContext: _,
+  }: IDeleteCertificateRepository): Promise<void> {
+    await CertificateModel.destroy({
+      where: { id },
+    });
+  }
+
+  async getCertificate({
+    id,
+    requestContext,
+  }: IGetCertificateRepository): Promise<Certificate | null> {
+    const certificate = await CertificateModel.findOne({
+      where: { id },
+      include: [
+        { model: CertificatesTypesModel },
+        {
+          model: UserModel,
+          as: 'User',
+          where: { id_propietario: requestContext.values.ownerId },
+        },
+      ],
+    });
+
+    if (!certificate) return null;
+
+    return Certificate.create({
+      id: certificate.id,
+      startDate: certificate.fecha_inicio,
+      endDate: certificate.fecha_fin,
+      returnDate: certificate.fecha_reintegro,
+      reason: certificate.motivo,
+      type: CertificateTypes.create({
+        id: certificate.CertificatesTypesModel.id,
+        name: certificate.CertificatesTypesModel.denominacion,
+      }),
+      requiresRest: Boolean(certificate.requiere_reposo),
+      status: certificate.estado,
+      files: certificate.archivos,
+      userId: certificate.id_usuario,
+    });
+  }
+
+  async updateCertificateStatus({
+    id,
+    status,
+    requestContext: _,
+  }: IUpdateCertificateStatusRepository): Promise<Certificate> {
+    const certificate = await CertificateModel.findOne({
+      where: { id },
+      include: [{ model: CertificatesTypesModel }],
+    });
+
+    if (!certificate) {
+      throw new Error('Certificate not found');
+    }
+
+    await certificate.update({ estado: status });
+
+    return Certificate.create({
+      id: certificate.id,
+      startDate: certificate.fecha_inicio,
+      endDate: certificate.fecha_fin,
+      returnDate: certificate.fecha_reintegro,
+      reason: certificate.motivo,
+      type: CertificateTypes.create({
+        id: certificate.CertificatesTypesModel.id,
+        name: certificate.CertificatesTypesModel.denominacion,
+      }),
+      requiresRest: Boolean(certificate.requiere_reposo),
+      status: certificate.estado,
+      files: certificate.archivos,
+      userId: certificate.id_usuario,
+    });
   }
 }

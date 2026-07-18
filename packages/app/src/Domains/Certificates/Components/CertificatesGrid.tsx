@@ -1,5 +1,6 @@
 import { Container } from '@app/Application/Components';
 import { Certificate } from './Certificate/Certificate';
+import { CertificateActions } from './Certificate/CertificateActions';
 import { ICertificate } from '../Certificate.entity';
 
 export interface CertificatesGridProps {
@@ -16,7 +17,13 @@ export const CertificatesGrid = ({
       {certificatesList &&
         certificatesList.map((certificate) => (
           <div key={certificate.id} className="min-w-0 h-full">
-            <Certificate data={certificate} year={year} />
+            <Certificate
+              data={certificate}
+              year={year}
+              actions={
+                <CertificateActions certificate={certificate} variant="owner" />
+              }
+            />
           </div>
         ))}
     </Container>

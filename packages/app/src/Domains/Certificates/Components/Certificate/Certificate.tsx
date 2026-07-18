@@ -5,12 +5,19 @@ import {
   DialogContent,
   DialogTitle,
 } from '@app/Application/Components/ui/dialog';
-import { FileText, CalendarRange, Paperclip } from 'lucide-react';
+import {
+  FileText,
+  Paperclip,
+  CalendarCheck,
+  BedDouble,
+  Clock,
+} from 'lucide-react';
 import { ICertificate } from '../../Certificate.entity';
 
 interface CertificateProps {
   data: ICertificate;
   year: number;
+  actions?: React.ReactNode;
 }
 
 const MONTHS_ES: Record<string, number> = {
@@ -67,11 +74,41 @@ const computeSpan = (
   return { leftPct, widthPct };
 };
 
-export const Certificate = ({ data, year }: CertificateProps) => {
-  const { startDate, endDate, reason, type, files } = data;
+export const Certificate = ({ data, year, actions }: CertificateProps) => {
+  const {
+    startDate,
+    endDate,
+    returnDate,
+    reason,
+    type,
+    requiresRest,
+    status,
+    files,
+  } = data;
   const [activeFile, setActiveFile] = useState<string | null>(null);
   const hasFiles = Array.isArray(files) && files.length > 0;
   const span = computeSpan(startDate, endDate, year);
+
+  const statusConfig = {
+    pendiente: {
+      label: 'Pendiente',
+      color: 'bg-yellow-100 text-yellow-800 border-yellow-200',
+    },
+    'en validación': {
+      label: 'En validación',
+      color: 'bg-blue-100 text-blue-800 border-blue-200',
+    },
+    aprobado: {
+      label: 'Aprobado',
+      color: 'bg-green-100 text-green-800 border-green-200',
+    },
+    rechazado: {
+      label: 'Rechazado',
+      color: 'bg-red-100 text-red-800 border-red-200',
+    },
+  };
+
+  const currentStatus = statusConfig[status || 'pendiente'];
 
   return (
     <>
@@ -85,12 +122,27 @@ export const Certificate = ({ data, year }: CertificateProps) => {
             {type}
           </span>
           <span
-            className="inline-flex items-center gap-1 text-xs tabular-nums text-muted-foreground"
-            title={`${startDate} → ${endDate}`}
+            className={`inline-flex items-center gap-1 rounded-md border px-2 py-1 text-xs font-semibold ${currentStatus.color}`}
           >
-            <CalendarRange className="h-3.5 w-3.5" strokeWidth={2} />
-            {startDate} → {endDate}
+            <Clock className="h-3.5 w-3.5" strokeWidth={2} />
+            {currentStatus.label}
           </span>
+        </Container>
+
+        <Container row justify="between" align="start" className="gap-3">
+          <span
+            className="inline-flex items-center gap-1 text-xs tabular-nums text-muted-foreground"
+            title={`Reintegro: ${returnDate}`}
+          >
+            <CalendarCheck className="h-3.5 w-3.5" strokeWidth={2} />
+            Reintegro: {returnDate}
+          </span>
+          {requiresRest && (
+            <span className="inline-flex items-center gap-1 text-xs text-muted-foreground">
+              <BedDouble className="h-3.5 w-3.5" strokeWidth={2} />
+              Requiere reposo
+            </span>
+          )}
         </Container>
 
         {span && (
@@ -136,6 +188,12 @@ export const Certificate = ({ data, year }: CertificateProps) => {
               <Paperclip className="h-3 w-3" strokeWidth={2} />
               {files!.length} {files!.length === 1 ? 'adjunto' : 'adjuntos'}
             </Text.Label>
+          </Container>
+        )}
+
+        {actions && (
+          <Container block className="mt-auto border-t pt-2">
+            {actions}
           </Container>
         )}
       </Container>

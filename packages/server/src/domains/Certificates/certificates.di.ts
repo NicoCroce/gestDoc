@@ -2,12 +2,14 @@ import { asClass } from 'awilix';
 import { CertificatesServices } from './Application';
 import {
   AddCertificate,
+  DeleteCertificate,
   GetCertificates,
   GetCertificatesByCompany,
   GetCertificateTypes,
   AppendImages,
   GetMonthlyStatisticsCertificates,
   GetStatisticsCertificates,
+  UpdateCertificateStatus,
 } from './Application';
 import {
   CertificatesController,
@@ -15,6 +17,7 @@ import {
 } from './Infrastructure/Controllers';
 import { container } from '@server/Infrastructure/di/Container';
 import { CertificatesRepositoryImplementation } from './Infrastructure/Databases';
+import { GetRoleByUser } from '@server/domains/Permissions/Application/UseCases/GetRoleByUser.usecase';
 
 export const certificatesApp = {
   certificatesRepository: asClass(CertificatesRepositoryImplementation),
@@ -28,6 +31,9 @@ export const certificatesApp = {
   _getCertificatesByCompany: asClass(GetCertificatesByCompany),
   _getStatistisCertificates: asClass(GetStatisticsCertificates),
   _getMonthlyStatistisCertificates: asClass(GetMonthlyStatisticsCertificates),
+  _deleteCertificate: asClass(DeleteCertificate),
+  _updateCertificateStatus: asClass(UpdateCertificateStatus),
+  getRoleByUser: asClass(GetRoleByUser),
 };
 
 export const certificatesController = () =>

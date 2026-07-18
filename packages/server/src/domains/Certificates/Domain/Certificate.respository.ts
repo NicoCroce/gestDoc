@@ -5,6 +5,7 @@ import {
   ICertificate,
   IGetMonthlyStatisticsCertificatesResponse,
   IGetStatisticsCertificatesResponse,
+  CertificateStatus,
 } from './Certificate.types';
 
 interface IFilters {
@@ -13,6 +14,7 @@ interface IFilters {
     date?: Date;
     type?: number;
     year?: number;
+    status?: CertificateStatus;
   };
 }
 
@@ -44,6 +46,19 @@ export type IGetStatisticsCertificatesRepositoryResponse =
 export type IGetMonthlyStatisticsCertificatesRepositoryResponse =
   IGetMonthlyStatisticsCertificatesResponse;
 
+export interface IDeleteCertificateRepository extends IRequestContext {
+  id: number;
+}
+
+export interface IUpdateCertificateStatusRepository extends IRequestContext {
+  id: number;
+  status: CertificateStatus;
+}
+
+export interface IGetCertificateRepository extends IRequestContext {
+  id: number;
+}
+
 export interface CertificateRepository {
   getCertificates({
     filters,
@@ -73,4 +88,17 @@ export interface CertificateRepository {
   getMonthlyStatisticsCertificates({
     requestContext,
   }: IGetMonthlyStatisticsCertificatesRepository): Promise<IGetMonthlyStatisticsCertificatesRepositoryResponse>;
+  deleteCertificate({
+    id,
+    requestContext,
+  }: IDeleteCertificateRepository): Promise<void>;
+  updateCertificateStatus({
+    id,
+    status,
+    requestContext,
+  }: IUpdateCertificateStatusRepository): Promise<Certificate>;
+  getCertificate({
+    id,
+    requestContext,
+  }: IGetCertificateRepository): Promise<Certificate | null>;
 }

@@ -8,6 +8,8 @@ export const CertificatesRoutes = () => {
     getCertificatesByCompany,
     getStatisticsByCertificates,
     getStatisticsByCertificatesMonthly,
+    deleteCertificate,
+    updateCertificateStatus,
   } = certificatesController();
 
   return {
@@ -18,6 +20,8 @@ export const CertificatesRoutes = () => {
       getCertificatesByCompany,
       getStatistics: getStatisticsByCertificates,
       getStatisticsMonthly: getStatisticsByCertificatesMonthly,
+      deleteCertificate,
+      updateCertificateStatus,
     },
   };
 };

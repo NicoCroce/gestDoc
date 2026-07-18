@@ -10,6 +10,7 @@ import {
 } from '@app/Application/Components/ui/accordion';
 import { TuseGetCertificatesByCompany } from '../../Hooks';
 import { Certificate } from '@app/Domains/Certificates/Components';
+import { CertificateActions } from '@app/Domains/Certificates/Components/Certificate/CertificateActions';
 import { uuid } from '@app/Application/Helpers/uuid';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUser } from '@fortawesome/free-solid-svg-icons';
@@ -88,6 +89,12 @@ export const LicensesListByUser = ({
                                       <Certificate
                                         data={cert}
                                         year={Number(year)}
+                                        actions={
+                                          <CertificateActions
+                                            certificate={cert}
+                                            variant="admin"
+                                          />
+                                        }
                                       />
                                     </Container>
                                   ))}

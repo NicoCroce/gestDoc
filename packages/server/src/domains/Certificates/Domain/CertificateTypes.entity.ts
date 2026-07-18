@@ -2,6 +2,7 @@ export interface ICertificateTypes {
   id: number;
   name?: string;
   description?: string;
+  rest?: boolean;
 }
 
 export class CertificateTypes {
@@ -9,10 +10,11 @@ export class CertificateTypes {
     private readonly id: number,
     private readonly name?: string,
     private readonly description?: string,
+    private readonly rest?: boolean,
   ) {}
 
-  static create({ id, name, description }: ICertificateTypes) {
-    return new CertificateTypes(id, name, description);
+  static create({ id, name, description, rest }: ICertificateTypes) {
+    return new CertificateTypes(id, name, description, rest);
   }
 
   toJSON() {
@@ -24,6 +26,7 @@ export class CertificateTypes {
       id: this.id,
       name: this.name,
       description: this.description,
+      rest: this.rest,
     };
   }
 }

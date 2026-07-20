@@ -3,9 +3,10 @@ import { CertificatesService } from '@app/Domains/Certificates';
 
 const statusColors: Record<string, string> = {
   pendiente: 'hsl(45, 93%, 58%)', // amarillo
-  'en validación': 'hsl(217, 91%, 60%)', // azul
+  validando: 'hsl(217, 91%, 60%)', // azul
   aprobado: 'hsl(142, 71%, 45%)', // verde
   rechazado: 'hsl(0, 84%, 60%)', // rojo
+  eliminado: 'hsl(0, 0%, 60%)', // gris
 };
 
 export const useGetStatisticsCertificates = () => {

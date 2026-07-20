@@ -41,8 +41,9 @@ export class DeleteCertificate implements IUseCase<void> {
       }
     }
 
-    await this.certificatesRepository.deleteCertificate({
+    await this.certificatesRepository.updateCertificateStatus({
       id: input.id,
+      status: 'eliminado',
       requestContext,
     });
   }

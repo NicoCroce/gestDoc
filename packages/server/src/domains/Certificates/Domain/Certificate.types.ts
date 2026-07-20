@@ -3,8 +3,9 @@ import { CertificateTypes } from './CertificateTypes.entity';
 export type CertificateStatus =
   | 'aprobado'
   | 'rechazado'
-  | 'en validación'
-  | 'pendiente';
+  | 'pendiente'
+  | 'validando'
+  | 'eliminado';
 
 export interface ICertificate {
   id?: number;

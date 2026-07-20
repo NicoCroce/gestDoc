@@ -6,12 +6,17 @@ import {
   DialogTitle,
 } from '@app/Application/Components/ui/dialog';
 import {
+  CheckCircle2,
+  Clock,
   FileText,
   Paperclip,
   CalendarCheck,
   BedDouble,
-  Clock,
+  Search,
+  Trash2,
+  XCircle,
 } from 'lucide-react';
+import { CertificateDateRange } from './CertificateDateRange';
 import { ICertificate } from '../../Certificate.entity';
 
 interface CertificateProps {
@@ -92,29 +97,39 @@ export const Certificate = ({ data, year, actions }: CertificateProps) => {
   const statusConfig = {
     pendiente: {
       label: 'Pendiente',
+      icon: Clock,
       color: 'bg-yellow-100 text-yellow-800 border-yellow-200',
-    },
-    'en validación': {
-      label: 'En validación',
-      color: 'bg-blue-100 text-blue-800 border-blue-200',
     },
     aprobado: {
       label: 'Aprobado',
+      icon: CheckCircle2,
       color: 'bg-green-100 text-green-800 border-green-200',
     },
     rechazado: {
       label: 'Rechazado',
+      icon: XCircle,
       color: 'bg-red-100 text-red-800 border-red-200',
+    },
+    validando: {
+      label: 'Validando',
+      icon: Search,
+      color: 'bg-blue-100 text-blue-800 border-blue-200',
+    },
+    eliminado: {
+      label: 'Eliminado',
+      icon: Trash2,
+      color: 'bg-gray-100 text-gray-500 border-gray-200',
     },
   };
 
   const currentStatus = statusConfig[status || 'pendiente'];
+  const isDeleted = status === 'eliminado';
 
   return (
     <>
       <Container
         block
-        className="group flex h-full flex-col gap-3 rounded-lg border bg-card p-4 shadow-sm transition-all duration-200 hover:border-primary/40 hover:shadow-md"
+        className={`group flex h-full flex-col gap-3 rounded-lg border bg-card p-4 shadow-sm transition-all duration-200 hover:border-primary/40 hover:shadow-md ${isDeleted ? 'pointer-events-none opacity-50' : ''}`}
       >
         <Container row justify="between" align="start" className="gap-3">
           <span className="inline-flex items-center gap-1.5 rounded-md bg-primary/10 px-2 py-1 text-xs font-semibold uppercase tracking-wide text-primary">
@@ -124,7 +139,7 @@ export const Certificate = ({ data, year, actions }: CertificateProps) => {
           <span
             className={`inline-flex items-center gap-1 rounded-md border px-2 py-1 text-xs font-semibold ${currentStatus.color}`}
           >
-            <Clock className="h-3.5 w-3.5" strokeWidth={2} />
+            <currentStatus.icon className="h-3.5 w-3.5" strokeWidth={2} />
             {currentStatus.label}
           </span>
         </Container>
@@ -159,6 +174,12 @@ export const Certificate = ({ data, year, actions }: CertificateProps) => {
             />
           </div>
         )}
+
+        <CertificateDateRange
+          startDate={startDate}
+          endDate={endDate}
+          year={year}
+        />
 
         {reason && (
           <Text.Muted className="text-pretty leading-relaxed text-card-foreground">

@@ -12,8 +12,9 @@ export class Certificate {
     private readonly _status:
       | 'aprobado'
       | 'rechazado'
-      | 'en validación'
-      | 'pendiente',
+      | 'pendiente'
+      | 'validando'
+      | 'eliminado',
     private readonly _files?: string[],
     private readonly _id?: number,
     private readonly _userId?: number,
@@ -89,6 +90,11 @@ export class Certificate {
   }
 
   assertOwnerCanDelete(): void {
+    if (this._status === 'eliminado') {
+      throw new Error(
+        'No se puede eliminar un certificado que ya fue eliminado',
+      );
+    }
     if (this._status !== 'pendiente') {
       throw new Error(
         'Solo se pueden eliminar certificados con estado pendiente',

@@ -23,6 +23,10 @@ export class UpdateCertificateStatus implements IUseCase<Certificate> {
       throw new AppError('Certificado no encontrado', 404);
     }
 
+    if (certificate.status === 'eliminado') {
+      throw new AppError('No se puede modificar un certificado eliminado', 403);
+    }
+
     const isAdmin = await this.checkAdmin(requestContext);
 
     if (!isAdmin) {

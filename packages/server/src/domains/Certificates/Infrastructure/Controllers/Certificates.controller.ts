@@ -12,7 +12,7 @@ const filterParams = z.object({
   type: z.number().optional(),
   year: z.number().optional(),
   status: z
-    .enum(['aprobado', 'rechazado', 'en validación', 'pendiente'])
+    .enum(['aprobado', 'rechazado', 'pendiente', 'validando', 'eliminado'])
     .optional(),
 });
 export class CertificatesController {
@@ -93,7 +93,7 @@ export class CertificatesController {
     .input(
       z.object({
         id: z.number(),
-        status: z.enum(['aprobado', 'rechazado', 'en validación', 'pendiente']),
+        status: z.enum(['aprobado', 'rechazado', 'pendiente', 'validando']),
       }),
     )
     .mutation(

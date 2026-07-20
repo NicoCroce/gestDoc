@@ -37,12 +37,6 @@ const statusOptions = [
       'data-[state=on]:!bg-yellow-100 data-[state=on]:!text-yellow-800 data-[state=on]:!border-yellow-300',
   },
   {
-    value: 'en validación',
-    label: 'En validación',
-    color:
-      'data-[state=on]:!bg-blue-100 data-[state=on]:!text-blue-800 data-[state=on]:!border-blue-300',
-  },
-  {
     value: 'aprobado',
     label: 'Aprobado',
     color:
@@ -53,6 +47,18 @@ const statusOptions = [
     label: 'Rechazado',
     color:
       'data-[state=on]:!bg-red-100 data-[state=on]:!text-red-800 data-[state=on]:!border-red-300',
+  },
+  {
+    value: 'validando',
+    label: 'Validando',
+    color:
+      'data-[state=on]:!bg-blue-100 data-[state=on]:!text-blue-800 data-[state=on]:!border-blue-300',
+  },
+  {
+    value: 'eliminado',
+    label: 'Eliminado',
+    color:
+      'data-[state=on]:!bg-gray-100 data-[state=on]:!text-gray-500 data-[state=on]:!border-gray-300',
   },
 ];
 

@@ -55,11 +55,11 @@ describe('DeleteCertificate use case', () => {
     mockGetRoleByUser.execute.mockResolvedValue('');
   });
 
-  // ── Owner deletes own pendiente certificate (success) ──────────────────
-  it('allows owner to delete own pendiente certificate', async () => {
+  // ── Owner soft-deletes own pendiente certificate (success) ──────────
+  it('allows owner to soft-delete own pendiente certificate', async () => {
     const cert = createCertificate({ status: 'pendiente', userId: 5 });
     vi.mocked(mockRepository.getCertificate).mockResolvedValue(cert);
-    vi.mocked(mockRepository.deleteCertificate).mockResolvedValue(undefined);
+    vi.mocked(mockRepository.updateCertificateStatus).mockResolvedValue(cert);
 
     const useCase = new DeleteCertificate(
       mockRepository,
@@ -71,14 +71,18 @@ describe('DeleteCertificate use case', () => {
       requestContext: ownerContext,
     });
 
-    expect(mockRepository.deleteCertificate).toHaveBeenCalledWith(
-      expect.objectContaining({ id: 1, requestContext: ownerContext }),
+    expect(mockRepository.updateCertificateStatus).toHaveBeenCalledWith(
+      expect.objectContaining({
+        id: 1,
+        status: 'eliminado',
+        requestContext: ownerContext,
+      }),
     );
   });
 
-  // ── Owner tries to delete non-pendiente certificate (blocked) ──────────
-  it('throws when owner tries to delete a non-pendiente certificate', async () => {
-    const cert = createCertificate({ status: 'aprobado', userId: 5 });
+  // ── Owner tries to delete already-eliminado certificate (blocked) ───
+  it('throws when owner tries to delete an already eliminated certificate', async () => {
+    const cert = createCertificate({ status: 'eliminado', userId: 5 });
     vi.mocked(mockRepository.getCertificate).mockResolvedValue(cert);
 
     const useCase = new DeleteCertificate(
@@ -93,10 +97,10 @@ describe('DeleteCertificate use case', () => {
       }),
     ).rejects.toThrow(AppError);
 
-    expect(mockRepository.deleteCertificate).not.toHaveBeenCalled();
+    expect(mockRepository.updateCertificateStatus).not.toHaveBeenCalled();
   });
 
-  // ── Owner tries to delete someone else's certificate (blocked) ─────────
+  // ── Owner tries to delete someone else's certificate (blocked) ──────
   it('throws when non-owner non-admin tries to delete another user certificate', async () => {
     const cert = createCertificate({ status: 'pendiente', userId: 5 });
     vi.mocked(mockRepository.getCertificate).mockResolvedValue(cert);
@@ -113,14 +117,14 @@ describe('DeleteCertificate use case', () => {
       }),
     ).rejects.toThrow(AppError);
 
-    expect(mockRepository.deleteCertificate).not.toHaveBeenCalled();
+    expect(mockRepository.updateCertificateStatus).not.toHaveBeenCalled();
   });
 
-  // ── Admin deletes any-status certificate (success) ─────────────────────
-  it('allows admin to delete any-status certificate in tenant', async () => {
-    const cert = createCertificate({ status: 'aprobado', userId: 5 });
+  // ── Admin soft-deletes any-status certificate (success) ────────────
+  it('allows admin to soft-delete any-status certificate in tenant', async () => {
+    const cert = createCertificate({ status: 'rechazado', userId: 5 });
     vi.mocked(mockRepository.getCertificate).mockResolvedValue(cert);
-    vi.mocked(mockRepository.deleteCertificate).mockResolvedValue(undefined);
+    vi.mocked(mockRepository.updateCertificateStatus).mockResolvedValue(cert);
     mockGetRoleByUser.execute.mockResolvedValue('Full Admin');
 
     const useCase = new DeleteCertificate(
@@ -133,12 +137,16 @@ describe('DeleteCertificate use case', () => {
       requestContext: adminContext,
     });
 
-    expect(mockRepository.deleteCertificate).toHaveBeenCalledWith(
-      expect.objectContaining({ id: 1, requestContext: adminContext }),
+    expect(mockRepository.updateCertificateStatus).toHaveBeenCalledWith(
+      expect.objectContaining({
+        id: 1,
+        status: 'eliminado',
+        requestContext: adminContext,
+      }),
     );
   });
 
-  // ── Certificate not found ──────────────────────────────────────────────
+  // ── Certificate not found ──────────────────────────────────────────
   it('throws when certificate is not found', async () => {
     vi.mocked(mockRepository.getCertificate).mockResolvedValue(null);
 
@@ -154,6 +162,6 @@ describe('DeleteCertificate use case', () => {
       }),
     ).rejects.toThrow(AppError);
 
-    expect(mockRepository.deleteCertificate).not.toHaveBeenCalled();
+    expect(mockRepository.updateCertificateStatus).not.toHaveBeenCalled();
   });
 });

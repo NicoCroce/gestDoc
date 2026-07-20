@@ -62,8 +62,11 @@ Components/
 
 1. Las páginas y los componentes solo pueden llamar a los servicios desde los hooks, de su propio dominio o de los demás.
 2. TRPc solo puede ser llamado desde la carpeta `Service`.
-3. Si vas a utilizar un `Input`, `Button`, etc. Debes verificar primero en `Layout`, `Molecules`, `Organisms`.
-4. Si vas a utilizar un componente de `packages/app/src/Application/Components/ui` debes informarlo antes de utilizarlo.
+3. **Usa los wrappers con patrones del proyecto SIEMPRE que existan.** Los componentes en `Molecules/`, `Organisms/` y `Layout/` tienen comportamientos del proyecto (como `Button` con `appearance`, `isLoading`, o `Input` con `forceEnabled`/`isEditable`). Impórtalos desde el barrel `@app/Application/Components`:
+   - ✅ `import { Button } from '@app/Application/Components'` — usa el wrapper de `Molecules/Button`
+   - ❌ `import { Button } from '@app/Application/Components/ui/button'` — es el raw shadcn, sin patrones del proyecto
+
+4. Solo importa de `ui/` cuando NO exista un wrapper en `Layout/`, `Molecules/` u `Organisms/`, o cuando necesites composición de bajo nivel que el wrapper no exponga (ej: `SelectContent`/`SelectItem` directos de `ui/select` porque el wrapper `Molecules/Select` usa una API simplificada distinta). Siempre verifica primero el barrel.
 5. El componente `Container` es estrucutral, por lo que si lo utilizas por defecto ya es flex column. Esto facilita el layout. **SI VAS A UTILIZARLO ANALIZA BIEN SU COMPORTAMIENTO PARA NO AGREGAR BLOCK INNECESARIAMENTE** También ten en cuenta `space` los valores correctos.
 
 ### Entity (tipos)

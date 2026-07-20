@@ -25,7 +25,7 @@ const createCertificate = (
     reason: 'Test',
     type: certificateType,
     requiresRest: false,
-    status: 'pendiente',
+    status: 'aprobado',
     userId: 5,
     ...overrides,
   });
@@ -55,7 +55,7 @@ describe('UpdateCertificateStatus use case', () => {
 
   // ── Admin changes status (success) ─────────────────────────────────────
   it('allows admin to change certificate status', async () => {
-    const cert = createCertificate({ status: 'pendiente' });
+    const cert = createCertificate({ status: 'validando' });
     const updatedCert = createCertificate({ status: 'aprobado' });
     vi.mocked(mockRepository.getCertificate).mockResolvedValue(cert);
     vi.mocked(mockRepository.updateCertificateStatus).mockResolvedValue(
@@ -85,7 +85,7 @@ describe('UpdateCertificateStatus use case', () => {
 
   // ── Non-admin tries status change (blocked) ────────────────────────────
   it('throws when non-admin tries to change status', async () => {
-    const cert = createCertificate({ status: 'pendiente' });
+    const cert = createCertificate({ status: 'aprobado' });
     vi.mocked(mockRepository.getCertificate).mockResolvedValue(cert);
     mockGetRoleByUser.execute.mockResolvedValue('');
 
@@ -124,9 +124,30 @@ describe('UpdateCertificateStatus use case', () => {
     expect(mockRepository.updateCertificateStatus).not.toHaveBeenCalled();
   });
 
+  // ── Cannot change status of eliminated certificate ─────────────────────
+  it('throws when trying to change status of an eliminated certificate', async () => {
+    const cert = createCertificate({ status: 'eliminado' });
+    vi.mocked(mockRepository.getCertificate).mockResolvedValue(cert);
+    mockGetRoleByUser.execute.mockResolvedValue('Full Admin');
+
+    const useCase = new UpdateCertificateStatus(
+      mockRepository,
+      mockGetRoleByUser as never,
+    );
+
+    await expect(
+      useCase.execute({
+        input: { id: 1, status: 'aprobado' },
+        requestContext: adminContext,
+      }),
+    ).rejects.toThrow(AppError);
+
+    expect(mockRepository.updateCertificateStatus).not.toHaveBeenCalled();
+  });
+
   // ── Admin can change to any valid status ───────────────────────────────
   it('allows admin to change status to rechazado', async () => {
-    const cert = createCertificate({ status: 'en validación' });
+    const cert = createCertificate({ status: 'validando' });
     const updatedCert = createCertificate({ status: 'rechazado' });
     vi.mocked(mockRepository.getCertificate).mockResolvedValue(cert);
     vi.mocked(mockRepository.updateCertificateStatus).mockResolvedValue(

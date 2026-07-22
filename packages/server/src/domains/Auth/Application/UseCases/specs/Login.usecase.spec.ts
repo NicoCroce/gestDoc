@@ -1,6 +1,5 @@
 import { AppError, RequestContext } from '@server/Application';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { generateToken } from '@server/Infrastructure/utils/JWT';
 import { Login } from '../Login.usecase';
 
 vi.mock('@server/domains/Users', async () => {
@@ -15,13 +14,18 @@ vi.mock('@server/domains/Ownersyss', async () => {
     await import('@server/domains/Ownersyss/Domain/Ownersyss.entity.js');
   return { Ownersys, GetOwnersys: class GetOwnersys {} };
 });
+vi.mock('@server/domains/Disclaimer', () => ({
+  GetSignatureStatus: class GetSignatureStatus {},
+}));
 
 import { Ownersys } from '@server/domains/Ownersyss';
 import { User } from '@server/domains/Users';
 
-vi.mock('@server/utils/JWT', () => ({
+vi.mock('@server/Infrastructure/utils/JWT', () => ({
   generateToken: vi.fn(() => 'signed-token'),
 }));
+
+import { generateToken } from '@server/Infrastructure/utils/JWT';
 
 const requestContext = new RequestContext(1, 'req-1', 99);
 
@@ -62,6 +66,8 @@ describe('Login', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     process.env.URL_IMG = 'https://cdn.example.com';
+    process.env.SECRET_KEY_BACK = 'test-secret';
+    delete process.env.ENABLE_DISCLAIMER;
   });
 
   it('returns the authenticated user, role, theme and token payload with ownerId', async () => {
@@ -203,5 +209,92 @@ describe('Login', () => {
         requestContext,
       }),
     ).rejects.toThrow('id no puede ser undefined');
+  });
+
+  it('sets pendingDisclaimer to true when user has not signed', async () => {
+    process.env.ENABLE_DISCLAIMER = 'true';
+
+    const mockGetSignatureStatus = {
+      execute: vi.fn().mockResolvedValue(null),
+    };
+
+    const useCase = new Login(
+      { execute: vi.fn().mockResolvedValue(createUser()) } as never,
+      { execute: vi.fn().mockResolvedValue(createOwnersys(4)) } as never,
+      { execute: vi.fn().mockResolvedValue('') } as never,
+      mockGetSignatureStatus as never,
+    );
+
+    const response = await useCase.execute({
+      input: { mail: 'john@example.com', password: '12345678' },
+      requestContext,
+    });
+
+    expect(response.pendingDisclaimer).toBe(true);
+  });
+
+  it('sets pendingDisclaimer to false when user has signed', async () => {
+    process.env.ENABLE_DISCLAIMER = 'true';
+
+    const mockGetSignatureStatus = {
+      execute: vi.fn().mockResolvedValue({
+        signed: true,
+        corrupt: false,
+      }),
+    };
+
+    const useCase = new Login(
+      { execute: vi.fn().mockResolvedValue(createUser()) } as never,
+      { execute: vi.fn().mockResolvedValue(createOwnersys(4)) } as never,
+      { execute: vi.fn().mockResolvedValue('') } as never,
+      mockGetSignatureStatus as never,
+    );
+
+    const response = await useCase.execute({
+      input: { mail: 'john@example.com', password: '12345678' },
+      requestContext,
+    });
+
+    expect(response.pendingDisclaimer).toBe(false);
+  });
+
+  it('sets pendingDisclaimer to true when signature is corrupt', async () => {
+    process.env.ENABLE_DISCLAIMER = 'true';
+
+    const mockGetSignatureStatus = {
+      execute: vi.fn().mockResolvedValue({
+        signed: false,
+        corrupt: true,
+      }),
+    };
+
+    const useCase = new Login(
+      { execute: vi.fn().mockResolvedValue(createUser()) } as never,
+      { execute: vi.fn().mockResolvedValue(createOwnersys(4)) } as never,
+      { execute: vi.fn().mockResolvedValue('') } as never,
+      mockGetSignatureStatus as never,
+    );
+
+    const response = await useCase.execute({
+      input: { mail: 'john@example.com', password: '12345678' },
+      requestContext,
+    });
+
+    expect(response.pendingDisclaimer).toBe(true);
+  });
+
+  it('does NOT set pendingDisclaimer when ENABLE_DISCLAIMER is not true', async () => {
+    const useCase = new Login(
+      { execute: vi.fn().mockResolvedValue(createUser()) } as never,
+      { execute: vi.fn().mockResolvedValue(createOwnersys(4)) } as never,
+      { execute: vi.fn().mockResolvedValue('') } as never,
+    );
+
+    const response = await useCase.execute({
+      input: { mail: 'john@example.com', password: '12345678' },
+      requestContext,
+    });
+
+    expect(response.pendingDisclaimer).toBe(false);
   });
 });

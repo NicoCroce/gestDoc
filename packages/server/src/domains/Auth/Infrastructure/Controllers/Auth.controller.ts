@@ -15,14 +15,15 @@ export class AuthController {
         }),
       )
       .mutation(async ({ ctx, input }) => {
-        const { token, user, theme } = await this.authService.login({
-          input,
-          requestContext: ctx.requestContext,
-        });
+        const { token, user, theme, pendingDisclaimer } =
+          await this.authService.login({
+            input,
+            requestContext: ctx.requestContext,
+          });
 
         setAuthCookie(ctx.res, token);
 
-        return { ...user.values, theme };
+        return { ...user.values, theme, pendingDisclaimer };
       });
 
   logout = () =>

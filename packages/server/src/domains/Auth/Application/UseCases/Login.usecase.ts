@@ -4,12 +4,14 @@ import { IExecuteResponse, Ilogin } from '../auth.types';
 import { User, ValidateUserPassword } from '@server/domains/Users';
 import { GetRoleByUser } from '@server/domains/Permissions';
 import { GetOwnersys } from '@server/domains/Ownersyss';
+import { GetSignatureStatus } from '@server/domains/Disclaimer';
 
 export class Login implements IUseCase<IExecuteResponse> {
   constructor(
     private readonly _validateUserPassword: ValidateUserPassword,
     private readonly _getOwnersys: GetOwnersys,
     private readonly _getRoleByUser: GetRoleByUser,
+    private readonly _getSignatureStatus?: GetSignatureStatus,
   ) {}
 
   async execute({ input, requestContext }: Ilogin): Promise<IExecuteResponse> {
@@ -63,6 +65,17 @@ export class Login implements IUseCase<IExecuteResponse> {
         ? `${process.env.URL_IMG}/${userImage}`
         : '';
 
+    let pendingDisclaimer = false;
+
+    if (process.env.ENABLE_DISCLAIMER === 'true' && this._getSignatureStatus) {
+      const signatureStatus = await executeUseCase({
+        useCase: this._getSignatureStatus,
+        input: { userId: id, ownerId },
+        requestContext,
+      });
+      pendingDisclaimer = !signatureStatus || signatureStatus.corrupt;
+    }
+
     return {
       token,
       user: User.create({
@@ -77,6 +90,7 @@ export class Login implements IUseCase<IExecuteResponse> {
         rol,
       }),
       theme: theme?.values.tema || 1,
+      pendingDisclaimer,
     };
   }
 }

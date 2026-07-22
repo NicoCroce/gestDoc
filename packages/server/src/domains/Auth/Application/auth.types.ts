@@ -22,6 +22,7 @@ export interface IExecuteResponse {
   token: string;
   user: User;
   theme: number;
+  pendingDisclaimer?: boolean;
 }
 
 export interface IChangePasswordPublic extends IRequestContext {

@@ -81,12 +81,12 @@ export const employeeColumns = (
       header: 'Acepto términos',
       cell: ({ row }) => {
         const estado = row.getValue('estado_firma') as string;
-        const variant =
-          estado === 'Firmado'
-            ? 'default'
-            : estado === 'Corrupto'
-              ? 'destructive'
-              : 'secondary';
+        const getVariant = (state: string): string => {
+          if (state === 'Firmado') return 'default';
+          if (state === 'Corrupto') return 'destructive';
+          return 'secondary';
+        };
+        const variant = getVariant(estado);
         return <Badge variant={variant as never}>{estado}</Badge>;
       },
     },

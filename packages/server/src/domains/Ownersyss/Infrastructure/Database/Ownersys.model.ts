@@ -24,6 +24,7 @@ export class OwnersysModel extends Model<
   declare sucursal_pedido: number;
   declare sucursal_presupuestos: number;
   declare tema: CreationOptional<number>;
+  declare texto_disclaimer: CreationOptional<string>;
   declare Theme?: ThemeModel;
 }
 
@@ -87,6 +88,10 @@ OwnersysModel.init(
         model: 'tema',
         key: 'id',
       },
+    },
+    texto_disclaimer: {
+      type: DataTypes.TEXT,
+      allowNull: true,
     },
   },
   {

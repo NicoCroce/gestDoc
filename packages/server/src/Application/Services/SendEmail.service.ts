@@ -1,7 +1,10 @@
 import { Certificate } from '@server/domains/Certificates';
 import { GetUser } from '@server/domains/Users';
 import { executeUseCase } from '../Adapters';
-import { EmailSender, emailTemplates } from '@server/Infrastructure';
+import {
+  MailNotificationService,
+  emailTemplates,
+} from '@server/Infrastructure';
 import { loggerContext } from '@server/Infrastructure/utils/pino';
 import { IRequestContext } from '../Interfaces';
 import { RequestContext } from '../Entities';
@@ -25,6 +28,7 @@ export class SendEmailService {
   constructor(
     private readonly _getAdmins: GetAdmins,
     private readonly _getUser: GetUser,
+    private readonly mailNotificationService: MailNotificationService,
   ) {}
 
   private async getAdmins(requestContext: RequestContext) {
@@ -57,10 +61,10 @@ export class SendEmailService {
           currentUser:
             `${currentUser.values.name} ${currentUser.values.surname ?? ''}`.trim(),
         });
-        EmailSender({
+        await this.mailNotificationService.sendOne({
           to: admins,
-          body,
           subject,
+          html: body,
         });
       }
     } catch (error) {

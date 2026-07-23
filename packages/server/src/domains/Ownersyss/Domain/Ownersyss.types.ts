@@ -12,4 +12,5 @@ export interface IOwnersys {
   sucursal_presupuestos: number;
   id?: number;
   tema?: number;
+  texto_disclaimer?: string;
 }

@@ -14,6 +14,7 @@ export class Ownersys {
     private readonly _sucursal_presupuestos: number,
     private readonly _id?: number,
     private readonly _tema?: number,
+    private readonly _texto_disclaimer?: string,
   ) {}
 
   static create({
@@ -30,6 +31,7 @@ export class Ownersys {
     sucursal_presupuestos,
     id,
     tema,
+    texto_disclaimer,
   }: IOwnersys): Ownersys {
     return new Ownersys(
       denominacion,
@@ -45,6 +47,7 @@ export class Ownersys {
       sucursal_presupuestos,
       id,
       tema,
+      texto_disclaimer,
     );
   }
 
@@ -67,6 +70,7 @@ export class Ownersys {
       sucursal_pedido: this._sucursal_pedido,
       sucursal_presupuestos: this._sucursal_presupuestos,
       tema: this._tema,
+      texto_disclaimer: this._texto_disclaimer,
     };
   }
 }

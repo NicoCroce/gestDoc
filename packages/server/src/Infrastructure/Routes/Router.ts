@@ -10,6 +10,7 @@ import { CertificatesRoutesExpress } from '@server/domains/Certificates/Infrastr
 import { OwnersysRoutes } from '@server/domains/Ownersyss';
 import { ThemeRoutes } from '@server/domains/Themes';
 import { EmpresasUsuariosRoutes } from '@server/domains/Empresas_usuarios';
+import { DisclaimerRoutes } from '@server/domains/Disclaimer';
 
 const MainRouter = () => {
   const AllRouters = {
@@ -22,6 +23,7 @@ const MainRouter = () => {
     ...CertificatesRoutes(),
     ...ThemeRoutes(),
     ...EmpresasUsuariosRoutes(),
+    ...DisclaimerRoutes(),
   };
   return router(AllRouters);
 };

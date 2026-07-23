@@ -1,6 +1,11 @@
 import { Route } from 'react-router-dom';
-import { DOCUMENTS_DASHBOARD, LICENSES_DASHBOARD } from './Admin.routes';
+import {
+  DOCUMENTS_DASHBOARD,
+  LICENSES_DASHBOARD,
+  EMPLEADOS_DASHBOARD,
+} from './Admin.routes';
 import { DocumentsCompanyPage, LicensesCompanyPage } from './Pages';
+import { EmpleadosPage } from './Empleados';
 
 export const AdminRouter = [
   <Route
@@ -12,5 +17,10 @@ export const AdminRouter = [
     key="licenses-dashboard"
     path={LICENSES_DASHBOARD}
     element={<LicensesCompanyPage />}
+  />,
+  <Route
+    key="empleados-dashboard"
+    path={EMPLEADOS_DASHBOARD}
+    element={<EmpleadosPage />}
   />,
 ];

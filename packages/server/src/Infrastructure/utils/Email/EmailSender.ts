@@ -43,9 +43,15 @@ export const EmailSender = async ({ to, body, subject }: SendEmailProps) => {
   try {
     const response = await axios.post(process.env.EMAIL_HOST!, requestBody, {
       headers: {
-        'Content-Type': 'application/json', // Agrega el header aquí
+        'Content-Type': 'application/json',
       },
     });
+
+    if (response.data?.status && response.data.status !== 200) {
+      throw new Error(
+        response.data.detail ?? response.data.msg ?? 'Email service error',
+      );
+    }
 
     logger.info('Email enviado con éxito:', response.data);
 

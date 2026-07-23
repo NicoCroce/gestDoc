@@ -1,9 +1,10 @@
 import { DASHBOARD_ACCESS, MenuItem } from '@app/Application';
-import { faChartLine } from '@fortawesome/free-solid-svg-icons';
+import { faChartLine, faUsers } from '@fortawesome/free-solid-svg-icons';
 import {
   ADMIN_DASHBOARD,
   DOCUMENTS_DASHBOARD,
   LICENSES_DASHBOARD,
+  EMPLEADOS_DASHBOARD,
 } from './Admin.routes';
 
 export const MenuDashboard = () => (
@@ -26,5 +27,11 @@ export const MenuDashboard = () => (
         permission={DASHBOARD_ACCESS}
       />
     </MenuItem>
+    <MenuItem
+      to={EMPLEADOS_DASHBOARD}
+      text="Empleados"
+      icon={faUsers}
+      permission={DASHBOARD_ACCESS}
+    />
   </>
 );

@@ -27,6 +27,7 @@ export class OwnersyssRepositoryImplementation implements OwnersyssRepository {
       sucursal_pedido,
       sucursal_presupuestos,
       tema,
+      texto_disclaimer,
     } = ownersysFound;
     return Ownersys.create({
       id,
@@ -42,6 +43,7 @@ export class OwnersyssRepositoryImplementation implements OwnersyssRepository {
       sucursal_pedido,
       sucursal_presupuestos,
       tema,
+      texto_disclaimer,
     });
   }
   async updateTheme({

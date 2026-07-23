@@ -251,3 +251,4 @@ Antes de crear cualquier componente nuevo, verificar en `packages/app/src/Applic
 5. No debes escribir lógica de negocio en los componentes. Toda la lógica debe ir en los hooks o servicios.
 6. No debes utilizar `<div>` con class `flex` en su lugar usa <Container> con las props que tiene el componente.
 7. Los nombres de los métodos, variables, etc. deben ser camelcase. Ej: `Rename class "Empresas_usuariosService" to match the regular expression ^\$?[A-Z][a-zA-Z0-9]*$.`.
+8. Prefer using nullish coalescing operator (`??`) instead of a ternary expression, as it is simpler to read.

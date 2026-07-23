@@ -324,3 +324,4 @@ whereClause.id_propietario = ownerId;
 5. Nunca instancies clases con `new` dentro de use cases, services o controllers. Todas las dependencias deben inyectarse vía constructor. Usar `new` rompe el contenedor Awilix y genera dependencias no registradas.
 6. Las claves de use cases en el registro Awilix (`_[camelCaseUseCase]`) deben incluir siempre el nombre de la entidad o dominio. Claves genéricas como `_create`, `_update`, `_delete` están prohibidas — colisionan en el contenedor DI global (flat merge en `register.ts`).
 7. Los nombres de los métodos, variables, class, etc. deben ser camelcase. Ej: `Rename class "Empresas_usuariosService" to match the regular expression ^\$?[A-Z][a-zA-Z0-9]*$.`.
+8. Prefer using nullish coalescing operator (`??`) instead of a ternary expression, as it is simpler to read.

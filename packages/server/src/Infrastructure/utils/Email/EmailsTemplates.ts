@@ -3,10 +3,18 @@ interface IAddLincence {
   reason: string;
 }
 
-interface ISignDocument {
-  currentUser: string;
-  reason: string;
+interface IDocumentSignedAdmin {
+  employeeName: string;
   documentId: number;
+  agreement: boolean;
+  reasonSignatureNonConformity: string | null;
+}
+
+interface IDocumentSignedEmployee {
+  employeeName: string;
+  documentId: number;
+  agreement: boolean;
+  reasonSignatureNonConformity: string | null;
 }
 
 const addLicense = ({ currentUser, reason }: IAddLincence) => ({
@@ -87,14 +95,80 @@ const licenseStatusChange = ({
               `,
 });
 
-const signDocument = ({ currentUser, reason, documentId }: ISignDocument) => ({
-  subject: `[Aviso] Gestdoc - Firma bajo no conformidad de ${currentUser}`,
-  body: `<h1> Nueva firma bajo no conformidad</h1> 
-              <p>El empleado <strong>${currentUser}</strong> firmó el documento ${documentId} <p>
-              <h2>Motivo de la firma</h2>
-              <p>${reason}</p>
+const documentSignedAdmin = ({
+  employeeName,
+  documentId,
+  agreement,
+  reasonSignatureNonConformity,
+}: IDocumentSignedAdmin) => ({
+  subject: `[GestDoc] ${employeeName} ha firmado un documento`,
+  body: `<h1>Documento firmado</h1>
+              <p>El empleado <strong>${employeeName}</strong> ha firmado el documento <strong>#${documentId}</strong>.</p>
+              <h2>Detalle de la firma</h2>
+              <table style="border-collapse: collapse; width: 100%; max-width: 500px;">
+                <tr>
+                  <td style="padding: 6px 12px 6px 0; font-weight: bold; color: #374151;">Documento</td>
+                  <td style="padding: 6px 0; color: #111827;">#${documentId}</td>
+                </tr>
+                <tr>
+                  <td style="padding: 6px 12px 6px 0; font-weight: bold; color: #374151;">Tipo de firma</td>
+                  <td style="padding: 6px 0;">
+                    <span style="display: inline-block; padding: 2px 10px; border-radius: 12px; font-size: 13px; font-weight: 600; ${agreement ? 'background-color: #dcfce7; color: #166534;' : 'background-color: #fee2e2; color: #991b1b;'}">
+                      ${agreement ? 'Bajo acuerdo' : 'Sin conformidad'}
+                    </span>
+                  </td>
+                </tr>
+                ${
+                  !agreement && reasonSignatureNonConformity
+                    ? `
+                <tr>
+                  <td style="padding: 6px 12px 6px 0; font-weight: bold; color: #374151;">Motivo</td>
+                  <td style="padding: 6px 0; color: #111827;">${reasonSignatureNonConformity}</td>
+                </tr>`
+                    : ''
+                }
+              </table>
               <hr>
-              <p>Este mail fue enviado de forma automática por <strong> <a href="https://docs.macrosistemas.ar/" target="_blank" rel="nofollow">GestDoc</a></strong></p>
+              <p>Este mail fue enviado de forma automática por <strong><a href="https://docs.macrosistemas.ar/" target="_blank" rel="nofollow">GestDoc</a></strong></p>
+              `,
+});
+
+const documentSignedEmployee = ({
+  employeeName,
+  documentId,
+  agreement,
+  reasonSignatureNonConformity,
+}: IDocumentSignedEmployee) => ({
+  subject: `[GestDoc] Has firmado el documento #${documentId}`,
+  body: `<h1>Confirmación de firma</h1>
+              <p>Hola <strong>${employeeName}</strong>,</p>
+              <p>Has firmado el documento <strong>#${documentId}</strong>.</p>
+              <h2>Detalle de la firma</h2>
+              <table style="border-collapse: collapse; width: 100%; max-width: 500px;">
+                <tr>
+                  <td style="padding: 6px 12px 6px 0; font-weight: bold; color: #374151;">Documento</td>
+                  <td style="padding: 6px 0; color: #111827;">#${documentId}</td>
+                </tr>
+                <tr>
+                  <td style="padding: 6px 12px 6px 0; font-weight: bold; color: #374151;">Tipo de firma</td>
+                  <td style="padding: 6px 0;">
+                    <span style="display: inline-block; padding: 2px 10px; border-radius: 12px; font-size: 13px; font-weight: 600; ${agreement ? 'background-color: #dcfce7; color: #166534;' : 'background-color: #fee2e2; color: #991b1b;'}">
+                      ${agreement ? 'Bajo acuerdo' : 'Sin conformidad'}
+                    </span>
+                  </td>
+                </tr>
+                ${
+                  !agreement && reasonSignatureNonConformity
+                    ? `
+                <tr>
+                  <td style="padding: 6px 12px 6px 0; font-weight: bold; color: #374151;">Motivo</td>
+                  <td style="padding: 6px 0; color: #111827;">${reasonSignatureNonConformity}</td>
+                </tr>`
+                    : ''
+                }
+              </table>
+              <hr>
+              <p>Este mail fue enviado de forma automática por <strong><a href="https://docs.macrosistemas.ar/" target="_blank" rel="nofollow">GestDoc</a></strong></p>
               `,
 });
 
@@ -120,6 +194,7 @@ const disclaimerReminder = ({
 export const emailTemplates = {
   addLicense,
   licenseStatusChange,
-  signDocument,
+  documentSignedAdmin,
+  documentSignedEmployee,
   disclaimerReminder,
 };

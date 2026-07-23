@@ -17,7 +17,8 @@ interface IAddLicense extends IRequestContext {
 
 interface ISignDocument extends IRequestContext {
   documentId: number;
-  reason: string;
+  agreement: boolean;
+  reasonSignatureNonConformity: string | null;
 }
 
 interface ISendEmailsToAdmin<Targs> extends IRequestContext {
@@ -92,16 +93,54 @@ export class SendEmailService {
     });
   }
 
-  async signDocument({ reason, documentId, requestContext }: ISignDocument) {
-    await this.sendEmailToAdmins({
-      requestContext,
-      templateFn: emailTemplates.signDocument,
-      templateArgs: {
-        reason,
+  async signDocument({
+    documentId,
+    agreement,
+    reasonSignatureNonConformity,
+    requestContext,
+  }: ISignDocument) {
+    try {
+      const currentUser = await this.getCurrentUser(requestContext);
+      const admins = await this.getAdmins(requestContext);
+
+      const employeeName =
+        `${currentUser.values.name} ${currentUser.values.surname ?? ''}`.trim();
+
+      // Enviar al empleado que firmó
+      const employeeTemplate = emailTemplates.documentSignedEmployee({
+        employeeName,
         documentId,
-        currentUser: '',
-      },
-    });
+        agreement,
+        reasonSignatureNonConformity,
+      });
+
+      await this.mailNotificationService.sendOne({
+        to: currentUser.values.mail,
+        subject: employeeTemplate.subject,
+        html: employeeTemplate.body,
+      });
+
+      // Enviar a los admins
+      if (admins) {
+        const adminTemplate = emailTemplates.documentSignedAdmin({
+          employeeName,
+          documentId,
+          agreement,
+          reasonSignatureNonConformity,
+        });
+
+        await this.mailNotificationService.sendOne({
+          to: admins,
+          subject: adminTemplate.subject,
+          html: adminTemplate.body,
+        });
+      }
+    } catch (error) {
+      loggerContext(requestContext.values).error(
+        error,
+        'Failed to send document signing email',
+      );
+    }
   }
 
   async notifyLicenseStatusChange({

@@ -54,15 +54,14 @@ export class DocumentsService {
 
     const { agreement, reasonSignatureNonConformity } = input;
 
-    if (!agreement) {
-      void this.sendEmailService
-        .signDocument({
-          documentId,
-          reason: reasonSignatureNonConformity!,
-          requestContext,
-        })
-        .catch(() => undefined);
-    }
+    void this.sendEmailService
+      .signDocument({
+        documentId,
+        agreement,
+        reasonSignatureNonConformity,
+        requestContext,
+      })
+      .catch(() => undefined);
 
     return documentId;
   }

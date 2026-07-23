@@ -1,6 +1,7 @@
 import { Certificate } from '@server/domains/Certificates';
 import { GetUser } from '@server/domains/Users';
 import { executeUseCase } from '../Adapters';
+import { getDateString } from '../Utils';
 import {
   MailNotificationService,
   emailTemplates,
@@ -22,6 +23,11 @@ interface ISignDocument extends IRequestContext {
 interface ISendEmailsToAdmin<Targs> extends IRequestContext {
   templateFn: (args: Targs) => { body: string; subject: string };
   templateArgs: Targs;
+}
+
+interface INotifyLicenseStatusChange extends IRequestContext {
+  certificate: Certificate;
+  newStatus: 'aprobado' | 'rechazado';
 }
 
 export class SendEmailService {
@@ -96,5 +102,51 @@ export class SendEmailService {
         currentUser: '',
       },
     });
+  }
+
+  async notifyLicenseStatusChange({
+    certificate,
+    newStatus,
+    requestContext,
+  }: INotifyLicenseStatusChange) {
+    try {
+      const employee = await executeUseCase({
+        useCase: this._getUser,
+        requestContext,
+        input: certificate.userId!,
+      });
+
+      const reviewer = await this.getCurrentUser(requestContext);
+
+      const reviewerName =
+        `${reviewer.values.name} ${reviewer.values.surname ?? ''}`.trim();
+      const employeeName =
+        `${employee.values.name} ${employee.values.surname ?? ''}`.trim();
+
+      const { startDate, endDate, returnDate, reason, type } =
+        certificate.values;
+
+      const { body, subject } = emailTemplates.licenseStatusChange({
+        employeeName,
+        reviewerName,
+        licenseType: type.values.name ?? '',
+        startDate: getDateString(startDate),
+        endDate: getDateString(endDate),
+        returnDate: getDateString(returnDate),
+        reason,
+        status: newStatus,
+      });
+
+      await this.mailNotificationService.sendOne({
+        to: employee.values.mail,
+        subject,
+        html: body,
+      });
+    } catch (error) {
+      loggerContext(requestContext.values).error(
+        error,
+        'Failed to send license status change email to employee',
+      );
+    }
   }
 }

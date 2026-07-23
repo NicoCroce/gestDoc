@@ -207,6 +207,14 @@ export class CertificatesServices {
       inputLog: { id: input.id, status: input.status },
     });
 
+    if (input.status === 'aprobado' || input.status === 'rechazado') {
+      this.sendEmailService.notifyLicenseStatusChange({
+        requestContext,
+        certificate,
+        newStatus: input.status,
+      });
+    }
+
     return convertToDTO(certificate);
   }
 }

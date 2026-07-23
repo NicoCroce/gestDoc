@@ -1,8 +1,16 @@
-import { EmailSender, emailTemplates } from '@server/Infrastructure';
+import {
+  MailNotificationService,
+  type MailNotification,
+  emailTemplates,
+} from '@server/Infrastructure';
 import { logger } from '@server/Infrastructure/utils/pino';
 import { ISendEmailService } from '../Application/UseCases/SendReminders.usecase';
 
 export class DisclaimerEmailService implements ISendEmailService {
+  constructor(
+    private readonly mailNotificationService: MailNotificationService,
+  ) {}
+
   async sendDisclaimerReminders({
     to,
     disclaimerText,
@@ -12,21 +20,20 @@ export class DisclaimerEmailService implements ISendEmailService {
     disclaimerText: string;
     companyName: string;
   }): Promise<void> {
-    for (const email of to) {
-      try {
-        const { body, subject } = emailTemplates.disclaimerReminder({
-          employeeName: email,
-          disclaimerText,
-          companyName,
-        });
-        await EmailSender({
-          to: [email],
-          body,
-          subject,
-        });
-      } catch (error) {
-        logger.error(error, `Failed to send disclaimer reminder to ${email}`);
-      }
+    const notifications: MailNotification[] = to.map((email) => {
+      const { body, subject } = emailTemplates.disclaimerReminder({
+        employeeName: email,
+        disclaimerText,
+        companyName,
+      });
+
+      return { to: email, subject, html: body };
+    });
+
+    const { errors } = await this.mailNotificationService.send(notifications);
+
+    for (const error of errors) {
+      logger.error(error, 'Failed to send disclaimer reminder');
     }
   }
 }

@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { Container, Page } from '@app/Application';
+import { useMemo } from 'react';
+import { Container, Page, useURLParams } from '@app/Application';
 
 import { useGetCertificatesByCompany } from '../Hooks';
 import {
@@ -7,12 +7,24 @@ import {
   MonthlyLicensesChart,
   StatisticsCertificates,
 } from '../Components';
-import { SegmentsFilter } from '@app/Domains/Segments/Components/SegmentsFilter';
 import { useGetUsersBySegments } from '@app/Domains/Segments/Application/segments.queries';
+
+type LicensesCompanyParams = {
+  segmentos?: string;
+};
 
 export const LicensesCompanyPage = () => {
   const service = useGetCertificatesByCompany();
-  const [segmentIds, setSegmentIds] = useState<number[]>([]);
+  const { searchParams } = useURLParams<LicensesCompanyParams>();
+
+  const segmentIds = useMemo(() => {
+    const raw = searchParams?.segmentos;
+    if (!raw) return [];
+    return raw
+      .split(',')
+      .map(Number)
+      .filter((n) => !isNaN(n));
+  }, [searchParams?.segmentos]);
 
   const { data: filteredUserIds } = useGetUsersBySegments(
     { segmentIds },
@@ -24,13 +36,8 @@ export const LicensesCompanyPage = () => {
       <Container>
         <StatisticsCertificates />
         <MonthlyLicensesChart />
-        <Container row align="center" space="small">
-          <div className="w-full max-w-[320px]">
-            <SegmentsFilter value={segmentIds} onChange={setSegmentIds} />
-          </div>
-        </Container>
         <Container row>
-          <div className="min-w-[300px] w-full">
+          <div className="min-w-75 w-full">
             <LicensesListWrapper
               service={service}
               filteredUserIds={

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { Button } from '@app/Application/Components/ui/button';
 import {
   Command,
@@ -15,7 +15,7 @@ import {
 } from '@app/Application/Components/ui/popover';
 import { Checkbox } from '@app/Application/Components/ui/checkbox';
 import { Label } from '@app/Application/Components/ui/label';
-import { Container } from '@app/Application';
+import { Container, useURLParams } from '@app/Application';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faChevronDown,
@@ -25,22 +25,38 @@ import {
 import { cn } from '@app/Application/lib/utils';
 import { useGetSegmentTypes } from '../Application/segments.queries';
 
-interface SegmentsFilterProps {
-  value: number[];
-  onChange: (ids: number[]) => void;
-}
+type SegmentsFilterParams = {
+  segmentos?: string;
+};
 
-export const SegmentsFilter = ({ value, onChange }: SegmentsFilterProps) => {
+export const SegmentsFilter = () => {
   const [open, setOpen] = useState(false);
   const { data: segments, isLoading } = useGetSegmentTypes();
+  const { searchParams, updateParams } = useURLParams<SegmentsFilterParams>();
+
+  const segmentIds = useMemo(() => {
+    const raw = searchParams?.segmentos;
+    if (!raw) return [];
+    return raw
+      .split(',')
+      .map(Number)
+      .filter((n) => !isNaN(n));
+  }, [searchParams?.segmentos]);
 
   const toggleSegment = (id: number) => {
-    if (value.includes(id)) {
-      onChange(value.filter((v) => v !== id));
-    } else {
-      onChange([...value, id]);
-    }
+    const newIds = segmentIds.includes(id)
+      ? segmentIds.filter((v) => v !== id)
+      : [...segmentIds, id];
+    updateParams({
+      segmentos: newIds.length > 0 ? newIds.join(',') : undefined,
+    });
   };
+
+  const segmentPlural = segmentIds.length !== 1 ? 's' : '';
+  const selectedText =
+    segmentIds.length === 0
+      ? 'Filtrar por segmentos'
+      : `${segmentIds.length} segmento${segmentPlural} seleccionado${segmentPlural}`;
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -50,8 +66,8 @@ export const SegmentsFilter = ({ value, onChange }: SegmentsFilterProps) => {
           role="combobox"
           aria-expanded={open}
           className={cn(
-            'w-full justify-between',
-            value.length > 0 && 'border-primary',
+            'w-full justify-between cursor-pointer',
+            segmentIds.length > 0 && 'border-primary',
           )}
         >
           <Container row align="center" space="small">
@@ -59,11 +75,7 @@ export const SegmentsFilter = ({ value, onChange }: SegmentsFilterProps) => {
               icon={faLayerGroup}
               className="size-4 text-muted-foreground"
             />
-            <span className="truncate">
-              {value.length === 0
-                ? 'Filtrar por segmentos'
-                : `${value.length} segmento${value.length !== 1 ? 's' : ''} seleccionado${value.length !== 1 ? 's' : ''}`}
-            </span>
+            <span className="truncate">{selectedText}</span>
           </Container>
           <FontAwesomeIcon
             icon={faChevronDown}
@@ -71,7 +83,7 @@ export const SegmentsFilter = ({ value, onChange }: SegmentsFilterProps) => {
           />
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-[300px] p-0" align="start">
+      <PopoverContent className="w-75 p-0" align="start">
         <Command>
           <CommandInput placeholder="Buscar segmento..." />
           <CommandList>
@@ -80,7 +92,7 @@ export const SegmentsFilter = ({ value, onChange }: SegmentsFilterProps) => {
             </CommandEmpty>
             <CommandGroup>
               {segments?.map((seg) => {
-                const isSelected = value.includes(seg.id);
+                const isSelected = segmentIds.includes(seg.id);
                 return (
                   <CommandItem
                     key={seg.id}
@@ -97,14 +109,14 @@ export const SegmentsFilter = ({ value, onChange }: SegmentsFilterProps) => {
               })}
             </CommandGroup>
           </CommandList>
-          {value.length > 0 && (
+          {segmentIds.length > 0 && (
             <div className="border-t p-2">
               <Button
                 variant="ghost"
                 size="sm"
                 className="w-full text-xs"
                 onClick={() => {
-                  onChange([]);
+                  updateParams({ segmentos: undefined });
                   setOpen(false);
                 }}
               >

@@ -2,6 +2,7 @@ import { TSegmentsRouter } from '@server/domains/Segments';
 import { createTRPCReact } from '@trpc/react-query';
 
 const _segmentsService = createTRPCReact<TSegmentsRouter>();
+export const segmentsTRPC = _segmentsService;
 export const segmentsService = _segmentsService.segments;
 
 export const useGetSegmentTypes = () =>

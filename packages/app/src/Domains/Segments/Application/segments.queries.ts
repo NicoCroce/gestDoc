@@ -18,14 +18,32 @@ export const useGetSegmentTypesEnabled = (enabled: boolean) =>
 
 export type TuseGetSegmentTypes = ReturnType<typeof useGetSegmentTypes>;
 
-export const useCreateSegmentType = () =>
-  segmentsService.createType.useMutation();
+export const useCreateSegmentType = () => {
+  const utils = segmentsTRPC.useUtils();
+  return segmentsService.createType.useMutation({
+    onSuccess: () => {
+      utils.segments.getTypes.invalidate();
+    },
+  });
+};
 
-export const useUpdateSegmentType = () =>
-  segmentsService.updateType.useMutation();
+export const useUpdateSegmentType = () => {
+  const utils = segmentsTRPC.useUtils();
+  return segmentsService.updateType.useMutation({
+    onSuccess: () => {
+      utils.segments.getTypes.invalidate();
+    },
+  });
+};
 
-export const useDeleteSegmentType = () =>
-  segmentsService.deleteType.useMutation();
+export const useDeleteSegmentType = () => {
+  const utils = segmentsTRPC.useUtils();
+  return segmentsService.deleteType.useMutation({
+    onSuccess: () => {
+      utils.segments.getTypes.invalidate();
+    },
+  });
+};
 
 export const useGetUserSegments = (input: { userId: number }) =>
   segmentsService.getUserSegments.useQuery(input);

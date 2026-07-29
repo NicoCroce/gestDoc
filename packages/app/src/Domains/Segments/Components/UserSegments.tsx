@@ -27,7 +27,7 @@ import { useURLParams } from '@app/Application/Hooks/useURLParams';
 import { TPagination, IPaginationPages } from '@app/Application/Helpers';
 
 type UserSegmentsQuery = TPagination & { segmentos?: string };
-import type { ColumnDef } from '@tanstack/react-table';
+import type { ColumnDef, CellContext } from '@tanstack/react-table';
 
 interface Employee {
   id: number;
@@ -63,6 +63,40 @@ const StatCard = ({
   </div>
 );
 
+const EMPTY_STATE_CONTENT = {
+  search: {
+    title: (term: string) => `Sin resultados para «${term}»`,
+    description: 'Probá con otro término de búsqueda',
+  },
+  withoutSegments: {
+    title: 'Todos los empleados tienen segmentos asignados',
+    description: 'Desmarcá el filtro para ver todos los empleados',
+  },
+  segmentFilter: {
+    title: 'Ningún empleado en los segmentos seleccionados',
+    description: 'Limpiá el filtro de segmentos para ver todos los empleados',
+  },
+  default: {
+    title: 'No hay empleados',
+    description: 'Todavía no hay empleados dados de alta',
+  },
+} as const;
+
+const getEmptyStateKey = ({
+  hasSearch,
+  withoutSegments,
+  hasSegmentFilter,
+}: {
+  hasSearch: boolean;
+  withoutSegments: boolean;
+  hasSegmentFilter: boolean;
+}): keyof typeof EMPTY_STATE_CONTENT => {
+  if (hasSearch) return 'search';
+  if (withoutSegments) return 'withoutSegments';
+  if (hasSegmentFilter) return 'segmentFilter';
+  return 'default';
+};
+
 const EmptyState = ({
   hasSearch,
   searchTerm,
@@ -73,31 +107,28 @@ const EmptyState = ({
   searchTerm: string;
   hasSegmentFilter: boolean;
   withoutSegments: boolean;
-}) => (
-  <div className="flex flex-col items-center justify-center py-16 text-center">
-    <div className="mb-4 flex size-16 items-center justify-center rounded-full bg-muted">
-      <MagnifyingGlassIcon className="size-6 text-muted-foreground" />
+}) => {
+  const key = getEmptyStateKey({
+    hasSearch,
+    withoutSegments,
+    hasSegmentFilter,
+  });
+  const content = EMPTY_STATE_CONTENT[key];
+  const title =
+    typeof content.title === 'function'
+      ? content.title(searchTerm)
+      : content.title;
+
+  return (
+    <div className="flex flex-col items-center justify-center py-16 text-center">
+      <div className="mb-4 flex size-16 items-center justify-center rounded-full bg-muted">
+        <MagnifyingGlassIcon className="size-6 text-muted-foreground" />
+      </div>
+      <Text className="text-base font-medium">{title}</Text>
+      <Text.Muted className="mt-1 max-w-sm">{content.description}</Text.Muted>
     </div>
-    <Text className="text-base font-medium">
-      {hasSearch
-        ? `Sin resultados para «${searchTerm}»`
-        : withoutSegments
-          ? 'Todos los empleados tienen segmentos asignados'
-          : hasSegmentFilter
-            ? 'Ningún empleado en los segmentos seleccionados'
-            : 'No hay empleados'}
-    </Text>
-    <Text.Muted className="mt-1 max-w-sm">
-      {hasSearch
-        ? 'Probá con otro término de búsqueda'
-        : withoutSegments
-          ? 'Desmarcá el filtro para ver todos los empleados'
-          : hasSegmentFilter
-            ? 'Limpiá el filtro de segmentos para ver todos los empleados'
-            : 'Todavía no hay empleados dados de alta'}
-    </Text.Muted>
-  </div>
-);
+  );
+};
 
 const SegmentBadgesCell = ({ userId }: { userId: number }) => {
   const { data: userSegments, isLoading: segsLoading } = useGetUserSegments({
@@ -191,6 +222,79 @@ const UserSheetContent = ({
     [removeMutation, user.id, invalidateQueries],
   );
 
+  let assignedSegmentsContent: React.ReactNode;
+  if (segsLoading) {
+    assignedSegmentsContent = (
+      <div className="flex gap-2 flex-wrap">
+        <Skeleton className="h-7 w-20 rounded-full" />
+        <Skeleton className="h-7 w-16 rounded-full" />
+        <Skeleton className="h-7 w-24 rounded-full" />
+      </div>
+    );
+  } else if (userSegments && userSegments.length > 0) {
+    assignedSegmentsContent = (
+      <div className="flex flex-wrap gap-2">
+        {userSegments.map((seg) => (
+          <Badge
+            key={seg.id}
+            variant="secondary"
+            className="gap-1.5 pr-1.5 text-sm"
+          >
+            {seg.nombre}
+            <button
+              type="button"
+              onClick={() => handleRemove(seg.id)}
+              disabled={removeMutation.isPending}
+              className="ml-1 rounded-full p-0.5 hover:bg-destructive/20 hover:text-destructive transition-colors"
+              aria-label={`Quitar ${seg.nombre}`}
+            >
+              <Cross2Icon className="size-3" />
+            </button>
+          </Badge>
+        ))}
+      </div>
+    );
+  } else {
+    assignedSegmentsContent = (
+      <Text.Muted className="text-sm">Sin segmentos asignados</Text.Muted>
+    );
+  }
+
+  let addSegmentContent: React.ReactNode;
+  if (segsLoading) {
+    addSegmentContent = (
+      <div className="flex gap-2 flex-wrap">
+        <Skeleton className="h-9 w-24 rounded-md" />
+        <Skeleton className="h-9 w-20 rounded-md" />
+      </div>
+    );
+  } else if (available.length === 0) {
+    addSegmentContent = (
+      <div className="rounded-lg border border-dashed p-4 text-center">
+        <Text.Muted className="text-sm">
+          El usuario ya tiene todos los segmentos disponibles
+        </Text.Muted>
+      </div>
+    );
+  } else {
+    addSegmentContent = (
+      <div className="flex flex-wrap gap-2">
+        {available.map((seg) => (
+          <Button
+            key={seg.id}
+            variant="outline"
+            size="sm"
+            onClick={() => handleAssign(seg.id)}
+            disabled={assignMutation.isPending}
+            className="gap-1"
+          >
+            + {seg.nombre}
+          </Button>
+        ))}
+      </div>
+    );
+  }
+
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent className="sm:max-w-md">
@@ -214,38 +318,7 @@ const UserSheetContent = ({
               )}
             </div>
 
-            {segsLoading ? (
-              <div className="flex gap-2 flex-wrap">
-                <Skeleton className="h-7 w-20 rounded-full" />
-                <Skeleton className="h-7 w-16 rounded-full" />
-                <Skeleton className="h-7 w-24 rounded-full" />
-              </div>
-            ) : userSegments && userSegments.length > 0 ? (
-              <div className="flex flex-wrap gap-2">
-                {userSegments.map((seg) => (
-                  <Badge
-                    key={seg.id}
-                    variant="secondary"
-                    className="gap-1.5 pr-1.5 text-sm"
-                  >
-                    {seg.nombre}
-                    <button
-                      type="button"
-                      onClick={() => handleRemove(seg.id)}
-                      disabled={removeMutation.isPending}
-                      className="ml-1 rounded-full p-0.5 hover:bg-destructive/20 hover:text-destructive transition-colors"
-                      aria-label={`Quitar ${seg.nombre}`}
-                    >
-                      <Cross2Icon className="size-3" />
-                    </button>
-                  </Badge>
-                ))}
-              </div>
-            ) : (
-              <Text.Muted className="text-sm">
-                Sin segmentos asignados
-              </Text.Muted>
-            )}
+            {assignedSegmentsContent}
           </div>
 
           <div className="border-t pt-6">
@@ -253,38 +326,56 @@ const UserSheetContent = ({
               Agregar segmento
             </Text>
 
-            {segsLoading ? (
-              <div className="flex gap-2 flex-wrap">
-                <Skeleton className="h-9 w-24 rounded-md" />
-                <Skeleton className="h-9 w-20 rounded-md" />
-              </div>
-            ) : available.length === 0 ? (
-              <div className="rounded-lg border border-dashed p-4 text-center">
-                <Text.Muted className="text-sm">
-                  El usuario ya tiene todos los segmentos disponibles
-                </Text.Muted>
-              </div>
-            ) : (
-              <div className="flex flex-wrap gap-2">
-                {available.map((seg) => (
-                  <Button
-                    key={seg.id}
-                    variant="outline"
-                    size="sm"
-                    onClick={() => handleAssign(seg.id)}
-                    disabled={assignMutation.isPending}
-                    className="gap-1"
-                  >
-                    + {seg.nombre}
-                  </Button>
-                ))}
-              </div>
-            )}
+            {addSegmentContent}
           </div>
         </div>
       </SheetContent>
     </Sheet>
   );
+};
+
+const EmployeeCell = ({ row }: CellContext<Employee, unknown>) => (
+  <div className="flex items-center gap-3">
+    <div className="flex size-8 shrink-0 items-center justify-center rounded-full bg-muted text-xs font-semibold text-muted-foreground">
+      {row.original.nombre.charAt(0).toUpperCase()}
+      {row.original.apellido.charAt(0).toUpperCase()}
+    </div>
+    <div className="min-w-0">
+      <p className="truncate font-medium text-sm">
+        {row.original.nombre} {row.original.apellido}
+      </p>
+      <p className="truncate text-xs text-muted-foreground md:hidden">
+        {row.original.email}
+      </p>
+    </div>
+  </div>
+);
+
+const EmailCell = ({ row }: CellContext<Employee, unknown>) => (
+  <span className="text-sm text-muted-foreground">{row.original.email}</span>
+);
+
+const SegmentsCell = ({ row }: CellContext<Employee, unknown>) => (
+  <SegmentBadgesCell userId={row.original.id} />
+);
+
+const AccionHeader = () => <span className="sr-only">Acción</span>;
+
+const createAccionCell = (onSelect: (employee: Employee) => void) => {
+  const AccionCell = ({ row }: CellContext<Employee, unknown>) => (
+    <div className="text-right">
+      <Button
+        variant="ghost"
+        size="sm"
+        onClick={() => onSelect(row.original)}
+        className="text-xs"
+      >
+        Asignar
+      </Button>
+    </div>
+  );
+  AccionCell.displayName = 'AccionCell';
+  return AccionCell;
 };
 
 export const UserSegments = () => {
@@ -302,7 +393,7 @@ export const UserSegments = () => {
     return raw
       .split(',')
       .map(Number)
-      .filter((n) => !isNaN(n));
+      .filter((n) => !Number.isNaN(n));
   }, [searchParams?.segmentos]);
 
   const { data: paginated, isLoading } = useGetEmployees()(
@@ -338,56 +429,48 @@ export const UserSegments = () => {
       {
         id: 'empleado',
         header: 'Empleado',
-        cell: ({ row }) => (
-          <div className="flex items-center gap-3">
-            <div className="flex size-8 shrink-0 items-center justify-center rounded-full bg-muted text-xs font-semibold text-muted-foreground">
-              {row.original.nombre.charAt(0).toUpperCase()}
-              {row.original.apellido.charAt(0).toUpperCase()}
-            </div>
-            <div className="min-w-0">
-              <p className="truncate font-medium text-sm">
-                {row.original.nombre} {row.original.apellido}
-              </p>
-              <p className="truncate text-xs text-muted-foreground md:hidden">
-                {row.original.email}
-              </p>
-            </div>
-          </div>
-        ),
+        cell: EmployeeCell,
       },
       {
         id: 'email',
         header: 'Email',
-        cell: ({ row }) => (
-          <span className="text-sm text-muted-foreground">
-            {row.original.email}
-          </span>
-        ),
+        cell: EmailCell,
       },
       {
         id: 'segmentos',
         header: 'Segmentos',
-        cell: ({ row }) => <SegmentBadgesCell userId={row.original.id} />,
+        cell: SegmentsCell,
       },
       {
         id: 'accion',
-        header: () => <span className="sr-only">Acción</span>,
-        cell: ({ row }) => (
-          <div className="text-right">
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => setSelectedUser(row.original)}
-              className="text-xs"
-            >
-              Asignar
-            </Button>
-          </div>
-        ),
+        header: AccionHeader,
+        cell: createAccionCell(setSelectedUser),
       },
     ],
     [],
   );
+
+  let tableContent: React.ReactNode;
+  if (isLoading) {
+    tableContent = <DataTable.Skeleton />;
+  } else if (employees.length > 0) {
+    tableContent = (
+      <DataTable
+        columns={columns}
+        data={employees}
+        pagination={paginationMeta}
+      />
+    );
+  } else {
+    tableContent = (
+      <EmptyState
+        hasSearch={search.length > 0}
+        searchTerm={search}
+        hasSegmentFilter={segmentFilter.length > 0}
+        withoutSegments={withoutSegments}
+      />
+    );
+  }
 
   return (
     <Container space="medium">
@@ -481,22 +564,7 @@ export const UserSegments = () => {
         </div>
       </div>
 
-      {isLoading ? (
-        <DataTable.Skeleton />
-      ) : employees.length > 0 ? (
-        <DataTable
-          columns={columns}
-          data={employees}
-          pagination={paginationMeta}
-        />
-      ) : (
-        <EmptyState
-          hasSearch={search.length > 0}
-          searchTerm={search}
-          hasSegmentFilter={segmentFilter.length > 0}
-          withoutSegments={withoutSegments}
-        />
-      )}
+      {tableContent}
 
       {selectedUser && (
         <UserSheetContent

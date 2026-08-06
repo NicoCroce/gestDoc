@@ -34,7 +34,15 @@ import { CertificateModel } from './Certificates.model';
 import { CertificatesTypesModel } from './CertificatesTypes.model';
 import { CertificatesFilters } from './CertificatesFilters';
 import { Op } from 'sequelize';
-import { sequelize } from '@server/Infrastructure';
+import {
+  addDays,
+  buildEmployeeName,
+  employeeSegmentName,
+  endOfToday,
+  formatDate,
+  sequelize,
+  startOfToday,
+} from '@server/Infrastructure';
 
 export class CertificatesRepositoryImplementation implements CertificateRepository {
   async appendImages({
@@ -592,64 +600,18 @@ export class CertificatesRepositoryImplementation implements CertificateReposito
 
   // ── Reporte diario (daily-admin-report) ──────────────────────────────────
 
-  private static formatDate(date: Date): string {
-    const d = new Date(date);
-    const year = d.getFullYear();
-    const month = String(d.getMonth() + 1).padStart(2, '0');
-    const day = String(d.getDate()).padStart(2, '0');
-    return `${year}-${month}-${day}`;
-  }
-
-  private static startOfToday(): Date {
-    const start = new Date();
-    start.setHours(0, 0, 0, 0);
-    return start;
-  }
-
-  private static endOfToday(): Date {
-    const end = new Date();
-    end.setHours(23, 59, 59, 999);
-    return end;
-  }
-
-  private static addDays(from: Date, days: number): Date {
-    const result = new Date(from);
-    result.setDate(result.getDate() + days);
-    result.setHours(23, 59, 59, 999);
-    return result;
-  }
-
-  private static buildEmployeeName(
-    user: { nombre?: string | null; apellido?: string | null } | undefined,
-  ): string {
-    return `${user?.nombre ?? ''} ${user?.apellido ?? ''}`.trim();
-  }
-
-  private static employeeSegmentName(user: unknown): string | null {
-    const segmentUser = user as {
-      UsuariosSegmentosModels?: Array<{
-        TiposSegmentosModel?: { nombre?: string | null } | null;
-      } | null>;
-    };
-
-    return (
-      segmentUser?.UsuariosSegmentosModels?.[0]?.TiposSegmentosModel?.nombre ??
-      null
-    );
-  }
-
   async getEmployeesOnLeaveToday({
     requestContext,
   }: IGetEmployeesOnLeaveTodayRepository): Promise<IEmployeeOnLeaveRecord[]> {
     const ownerId = requestContext.values.ownerId;
-    const startOfToday = CertificatesRepositoryImplementation.startOfToday();
-    const endOfToday = CertificatesRepositoryImplementation.endOfToday();
+    const todayStart = startOfToday();
+    const todayEnd = endOfToday();
 
     const certificates = await CertificateModel.findAll({
       where: {
         estado: 'aprobado',
-        fecha_inicio: { [Op.lte]: endOfToday },
-        fecha_fin: { [Op.gte]: startOfToday },
+        fecha_inicio: { [Op.lte]: todayEnd },
+        fecha_fin: { [Op.gte]: todayStart },
       },
       include: [
         {
@@ -669,19 +631,11 @@ export class CertificatesRepositoryImplementation implements CertificateReposito
 
     return certificates.map((certificate) => ({
       employeeId: certificate.id_usuario,
-      employeeName: CertificatesRepositoryImplementation.buildEmployeeName(
-        certificate.User,
-      ),
+      employeeName: buildEmployeeName(certificate.User),
       licenseType: certificate.CertificatesTypesModel?.denominacion ?? '',
-      startDate: CertificatesRepositoryImplementation.formatDate(
-        certificate.fecha_inicio,
-      ),
-      endDate: CertificatesRepositoryImplementation.formatDate(
-        certificate.fecha_fin,
-      ),
-      returnDate: CertificatesRepositoryImplementation.formatDate(
-        certificate.fecha_reintegro,
-      ),
+      startDate: formatDate(certificate.fecha_inicio),
+      endDate: formatDate(certificate.fecha_fin),
+      returnDate: formatDate(certificate.fecha_reintegro),
     }));
   }
 
@@ -689,7 +643,7 @@ export class CertificatesRepositoryImplementation implements CertificateReposito
     requestContext,
   }: IGetPendingLicensesRepository): Promise<IPendingLicenseRecord[]> {
     const ownerId = requestContext.values.ownerId;
-    const startOfToday = CertificatesRepositoryImplementation.startOfToday();
+    const todayStart = startOfToday();
     const dayInMs = 86_400_000;
 
     const certificates = await CertificateModel.findAll({
@@ -712,21 +666,14 @@ export class CertificatesRepositoryImplementation implements CertificateReposito
     return certificates
       .map((certificate) => ({
         employeeId: certificate.id_usuario,
-        employeeName: CertificatesRepositoryImplementation.buildEmployeeName(
-          certificate.User,
-        ),
+        employeeName: buildEmployeeName(certificate.User),
         licenseType: certificate.CertificatesTypesModel?.denominacion ?? '',
-        startDate: CertificatesRepositoryImplementation.formatDate(
-          certificate.fecha_inicio,
-        ),
-        endDate: CertificatesRepositoryImplementation.formatDate(
-          certificate.fecha_fin,
-        ),
+        startDate: formatDate(certificate.fecha_inicio),
+        endDate: formatDate(certificate.fecha_fin),
         daysSinceRequest: Math.max(
           0,
           Math.floor(
-            (startOfToday.getTime() -
-              new Date(certificate.createdAt).getTime()) /
+            (todayStart.getTime() - new Date(certificate.createdAt).getTime()) /
               dayInMs,
           ),
         ),
@@ -738,17 +685,14 @@ export class CertificatesRepositoryImplementation implements CertificateReposito
     requestContext,
   }: IGetUpcomingVacationsRepository): Promise<IUpcomingVacationRecord[]> {
     const ownerId = requestContext.values.ownerId;
-    const startOfToday = CertificatesRepositoryImplementation.startOfToday();
-    const in15Days = CertificatesRepositoryImplementation.addDays(
-      startOfToday,
-      15,
-    );
+    const todayStart = startOfToday();
+    const in15Days = addDays(todayStart, 15);
 
     const certificates = await CertificateModel.findAll({
       where: {
         estado: 'aprobado',
         id_tipo_certificado: 1,
-        fecha_inicio: { [Op.between]: [startOfToday, in15Days] },
+        fecha_inicio: { [Op.between]: [todayStart, in15Days] },
       },
       include: [
         {
@@ -783,18 +727,10 @@ export class CertificatesRepositoryImplementation implements CertificateReposito
 
     return certificates.map((certificate) => ({
       employeeId: certificate.id_usuario,
-      employeeName: CertificatesRepositoryImplementation.buildEmployeeName(
-        certificate.User,
-      ),
-      segmentName: CertificatesRepositoryImplementation.employeeSegmentName(
-        certificate.User,
-      ),
-      startDate: CertificatesRepositoryImplementation.formatDate(
-        certificate.fecha_inicio,
-      ),
-      endDate: CertificatesRepositoryImplementation.formatDate(
-        certificate.fecha_fin,
-      ),
+      employeeName: buildEmployeeName(certificate.User),
+      segmentName: employeeSegmentName(certificate.User),
+      startDate: formatDate(certificate.fecha_inicio),
+      endDate: formatDate(certificate.fecha_fin),
     }));
   }
 
@@ -802,16 +738,13 @@ export class CertificatesRepositoryImplementation implements CertificateReposito
     requestContext,
   }: IGetExpiringLicensesRepository): Promise<IExpiringLicenseRecord[]> {
     const ownerId = requestContext.values.ownerId;
-    const startOfToday = CertificatesRepositoryImplementation.startOfToday();
-    const in7Days = CertificatesRepositoryImplementation.addDays(
-      startOfToday,
-      7,
-    );
+    const todayStart = startOfToday();
+    const in7Days = addDays(todayStart, 7);
 
     const certificates = await CertificateModel.findAll({
       where: {
         estado: 'aprobado',
-        fecha_fin: { [Op.between]: [startOfToday, in7Days] },
+        fecha_fin: { [Op.between]: [todayStart, in7Days] },
       },
       include: [
         {
@@ -831,13 +764,9 @@ export class CertificatesRepositoryImplementation implements CertificateReposito
 
     return certificates.map((certificate) => ({
       employeeId: certificate.id_usuario,
-      employeeName: CertificatesRepositoryImplementation.buildEmployeeName(
-        certificate.User,
-      ),
+      employeeName: buildEmployeeName(certificate.User),
       licenseType: certificate.CertificatesTypesModel?.denominacion ?? '',
-      endDate: CertificatesRepositoryImplementation.formatDate(
-        certificate.fecha_fin,
-      ),
+      endDate: formatDate(certificate.fecha_fin),
     }));
   }
 
@@ -845,14 +774,14 @@ export class CertificatesRepositoryImplementation implements CertificateReposito
     requestContext,
   }: ICountLicensesInProgressRepository): Promise<number> {
     const ownerId = requestContext.values.ownerId;
-    const startOfToday = CertificatesRepositoryImplementation.startOfToday();
-    const endOfToday = CertificatesRepositoryImplementation.endOfToday();
+    const todayStart = startOfToday();
+    const todayEnd = endOfToday();
 
     return CertificateModel.count({
       where: {
         estado: 'aprobado',
-        fecha_inicio: { [Op.lte]: endOfToday },
-        fecha_fin: { [Op.gte]: startOfToday },
+        fecha_inicio: { [Op.lte]: todayEnd },
+        fecha_fin: { [Op.gte]: todayStart },
       },
       include: [
         {

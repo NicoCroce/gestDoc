@@ -17,6 +17,7 @@ import { UserModel } from '@server/domains/Users/Infrastructure/Database/Users.m
 import { UsuariosSegmentosModel } from '@server/domains/Segments/Infrastructure/Database/UsuariosSegmentos.model';
 import { IPaginationResponse } from '@server/Application';
 import { PaginationImplementation } from '@server/Infrastructure/utils/pagination';
+import { buildEmployeeName } from '@server/Infrastructure';
 import { sequelize } from '@server/Infrastructure/Database';
 
 export class DisclaimerRepositoryImplementation implements DisclaimerRepository {
@@ -236,13 +237,6 @@ export class DisclaimerRepositoryImplementation implements DisclaimerRepository 
 
   // ── Reporte diario (daily-admin-report) ──────────────────────────────────
 
-  private static buildEmployeeName(user: {
-    nombre?: string | null;
-    apellido?: string | null;
-  }): string {
-    return `${user?.nombre ?? ''} ${user?.apellido ?? ''}`.trim();
-  }
-
   private hasValidSignature(
     userId: number,
     timestamp: Date | undefined | null,
@@ -293,8 +287,7 @@ export class DisclaimerRepositoryImplementation implements DisclaimerRepository 
       })
       .map((user) => ({
         employeeId: user.id,
-        employeeName:
-          DisclaimerRepositoryImplementation.buildEmployeeName(user),
+        employeeName: buildEmployeeName(user),
         employeeEmail: user.email,
       }));
   }

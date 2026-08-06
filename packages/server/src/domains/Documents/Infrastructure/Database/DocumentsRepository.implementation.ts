@@ -18,6 +18,7 @@ import { DocumentsTypesModel } from '@server/domains/DocumentsTypes/Infrastructu
 import { UserModel } from '@server/domains/Users';
 import { UsuariosSegmentosModel } from '@server/domains/Segments/Infrastructure/Database/UsuariosSegmentos.model';
 import { Op, IncludeOptions, WhereOptions } from 'sequelize';
+import { buildEmployeeName } from '@server/Infrastructure';
 
 export class DocumentsRepositoryImplementation implements DocumentRepository {
   async getDocuments({
@@ -275,12 +276,6 @@ export class DocumentsRepositoryImplementation implements DocumentRepository {
 
   // ── Reporte diario (daily-admin-report) ──────────────────────────────────
 
-  private static buildEmployeeName(
-    user: { nombre?: string | null; apellido?: string | null } | undefined,
-  ): string {
-    return `${user?.nombre ?? ''} ${user?.apellido ?? ''}`.trim();
-  }
-
   async getUnsignedDocuments({
     requestContext,
   }: IGetUnsignedDocumentsRepository): Promise<IUnsignedDocumentRecord[]> {
@@ -311,9 +306,7 @@ export class DocumentsRepositoryImplementation implements DocumentRepository {
       documentId: document.id,
       documentTitle: document.titulo,
       employeeId: document.Usuario_id,
-      employeeName: DocumentsRepositoryImplementation.buildEmployeeName(
-        document.User,
-      ),
+      employeeName: buildEmployeeName(document.User),
       viewStatus: document.visualizado ? 'Visto' : 'No visto',
     }));
   }

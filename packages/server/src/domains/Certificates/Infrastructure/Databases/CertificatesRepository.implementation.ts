@@ -1,8 +1,20 @@
 import { UserModel } from '@server/domains/Users';
+import { UsuariosSegmentosModel } from '@server/domains/Segments/Infrastructure/Database/UsuariosSegmentos.model';
+import { TiposSegmentosModel } from '@server/domains/Segments/Infrastructure/Database/TiposSegmentos.model';
 import {
   Certificate,
   CertificateRepository,
+  ICountLicensesInProgressRepository,
+  ICountPendingLicensesRepository,
+  IEmployeeOnLeaveRecord,
+  IExpiringLicenseRecord,
   IGetCertificatesRepository,
+  IGetEmployeesOnLeaveTodayRepository,
+  IGetExpiringLicensesRepository,
+  IGetPendingLicensesRepository,
+  IGetUpcomingVacationsRepository,
+  IPendingLicenseRecord,
+  IUpcomingVacationRecord,
 } from '../../Domain';
 import {
   IAddCertificateRepository,
@@ -575,6 +587,301 @@ export class CertificatesRepositoryImplementation implements CertificateReposito
       status: certificate.estado,
       files: certificate.archivos,
       userId: certificate.id_usuario,
+    });
+  }
+
+  // ── Reporte diario (daily-admin-report) ──────────────────────────────────
+
+  private static formatDate(date: Date): string {
+    const d = new Date(date);
+    const year = d.getFullYear();
+    const month = String(d.getMonth() + 1).padStart(2, '0');
+    const day = String(d.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  }
+
+  private static startOfToday(): Date {
+    const start = new Date();
+    start.setHours(0, 0, 0, 0);
+    return start;
+  }
+
+  private static endOfToday(): Date {
+    const end = new Date();
+    end.setHours(23, 59, 59, 999);
+    return end;
+  }
+
+  private static addDays(from: Date, days: number): Date {
+    const result = new Date(from);
+    result.setDate(result.getDate() + days);
+    result.setHours(23, 59, 59, 999);
+    return result;
+  }
+
+  private static buildEmployeeName(
+    user: { nombre?: string | null; apellido?: string | null } | undefined,
+  ): string {
+    return `${user?.nombre ?? ''} ${user?.apellido ?? ''}`.trim();
+  }
+
+  private static employeeSegmentName(user: unknown): string | null {
+    const segmentUser = user as {
+      UsuariosSegmentosModels?: Array<{
+        TiposSegmentosModel?: { nombre?: string | null } | null;
+      } | null>;
+    };
+
+    return (
+      segmentUser?.UsuariosSegmentosModels?.[0]?.TiposSegmentosModel?.nombre ??
+      null
+    );
+  }
+
+  async getEmployeesOnLeaveToday({
+    requestContext,
+  }: IGetEmployeesOnLeaveTodayRepository): Promise<IEmployeeOnLeaveRecord[]> {
+    const ownerId = requestContext.values.ownerId;
+    const startOfToday = CertificatesRepositoryImplementation.startOfToday();
+    const endOfToday = CertificatesRepositoryImplementation.endOfToday();
+
+    const certificates = await CertificateModel.findAll({
+      where: {
+        estado: 'aprobado',
+        fecha_inicio: { [Op.lte]: endOfToday },
+        fecha_fin: { [Op.gte]: startOfToday },
+      },
+      include: [
+        {
+          model: UserModel,
+          as: 'User',
+          required: true,
+          where: { id_propietario: ownerId },
+          attributes: ['id', 'nombre', 'apellido'],
+        },
+        {
+          model: CertificatesTypesModel,
+          attributes: ['denominacion'],
+        },
+      ],
+      order: [[{ model: UserModel, as: 'User' }, 'apellido', 'ASC']],
+    });
+
+    return certificates.map((certificate) => ({
+      employeeId: certificate.id_usuario,
+      employeeName: CertificatesRepositoryImplementation.buildEmployeeName(
+        certificate.User,
+      ),
+      licenseType: certificate.CertificatesTypesModel?.denominacion ?? '',
+      startDate: CertificatesRepositoryImplementation.formatDate(
+        certificate.fecha_inicio,
+      ),
+      endDate: CertificatesRepositoryImplementation.formatDate(
+        certificate.fecha_fin,
+      ),
+      returnDate: CertificatesRepositoryImplementation.formatDate(
+        certificate.fecha_reintegro,
+      ),
+    }));
+  }
+
+  async getPendingLicenses({
+    requestContext,
+  }: IGetPendingLicensesRepository): Promise<IPendingLicenseRecord[]> {
+    const ownerId = requestContext.values.ownerId;
+    const startOfToday = CertificatesRepositoryImplementation.startOfToday();
+    const dayInMs = 86_400_000;
+
+    const certificates = await CertificateModel.findAll({
+      where: { estado: 'pendiente' },
+      include: [
+        {
+          model: UserModel,
+          as: 'User',
+          required: true,
+          where: { id_propietario: ownerId },
+          attributes: ['id', 'nombre', 'apellido'],
+        },
+        {
+          model: CertificatesTypesModel,
+          attributes: ['denominacion'],
+        },
+      ],
+    });
+
+    return certificates
+      .map((certificate) => ({
+        employeeId: certificate.id_usuario,
+        employeeName: CertificatesRepositoryImplementation.buildEmployeeName(
+          certificate.User,
+        ),
+        licenseType: certificate.CertificatesTypesModel?.denominacion ?? '',
+        startDate: CertificatesRepositoryImplementation.formatDate(
+          certificate.fecha_inicio,
+        ),
+        endDate: CertificatesRepositoryImplementation.formatDate(
+          certificate.fecha_fin,
+        ),
+        daysSinceRequest: Math.max(
+          0,
+          Math.floor(
+            (startOfToday.getTime() -
+              new Date(certificate.createdAt).getTime()) /
+              dayInMs,
+          ),
+        ),
+      }))
+      .sort((a, b) => b.daysSinceRequest - a.daysSinceRequest);
+  }
+
+  async getUpcomingVacations({
+    requestContext,
+  }: IGetUpcomingVacationsRepository): Promise<IUpcomingVacationRecord[]> {
+    const ownerId = requestContext.values.ownerId;
+    const startOfToday = CertificatesRepositoryImplementation.startOfToday();
+    const in15Days = CertificatesRepositoryImplementation.addDays(
+      startOfToday,
+      15,
+    );
+
+    const certificates = await CertificateModel.findAll({
+      where: {
+        estado: 'aprobado',
+        id_tipo_certificado: 1,
+        fecha_inicio: { [Op.between]: [startOfToday, in15Days] },
+      },
+      include: [
+        {
+          model: UserModel,
+          as: 'User',
+          required: true,
+          where: { id_propietario: ownerId },
+          attributes: ['id', 'nombre', 'apellido'],
+          include: [
+            {
+              model: UsuariosSegmentosModel,
+              required: false,
+              attributes: [],
+              include: [
+                {
+                  model: TiposSegmentosModel,
+                  required: false,
+                  attributes: ['nombre'],
+                },
+              ],
+            },
+          ],
+        },
+        {
+          model: CertificatesTypesModel,
+          where: { descripcion: { [Op.like]: '%vacaciones%' } },
+          attributes: ['denominacion'],
+        },
+      ],
+      order: [[{ model: UserModel, as: 'User' }, 'apellido', 'ASC']],
+    });
+
+    return certificates.map((certificate) => ({
+      employeeId: certificate.id_usuario,
+      employeeName: CertificatesRepositoryImplementation.buildEmployeeName(
+        certificate.User,
+      ),
+      segmentName: CertificatesRepositoryImplementation.employeeSegmentName(
+        certificate.User,
+      ),
+      startDate: CertificatesRepositoryImplementation.formatDate(
+        certificate.fecha_inicio,
+      ),
+      endDate: CertificatesRepositoryImplementation.formatDate(
+        certificate.fecha_fin,
+      ),
+    }));
+  }
+
+  async getExpiringLicenses({
+    requestContext,
+  }: IGetExpiringLicensesRepository): Promise<IExpiringLicenseRecord[]> {
+    const ownerId = requestContext.values.ownerId;
+    const startOfToday = CertificatesRepositoryImplementation.startOfToday();
+    const in7Days = CertificatesRepositoryImplementation.addDays(
+      startOfToday,
+      7,
+    );
+
+    const certificates = await CertificateModel.findAll({
+      where: {
+        estado: 'aprobado',
+        fecha_fin: { [Op.between]: [startOfToday, in7Days] },
+      },
+      include: [
+        {
+          model: UserModel,
+          as: 'User',
+          required: true,
+          where: { id_propietario: ownerId },
+          attributes: ['id', 'nombre', 'apellido'],
+        },
+        {
+          model: CertificatesTypesModel,
+          attributes: ['denominacion'],
+        },
+      ],
+      order: [[{ model: UserModel, as: 'User' }, 'apellido', 'ASC']],
+    });
+
+    return certificates.map((certificate) => ({
+      employeeId: certificate.id_usuario,
+      employeeName: CertificatesRepositoryImplementation.buildEmployeeName(
+        certificate.User,
+      ),
+      licenseType: certificate.CertificatesTypesModel?.denominacion ?? '',
+      endDate: CertificatesRepositoryImplementation.formatDate(
+        certificate.fecha_fin,
+      ),
+    }));
+  }
+
+  async countLicensesInProgress({
+    requestContext,
+  }: ICountLicensesInProgressRepository): Promise<number> {
+    const ownerId = requestContext.values.ownerId;
+    const startOfToday = CertificatesRepositoryImplementation.startOfToday();
+    const endOfToday = CertificatesRepositoryImplementation.endOfToday();
+
+    return CertificateModel.count({
+      where: {
+        estado: 'aprobado',
+        fecha_inicio: { [Op.lte]: endOfToday },
+        fecha_fin: { [Op.gte]: startOfToday },
+      },
+      include: [
+        {
+          model: UserModel,
+          as: 'User',
+          required: true,
+          where: { id_propietario: ownerId },
+          attributes: [],
+        },
+      ],
+    });
+  }
+
+  async countPendingLicenses({
+    requestContext,
+  }: ICountPendingLicensesRepository): Promise<number> {
+    const ownerId = requestContext.values.ownerId;
+
+    return CertificateModel.count({
+      where: { estado: 'pendiente' },
+      include: [
+        {
+          model: UserModel,
+          as: 'User',
+          required: true,
+          where: { id_propietario: ownerId },
+          attributes: [],
+        },
+      ],
     });
   }
 }

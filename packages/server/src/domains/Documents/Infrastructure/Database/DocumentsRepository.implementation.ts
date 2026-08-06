@@ -1,12 +1,15 @@
 import {
   Document,
   DocumentRepository,
+  ICountUnsignedDocumentsRepository,
   IGetDocumentRepository,
   IGetDocumentsByCompanyRepository,
   IGetDocumentsRepository,
   IGetStatisticsDocumentsRepository,
   IGetStatisticsDocumentsResponseRepository,
+  IGetUnsignedDocumentsRepository,
   ISignDocumentRepository,
+  IUnsignedDocumentRecord,
   IViewDocumentRepository,
 } from '../../Domain';
 import { DocumentsFilters } from './DocumentsFilters';
@@ -14,7 +17,7 @@ import { Documentos } from './';
 import { DocumentsTypesModel } from '@server/domains/DocumentsTypes/Infrastructure';
 import { UserModel } from '@server/domains/Users';
 import { UsuariosSegmentosModel } from '@server/domains/Segments/Infrastructure/Database/UsuariosSegmentos.model';
-import { Op, IncludeOptions } from 'sequelize';
+import { Op, IncludeOptions, WhereOptions } from 'sequelize';
 
 export class DocumentsRepositoryImplementation implements DocumentRepository {
   async getDocuments({
@@ -268,5 +271,76 @@ export class DocumentsRepositoryImplementation implements DocumentRepository {
       pending: pendingDocuments,
       validated: validatedDocuments,
     };
+  }
+
+  // ── Reporte diario (daily-admin-report) ──────────────────────────────────
+
+  private static buildEmployeeName(
+    user: { nombre?: string | null; apellido?: string | null } | undefined,
+  ): string {
+    return `${user?.nombre ?? ''} ${user?.apellido ?? ''}`.trim();
+  }
+
+  async getUnsignedDocuments({
+    requestContext,
+  }: IGetUnsignedDocumentsRepository): Promise<IUnsignedDocumentRecord[]> {
+    const ownerId = requestContext.values.ownerId;
+
+    const documents = await Documentos.findAll({
+      where: {
+        firmado: { [Op.is]: null },
+      } as WhereOptions<Documentos>,
+      include: [
+        {
+          model: UserModel,
+          as: 'User',
+          required: true,
+          where: { id_propietario: ownerId },
+          attributes: ['id', 'nombre', 'apellido'],
+        },
+        {
+          model: DocumentsTypesModel,
+          where: { requiere_firma: true },
+          attributes: [],
+        },
+      ],
+      order: [[{ model: UserModel, as: 'User' }, 'apellido', 'ASC']],
+    });
+
+    return documents.map((document) => ({
+      documentId: document.id,
+      documentTitle: document.titulo,
+      employeeId: document.Usuario_id,
+      employeeName: DocumentsRepositoryImplementation.buildEmployeeName(
+        document.User,
+      ),
+      viewStatus: document.visualizado ? 'Visto' : 'No visto',
+    }));
+  }
+
+  async countUnsignedDocuments({
+    requestContext,
+  }: ICountUnsignedDocumentsRepository): Promise<number> {
+    const ownerId = requestContext.values.ownerId;
+
+    return Documentos.count({
+      where: {
+        firmado: { [Op.is]: null },
+      } as WhereOptions<Documentos>,
+      include: [
+        {
+          model: UserModel,
+          as: 'User',
+          required: true,
+          where: { id_propietario: ownerId },
+          attributes: [],
+        },
+        {
+          model: DocumentsTypesModel,
+          where: { requiere_firma: true },
+          attributes: [],
+        },
+      ],
+    });
   }
 }

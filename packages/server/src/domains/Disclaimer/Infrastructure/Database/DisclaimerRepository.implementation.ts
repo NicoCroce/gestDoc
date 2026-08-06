@@ -3,10 +3,13 @@ import { Op } from 'sequelize';
 import {
   DisclaimerAcceptance,
   DisclaimerRepository,
+  ICountPendingDisclaimersRepository,
   IEmployeeRecord,
   IGetEmployeesByCompanyRepository,
+  IGetPendingDisclaimerAcceptancesRepository,
   IGetPendingEmployeeIdsRepository,
   IGetSignatureStatusRepository,
+  IPendingDisclaimerAcceptanceRecord,
   ISignDisclaimerRepository,
 } from '../../Domain';
 import { DisclaimerAcceptanceModel } from './DisclaimerAcceptance.model';
@@ -229,5 +232,79 @@ export class DisclaimerRepositoryImplementation implements DisclaimerRepository 
 
   computeHashForTest(userId: number, timestamp: string): string {
     return this.computeHash(userId, timestamp);
+  }
+
+  // ── Reporte diario (daily-admin-report) ──────────────────────────────────
+
+  private static buildEmployeeName(user: {
+    nombre?: string | null;
+    apellido?: string | null;
+  }): string {
+    return `${user?.nombre ?? ''} ${user?.apellido ?? ''}`.trim();
+  }
+
+  private hasValidSignature(
+    userId: number,
+    timestamp: Date | undefined | null,
+    hash: string | undefined | null,
+  ): boolean {
+    if (!timestamp || !hash) return false;
+    const expectedHash = this.computeHash(userId, timestamp.toISOString());
+    return expectedHash === hash;
+  }
+
+  async getEmployeesWithoutDisclaimerAcceptance({
+    requestContext,
+  }: IGetPendingDisclaimerAcceptancesRepository): Promise<
+    IPendingDisclaimerAcceptanceRecord[]
+  > {
+    const ownerId = requestContext.values.ownerId;
+
+    const users = await UserModel.findAll({
+      where: { id_propietario: ownerId },
+      attributes: ['id', 'nombre', 'apellido', 'email'],
+      include: [
+        {
+          model: DisclaimerAcceptanceModel,
+          as: 'DisclaimerAcceptance',
+          required: false,
+          attributes: ['hash_prueba', 'timestamp'],
+        },
+      ],
+      order: [['apellido', 'ASC']],
+    });
+
+    return users
+      .filter((user) => {
+        const disclaimer =
+          (
+            user as unknown as {
+              DisclaimerAcceptance?: typeof DisclaimerAcceptanceModel.prototype;
+            }
+          ).DisclaimerAcceptance || null;
+
+        if (!disclaimer) return true;
+
+        return !this.hasValidSignature(
+          user.id,
+          disclaimer.timestamp,
+          disclaimer.hash_prueba,
+        );
+      })
+      .map((user) => ({
+        employeeId: user.id,
+        employeeName:
+          DisclaimerRepositoryImplementation.buildEmployeeName(user),
+        employeeEmail: user.email,
+      }));
+  }
+
+  async countPendingDisclaimers({
+    requestContext,
+  }: ICountPendingDisclaimersRepository): Promise<number> {
+    const pending = await this.getEmployeesWithoutDisclaimerAcceptance({
+      requestContext,
+    });
+    return pending.length;
   }
 }

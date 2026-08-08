@@ -13,8 +13,12 @@ import {
 
 import { UserModel } from './Users.model';
 import { CompaniesModel } from '@server/domains/Companies/Infrastructure';
+import { TenantAwareRepository } from '@server/Infrastructure/Database';
 
-export class UsersRepositoryImplementation implements UserRepository {
+export class UsersRepositoryImplementation
+  extends TenantAwareRepository
+  implements UserRepository
+{
   async getUser({
     id,
     requestContext,
@@ -39,6 +43,7 @@ export class UsersRepositoryImplementation implements UserRepository {
       ownerId: userFound.id_propietario,
     });
   }
+
   async validateUser({
     mail,
     id,
@@ -99,18 +104,19 @@ export class UsersRepositoryImplementation implements UserRepository {
       values: { ownerId },
     } = requestContext;
 
-    const whereClause: { [key: string]: unknown } = {
-      id: userIds,
-    };
-
-    if (ownerId) {
-      whereClause.id_propietario = ownerId;
-    }
-
-    const users = await UserModel.findAll({
-      attributes: ['email'],
-      where: whereClause,
-    });
+    const users = ownerId
+      ? await this.tenantFindAll(
+          UserModel,
+          {
+            attributes: ['email'],
+            where: { id: userIds },
+          },
+          ownerId,
+        )
+      : await UserModel.findAll({
+          attributes: ['email'],
+          where: { id: userIds },
+        });
 
     return users
       .map((user) => user.email)
@@ -150,8 +156,9 @@ export class UsersRepositoryImplementation implements UserRepository {
   async countActiveEmployees({
     requestContext,
   }: ICountActiveEmployeesRepository): Promise<number> {
+    const ownerId = requestContext.values.ownerId;
     return UserModel.count({
-      where: { id_propietario: requestContext.values.ownerId },
+      where: { id_propietario: ownerId },
     });
   }
 }

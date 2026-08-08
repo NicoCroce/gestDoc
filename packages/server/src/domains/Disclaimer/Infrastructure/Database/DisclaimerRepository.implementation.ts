@@ -19,8 +19,12 @@ import { IPaginationResponse } from '@server/Application';
 import { PaginationImplementation } from '@server/Infrastructure/utils/pagination';
 import { buildEmployeeName } from '@server/Infrastructure';
 import { sequelize } from '@server/Infrastructure/Database';
+import { TenantAwareRepository } from '@server/Infrastructure/Database';
 
-export class DisclaimerRepositoryImplementation implements DisclaimerRepository {
+export class DisclaimerRepositoryImplementation
+  extends TenantAwareRepository
+  implements DisclaimerRepository
+{
   private computeHash(userId: number, timestamp: string): string {
     const secret = process.env.SECRET_KEY_BACK || 'default-secret';
     const payload = `${userId}:${timestamp}`;
@@ -31,12 +35,13 @@ export class DisclaimerRepositoryImplementation implements DisclaimerRepository 
     userId,
     ownerId,
   }: IGetSignatureStatusRepository): Promise<DisclaimerAcceptance | null> {
-    const record = await DisclaimerAcceptanceModel.findOne({
-      where: {
-        id_usuario: userId,
-        id_empresa: ownerId,
-      },
-    });
+    // DisclaimerAcceptanceModel uses `id_empresa` as tenant column
+    const record = await this.tenantFindOne(
+      DisclaimerAcceptanceModel,
+      { where: { id_usuario: userId } },
+      ownerId,
+      'id_empresa',
+    );
 
     if (!record) return null;
 
@@ -254,19 +259,22 @@ export class DisclaimerRepositoryImplementation implements DisclaimerRepository 
   > {
     const ownerId = requestContext.values.ownerId;
 
-    const users = await UserModel.findAll({
-      where: { id_propietario: ownerId },
-      attributes: ['id', 'nombre', 'apellido', 'email'],
-      include: [
-        {
-          model: DisclaimerAcceptanceModel,
-          as: 'DisclaimerAcceptance',
-          required: false,
-          attributes: ['hash_prueba', 'timestamp'],
-        },
-      ],
-      order: [['apellido', 'ASC']],
-    });
+    const users = await this.tenantFindAll(
+      UserModel,
+      {
+        attributes: ['id', 'nombre', 'apellido', 'email'],
+        include: [
+          {
+            model: DisclaimerAcceptanceModel,
+            as: 'DisclaimerAcceptance',
+            required: false,
+            attributes: ['hash_prueba', 'timestamp'],
+          },
+        ],
+        order: [['apellido', 'ASC']],
+      },
+      ownerId,
+    );
 
     return users
       .filter((user) => {

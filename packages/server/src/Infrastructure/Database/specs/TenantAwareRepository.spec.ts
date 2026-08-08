@@ -447,7 +447,7 @@ describe('TenantAwareRepository', () => {
       });
 
       // Cross-check: owner A never sees owner B's data
-      const allIds = resultA.map((r: { id: number }) => r.id);
+      const allIds = resultA.map((r) => r.get('id') as number);
       expect(allIds).not.toContain(3);
     });
   });

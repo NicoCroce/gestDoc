@@ -73,7 +73,10 @@ export abstract class TenantAwareRepository {
     options: CreateOptions = {},
   ): Promise<M> {
     return model.create(
-      { ...data, [tenantColumn]: ownerId } as Parameters<M['create']>[0],
+      {
+        ...data,
+        [tenantColumn]: ownerId,
+      } as unknown as M['_creationAttributes'],
       options,
     );
   }
@@ -102,7 +105,7 @@ export abstract class TenantAwareRepository {
       throw new AppError('Record not found', 404, 'NOT_FOUND');
     }
 
-    await existing.update(data as Parameters<M['update']>[0]);
+    await existing.update(data as Partial<M>);
     return existing;
   }
 

@@ -44,7 +44,7 @@ import {
   startOfToday,
 } from '@server/Infrastructure';
 import { AppError } from '@server/Application';
-import { TenantAwareRepository } from '@server/Infrastructure/Database';
+import { TenantAwareRepository } from '@server/Infrastructure/Database/TenantAwareRepository';
 
 export class CertificatesRepositoryImplementation
   extends TenantAwareRepository

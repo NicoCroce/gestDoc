@@ -13,7 +13,7 @@ import {
 
 import { UserModel } from './Users.model';
 import { CompaniesModel } from '@server/domains/Companies/Infrastructure';
-import { TenantAwareRepository } from '@server/Infrastructure/Database';
+import { TenantAwareRepository } from '@server/Infrastructure/Database/TenantAwareRepository';
 
 export class UsersRepositoryImplementation
   extends TenantAwareRepository

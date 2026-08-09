@@ -19,7 +19,7 @@ import { IPaginationResponse } from '@server/Application';
 import { PaginationImplementation } from '@server/Infrastructure/utils/pagination';
 import { buildEmployeeName } from '@server/Infrastructure';
 import { sequelize } from '@server/Infrastructure/Database';
-import { TenantAwareRepository } from '@server/Infrastructure/Database';
+import { TenantAwareRepository } from '@server/Infrastructure/Database/TenantAwareRepository';
 
 export class DisclaimerRepositoryImplementation
   extends TenantAwareRepository

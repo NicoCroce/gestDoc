@@ -14,7 +14,7 @@ import {
   IGetUsersBySegmentsRepository,
 } from '../../Domain';
 import { ISegmentType } from '../../Domain/SegmentType.types';
-import { TenantAwareRepository } from '@server/Infrastructure/Database';
+import { TenantAwareRepository } from '@server/Infrastructure/Database/TenantAwareRepository';
 
 export class SegmentsRepositoryImplementation
   extends TenantAwareRepository

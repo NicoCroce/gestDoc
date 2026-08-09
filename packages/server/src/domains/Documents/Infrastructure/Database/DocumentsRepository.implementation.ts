@@ -26,7 +26,7 @@ import { UsuariosSegmentosModel } from '@server/domains/Segments/Infrastructure/
 import { Op, IncludeOptions, WhereOptions } from 'sequelize';
 import { buildEmployeeName } from '@server/Infrastructure';
 import { logger } from '@server/Infrastructure/utils/pino';
-import { TenantAwareRepository } from '@server/Infrastructure/Database';
+import { TenantAwareRepository } from '@server/Infrastructure/Database/TenantAwareRepository';
 
 export class DocumentsRepositoryImplementation
   extends TenantAwareRepository

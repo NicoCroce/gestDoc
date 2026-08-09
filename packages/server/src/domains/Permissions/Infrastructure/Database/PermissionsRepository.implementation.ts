@@ -17,7 +17,7 @@ import {
 import { RolesModel } from './Roles.model';
 import { PermissionsModel } from './Permissions.model';
 import { Users_RolesModel } from './Users_Roles.model';
-import { TenantAwareRepository } from '@server/Infrastructure/Database';
+import { TenantAwareRepository } from '@server/Infrastructure/Database/TenantAwareRepository';
 import { AppError } from '@server/Application';
 
 export class PermissionsRepositoryImplementation

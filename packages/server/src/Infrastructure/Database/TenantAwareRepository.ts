@@ -4,62 +4,21 @@ import { AppError } from '@server/Application';
 /**
  * Abstract base class for multi-tenant repositories.
  *
- * Centralises the `id_propietario` filtering pattern so that every
- * repository that works with a tenant-owned model can reuse the same
- * guarded helpers instead of repeating `where: { id_propietario: ownerId }`
- * in every method.
- *
- * **Defence-in-depth:** `tenantUpdate` and `tenantDelete` verify that the
- * target record belongs to the calling tenant before mutating. If the
+ * Provides guarded write helpers (`tenantCreate`, `tenantUpdate`, `tenantDelete`)
+ * that enforce tenant isolation. `tenantUpdate` and `tenantDelete` verify that
+ * the target record belongs to the calling tenant before mutating — if the
  * record does not exist OR belongs to another tenant, a 404 `AppError` is
- * thrown — this prevents IDOR attacks where a client supplies a valid ID
- * that belongs to a different company.
+ * thrown, preventing IDOR attacks.
+ *
+ * Read operations (`findAll`, `findOne`) are left to the caller since they
+ * don't benefit from abstraction — the `where: { id_propietario: ownerId }`
+ * filter is clearer when written inline.
  *
  * Models that use a column name other than `id_propietario` (e.g.
  * `DisclaimerAcceptanceModel` which uses `id_empresa`) can pass a custom
  * `tenantColumn` override to each helper.
  */
 export abstract class TenantAwareRepository {
-  // ─── Read helpers ────────────────────────────────────────────────────────
-
-  /**
-   * Find all rows of `model` filtered by `ownerId`, merged with any
-   * additional `options` (pagination, includes, ordering, etc.).
-   */
-  protected async tenantFindAll<M extends Model>(
-    model: ModelStatic<M>,
-    options: FindOptions = {},
-    ownerId: number,
-    tenantColumn = 'id_propietario',
-  ): Promise<M[]> {
-    return model.findAll({
-      ...options,
-      where: {
-        ...((options.where as Record<string, unknown>) ?? {}),
-        [tenantColumn]: ownerId,
-      },
-    } as FindOptions);
-  }
-
-  /**
-   * Find a single row of `model` filtered by `ownerId`, merged with any
-   * additional `options` (includes, etc.). Returns `null` when not found.
-   */
-  protected async tenantFindOne<M extends Model>(
-    model: ModelStatic<M>,
-    options: FindOptions = {},
-    ownerId: number,
-    tenantColumn = 'id_propietario',
-  ): Promise<M | null> {
-    return model.findOne({
-      ...options,
-      where: {
-        ...((options.where as Record<string, unknown>) ?? {}),
-        [tenantColumn]: ownerId,
-      },
-    } as FindOptions);
-  }
-
   // ─── Write helpers ───────────────────────────────────────────────────────
 
   /**

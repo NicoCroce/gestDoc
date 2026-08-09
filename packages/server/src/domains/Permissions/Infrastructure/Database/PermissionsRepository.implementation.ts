@@ -194,20 +194,17 @@ export class PermissionsRepositoryImplementation
 
   async getAdmins({ requestContext }: IGetAdminsRepository): Promise<string[]> {
     const ownerId = requestContext.values.ownerId;
-    const users = await this.tenantFindAll(
-      UserModel,
-      {
-        include: [
-          {
-            model: Users_RolesModel,
-            as: 'UsersRoles',
-            where: { id_rol: 1 },
-            attributes: [],
-          },
-        ],
-      },
-      ownerId,
-    );
+    const users = await UserModel.findAll({
+      where: { id_propietario: ownerId },
+      include: [
+        {
+          model: Users_RolesModel,
+          as: 'UsersRoles',
+          where: { id_rol: 1 },
+          attributes: [],
+        },
+      ],
+    });
 
     if (!users) {
       throw new AppError(`No se encontraron admins`, 404, 'NOT_FOUND');

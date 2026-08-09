@@ -24,7 +24,9 @@ export class SegmentsRepositoryImplementation
     requestContext,
   }: IGetSegmentTypesRepository): Promise<SegmentType[]> {
     const ownerId = requestContext.values.ownerId;
-    const segments = await this.tenantFindAll(TiposSegmentosModel, {}, ownerId);
+    const segments = await TiposSegmentosModel.findAll({
+      where: { id_propietario: ownerId },
+    });
 
     return segments.map((s) =>
       SegmentType.create({

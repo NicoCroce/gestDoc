@@ -36,12 +36,9 @@ export class DisclaimerRepositoryImplementation
     ownerId,
   }: IGetSignatureStatusRepository): Promise<DisclaimerAcceptance | null> {
     // DisclaimerAcceptanceModel uses `id_empresa` as tenant column
-    const record = await this.tenantFindOne(
-      DisclaimerAcceptanceModel,
-      { where: { id_usuario: userId } },
-      ownerId,
-      'id_empresa',
-    );
+    const record = await DisclaimerAcceptanceModel.findOne({
+      where: { id_usuario: userId, id_empresa: ownerId },
+    });
 
     if (!record) return null;
 
@@ -259,22 +256,19 @@ export class DisclaimerRepositoryImplementation
   > {
     const ownerId = requestContext.values.ownerId;
 
-    const users = await this.tenantFindAll(
-      UserModel,
-      {
-        attributes: ['id', 'nombre', 'apellido', 'email'],
-        include: [
-          {
-            model: DisclaimerAcceptanceModel,
-            as: 'DisclaimerAcceptance',
-            required: false,
-            attributes: ['hash_prueba', 'timestamp'],
-          },
-        ],
-        order: [['apellido', 'ASC']],
-      },
-      ownerId,
-    );
+    const users = await UserModel.findAll({
+      where: { id_propietario: ownerId },
+      attributes: ['id', 'nombre', 'apellido', 'email'],
+      include: [
+        {
+          model: DisclaimerAcceptanceModel,
+          as: 'DisclaimerAcceptance',
+          required: false,
+          attributes: ['hash_prueba', 'timestamp'],
+        },
+      ],
+      order: [['apellido', 'ASC']],
+    });
 
     return users
       .filter((user) => {

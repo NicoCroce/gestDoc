@@ -105,14 +105,10 @@ export class UsersRepositoryImplementation
     } = requestContext;
 
     const users = ownerId
-      ? await this.tenantFindAll(
-          UserModel,
-          {
-            attributes: ['email'],
-            where: { id: userIds },
-          },
-          ownerId,
-        )
+      ? await UserModel.findAll({
+          attributes: ['email'],
+          where: { id: userIds, id_propietario: ownerId },
+        })
       : await UserModel.findAll({
           attributes: ['email'],
           where: { id: userIds },

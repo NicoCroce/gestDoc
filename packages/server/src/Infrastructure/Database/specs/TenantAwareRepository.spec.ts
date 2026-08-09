@@ -1,29 +1,11 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import type { Model, ModelStatic, FindOptions, CreateOptions } from 'sequelize';
+import type { Model, ModelStatic, CreateOptions } from 'sequelize';
 import { AppError } from '@server/Application';
 import { TenantAwareRepository } from '../TenantAwareRepository';
 
 // ─── Test double: concrete subclass exposing protected methods ─────────────
 
 class TestableRepository extends TenantAwareRepository {
-  async exposeFindAll<M extends Model>(
-    model: ModelStatic<M>,
-    options: FindOptions,
-    ownerId: number,
-    tenantColumn?: string,
-  ): Promise<M[]> {
-    return this.tenantFindAll(model, options, ownerId, tenantColumn);
-  }
-
-  async exposeFindOne<M extends Model>(
-    model: ModelStatic<M>,
-    options: FindOptions,
-    ownerId: number,
-    tenantColumn?: string,
-  ): Promise<M | null> {
-    return this.tenantFindOne(model, options, ownerId, tenantColumn);
-  }
-
   async exposeCreate<M extends Model>(
     model: ModelStatic<M>,
     data: Record<string, unknown>,
@@ -71,125 +53,6 @@ describe('TenantAwareRepository', () => {
   beforeEach(() => {
     repo = new TestableRepository();
     vi.clearAllMocks();
-  });
-
-  // ── tenantFindAll ──────────────────────────────────────────────────────
-
-  describe('tenantFindAll', () => {
-    it('injects id_propietario = ownerId into the where clause', async () => {
-      const model = createMockModel();
-      vi.mocked(model.findAll).mockResolvedValue([]);
-
-      await repo.exposeFindAll(model, {}, 42);
-
-      expect(model.findAll).toHaveBeenCalledOnce();
-      expect(model.findAll).toHaveBeenCalledWith({
-        where: { id_propietario: 42 },
-      });
-    });
-
-    it('merges with existing where conditions without overwriting them', async () => {
-      const model = createMockModel();
-      vi.mocked(model.findAll).mockResolvedValue([]);
-
-      await repo.exposeFindAll(model, { where: { active: true } }, 10);
-
-      expect(model.findAll).toHaveBeenCalledWith({
-        where: { active: true, id_propietario: 10 },
-      });
-    });
-
-    it('returns only rows belonging to the calling tenant (multi-tenant isolation)', async () => {
-      const model = createMockModel();
-      const ownerARows = [{ id: 1, nombre: 'Segmento A', id_propietario: 1 }];
-      vi.mocked(model.findAll).mockResolvedValue(ownerARows as never);
-
-      const resultOwnerA = await repo.exposeFindAll(model, {}, 1);
-
-      expect(resultOwnerA).toEqual(ownerARows);
-      expect(model.findAll).toHaveBeenCalledWith({
-        where: { id_propietario: 1 },
-      });
-
-      vi.mocked(model.findAll).mockResolvedValue([]);
-
-      const resultOwnerB = await repo.exposeFindAll(model, {}, 2);
-
-      expect(resultOwnerB).toEqual([]);
-      expect(model.findAll).toHaveBeenCalledWith({
-        where: { id_propietario: 2 },
-      });
-    });
-
-    it('supports a custom tenantColumn', async () => {
-      const model = createMockModel();
-      vi.mocked(model.findAll).mockResolvedValue([]);
-
-      await repo.exposeFindAll(model, {}, 7, 'id_empresa');
-
-      expect(model.findAll).toHaveBeenCalledWith({
-        where: { id_empresa: 7 },
-      });
-    });
-
-    it('passes through additional FindOptions (attributes, order, include)', async () => {
-      const model = createMockModel();
-      vi.mocked(model.findAll).mockResolvedValue([]);
-
-      const include = [{ model: {} as ModelStatic<Model> }];
-      await repo.exposeFindAll(
-        model,
-        { attributes: ['id', 'nombre'], order: [['nombre', 'ASC']], include },
-        5,
-      );
-
-      expect(model.findAll).toHaveBeenCalledWith({
-        attributes: ['id', 'nombre'],
-        order: [['nombre', 'ASC']],
-        include,
-        where: { id_propietario: 5 },
-      });
-    });
-  });
-
-  // ── tenantFindOne ──────────────────────────────────────────────────────
-
-  describe('tenantFindOne', () => {
-    it('injects id_propietario = ownerId into the where clause', async () => {
-      const model = createMockModel();
-      vi.mocked(model.findOne).mockResolvedValue(null);
-
-      await repo.exposeFindOne(model, { where: { id: 99 } }, 42);
-
-      expect(model.findOne).toHaveBeenCalledWith({
-        where: { id: 99, id_propietario: 42 },
-      });
-    });
-
-    it('returns null when no record matches the tenant filter', async () => {
-      const model = createMockModel();
-      vi.mocked(model.findOne).mockResolvedValue(null);
-
-      const result = await repo.exposeFindOne(model, { where: { id: 5 } }, 999);
-
-      expect(result).toBeNull();
-    });
-
-    it('supports a custom tenantColumn', async () => {
-      const model = createMockModel();
-      vi.mocked(model.findOne).mockResolvedValue(null);
-
-      await repo.exposeFindOne(
-        model,
-        { where: { id_usuario: 3 } },
-        10,
-        'id_empresa',
-      );
-
-      expect(model.findOne).toHaveBeenCalledWith({
-        where: { id_usuario: 3, id_empresa: 10 },
-      });
-    });
   });
 
   // ── tenantCreate ───────────────────────────────────────────────────────
@@ -418,37 +281,6 @@ describe('TenantAwareRepository', () => {
 
       const result = await repo.exposeDelete(model, 20, 99);
       expect(result).toBe(20);
-    });
-
-    it('owner A findAll returns only their own data, not owner B data', async () => {
-      const model = createMockModel();
-
-      // Owner A query
-      const ownerAData = [
-        { id: 1, nombre: 'A-1', id_propietario: 42 },
-        { id: 2, nombre: 'A-2', id_propietario: 42 },
-      ];
-      vi.mocked(model.findAll).mockResolvedValue(ownerAData as never);
-
-      const resultA = await repo.exposeFindAll(model, {}, 42);
-      expect(resultA).toHaveLength(2);
-      expect(model.findAll).toHaveBeenCalledWith({
-        where: { id_propietario: 42 },
-      });
-
-      // Owner B query
-      const ownerBData = [{ id: 3, nombre: 'B-1', id_propietario: 99 }];
-      vi.mocked(model.findAll).mockResolvedValue(ownerBData as never);
-
-      const resultB = await repo.exposeFindAll(model, {}, 99);
-      expect(resultB).toHaveLength(1);
-      expect(model.findAll).toHaveBeenCalledWith({
-        where: { id_propietario: 99 },
-      });
-
-      // Cross-check: owner A never sees owner B's data
-      const allIds = resultA.map((r) => (r as unknown as { id: number }).id);
-      expect(allIds).not.toContain(3);
     });
   });
 });

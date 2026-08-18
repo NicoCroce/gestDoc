@@ -18,6 +18,7 @@ export interface ICertificate {
   requiresRest: boolean;
   status?: CertificateStatus;
   userId?: number;
+  rejectionReason?: string;
 }
 
 export interface IGetStatisticsCertificatesResponse {

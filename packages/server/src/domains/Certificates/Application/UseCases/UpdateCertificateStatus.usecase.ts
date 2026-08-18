@@ -40,6 +40,7 @@ export class UpdateCertificateStatus implements IUseCase<Certificate> {
     return this.certificatesRepository.updateCertificateStatus({
       id: input.id,
       status: input.status,
+      rejectionReason: input.rejectionReason,
       requestContext,
     });
   }

@@ -53,6 +53,7 @@ export interface IDeleteCertificateRepository extends IRequestContext {
 export interface IUpdateCertificateStatusRepository extends IRequestContext {
   id: number;
   status: CertificateStatus;
+  rejectionReason?: string;
 }
 
 export interface IGetCertificateRepository extends IRequestContext {

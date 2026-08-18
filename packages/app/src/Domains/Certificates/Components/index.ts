@@ -5,3 +5,4 @@ export * from './CertificatesGrid';
 export * from './CertificatesListSkeleton';
 export * from './FiltersCertificatesForm';
 export * from './NewLicenseButton';
+export * from './RejectionReasonModal';

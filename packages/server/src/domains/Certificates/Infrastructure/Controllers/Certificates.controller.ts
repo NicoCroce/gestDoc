@@ -91,10 +91,21 @@ export class CertificatesController {
 
   updateCertificateStatus = protectedProcedure
     .input(
-      z.object({
-        id: z.number(),
-        status: z.enum(['aprobado', 'rechazado', 'pendiente', 'validando']),
-      }),
+      z
+        .object({
+          id: z.number(),
+          status: z.enum(['aprobado', 'rechazado', 'pendiente', 'validando']),
+          rejectionReason: z.string().max(500).optional(),
+        })
+        .superRefine((data, ctx) => {
+          if (data.status === 'rechazado' && !data.rejectionReason?.trim()) {
+            ctx.addIssue({
+              code: z.ZodIssueCode.custom,
+              message: 'El motivo de rechazo es obligatorio',
+              path: ['rejectionReason'],
+            });
+          }
+        }),
     )
     .mutation(
       executeService(

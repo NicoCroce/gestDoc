@@ -28,6 +28,7 @@ export class CertificateModel extends Model<
     | 'eliminado';
 
   declare motivo: string;
+  declare motivo_rechazo: CreationOptional<string | null>;
   declare id_tipo_certificado: number;
   declare archivos: CreationOptional<string[]>;
 
@@ -85,6 +86,11 @@ CertificateModel.init(
     motivo: {
       type: DataTypes.STRING,
       allowNull: false,
+    },
+    motivo_rechazo: {
+      type: DataTypes.STRING(500),
+      allowNull: true,
+      defaultValue: null,
     },
     id_tipo_certificado: {
       type: DataTypes.BIGINT,

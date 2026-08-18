@@ -104,6 +104,7 @@ export class CertificatesRepositoryImplementation
         requiresRest: Boolean(certificate.requiere_reposo),
         status: certificate.estado,
         files: updatedFiles,
+        rejectionReason: certificate.motivo_rechazo ?? undefined,
       });
     } catch (error) {
       if (error instanceof AppError) throw error;
@@ -153,6 +154,7 @@ export class CertificatesRepositoryImplementation
         requiresRest: Boolean(certificate.requiere_reposo),
         status: certificate.estado,
         files: certificate.archivos,
+        rejectionReason: certificate.motivo_rechazo ?? undefined,
       }),
     );
   }
@@ -195,6 +197,7 @@ export class CertificatesRepositoryImplementation
         fecha_fin,
         fecha_reintegro,
         motivo,
+        motivo_rechazo,
         archivos,
         id_usuario,
         requiere_reposo,
@@ -218,6 +221,7 @@ export class CertificatesRepositoryImplementation
         files: archivos,
         userId: id_usuario,
         userName: `${User.nombre} ${User.apellido}`,
+        rejectionReason: motivo_rechazo ?? undefined,
       };
     });
   }
@@ -620,6 +624,7 @@ export class CertificatesRepositoryImplementation
       status: certificate.estado,
       files: certificate.archivos,
       userId: certificate.id_usuario,
+      rejectionReason: certificate.motivo_rechazo ?? undefined,
     });
   }
 
@@ -630,6 +635,7 @@ export class CertificatesRepositoryImplementation
   async updateCertificateStatus({
     id,
     status,
+    rejectionReason,
     requestContext,
   }: IUpdateCertificateStatusRepository): Promise<Certificate> {
     const ownerId = requestContext.values.ownerId;
@@ -652,7 +658,12 @@ export class CertificatesRepositoryImplementation
       throw new AppError('Certificate not found', 404, 'NOT_FOUND');
     }
 
-    await certificate.update({ estado: status });
+    await certificate.update({
+      estado: status,
+      ...(rejectionReason !== undefined
+        ? { motivo_rechazo: rejectionReason }
+        : {}),
+    });
 
     return Certificate.create({
       id: certificate.id,
@@ -668,6 +679,7 @@ export class CertificatesRepositoryImplementation
       status: certificate.estado,
       files: certificate.archivos,
       userId: certificate.id_usuario,
+      rejectionReason: certificate.motivo_rechazo ?? undefined,
     });
   }
 

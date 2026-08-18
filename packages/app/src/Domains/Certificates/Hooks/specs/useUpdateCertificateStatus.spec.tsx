@@ -80,6 +80,36 @@ describe('useUpdateCertificateStatus hook', () => {
     );
   });
 
+  // ── rejectionReason feature (006-license-rejection-reason) ──────────────
+  it('includes rejectionReason in payload when provided', async () => {
+    const { result } = renderHook(() => useUpdateCertificateStatus(), {
+      wrapper: createWrapper(),
+    });
+
+    await act(async () => {
+      await result.current.mutateUpdate(7, 'rechazado', 'Faltó documentación');
+    });
+
+    expect(mutateMock).toHaveBeenCalledWith(
+      { id: 7, status: 'rechazado', rejectionReason: 'Faltó documentación' },
+      expect.any(Object),
+    );
+  });
+
+  it('omits rejectionReason key from payload when not provided (spread condicional)', async () => {
+    const { result } = renderHook(() => useUpdateCertificateStatus(), {
+      wrapper: createWrapper(),
+    });
+
+    await act(async () => {
+      await result.current.mutateUpdate(7, 'aprobado');
+    });
+
+    const calledWith = mutateMock.mock.calls[0][0];
+    expect(calledWith).not.toHaveProperty('rejectionReason');
+    expect(calledWith).toEqual({ id: 7, status: 'aprobado' });
+  });
+
   it('invalidates certificate cache keys on success', async () => {
     const { result } = renderHook(() => useUpdateCertificateStatus(), {
       wrapper: createWrapper(),

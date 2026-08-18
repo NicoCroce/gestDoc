@@ -203,4 +203,91 @@ describe('UpdateCertificateStatus use case', () => {
 
     expect(result.values.status).toBe('rechazado');
   });
+
+  // ── rejectionReason forwarding (006-license-rejection-reason) ──────────
+  it('forwards rejectionReason to the repository when status is rechazado', async () => {
+    const cert = createCertificate({ status: 'pendiente' });
+    const updatedCert = createCertificate({ status: 'rechazado' });
+    vi.mocked(mockRepository.getCertificate).mockResolvedValue(cert);
+    vi.mocked(mockRepository.updateCertificateStatus).mockResolvedValue(
+      updatedCert,
+    );
+    mockGetRoleByUser.execute.mockResolvedValue('Full Admin');
+
+    const useCase = new UpdateCertificateStatus(
+      mockRepository,
+      mockGetRoleByUser as never,
+    );
+
+    await useCase.execute({
+      input: {
+        id: 1,
+        status: 'rechazado',
+        rejectionReason: 'Faltó documentación',
+      },
+      requestContext: adminContext,
+    });
+
+    expect(mockRepository.updateCertificateStatus).toHaveBeenCalledWith(
+      expect.objectContaining({
+        id: 1,
+        status: 'rechazado',
+        rejectionReason: 'Faltó documentación',
+      }),
+    );
+  });
+
+  it('forwards undefined rejectionReason when status is not rechazado', async () => {
+    const cert = createCertificate({ status: 'pendiente' });
+    const updatedCert = createCertificate({ status: 'aprobado' });
+    vi.mocked(mockRepository.getCertificate).mockResolvedValue(cert);
+    vi.mocked(mockRepository.updateCertificateStatus).mockResolvedValue(
+      updatedCert,
+    );
+    mockGetRoleByUser.execute.mockResolvedValue('Full Admin');
+
+    const useCase = new UpdateCertificateStatus(
+      mockRepository,
+      mockGetRoleByUser as never,
+    );
+
+    await useCase.execute({
+      input: { id: 1, status: 'aprobado' },
+      requestContext: adminContext,
+    });
+
+    expect(mockRepository.updateCertificateStatus).toHaveBeenCalledWith(
+      expect.objectContaining({
+        id: 1,
+        status: 'aprobado',
+        rejectionReason: undefined,
+      }),
+    );
+  });
+
+  // ── Multi-tenant — ownerId propagation ─────────────────────────────────
+  it('propagates ownerId from requestContext to the repository', async () => {
+    const cert = createCertificate({ status: 'pendiente' });
+    const updatedCert = createCertificate({ status: 'aprobado' });
+    const contextOwnerId99 = new RequestContext(1, 'req-owner99', 99);
+    vi.mocked(mockRepository.getCertificate).mockResolvedValue(cert);
+    vi.mocked(mockRepository.updateCertificateStatus).mockResolvedValue(
+      updatedCert,
+    );
+    mockGetRoleByUser.execute.mockResolvedValue('Full Admin');
+
+    const useCase = new UpdateCertificateStatus(
+      mockRepository,
+      mockGetRoleByUser as never,
+    );
+
+    await useCase.execute({
+      input: { id: 1, status: 'aprobado' },
+      requestContext: contextOwnerId99,
+    });
+
+    const callArg = vi.mocked(mockRepository.updateCertificateStatus).mock
+      .calls[0][0];
+    expect(callArg.requestContext.values.ownerId).toBe(99);
+  });
 });

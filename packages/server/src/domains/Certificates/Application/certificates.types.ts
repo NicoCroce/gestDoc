@@ -53,5 +53,5 @@ export interface IDeleteCertificate extends IRequestContext {
 }
 
 export interface IUpdateCertificateStatus extends IRequestContext {
-  input: { id: number; status: CertificateStatus };
+  input: { id: number; status: CertificateStatus; rejectionReason?: string };
 }

@@ -11,6 +11,7 @@ export const licenseStatusChange = ({
   returnDate,
   reason,
   status,
+  rejectionReason,
 }: ILicenseStatusChange) => ({
   subject: `[GestDoc] Su licencia ha sido ${status === 'aprobado' ? 'aprobada' : 'rechazada'}`,
   body: `<h1>Actualización de licencia</h1>
@@ -46,6 +47,14 @@ export const licenseStatusChange = ({
                     </span>
                   </td>
                 </tr>
+                ${
+                  status === 'rechazado' && rejectionReason
+                    ? `<tr>
+                  <td style="padding: 6px 12px 6px 0; font-weight: bold; color: #374151;">Motivo del rechazo</td>
+                  <td style="padding: 6px 0; color: #111827;">${rejectionReason}</td>
+                </tr>`
+                    : ''
+                }
               </table>
               ${emailFooter}
               `,

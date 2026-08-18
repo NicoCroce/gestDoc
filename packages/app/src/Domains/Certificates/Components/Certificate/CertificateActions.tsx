@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { Button, Container } from '@app/Application/Components';
 import {
   Select,
@@ -13,6 +14,7 @@ import { useUpdateCertificateStatus } from '../../Hooks/useUpdateCertificateStat
 import { TCertificate } from '../../Certificate.entity';
 import { CertificateStatus } from '@server/domains/Certificates/Domain/Certificate.types';
 import { faTrash } from '@fortawesome/free-solid-svg-icons';
+import { RejectionReasonModal } from '../RejectionReasonModal';
 
 type MutableStatus = Exclude<CertificateStatus, 'eliminado'>;
 
@@ -35,12 +37,35 @@ export const CertificateActions = ({
   const { mutateDelete, isPending: isDeleting } = useDeleteCertificate();
   const { mutateUpdate, isPending: isUpdating } = useUpdateCertificateStatus();
 
+  const [modalOpen, setModalOpen] = useState(false);
+  const [pendingStatus, setPendingStatus] = useState<MutableStatus | null>(
+    null,
+  );
+
   const handleDelete = async () => {
     await mutateDelete(certificate.id);
   };
 
   const handleStatusChange = async (status: string) => {
-    await mutateUpdate(certificate.id, status as MutableStatus);
+    const mutableStatus = status as MutableStatus;
+    if (mutableStatus === 'rechazado') {
+      setPendingStatus('rechazado');
+      setModalOpen(true);
+      return;
+    }
+    await mutateUpdate(certificate.id, mutableStatus);
+  };
+
+  const handleModalConfirm = async (reason: string) => {
+    if (!pendingStatus) return;
+    await mutateUpdate(certificate.id, pendingStatus, reason);
+    setModalOpen(false);
+    setPendingStatus(null);
+  };
+
+  const handleModalCancel = () => {
+    setModalOpen(false);
+    setPendingStatus(null);
   };
 
   // Los certificados eliminados no pueden tener acciones
@@ -73,29 +98,45 @@ export const CertificateActions = ({
 
   // Admin variant
   return (
-    <Container row className="gap-2">
-      <Select value={certificate.status} onValueChange={handleStatusChange}>
-        <SelectTrigger className="flex-1" disabled={isUpdating}>
-          <SelectValue />
-        </SelectTrigger>
-        <SelectContent>
-          {STATUS_OPTIONS.map((option) => (
-            <SelectItem key={option.value} value={option.value}>
-              {option.label}
-            </SelectItem>
-          ))}
-        </SelectContent>
-      </Select>
-      <AlertDialogCancelConfirm
-        onConfirm={handleDelete}
-        message="¿Estás seguro de que deseas eliminar esta licencia?"
-      >
-        <AlertDialogTrigger asChild>
-          <Button variant="outline" size="sm" disabled={isDeleting}>
-            {isDeleting ? 'Eliminando...' : 'Eliminar'}
-          </Button>
-        </AlertDialogTrigger>
-      </AlertDialogCancelConfirm>
-    </Container>
+    <>
+      <Container row className="gap-2">
+        <Select
+          value={
+            modalOpen
+              ? (pendingStatus ?? certificate.status)
+              : certificate.status
+          }
+          onValueChange={handleStatusChange}
+        >
+          <SelectTrigger className="flex-1" disabled={isUpdating}>
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            {STATUS_OPTIONS.map((option) => (
+              <SelectItem key={option.value} value={option.value}>
+                {option.label}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+        <AlertDialogCancelConfirm
+          onConfirm={handleDelete}
+          message="¿Estás seguro de que deseas eliminar esta licencia?"
+        >
+          <AlertDialogTrigger asChild>
+            <Button variant="outline" size="sm" disabled={isDeleting}>
+              {isDeleting ? 'Eliminando...' : 'Eliminar'}
+            </Button>
+          </AlertDialogTrigger>
+        </AlertDialogCancelConfirm>
+      </Container>
+
+      <RejectionReasonModal
+        open={modalOpen}
+        onConfirm={handleModalConfirm}
+        onCancel={handleModalCancel}
+        isPending={isUpdating}
+      />
+    </>
   );
 };

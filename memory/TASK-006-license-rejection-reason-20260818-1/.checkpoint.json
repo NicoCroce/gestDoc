@@ -1,0 +1,11 @@
+{
+  "task_id": "TASK-006-license-rejection-reason-20260818-1",
+  "feature": "license-rejection-reason",
+  "scope": "full-stack",
+  "branch": "006-license-rejection-reason",
+  "last_completed_step": "reviewer",
+  "completed_steps": ["back", "front", "tester", "qa", "reviewer"],
+  "pending_steps": ["close", "pr"],
+  "context_source": "specs/006-license-rejection-reason/spec.md + tasks.md",
+  "timestamp": "2026-08-18T19:15:00Z"
+}

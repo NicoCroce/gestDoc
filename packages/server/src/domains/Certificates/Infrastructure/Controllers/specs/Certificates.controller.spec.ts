@@ -151,4 +151,89 @@ describe('CertificatesController', () => {
 
     expect(updateCertificateStatus).not.toHaveBeenCalled();
   });
+
+  // ── updateCertificateStatus superRefine (006-license-rejection-reason) ──
+  describe('updateCertificateStatus — superRefine validation', () => {
+    const validRejectionResponse = {
+      id: 1,
+      status: 'rechazado' as const,
+      startDate: '10 de enero',
+      endDate: '20 de enero',
+      returnDate: '25 de enero',
+      reason: 'Test',
+      type: 'Anual',
+      requiresRest: false,
+      rejectionReason: 'Motivo válido',
+    };
+
+    it('accepts rechazado with a valid rejectionReason', async () => {
+      const { caller, updateCertificateStatus } = buildCaller(
+        vi.fn(),
+        vi.fn().mockResolvedValue(validRejectionResponse),
+      );
+
+      const result = await caller.updateCertificateStatus({
+        id: 1,
+        status: 'rechazado',
+        rejectionReason: 'Motivo válido',
+      });
+
+      expect(updateCertificateStatus).toHaveBeenCalledWith({
+        input: { id: 1, status: 'rechazado', rejectionReason: 'Motivo válido' },
+        requestContext,
+      });
+      expect(result).toMatchObject(validRejectionResponse);
+    });
+
+    it('rejects rechazado without rejectionReason (superRefine)', async () => {
+      const { caller, updateCertificateStatus } = buildCaller();
+
+      await expect(
+        caller.updateCertificateStatus({ id: 1, status: 'rechazado' }),
+      ).rejects.toBeInstanceOf(TRPCError);
+
+      expect(updateCertificateStatus).not.toHaveBeenCalled();
+    });
+
+    it('rejects rechazado with whitespace-only rejectionReason (superRefine)', async () => {
+      const { caller, updateCertificateStatus } = buildCaller();
+
+      await expect(
+        caller.updateCertificateStatus({
+          id: 1,
+          status: 'rechazado',
+          rejectionReason: '   ',
+        }),
+      ).rejects.toBeInstanceOf(TRPCError);
+
+      expect(updateCertificateStatus).not.toHaveBeenCalled();
+    });
+
+    it('accepts aprobado without rejectionReason (no superRefine check)', async () => {
+      const { caller, updateCertificateStatus } = buildCaller(
+        vi.fn(),
+        vi.fn().mockResolvedValue({ id: 1, status: 'aprobado' }),
+      );
+
+      await expect(
+        caller.updateCertificateStatus({ id: 1, status: 'aprobado' }),
+      ).resolves.toBeDefined();
+
+      expect(updateCertificateStatus).toHaveBeenCalled();
+    });
+
+    it('rejects rejectionReason exceeding 500 characters (z.string().max(500))', async () => {
+      const { caller, updateCertificateStatus } = buildCaller();
+
+      await expect(
+        caller.updateCertificateStatus({
+          id: 1,
+          status: 'rechazado',
+          rejectionReason: 'a'.repeat(501),
+        }),
+      ).rejects.toBeInstanceOf(TRPCError);
+
+      expect(updateCertificateStatus).not.toHaveBeenCalled();
+    });
+  });
 });

@@ -212,6 +212,7 @@ export class CertificatesServices {
         requestContext,
         certificate,
         newStatus: input.status,
+        rejectionReason: input.rejectionReason,
       });
     }
 

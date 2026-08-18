@@ -91,7 +91,13 @@ export const Document = ({
           {new Date(uploadDate).toLocaleDateString('es-AR')}
         </Text.Muted>
         <Container row justify="between">
-          {requireSign ? <Badge>Requiere firma</Badge> : <span />}
+          {requireSign ? (
+            <Badge variant="default">
+              {signed && agreedment ? 'Firmado' : 'Requiere firma'}
+            </Badge>
+          ) : (
+            <span />
+          )}
           <Badge variant="secondary" className="capitalize">
             {type}
           </Badge>

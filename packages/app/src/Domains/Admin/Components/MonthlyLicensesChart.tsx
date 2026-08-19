@@ -24,7 +24,7 @@ export const MonthlyLicensesChart = () => {
 
   return (
     <Card>
-      <Container className="max-w-6xl mx-auto">
+      <Container>
         <Container
           row
           align="center"
@@ -45,7 +45,7 @@ export const MonthlyLicensesChart = () => {
             onValueChange={(value) => setSelectedYear(Number(value))}
             disabled={isLoading || availableYears.length === 0}
           >
-            <SelectTrigger className="w-[140px]">
+            <SelectTrigger className="w-35">
               <SelectValue placeholder="Año" />
             </SelectTrigger>
             <SelectContent>

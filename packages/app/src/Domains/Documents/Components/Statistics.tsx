@@ -11,6 +11,7 @@ export const Statistics = () => {
     <Card>
       <Container className="md:flex-row justify-around items-center">
         <PieChartComponent
+          className="min-w-72"
           chartData={dataChart}
           total={statistics?.total || 0}
           header={{

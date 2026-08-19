@@ -188,8 +188,10 @@ export const Certificate = ({ data, year, actions }: CertificateProps) => {
           </Text.Muted>
         )}
 
+        {rejectionReason}
+
         {status === 'rechazado' && rejectionReason && (
-          <Alert variant="error" message={rejectionReason} className="mt-2" />
+          <Alert variant="info" message={rejectionReason} className="mt-2" />
         )}
 
         {hasFiles && (

@@ -103,7 +103,7 @@ Rules:
 
 ## Agent Activity Banner
 
-Show this banner immediately before launching any agent (subagent or skill):
+Show this banner immediately before launching any agent (subagent or skill). Used by `blendverse-start-feature` (6 phases, low handoff volume — the extra detail is affordable):
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
@@ -126,6 +126,30 @@ Example:
 │  PROGRESS:     16%                                          │
 └─────────────────────────────────────────────────────────────┘
 ```
+
+## Minimal Sub-Agent Banner (blendverse-implement)
+
+`blendverse-implement` invokes 4-7 sub-agents per chain (with retries, potentially more) — the full Agent Activity Banner above generates too much redundant token overhead per handoff, and the todo list (Paso 2.5) already covers the "what's pending / what's done" detail. Use this minimal format instead, immediately before each `task` call:
+
+```
+────────────────────────────
+@{{agent_name}}
+{{what_it_does}}
+{{current_percentage}}% → {{next_percentage}}%
+────────────────────────────
+```
+
+Example:
+
+```
+────────────────────────────
+@blendverse-back
+Implementando backend
+0% → 16%
+────────────────────────────
+```
+
+No `EXPECTED`, `EST. TIME`, `CURRENTLY` or `UP NEXT` lines — the todo list already shows what's next.
 
 ## Implementation Chain Todo List (blendverse-implement)
 

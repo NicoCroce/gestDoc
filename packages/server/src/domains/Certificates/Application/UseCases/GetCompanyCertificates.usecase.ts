@@ -35,6 +35,7 @@ export class GetCertificatesByCompany implements IUseCase<IGetCertificatesByComp
             type,
             userName,
             files,
+            rejectionReason,
           } = cert;
           if (!userId) return res;
 
@@ -64,6 +65,7 @@ export class GetCertificatesByCompany implements IUseCase<IGetCertificatesByComp
               requiresRest: cert.requiresRest ?? false,
               status: cert.status,
               files,
+              rejectionReason,
             }),
           );
 

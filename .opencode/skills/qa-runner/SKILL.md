@@ -13,56 +13,44 @@ Guía al agente `@blendverse-qa` en la ejecución de validación estática (Type
 
 ## Secuencia de Validación
 
-Los tres primeros pasos (TypeScript, Linting, Vitest) son independientes entre sí — ninguno depende del resultado de otro. **Lanzar los 3 en paralelo, esperar a que terminen los 3, y recién ahí evaluar el status de cada uno.** El criterio PASS/FAIL de cada paso no cambia; solo cambia que no se esperan en serie.
+Los pasos 1-3 (TypeScript, Linting, Vitest) los ejecuta el script `.opencode/scripts/bash/qa-check.sh <scope>` — corre los 3 realmente en paralelo (background real con control de process groups, no instrucciones en texto) y devuelve un JSON estructurado. `@blendverse-qa` no invoca `tsc`/`eslint`/`vitest` manualmente; invoca el script una sola vez:
+
+```bash
+.opencode/scripts/bash/qa-check.sh <scope>
+```
+
+`<scope>` es el mismo detectado en `02_dev_log.md → affected_files` (`back-only` | `front-only` | `full-stack`). El script devuelve:
+
+```json
+{
+  "scope": "...",
+  "status": "PASS" | "FAIL" | "TIMEOUT",
+  "timeout_secs": 180,
+  "steps": {
+    "typescript": { "status": "...", "output_tail": "..." },
+    "lint": { "status": "...", "output_tail": "..." },
+    "vitest": { "status": "...", "output_tail": "..." }
+  }
+}
+```
 
 ### 1. Compilación TypeScript
 
-Ejecutar según el scope detectado en `02_dev_log.md → affected_files`:
-
-```bash
-# Si hay archivos en packages/server/
-cd packages/server && npx tsc --noEmit 2>&1
-
-# Si hay archivos en packages/app/
-cd packages/app && npx tsc --noEmit 2>&1
-```
-
-**Criterio:** `status: PASS` solo si la salida no contiene `error TS`.
+**Criterio:** `status: "PASS"` en `steps.typescript` — el script ya evalúa esto internamente (no hay `error TS` en el output).
 
 ### 2. Linting
 
-Acotar el lint al paquete afectado en vez de correr `pnpm lint` (que lintea todo el monorepo) — mismo set de reglas ESLint, menos archivos analizados:
-
-```bash
-# Si hay archivos solo en packages/server/
-npx eslint "packages/server/src/**/*.{js,ts,tsx}" 2>&1
-
-# Si hay archivos solo en packages/app/
-cd packages/app && npx eslint . 2>&1
-
-# Si el scope es full-stack (archivos en ambos paquetes)
-pnpm lint 2>&1
-```
-
-**Criterio:** `status: PASS` solo si no hay errores (warnings son aceptables, los errores no).
+**Criterio:** `status: "PASS"` en `steps.lint` — el script ya acota el paquete afectado (mismas reglas ESLint, menos archivos) o corre `pnpm lint` si el scope es full-stack.
 
 ### 3. Ejecutar Tests con Vitest
 
-```bash
-# Si hay archivos en packages/server/
-cd packages/server && npx vitest run 2>&1
-
-# Si hay archivos en packages/app/
-cd packages/app && npx vitest run 2>&1
-```
-
-**Criterio:** `status: PASS` solo si todos los tests pasan (0 failed).
+**Criterio:** `status: "PASS"` en `steps.vitest` (0 failed). Un status `"TIMEOUT"` significa que el script mató el proceso al cumplirse el límite de tiempo — ver la nota de TIMEOUT en `@blendverse-qa` Paso 2 (hang conocido en specs de Controllers, decisión explícita de no excluirlos). Tratar `TIMEOUT` igual que `FAIL` a efectos del status final de este paso.
 
 ### 4. Verificación de Estructura de Carpetas
 
-Para cada archivo en `affected_files`, verificar que se encuentra en la capa correcta.
+Ejecuta `.opencode/scripts/bash/audit-arch.sh check <affected_files...>` (ver `@blendverse-qa` Paso 3) — el script ya encapsula los árboles esperados de backend/frontend abajo, con tolerancia consciente a variaciones ya aceptadas en el proyecto (ver comentario en el script sobre `Database`/`Databases`/`Repository`).
 
-**Backend — estructura esperada:**
+**Backend — estructura esperada (referencia, ya validada por el script):**
 
 ```
 domains/{domain}/
@@ -91,7 +79,7 @@ domains/{domain}/
   index.ts
 ```
 
-**Frontend — estructura esperada:**
+**Frontend — estructura esperada (referencia, ya validada por el script):**
 
 ```
 Domains/{Domain}/
@@ -114,7 +102,7 @@ Domains/{Domain}/
     {Entity}Update.page.tsx
 ```
 
-**Criterio:** Marcar cada archivo como ✅ (en lugar correcto) o ❌ (incorrecto o faltante).
+**Criterio:** `summary.misplaced == 0` en el JSON del script. Cada archivo `MISPLACED` se marca ❌ en el reporte; `OK` se marca ✅.
 
 ### 5. Determinación del Status Final
 
@@ -124,6 +112,7 @@ Domains/{Domain}/
 | Cualquier error de tsc                                                | `FAIL` |
 | Cualquier error de linter (no warning)                                | `FAIL` |
 | Cualquier test fallado                                                | `FAIL` |
+| `steps.*.status == "TIMEOUT"` en `qa-check.sh` (hang conocido)        | `FAIL` |
 | Archivo en capa incorrecta                                            | `FAIL` |
 
 ---
@@ -170,15 +159,32 @@ date: 'YYYY-MM-DD'
 
 **Acción esperada:** [Descripción concisa de qué debe corregirse]
 
-```
+````
+
+---
+
+## Auto-fixes aplicados (solo si QA corrigió algo en el Paso 2.5 de `@blendverse-qa`)
+
+```markdown
+## Auto-fixes aplicados
+
+| Archivo               | Error original (1 línea)      | Categoría                    |
+| ---------------------- | ------------------------------ | ----------------------------- |
+| `ruta/al/archivo.ts`   | Descripción breve del error    | import / tipo / sintaxis / unused-var |
+````
+
+Omitir esta sección por completo si no se aplicó ningún auto-fix.
 
 ---
 
 ## Reglas de Calidad
 
-1. **Pegar el output completo del terminal** — no resumir ni truncar los errores.
+1. **Si `status: FAIL`**, incluir el error concreto (mensaje + archivo + línea, máx. 20 líneas) — no el output completo del terminal (ver "Regla de brevedad" arriba).
 2. **Sección "Tests (Vitest)"** es obligatoria aunque `status: PASS`.
-3. **Si `status: FAIL`**, la sección "Contexto para el Coder" es obligatoria.
+3. **Si `status: FAIL`**, la sección "Error" es obligatoria.
 4. **`attempts`** comienza en `1` y se incrementa en cada re-ejecución.
 5. **Si `attempts >= 3`**, no escribir el reporte — ejecutar el Protocolo Break-Loop definido en `@blendverse-qa`.
+
+```
+
 ```

@@ -11,6 +11,7 @@ import {
   AlertDescription,
 } from '@app/Application/Components/ui/alert';
 import { cn } from '@/Application/lib/utils';
+import { Container } from '../../Layout';
 
 const alertVariants = cva(
   'relative w-full rounded-lg border px-4 py-3 text-sm',
@@ -72,11 +73,13 @@ export const Alert = ({
       variant={variant === 'error' ? 'destructive' : 'default'}
       className={cn(alertVariants({ variant }), className)}
     >
-      <FontAwesomeIcon icon={icon} className={iconVariants({ variant })} />
-      <div className="pl-2">
-        {title && <h5 className="mb-1 font-medium text-sm">{title}</h5>}
-        <AlertDescription className="text-sm">{message}</AlertDescription>
-      </div>
+      <Container row space="small" align="center">
+        <FontAwesomeIcon icon={icon} className={iconVariants({ variant })} />
+        <div>
+          {title && <h5 className="mb-1 font-medium text-sm">{title}</h5>}
+          <AlertDescription className="text-sm">{message}</AlertDescription>
+        </div>
+      </Container>
     </UIAlert>
   );
 };

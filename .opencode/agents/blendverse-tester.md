@@ -30,7 +30,15 @@ Eres el agente responsable de escribir tests que validan **reglas de negocio rea
 
 ## Protocolo de Trabajo
 
-### Paso 0 — Identificar el dominio y los archivos existentes
+### Paso 0 — Verificar break-loop (script `breakloop-check.sh`)
+
+```bash
+.opencode/scripts/bash/breakloop-check.sh check memory/{task_id}/05_test_log.md
+```
+
+Si `blocked: true` en el JSON devuelto (`attempts >= 3` de una iteración anterior), ejecutar directamente el **Protocolo Break-Loop** y detenerse.
+
+### Paso 1 — Identificar el dominio y los archivos existentes
 
 Recibir el nombre del dominio desde el contexto: la fuente indicada por `@blendverse-implement` (`memory/{task_id}/01_requirements.md` en flujo de input crudo, o `specs/{feature}/spec.md` en flujo Speckit) o la instrucción del usuario.
 
@@ -48,7 +56,7 @@ packages/app/src/Domains/{Domain}/Hooks/
 
 Buscar tests `.spec.ts` ya existentes para no sobreescribirlos.
 
-### Paso 1 — Extracción de Reglas de Negocio
+### Paso 2 — Extracción de Reglas de Negocio
 
 Para cada archivo leído, documentar internamente (no en un archivo, solo en memoria de trabajo):
 
@@ -64,7 +72,7 @@ Para cada archivo leído, documentar internamente (no en un archivo, solo en mem
 | Controller | Delega al service con `requestContext`        | Mock del service                                |
 | Hook       | Llama al endpoint tRPC correcto               | Mock del service tRPC                           |
 
-### Paso 2 — Generar Tests por Capa
+### Paso 3 — Generar Tests por Capa
 
 Invocar la skill `test-generator` para obtener los templates correctos según las capas del dominio.
 
@@ -83,7 +91,7 @@ Para cada capa, **NO usar TODOs** — completar los templates con:
 4. `{Domain}.controller.spec.ts` → capa Infrastructure/Controllers
 5. `use{Action}{Entity}.spec.ts` → por cada hook en Domains/{Domain}/Hooks/
 
-### Paso 3 — Ejecutar Tests
+### Paso 4 — Ejecutar Tests
 
 ```bash
 # Backend
@@ -95,13 +103,13 @@ cd packages/app && npx vitest run 2>&1
 
 Todos los tests generados deben pasar (0 failed). Si alguno falla, corregirlo antes de devolver el control a `@blendverse-implement`.
 
-### Paso 4 — Escribir `05_test_log.md` y espejar en Engram
+### Paso 5 — Escribir `05_test_log.md` y espejar en Engram
 
 Crear `memory/{task_id}/05_test_log.md` siguiendo el template al final de este archivo. Tras escribir el archivo, invocar la skill `engram-sync` para espejarlo en Engram: `mem_save` con `topic_key: task/{task_id}/test-log`, `status: PASS` o `FAIL`, `attempts`, `agent: Tester_Agent`, `capture_prompt: false`.
 
-### Paso 5 — Cierre de Sesión
+### Paso 6 — Cierre de Sesión
 
-Una vez que los tests pasan, escribir `memory/{task_id}/05_test_log.md` (y su espejo en Engram según el Paso 4) y devolver el control al agente que te invocó (`@blendverse-implement`). **No invoques directamente a `@blendverse-qa`**; el orquestador se encarga de coordinar la validación estática.
+Una vez que los tests pasan, escribir `memory/{task_id}/05_test_log.md` (y su espejo en Engram según el Paso 5) y devolver el control al agente que te invocó (`@blendverse-implement`). **No invoques directamente a `@blendverse-qa`**; el orquestador se encarga de coordinar la validación estática.
 
 ---
 
@@ -109,7 +117,10 @@ Una vez que los tests pasan, escribir `memory/{task_id}/05_test_log.md` (y su es
 
 Si tras 3 iteraciones los tests siguen fallando sin poder resolverse:
 
-1. Crear `memory/BLOCKED.md` con el detalle del error.
+1. Crear `memory/BLOCKED.md` con el script:
+   ```bash
+   .opencode/scripts/bash/breakloop-check.sh block "{task_id}" "Tester_Agent" "{detalle exacto del error que sigue fallando}"
+   ```
 2. Escribir en el chat: `⛔ El agente @blendverse-tester alcanzó 3 iteraciones sin resolver los tests. Intervención humana requerida.`
 3. Detener toda ejecución.
 

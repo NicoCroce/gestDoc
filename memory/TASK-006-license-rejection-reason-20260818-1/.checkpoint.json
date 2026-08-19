@@ -3,9 +3,18 @@
   "feature": "license-rejection-reason",
   "scope": "full-stack",
   "branch": "006-license-rejection-reason",
-  "last_completed_step": "reviewer",
-  "completed_steps": ["back", "front", "tester", "qa", "reviewer"],
-  "pending_steps": ["close", "pr"],
+  "last_completed_step": "pr",
+  "completed_steps": [
+    "back",
+    "front",
+    "tester",
+    "qa",
+    "reviewer",
+    "close",
+    "pr"
+  ],
+  "pending_steps": [],
+  "pr_url": "https://github.com/NicoCroce/gestDoc/pull/42",
   "context_source": "specs/006-license-rejection-reason/spec.md + tasks.md",
-  "timestamp": "2026-08-18T19:15:00Z"
+  "timestamp": "2026-08-18T19:20:00Z"
 }

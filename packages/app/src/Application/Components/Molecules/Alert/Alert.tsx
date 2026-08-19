@@ -58,6 +58,7 @@ interface AlertProps extends VariantProps<typeof alertVariants> {
   message: string;
   title?: string;
   className?: string;
+  showIcon?: boolean;
 }
 
 export const Alert = ({
@@ -65,6 +66,7 @@ export const Alert = ({
   message,
   title,
   className,
+  showIcon = true,
 }: AlertProps) => {
   const icon = defaultIcons[variant || 'info'];
 
@@ -74,7 +76,9 @@ export const Alert = ({
       className={cn(alertVariants({ variant }), className)}
     >
       <Container row space="small" align="center">
-        <FontAwesomeIcon icon={icon} className={iconVariants({ variant })} />
+        {showIcon && (
+          <FontAwesomeIcon icon={icon} className={iconVariants({ variant })} />
+        )}
         <div>
           {title && <h5 className="mb-1 font-medium text-sm">{title}</h5>}
           <AlertDescription className="text-sm">{message}</AlertDescription>

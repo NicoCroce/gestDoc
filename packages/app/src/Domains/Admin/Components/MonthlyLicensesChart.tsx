@@ -24,7 +24,7 @@ export const MonthlyLicensesChart = () => {
 
   return (
     <Card>
-      <Container>
+      <Container className="max-w-6xl mx-auto">
         <Container
           row
           align="center"

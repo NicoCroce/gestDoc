@@ -13,7 +13,10 @@ export const StatisticsCertificates = () => {
 
   return (
     <Card>
-      <Container row className="overflow-x-auto md:justify-between">
+      <Container
+        row
+        className="overflow-x-auto md:overflow-x-hidden md:flex-wrap md:justify-center md:gap-4 max-w-6xl mx-auto"
+      >
         <PieChartComponent
           className="min-w-75 shrink-0"
           chartData={dataChartTotalActivas}

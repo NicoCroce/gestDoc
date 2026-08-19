@@ -2,9 +2,7 @@ import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { Button } from '@app/Application/Components';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCircleInfo } from '@fortawesome/free-solid-svg-icons';
+import { Alert, Button } from '@app/Application/Components';
 import {
   AlertDialog,
   AlertDialogContent,
@@ -12,7 +10,6 @@ import {
   AlertDialogTitle,
   AlertDialogFooter,
 } from '@app/Application/Components/ui/alert-dialog';
-import { Alert, AlertDescription } from '@app/Application/Components/ui/alert';
 import { Textarea } from '@app/Application/Components/ui/textarea';
 
 const MAX_CHARS = 500;
@@ -77,12 +74,10 @@ export const RejectionReasonModal = ({
           <AlertDialogTitle>Motivo del rechazo</AlertDialogTitle>
         </AlertDialogHeader>
 
-        <Alert variant="default">
-          <FontAwesomeIcon icon={faCircleInfo} className="h-4 w-4" />
-          <AlertDescription>
-            Al empleado se le notificará el motivo por correo.
-          </AlertDescription>
-        </Alert>
+        <Alert
+          variant="info"
+          message="Al empleado se le notificará el motivo por correo."
+        />
 
         <form
           onSubmit={handleSubmit(onSubmit)}

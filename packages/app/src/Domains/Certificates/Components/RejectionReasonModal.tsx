@@ -4,13 +4,13 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { Button } from '@app/Application/Components';
 import {
-  Dialog,
-  DialogContent,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogDescription,
-} from '@app/Application/Components/ui/dialog';
+  AlertDialog,
+  AlertDialogContent,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogDescription,
+  AlertDialogFooter,
+} from '@app/Application/Components/ui/alert-dialog';
 import { Textarea } from '@app/Application/Components/ui/textarea';
 
 const MAX_CHARS = 500;
@@ -64,37 +64,29 @@ export const RejectionReasonModal = ({
   };
 
   return (
-    <Dialog
+    <AlertDialog
       open={open}
       onOpenChange={(isOpen) => {
         if (!isOpen && !isPending) onCancel();
       }}
     >
-      <DialogContent className="max-w-md p-0 gap-0 overflow-hidden">
-        {/* Header with rejection-tint background and 4px left danger stripe */}
-        <div
-          className="px-6 py-4 border-l-[4px]"
-          style={{
-            backgroundColor: '#FEF2F2',
-            borderLeftColor: '#EF4444',
-          }}
-        >
-          <DialogHeader>
-            <DialogTitle className="font-semibold text-base text-[#0F172A]">
-              Motivo del rechazo
-            </DialogTitle>
-            <DialogDescription className="text-sm text-[#64748B] mt-1">
-              Al empleado se le notificará el motivo por correo.
-            </DialogDescription>
-          </DialogHeader>
-        </div>
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle>Motivo del rechazo</AlertDialogTitle>
+          <AlertDialogDescription>
+            Al empleado se le notificará el motivo por correo.
+          </AlertDialogDescription>
+        </AlertDialogHeader>
 
-        {/* Body */}
-        <form onSubmit={handleSubmit(onSubmit)} noValidate>
-          <div className="px-6 py-4 flex flex-col gap-2">
+        <form
+          onSubmit={handleSubmit(onSubmit)}
+          noValidate
+          className="flex flex-col gap-4"
+        >
+          <div className="flex flex-col gap-2">
             <label
               htmlFor="rejection-reason"
-              className="text-xs font-medium uppercase tracking-wide text-[#EF4444]"
+              className="text-sm font-medium text-slate-900"
             >
               Motivo
             </label>
@@ -125,7 +117,7 @@ export const RejectionReasonModal = ({
             </div>
           </div>
 
-          <DialogFooter className="px-6 pb-4">
+          <AlertDialogFooter>
             <Button
               type="button"
               variant="ghost"
@@ -137,9 +129,9 @@ export const RejectionReasonModal = ({
             <Button type="submit" variant="destructive" isLoading={isPending}>
               Rechazar
             </Button>
-          </DialogFooter>
+          </AlertDialogFooter>
         </form>
-      </DialogContent>
-    </Dialog>
+      </AlertDialogContent>
+    </AlertDialog>
   );
 };

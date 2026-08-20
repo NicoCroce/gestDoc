@@ -16,10 +16,18 @@ export const useUpdateCertificateStatus = () => {
       onError: (err: CertificatesRouterError) => toast.error(err.message),
     });
 
-  const mutateUpdate = (id: number, status: MutableStatus): Promise<void> => {
+  const mutateUpdate = (
+    id: number,
+    status: MutableStatus,
+    rejectionReason?: string,
+  ): Promise<void> => {
     return new Promise((resolve, reject) => {
       mutate(
-        { id, status },
+        {
+          id,
+          status,
+          ...(rejectionReason !== undefined ? { rejectionReason } : {}),
+        },
         {
           onSuccess: () => {
             toast.success('Estado actualizado');

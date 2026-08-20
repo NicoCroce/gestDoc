@@ -102,4 +102,135 @@ describe('CertificatesServices', () => {
       ).rejects.toThrow();
     });
   });
+
+  // ── updateCertificateStatus (006-license-rejection-reason) ─────────────
+  describe('updateCertificateStatus()', () => {
+    const mockCertificate = {
+      values: {
+        id: 1,
+        startDate: new Date(2026, 0, 10),
+        endDate: new Date(2026, 0, 20),
+        returnDate: new Date(2026, 0, 25),
+        reason: 'Test',
+        type: { values: { name: 'Anual' } },
+        requiresRest: false,
+        status: 'rechazado' as const,
+        files: undefined,
+        rejectionReason: 'Faltó documentación',
+      },
+    };
+
+    const buildUpdateService = (notifyMock = vi.fn()) =>
+      new CertificatesServices(
+        {} as never, // _getCertificates
+        {} as never, // _getCertificateTypes
+        {} as never, // _addCertificate
+        {} as never, // _appendImages
+        {} as never, // _getCertificatesByCompany
+        {} as never, // _getStatistisCertificates
+        {} as never, // _getMonthlyStatistisCertificates
+        {
+          addLincence: vi.fn(),
+          notifyLicenseStatusChange: notifyMock,
+        } as never,
+        {} as never, // _deleteCertificate
+        {} as never, // _updateCertificateStatus
+      );
+
+    it('calls executeUseCase with correct params and inputLog', async () => {
+      vi.mocked(executeUseCase).mockResolvedValue(mockCertificate as never);
+      const service = buildUpdateService();
+
+      await service.updateCertificateStatus({
+        input: {
+          id: 1,
+          status: 'rechazado',
+          rejectionReason: 'Faltó documentación',
+        },
+        requestContext,
+      });
+
+      expect(executeUseCase).toHaveBeenCalledWith(
+        expect.objectContaining({
+          input: {
+            id: 1,
+            status: 'rechazado',
+            rejectionReason: 'Faltó documentación',
+          },
+          requestContext,
+          inputLog: { id: 1, status: 'rechazado' },
+        }),
+      );
+    });
+
+    it('forwards rejectionReason to notifyLicenseStatusChange when status is rechazado', async () => {
+      vi.mocked(executeUseCase).mockResolvedValue(mockCertificate as never);
+      const notifyMock = vi.fn();
+      const service = buildUpdateService(notifyMock);
+
+      await service.updateCertificateStatus({
+        input: {
+          id: 1,
+          status: 'rechazado',
+          rejectionReason: 'Faltó documentación',
+        },
+        requestContext,
+      });
+
+      expect(notifyMock).toHaveBeenCalledWith(
+        expect.objectContaining({
+          newStatus: 'rechazado',
+          rejectionReason: 'Faltó documentación',
+          requestContext,
+        }),
+      );
+    });
+
+    it('calls notifyLicenseStatusChange with rejectionReason=undefined for aprobado', async () => {
+      const mockAprobado = {
+        ...mockCertificate,
+        values: {
+          ...mockCertificate.values,
+          status: 'aprobado' as const,
+          rejectionReason: undefined,
+        },
+      };
+      vi.mocked(executeUseCase).mockResolvedValue(mockAprobado as never);
+      const notifyMock = vi.fn();
+      const service = buildUpdateService(notifyMock);
+
+      await service.updateCertificateStatus({
+        input: { id: 1, status: 'aprobado' },
+        requestContext,
+      });
+
+      expect(notifyMock).toHaveBeenCalledWith(
+        expect.objectContaining({
+          newStatus: 'aprobado',
+          rejectionReason: undefined,
+        }),
+      );
+    });
+
+    it('does not call notifyLicenseStatusChange when status is pendiente', async () => {
+      const mockPendiente = {
+        ...mockCertificate,
+        values: {
+          ...mockCertificate.values,
+          status: 'pendiente' as const,
+          rejectionReason: undefined,
+        },
+      };
+      vi.mocked(executeUseCase).mockResolvedValue(mockPendiente as never);
+      const notifyMock = vi.fn();
+      const service = buildUpdateService(notifyMock);
+
+      await service.updateCertificateStatus({
+        input: { id: 1, status: 'pendiente' },
+        requestContext,
+      });
+
+      expect(notifyMock).not.toHaveBeenCalled();
+    });
+  });
 });

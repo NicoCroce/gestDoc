@@ -35,9 +35,13 @@ Invocar la skill `code-reviewer` que define el checklist de 12 ítems y el templ
 - **APPROVED** — Todos los ítems críticos (marcados con 🔴 en la skill) pasan.
 - **REJECTED** — Uno o más ítems críticos fallan. Incluir feedback específico por ítem fallido.
 
-### Paso 4 — Verificar break-loop del Reviewer
+### Paso 4 — Verificar break-loop del Reviewer (script `breakloop-check.sh`)
 
-Leer el campo `attempts` en el frontmatter de `04_review_log.md` (si ya existe de iteraciones anteriores). Si `attempts >= 3`, ejecutar el **Protocolo Break-Loop**.
+```bash
+.opencode/scripts/bash/breakloop-check.sh check memory/{task_id}/04_review_log.md
+```
+
+Si `blocked: true` en el JSON devuelto (`attempts >= 3` de una iteración anterior), ejecutar el **Protocolo Break-Loop**.
 
 ### Paso 5 — Escribir `04_review_log.md` y espejar en Engram
 
@@ -51,7 +55,10 @@ Crear o actualizar `memory/{task_id}/04_review_log.md` siguiendo el template de 
 ## Protocolo Break-Loop (attempts >= 3)
 
 1. **No hacer handoff** al Coder.
-2. Crear o actualizar `memory/BLOCKED.md` con el schema de `memory.instructions.md`.
+2. Crear o actualizar `memory/BLOCKED.md` con el script:
+   ```bash
+   .opencode/scripts/bash/breakloop-check.sh block "{task_id}" "Reviewer_Agent" "{feedback exacto y conciso}"
+   ```
 3. Escribir en el chat: `⛔ Se alcanzó el límite de 3 iteraciones en Reviewer_Agent. Intervención humana requerida. Ver memory/BLOCKED.md.`
 4. Detener toda ejecución.
 

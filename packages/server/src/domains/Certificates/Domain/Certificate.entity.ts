@@ -18,6 +18,7 @@ export class Certificate {
     private readonly _files?: string[],
     private readonly _id?: number,
     private readonly _userId?: number,
+    private readonly _rejectionReason?: string,
   ) {}
 
   static create({
@@ -31,6 +32,7 @@ export class Certificate {
     requiresRest,
     status,
     userId,
+    rejectionReason,
   }: ICertificate) {
     if (startDate >= endDate) {
       throw new Error('La fecha de inicio debe ser anterior a la fecha de fin');
@@ -56,6 +58,7 @@ export class Certificate {
       files,
       id,
       userId,
+      rejectionReason,
     );
   }
 
@@ -74,6 +77,7 @@ export class Certificate {
       requiresRest: this._requiresRest,
       status: this._status,
       files: this._files,
+      rejectionReason: this._rejectionReason,
     };
   }
 
@@ -104,5 +108,9 @@ export class Certificate {
 
   get type() {
     return this._type.values.name;
+  }
+
+  get rejectionReason() {
+    return this._rejectionReason;
   }
 }

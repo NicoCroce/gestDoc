@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Container, Text } from '@app/Application';
+import { Container, Text, Alert } from '@app/Application';
 import {
   Dialog,
   DialogContent,
@@ -89,6 +89,7 @@ export const Certificate = ({ data, year, actions }: CertificateProps) => {
     requiresRest,
     status,
     files,
+    rejectionReason,
   } = data;
   const [activeFile, setActiveFile] = useState<string | null>(null);
   const hasFiles = Array.isArray(files) && files.length > 0;
@@ -185,6 +186,16 @@ export const Certificate = ({ data, year, actions }: CertificateProps) => {
           <Text.Muted className="text-pretty leading-relaxed text-card-foreground">
             {reason}
           </Text.Muted>
+        )}
+
+        {status === 'rechazado' && rejectionReason && (
+          <Alert
+            title="Detalle del rechazo"
+            variant="warning"
+            message={rejectionReason}
+            className="mt-2"
+            showIcon={false}
+          />
         )}
 
         {hasFiles && (

@@ -37,12 +37,10 @@ Monorepo TypeScript con pnpm workspaces. Arquitectura Modular Monolith con DDD y
 
 ## Spec Kit — Feature Plan
 
-Active feature: **employee-daily-reminders**
+Active feature: **license-rejection-reason**
 
-- Spec: `specs/004-employee-daily-reminders/spec.md`
-- Plan: `specs/004-employee-daily-reminders/plan.md`
-- Branch: `004-employee-daily-reminders`
-
-Design artifacts: `specs/004-employee-daily-reminders/{research,data-model,quickstart}.md`, `specs/004-employee-daily-reminders/contracts/`
+- Spec: `specs/006-license-rejection-reason/spec.md`
+- Plan: `specs/006-license-rejection-reason/plan.md`
+- Branch: `006-license-rejection-reason`
 
 <!-- SPECKIT END -->

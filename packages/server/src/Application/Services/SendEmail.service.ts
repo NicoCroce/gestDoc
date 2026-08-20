@@ -35,6 +35,7 @@ interface ISendDocumentToEmail extends IRequestContext {
 interface INotifyLicenseStatusChange extends IRequestContext {
   certificate: Certificate;
   newStatus: 'aprobado' | 'rechazado';
+  rejectionReason?: string;
 }
 
 export class SendEmailService {
@@ -181,6 +182,7 @@ export class SendEmailService {
   async notifyLicenseStatusChange({
     certificate,
     newStatus,
+    rejectionReason,
     requestContext,
   }: INotifyLicenseStatusChange) {
     try {
@@ -209,6 +211,7 @@ export class SendEmailService {
         returnDate: getDateString(returnDate),
         reason,
         status: newStatus,
+        rejectionReason,
       });
 
       await this.mailNotificationService.sendOne({

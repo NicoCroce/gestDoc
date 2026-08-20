@@ -31,6 +31,7 @@ export interface ILicenseStatusChange {
   returnDate: string;
   reason: string;
   status: 'aprobado' | 'rechazado';
+  rejectionReason?: string;
 }
 
 export interface IDisclaimerReminder {

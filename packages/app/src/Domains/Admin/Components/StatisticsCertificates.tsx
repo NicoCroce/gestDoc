@@ -13,9 +13,9 @@ export const StatisticsCertificates = () => {
 
   return (
     <Card>
-      <Container row className="overflow-x-auto md:justify-between">
+      <Container row space="none" className="overflow-x-auto">
         <PieChartComponent
-          className="min-w-75 shrink-0"
+          className="min-w-75 shrink-0 max-w-112.5"
           chartData={dataChartTotalActivas}
           total={statistics?.actives || 0}
           header={{
@@ -27,7 +27,7 @@ export const StatisticsCertificates = () => {
           labelCenter="Certificados"
         />
         <PieChartComponent
-          className="min-w-75 shrink-0"
+          className="min-w-75 shrink-0 max-w-112.5"
           chartData={dataChartTypes}
           total={dataChartTypes.length || 0}
           header={{
@@ -39,7 +39,7 @@ export const StatisticsCertificates = () => {
           labelCenter="Tipos"
         />
         <PieChartComponent
-          className="min-w-75 shrink-0"
+          className="min-w-75 shrink-0 max-w-112.5"
           chartData={dataChartEmployess}
           total={dataChartEmployess.length || 0}
           header={{
@@ -51,7 +51,7 @@ export const StatisticsCertificates = () => {
           labelCenter="Empleado/s"
         />
         <PieChartComponent
-          className="min-w-75 shrink-0"
+          className="min-w-75 shrink-0 max-w-112.5"
           chartData={dataChartStatus}
           total={
             dataChartStatus.reduce((acc, curr) => acc + Number(curr.data), 0) ||

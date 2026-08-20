@@ -11,9 +11,14 @@ export const DisclaimerModal = () => {
 
   const ownerId = dataUser?.ownerId;
 
-  const { data: disclaimerText, isLoading } = useGetDisclaimerText()(ownerId!, {
-    enabled: !!ownerId,
-  });
+  // Los .d.ts del server en dist/ están desactualizados (getText con input: void).
+  // El server real espera number; el cast as never preserva el valor runtime.
+  const { data: disclaimerText, isLoading } = useGetDisclaimerText()(
+    ownerId! as never,
+    {
+      enabled: !!ownerId,
+    },
+  );
 
   if (!dataUser || !dataUser.pendingDisclaimer) {
     return null;
@@ -41,7 +46,8 @@ export const DisclaimerModal = () => {
           </div>
         ) : (
           <div className="max-h-60 overflow-y-auto rounded-md border p-4 text-sm text-muted-foreground">
-            {disclaimerText || 'No hay términos definidos para esta empresa.'}
+            {(disclaimerText as unknown as string | undefined) ||
+              'No hay términos definidos para esta empresa.'}
           </div>
         )}
         <DisclaimerForm onSuccess={handleSuccess} />

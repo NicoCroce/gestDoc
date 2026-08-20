@@ -95,4 +95,28 @@ describe('Certificate entity', () => {
       expect(cert.toJSON()).toEqual(cert.values);
     });
   });
+
+  // ── rejectionReason feature (006-license-rejection-reason) ──────────────
+  describe('rejectionReason feature', () => {
+    it('includes rejectionReason in values when provided', () => {
+      const cert = Certificate.create({
+        ...validProps,
+        rejectionReason: 'Motivo de prueba',
+      });
+      expect(cert.values.rejectionReason).toBe('Motivo de prueba');
+    });
+
+    it('values.rejectionReason is undefined when not provided', () => {
+      const cert = Certificate.create(validProps);
+      expect(cert.values.rejectionReason).toBeUndefined();
+    });
+
+    it('get rejectionReason() accessor returns the correct value', () => {
+      const cert = Certificate.create({
+        ...validProps,
+        rejectionReason: 'Accessor test',
+      });
+      expect(cert.rejectionReason).toBe('Accessor test');
+    });
+  });
 });

@@ -9,7 +9,7 @@ permission:
   task: allow
   todowrite: allow
 temperature: 0.1
-steps: 20
+steps: 45
 color: '#bd53ee'
 ---
 
@@ -41,22 +41,16 @@ Porcentaje según scope:
 - **back-only / front-only:** 5 pasos → 20% por paso
 - **full-stack:** 6 pasos → 16% por paso
 
-### Banner de actividad de sub-agente
+### Banner de actividad de sub-agente (minimalista)
 
-Mostrar este banner **inmediatamente antes** de invocar cada sub-agente:
+Mostrar este banner **inmediatamente antes** de invocar cada sub-agente. El todo list del Paso 2.5 ya cubre el detalle de progreso (qué falta, qué se completó) — este banner es solo una marca visual breve, no repite esa información:
 
 ```
-┌─────────────────────────────────────────────────────────────┐
-│  SUB-AGENT:    @{{agent_name}}                              │
-│  TASK:         {{task_id}}                                  │
-│  ACTION:       {{what_it_does}}                             │
-│  EXPECTED:     {{expected_output}}                          │
-│  EST. TIME:    {{estimated_duration}}                       │
-│  PROGRESS:     {{current_percentage}}%                      │
-└─────────────────────────────────────────────────────────────┘
-
-🔄 CURRENTLY: {{what_is_happening_now}}
-⏭️  UP NEXT:   {{what_comes_next}}
+────────────────────────────
+@{{agent_name}}
+{{what_it_does}}
+{{current_percentage}}% → {{next_percentage}}%
+────────────────────────────
 ```
 
 ## Protocolo de Trabajo
@@ -68,7 +62,7 @@ Mostrar este banner **inmediatamente antes** de invocar cada sub-agente:
 3. Leer `memory/history_log.json`.
    - Si existe una entrada con `status: IN_PROGRESS` cuyo `task_id` contiene la rama sanitizada del paso 2 → reutilizar ese `task_id` (tarea en curso sobre la misma rama).
    - Si no existe → generar un `task_id` **nuevo** con el formato `TASK-{rama-sanitizada}-YYYYMMDD-N` (ver `.opencode/instructions/memory.instructions.md`) y agregar la entrada a `history_log.json` con `status: IN_PROGRESS`, `created_at` y `title`.
-4. Consultar Engram (Patrón 2 de la skill `engram-sync`) con el `task_id` resuelto:
+4. **Verificar primero el checkpoint file en disco** (fuente de verdad primaria, ver Paso 1.5): si existe `memory/{task_id}/.checkpoint.json`, usarlo directamente para resolver `scope`, `context_source` y `branch` — **saltear el `mem_search` de este punto** y continuar directo al punto 5. Solo si **no existe** checkpoint file, consultar Engram (Patrón 2 de la skill `engram-sync`) como fallback:
    - `mem_search(query: "task {task_id} status")` → si existe una observación con `status: COMPLETED`, informar que la tarea ya se cerró y **detenerse** (no duplicar). Si `BLOCKED`, informar que requiere intervención humana y detenerse.
    - `mem_search(query: "task {task_id} registration")` → si existe con `status: IN_PROGRESS`, reutilizar `scope` y `context_source` si están presentes (verificando en disco que la fuente sigue existiendo).
 5. Si quien invoca este agente indicó explícitamente `{feature}` (ej. desde `@blendverse-start-feature`), usarlo. Si no, y hay artefactos Speckit, inferirlo del directorio bajo `specs/` modificado más recientemente; si hay más de un candidato genuinamente ambiguo, preguntar al usuario cuál usar.
@@ -81,7 +75,7 @@ Mostrar este banner **inmediatamente antes** de invocar cada sub-agente:
 
 ### Paso 1.5 — Detectar punto de reanudación
 
-Solo si la tarea ya estaba `IN_PROGRESS` en Engram (Paso 1.4) o existe `memory/{task_id}/` con artefactos previos:
+Solo si existe `memory/{task_id}/.checkpoint.json` (detectado en el Paso 1, punto 4) o si la tarea ya estaba `IN_PROGRESS` en Engram (fallback del punto 4) o existe `memory/{task_id}/` con artefactos previos:
 
 1. **Leer checkpoint file** (fuente de verdad primaria): si existe `memory/{task_id}/.checkpoint.json`, leerlo y usar `last_completed_step` para determinar el `resume_point`. Mapeo:
    - `last_completed_step: "back"` o `"front"` → `resume_point` según el scope (si falta el otro coder, continuar con coder; si no, `tester`).
@@ -219,7 +213,7 @@ Después de cada sub-agente que completa exitosamente, guardar un archivo de che
 
 Antes de invocar cada sub-agente, evaluar cuántos steps quedan disponibles:
 
-**Regla:** si estás a **menos de 4 steps del límite** (`steps: 20`), NO invoques el sub-agente. En su lugar:
+**Regla:** si estás a **menos de 4 steps del límite** (`steps: 45`), NO invoques el sub-agente. En su lugar:
 
 1. Guardar el checkpoint file con el estado actual (el último sub-agente completado).
 2. Mostrar este mensaje al usuario:
@@ -247,7 +241,7 @@ Para continuar, ejecutá nuevamente @blendverse-implement con el mismo task_id.
 - Paso 4 (reviewer + cierre): 3-4 steps
 - Paso 5 (PR): 3-4 steps
 
-Si llevas 15+ steps consumidos, aplicar la regla de auto-awareness antes de invocar el siguiente sub-agente.
+Si llevas 34+ steps consumidos, aplicar la regla de auto-awareness antes de invocar el siguiente sub-agente.
 
 ### Paso 3 — Invocar la cadena de agentes según el resume_point
 
@@ -264,17 +258,11 @@ Aplicar `resume_point` del Paso 1.5: **solo ejecutar los eslabones que aún falt
 **1. Backend**
 
 ```
-┌─────────────────────────────────────────────────────────────┐
-│  SUB-AGENT:    @blendverse-back                             │
-│  TASK:         {{task_id}}                                  │
-│  ACTION:       Implementando dominio backend DDD            │
-│  EXPECTED:     packages/server/src/domains/{{Domain}}/      │
-│  EST. TIME:    5-8 min                                      │
-│  PROGRESS:     0% → 20%                                     │
-└─────────────────────────────────────────────────────────────┘
-
-🔄 CURRENTLY: Invocando @blendverse-back para implementar el dominio servidor
-⏭️  UP NEXT:   @blendverse-tester (generación de tests)
+────────────────────────────
+@blendverse-back
+Implementando backend
+0% → 20%
+────────────────────────────
 ```
 
 1. `task` → `@blendverse-back` con el prompt:
@@ -289,17 +277,11 @@ Aplicar `resume_point` del Paso 1.5: **solo ejecutar los eslabones que aún falt
 **2. Tester**
 
 ```
-┌─────────────────────────────────────────────────────────────┐
-│  SUB-AGENT:    @blendverse-tester                           │
-│  TASK:         {{task_id}}                                  │
-│  ACTION:       Generando y ejecutando tests                 │
-│  EXPECTED:     memory/{{task_id}}/05_test_log.md            │
-│  EST. TIME:    3-5 min                                      │
-│  PROGRESS:     20% → 40%                                    │
-└─────────────────────────────────────────────────────────────┘
-
-🔄 CURRENTLY: Invocando @blendverse-tester para generar tests
-⏭️  UP NEXT:   @blendverse-qa (validación estática)
+────────────────────────────
+@blendverse-tester
+Generando y ejecutando tests
+20% → 40%
+────────────────────────────
 ```
 
 2. `task` → `@blendverse-tester` con el prompt:
@@ -314,17 +296,11 @@ Aplicar `resume_point` del Paso 1.5: **solo ejecutar los eslabones que aún falt
 **3. QA**
 
 ```
-┌─────────────────────────────────────────────────────────────┐
-│  SUB-AGENT:    @blendverse-qa                               │
-│  TASK:         {{task_id}}                                  │
-│  ACTION:       Ejecutando validación estática               │
-│  EXPECTED:     memory/{{task_id}}/03_qa_report.md           │
-│  EST. TIME:    2-3 min                                      │
-│  PROGRESS:     40% → 60%                                    │
-└─────────────────────────────────────────────────────────────┘
-
-🔄 CURRENTLY: Invocando @blendverse-qa para validación estática (tsc + lint + vitest)
-⏭️  UP NEXT:   @blendverse-reviewer (revisión de estándares)
+────────────────────────────
+@blendverse-qa
+Ejecutando validación estática
+40% → 60%
+────────────────────────────
 ```
 
 3. `task` → `@blendverse-qa` con el prompt:
@@ -341,17 +317,11 @@ Aplicar `resume_point` del Paso 1.5: **solo ejecutar los eslabones que aún falt
 **1. Frontend**
 
 ```
-┌─────────────────────────────────────────────────────────────┐
-│  SUB-AGENT:    @blendverse-front                            │
-│  TASK:         {{task_id}}                                  │
-│  ACTION:       Implementando dominio frontend               │
-│  EXPECTED:     packages/app/src/Domains/{{Domain}}/         │
-│  EST. TIME:    5-8 min                                      │
-│  PROGRESS:     0% → 20%                                     │
-└─────────────────────────────────────────────────────────────┘
-
-🔄 CURRENTLY: Invocando @blendverse-front para implementar el dominio frontend
-⏭️  UP NEXT:   @blendverse-tester (generación de tests)
+────────────────────────────
+@blendverse-front
+Implementando frontend
+0% → 20%
+────────────────────────────
 ```
 
 1. `task` → `@blendverse-front` con el prompt:
@@ -366,17 +336,11 @@ Aplicar `resume_point` del Paso 1.5: **solo ejecutar los eslabones que aún falt
 **2. Tester**
 
 ```
-┌─────────────────────────────────────────────────────────────┐
-│  SUB-AGENT:    @blendverse-tester                           │
-│  TASK:         {{task_id}}                                  │
-│  ACTION:       Generando y ejecutando tests                 │
-│  EXPECTED:     memory/{{task_id}}/05_test_log.md            │
-│  EST. TIME:    3-5 min                                      │
-│  PROGRESS:     20% → 40%                                    │
-└─────────────────────────────────────────────────────────────┘
-
-🔄 CURRENTLY: Invocando @blendverse-tester para generar tests
-⏭️  UP NEXT:   @blendverse-qa (validación estática)
+────────────────────────────
+@blendverse-tester
+Generando y ejecutando tests
+20% → 40%
+────────────────────────────
 ```
 
 2. `task` → `@blendverse-tester` con el prompt:
@@ -391,17 +355,11 @@ Aplicar `resume_point` del Paso 1.5: **solo ejecutar los eslabones que aún falt
 **3. QA**
 
 ```
-┌─────────────────────────────────────────────────────────────┐
-│  SUB-AGENT:    @blendverse-qa                               │
-│  TASK:         {{task_id}}                                  │
-│  ACTION:       Ejecutando validación estática               │
-│  EXPECTED:     memory/{{task_id}}/03_qa_report.md           │
-│  EST. TIME:    2-3 min                                      │
-│  PROGRESS:     40% → 60%                                    │
-└─────────────────────────────────────────────────────────────┘
-
-🔄 CURRENTLY: Invocando @blendverse-qa para validación estática (tsc + lint + vitest)
-⏭️  UP NEXT:   @blendverse-reviewer (revisión de estándares)
+────────────────────────────
+@blendverse-qa
+Ejecutando validación estática
+40% → 60%
+────────────────────────────
 ```
 
 3. `task` → `@blendverse-qa` con el prompt:
@@ -418,17 +376,11 @@ Aplicar `resume_point` del Paso 1.5: **solo ejecutar los eslabones que aún falt
 **1. Backend**
 
 ```
-┌─────────────────────────────────────────────────────────────┐
-│  SUB-AGENT:    @blendverse-back                             │
-│  TASK:         {{task_id}}                                  │
-│  ACTION:       Implementando dominio backend DDD            │
-│  EXPECTED:     packages/server/src/domains/{{Domain}}/      │
-│  EST. TIME:    5-8 min                                      │
-│  PROGRESS:     0% → 16%                                     │
-└─────────────────────────────────────────────────────────────┘
-
-🔄 CURRENTLY: Invocando @blendverse-back para implementar el dominio servidor
-⏭️  UP NEXT:   @blendverse-front (implementación frontend)
+────────────────────────────
+@blendverse-back
+Implementando backend
+0% → 16%
+────────────────────────────
 ```
 
 1. `task` → `@blendverse-back` con el prompt:
@@ -443,17 +395,11 @@ Aplicar `resume_point` del Paso 1.5: **solo ejecutar los eslabones que aún falt
 **2. Frontend**
 
 ```
-┌─────────────────────────────────────────────────────────────┐
-│  SUB-AGENT:    @blendverse-front                            │
-│  TASK:         {{task_id}}                                  │
-│  ACTION:       Implementando dominio frontend               │
-│  EXPECTED:     packages/app/src/Domains/{{Domain}}/         │
-│  EST. TIME:    5-8 min                                      │
-│  PROGRESS:     16% → 32%                                    │
-└─────────────────────────────────────────────────────────────┘
-
-🔄 CURRENTLY: Invocando @blendverse-front para implementar el dominio frontend
-⏭️  UP NEXT:   @blendverse-tester (generación de tests)
+────────────────────────────
+@blendverse-front
+Implementando frontend
+16% → 32%
+────────────────────────────
 ```
 
 2. `task` → `@blendverse-front` con el prompt:
@@ -468,17 +414,11 @@ Aplicar `resume_point` del Paso 1.5: **solo ejecutar los eslabones que aún falt
 **3. Tester**
 
 ```
-┌─────────────────────────────────────────────────────────────┐
-│  SUB-AGENT:    @blendverse-tester                           │
-│  TASK:         {{task_id}}                                  │
-│  ACTION:       Generando y ejecutando tests (back + front)  │
-│  EXPECTED:     memory/{{task_id}}/05_test_log.md            │
-│  EST. TIME:    4-6 min                                      │
-│  PROGRESS:     32% → 48%                                    │
-└─────────────────────────────────────────────────────────────┘
-
-🔄 CURRENTLY: Invocando @blendverse-tester para generar tests (back + front en paralelo)
-⏭️  UP NEXT:   @blendverse-qa (validación estática)
+────────────────────────────
+@blendverse-tester
+Generando y ejecutando tests (back + front)
+32% → 48%
+────────────────────────────
 ```
 
 3. `task` → `@blendverse-tester` con el prompt:
@@ -493,17 +433,11 @@ Aplicar `resume_point` del Paso 1.5: **solo ejecutar los eslabones que aún falt
 **4. QA**
 
 ```
-┌─────────────────────────────────────────────────────────────┐
-│  SUB-AGENT:    @blendverse-qa                               │
-│  TASK:         {{task_id}}                                  │
-│  ACTION:       Ejecutando validación estática               │
-│  EXPECTED:     memory/{{task_id}}/03_qa_report.md           │
-│  EST. TIME:    2-3 min                                      │
-│  PROGRESS:     48% → 64%                                    │
-└─────────────────────────────────────────────────────────────┘
-
-🔄 CURRENTLY: Invocando @blendverse-qa para validación estática (tsc + lint + vitest)
-⏭️  UP NEXT:   @blendverse-reviewer (revisión de estándares)
+────────────────────────────
+@blendverse-qa
+Ejecutando validación estática
+48% → 64%
+────────────────────────────
 ```
 
 4. `task` → `@blendverse-qa` con el prompt:
@@ -529,17 +463,13 @@ Aplicar `resume_point` del Paso 1.5: **solo ejecutar los eslabones que aún falt
 **Banner de actividad:**
 
 ```
-┌─────────────────────────────────────────────────────────────┐
-│  SUB-AGENT:    @blendverse-reviewer                         │
-│  TASK:         {{task_id}}                                  │
-│  ACTION:       Revisando estándares y arquitectura          │
-│  EXPECTED:     memory/{{task_id}}/04_review_log.md          │
-│  EST. TIME:    2-4 min                                      │
-│  PROGRESS:     {{60% | 80%}} → {{80% | 100%}}               │
-└─────────────────────────────────────────────────────────────┘
+────────────────────────────
+@blendverse-reviewer
+Revisando estándares y arquitectura
+{{60% | 80%}} → {{80% | 100%}}
+────────────────────────────
+```
 
-🔄 CURRENTLY: Invocando @blendverse-reviewer para revisión de estándares
-⏭️  UP NEXT:   Cierre de tarea + apertura de PR
 ```
 
 1. Leer `memory/{task_id}/03_qa_report.md`. Si `status: FAIL` → `task` → el/los Coder correspondientes (`@blendverse-back` y/o `@blendverse-front` según el alcance) con el prompt: "QA falló con el siguiente error: {contenido relevante de 03_qa_report.md}. Corregir e incrementar `attempts` en `02_dev_log.md`." Repetir Paso 3 (tester → qa) desde ese punto hasta `PASS` o hasta que `@blendverse-qa` active su propio Protocolo Break-Loop (`attempts >= 3`).
@@ -548,14 +478,16 @@ Aplicar `resume_point` del Paso 1.5: **solo ejecutar los eslabones que aún falt
 
    **Al completar:** marcar "Revisión de estándares" y "Cerrar tarea y abrir PR a main" como `completed`. Mostrar banner final:
 
-   ```
-   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-     TASK:       {{task_id}}
-     STATUS:     COMPLETED ✅
-     PROGRESS:   100%
-     NEXT:       Apertura de PR a main
-   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-   ```
+```
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+TASK: {{task_id}}
+STATUS: COMPLETED ✅
+PROGRESS: 100%
+NEXT: Apertura de PR a main
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+```
 
 4. Si `status: REJECTED` → `task` → el/los Coder correspondientes con el feedback de `04_review_log.md`, y repetir desde el punto 1 (tester → qa → reviewer) hasta `APPROVED` o hasta que `@blendverse-reviewer` active su propio Protocolo Break-Loop (`attempts >= 3`).
 5. Si se activa el Protocolo Break-Loop en cualquier agente (`BLOCKED.md`) → espejar en Engram `task/{task_id}/status` con `status: BLOCKED` y detener toda ejecución.
@@ -565,15 +497,13 @@ Aplicar `resume_point` del Paso 1.5: **solo ejecutar los eslabones que aún falt
 **Banner de actividad:**
 
 ```
-┌─────────────────────────────────────────────────────────────┐
-│  ACTION:       Generando PR a main                          │
-│  EXPECTED:     PR URL                                       │
-│  EST. TIME:    1-2 min                                      │
-│  PROGRESS:     100%                                         │
-└─────────────────────────────────────────────────────────────┘
 
-🔄 CURRENTLY: Generando pr-detail.md y abriendo PR contra main
-```
+────────────────────────────
+Generando PR a main
+100%
+────────────────────────────
+
+````
 
 Se ejecuta **únicamente** cuando `04_review_log.md` tiene `status: APPROVED` y la tarea quedó cerrada en el Paso 4. Abre el PR contra `main` con el detalle generado por `pr-detail`.
 
@@ -582,7 +512,8 @@ Se ejecuta **únicamente** cuando `04_review_log.md` tiene `status: APPROVED` y 
    ```bash
    git fetch origin main
    git push -u origin $(git branch --show-current)
-   ```
+````
+
 3. Invocar la herramienta `task` con `subagent_type: pr-detail`:
    > Generar el archivo `pr-detail.md` en la raíz del proyecto comparando `main` con la rama actual (seguir la skill `pr-detail`).
 4. Extraer el título del encabezado `# PR:` de `pr-detail.md` y crear el PR contra `main`:

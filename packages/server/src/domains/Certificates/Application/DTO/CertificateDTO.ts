@@ -10,6 +10,7 @@ export interface CertificateDTO {
   requiresRest: boolean;
   status: CertificateStatus;
   files?: string[];
+  rejectionReason?: string;
 }
 
 export interface IGetCertificatesDTO {

@@ -45,7 +45,7 @@ Si `blocked: true` en el JSON devuelto (`attempts >= 3` de una iteración anteri
 
 ### Paso 5 — Escribir `04_review_log.md` y espejar en Engram
 
-Crear o actualizar `memory/{task_id}/04_review_log.md` siguiendo el template de la skill y el schema de frontmatter de `.opencode/instructions/memory.instructions.md`. Tras escribir el archivo, invocar la skill `engram-sync` para espejarlo en Engram: `mem_save` con `topic_key: task/{task_id}/review-log`, `status: APPROVED` o `REJECTED`, `attempts`, `agent: Reviewer_Agent`, `capture_prompt: false`.
+Generar el frontmatter con `.opencode/scripts/bash/memory-log-scaffold.sh frontmatter review_log {task_id} Reviewer_Agent APPROVED|REJECTED` (calcula `attempts` automáticamente) y usarlo como prefijo de `memory/{task_id}/04_review_log.md`, completando el resto con el template de la skill. Tras escribir el archivo, invocar la skill `engram-sync` para espejarlo en Engram: `mem_save` con `topic_key: task/{task_id}/review-log`, `status: APPROVED` o `REJECTED`, `attempts`, `agent: Reviewer_Agent`, `capture_prompt: false`.
 
 ### Paso 6 — Handoff
 

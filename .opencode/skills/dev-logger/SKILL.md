@@ -19,10 +19,15 @@ Esta skill debe ejecutarse **siempre como último paso** de cualquier sesión de
 
 ## Protocolo
 
-### Paso 1 — Obtener el task_id activo
+### Paso 1 — Obtener el task_id activo y el frontmatter (script `memory-log-scaffold.sh`)
 
-Leer `memory/history_log.json` para obtener el `task_id` de la tarea en curso.  
-Si ya existe `memory/{task_id}/02_dev_log.md` de una iteración anterior, leerlo para conocer el valor actual de `attempts` e incrementarlo en 1.
+Leer `memory/history_log.json` para obtener el `task_id` de la tarea en curso. Generar el frontmatter con el script (calcula `attempts` automáticamente leyendo la iteración anterior si existe, sin que el agente tenga que incrementarlo a mano):
+
+```bash
+.opencode/scripts/bash/memory-log-scaffold.sh frontmatter dev_log {task_id} Back_Agent IMPLEMENTED
+```
+
+(usar `Front_Agent` en vez de `Back_Agent` cuando lo invoque `@blendverse-front`). El script imprime el bloque `--- ... ---` completo listo para usar como prefijo del archivo — pegar tal cual y continuar con el resto del contenido (`affected_files` se agrega manualmente dentro de ese bloque, ver template).
 
 ### Paso 2 — Construir la lista de archivos afectados
 
@@ -88,6 +93,6 @@ _Si no hay deuda técnica, escribir: "Sin deuda técnica registrada."_
 ## Reglas de Calidad
 
 1. **`affected_files` debe ser exhaustivo** — incluir todos los archivos tocados, incluso los de registro global.
-2. **`attempts`** comienza en `1` y se incrementa en `1` por cada re-iteración (si QA o Reviewer rechazan y el Coder vuelve a trabajar).
+2. **`attempts`** lo calcula `memory-log-scaffold.sh` automáticamente (lee la iteración anterior e incrementa) — no incrementarlo a mano.
 3. **No incluir** archivos de `node_modules`, `.lock`, o archivos de configuración no modificados.
 4. **Rutas absolutas desde la raíz del monorepo** — siempre con `packages/server/` o `packages/app/` como prefijo.

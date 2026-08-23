@@ -57,19 +57,25 @@ cmd_check() {
     require_jq
 
     if [[ ! -f "$file" ]]; then
-        jq -n --arg file "$file" '{file: $file, attempts: 0, blocked: false, error: "archivo no existe"}'
+        jq -n --arg file "$file" '{file: $file, attempts: 0, status: "", blocked: false, error: "archivo no existe"}'
         return 0
     fi
 
-    local attempts
+    local attempts status
     attempts="$(extract_frontmatter_field "$file" "attempts")"
+    status="$(extract_frontmatter_field "$file" "status")"
     [[ "$attempts" =~ ^[0-9]+$ ]] || attempts=0
 
+    # blocked solo cuando attempts >= 3 Y la última ejecución NO fue exitosa.
+    # Ejecuciones exitosas (PASS, APPROVED) no deben bloquear: el agente funcionó
+    # correctamente; si el pipeline lo reinvocó fue por otro motivo upstream.
     local blocked="false"
-    [[ "$attempts" -ge 3 ]] && blocked="true"
+    if [[ "$attempts" -ge 3 && "$status" != "PASS" && "$status" != "APPROVED" ]]; then
+        blocked="true"
+    fi
 
-    jq -n --arg file "$file" --argjson attempts "$attempts" --argjson blocked "$blocked" \
-        '{file: $file, attempts: $attempts, blocked: $blocked}'
+    jq -n --arg file "$file" --argjson attempts "$attempts" --arg status "$status" --argjson blocked "$blocked" \
+        '{file: $file, attempts: $attempts, status: $status, blocked: $blocked}'
 }
 
 cmd_block() {

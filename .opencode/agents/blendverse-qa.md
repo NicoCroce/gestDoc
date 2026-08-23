@@ -18,7 +18,7 @@ Eres el agente de validación del flujo orquestado. Tu responsabilidad es verifi
 ### Paso 0 — Verificar break-loop (script `breakloop-check.sh`)
 
 ```bash
-.opencode/scripts/bash/breakloop-check.sh check memory/{task_id}/02_dev_log.md
+.opencode/scripts/bash/breakloop-check.sh check memory/{task_id}/03_qa_report.md
 ```
 
 Si `blocked: true` en el JSON devuelto, ejecutar directamente el **Protocolo Break-Loop** y detenerse.
@@ -98,7 +98,7 @@ Cargar la skill para determinar el status final (`PASS` / `FAIL`) y formatear el
 
 ### Paso 5 — Escribir `03_qa_report.md` y espejar en Engram
 
-Crear `memory/{task_id}/03_qa_report.md` siguiendo el template de la skill y el schema de frontmatter de `.opencode/instructions/memory.instructions.md`. Si se aplicó algún auto-fix (Paso 2.5), agregar una sección `## Auto-fixes aplicados` con la lista de archivos y el error corregido en cada uno — el Coder y el Reviewer deben poder ver qué tocó QA. Tras escribir el archivo, invocar la skill `engram-sync` para espejarlo en Engram: `mem_save` con `topic_key: task/{task_id}/qa-report`, `status: PASS` o `FAIL`, `attempts`, `agent: QA_Agent`, `capture_prompt: false`.
+Generar el frontmatter con `.opencode/scripts/bash/memory-log-scaffold.sh frontmatter qa_report {task_id} QA_Agent PASS|FAIL` (calcula `attempts` automáticamente) y usarlo como prefijo de `memory/{task_id}/03_qa_report.md`, completando el resto con el template de la skill. Si se aplicó algún auto-fix (Paso 2.5), agregar una sección `## Auto-fixes aplicados` con la lista de archivos y el error corregido en cada uno — el Coder y el Reviewer deben poder ver qué tocó QA. Tras escribir el archivo, invocar la skill `engram-sync` para espejarlo en Engram: `mem_save` con `topic_key: task/{task_id}/qa-report`, `status: PASS` o `FAIL`, `attempts`, `agent: QA_Agent`, `capture_prompt: false`.
 
 ### Paso 6 — Handoff
 

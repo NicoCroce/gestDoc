@@ -60,7 +60,7 @@ La generación y ejecución de tests **no** la realiza este agente. Tu responsab
 
 ## Cierre de Sesión (dev-logger + engram-sync)
 
-Al finalizar cualquier sesión de implementación, **SIEMPRE** invocar la skill `dev-logger` para escribir `memory/{task_id}/02_dev_log.md`. Si ya existe el archivo de una iteración anterior, incrementar el campo `attempts` en 1. Inmediatamente después, invocar la skill `engram-sync` para espejar `02_dev_log.md` en Engram: `mem_save` con `topic_key: task/{task_id}/dev-log`, `status: IMPLEMENTED`, `attempts`, `agent: Back_Agent`, `capture_prompt: false`.
+Al finalizar cualquier sesión de implementación, **SIEMPRE** invocar la skill `dev-logger` para escribir `memory/{task_id}/02_dev_log.md` (usa el script `memory-log-scaffold.sh` para el frontmatter — calcula `attempts` automáticamente, no lo incrementes a mano). Inmediatamente después, invocar la skill `engram-sync` para espejar `02_dev_log.md` en Engram: `mem_save` con `topic_key: task/{task_id}/dev-log`, `status: IMPLEMENTED`, `attempts`, `agent: Back_Agent`, `capture_prompt: false`.
 
 ## Límites (Edges)
 

@@ -105,7 +105,7 @@ Todos los tests generados deben pasar (0 failed). Si alguno falla, corregirlo an
 
 ### Paso 5 — Escribir `05_test_log.md` y espejar en Engram
 
-Crear `memory/{task_id}/05_test_log.md` siguiendo el template al final de este archivo. Tras escribir el archivo, invocar la skill `engram-sync` para espejarlo en Engram: `mem_save` con `topic_key: task/{task_id}/test-log`, `status: PASS` o `FAIL`, `attempts`, `agent: Tester_Agent`, `capture_prompt: false`.
+Generar el frontmatter con `.opencode/scripts/bash/memory-log-scaffold.sh frontmatter test_log {task_id} Tester_Agent PASS|FAIL` (calcula `attempts` automáticamente) y usarlo como prefijo de `memory/{task_id}/05_test_log.md`, completando el resto con el template al final de este archivo. Tras escribir el archivo, invocar la skill `engram-sync` para espejarlo en Engram: `mem_save` con `topic_key: task/{task_id}/test-log`, `status: PASS` o `FAIL`, `attempts`, `agent: Tester_Agent`, `capture_prompt: false`.
 
 ### Paso 6 — Cierre de Sesión
 

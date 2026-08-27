@@ -1,13 +1,13 @@
 import {
   Container,
   EmptyScreenError,
-  EmptyScreenFilter,
   FiltersSheet,
   Page,
 } from '@app/Application';
 import {
   CertificatesGrid,
   ActionsCertificateListPage,
+  CertificatesEmptyState,
   FiltersCertificatesForm,
   CertificatesListSkeleton,
 } from '../Components';
@@ -41,7 +41,14 @@ export const CertificateListPage = () => {
   }
 
   if (data && Object.keys(data).length === 0)
-    return <EmptyScreenFilter onClick={handleFilters} />;
+    return (
+      <Page
+        title="Licencias"
+        headerRight={<ActionsCertificateListPage onClick={handleFilters} />}
+      >
+        <CertificatesEmptyState onFilterClick={handleFilters} />
+      </Page>
+    );
 
   return (
     <Page

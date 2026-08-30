@@ -96,11 +96,11 @@ interface IRequestWithCookie<TInput> {
 
 type IexecuteServiceWithCookie<TInput> = (
   params: ServiceParams<TInput>,
-) => Promise<{ token: string; ownerId: number }>;
+) => Promise<{ token: string; ownerId: number; pendingDisclaimer: boolean }>;
 
 /**
  * Variant of executeService that sets an HttpOnly `auth_token` cookie from the
- * `token` field of the service response and returns `{ ownerId }`.
+ * `token` field of the service response and returns `{ ownerId, pendingDisclaimer }`.
  * Use for procedures that need to update the session cookie (e.g. select-empresa).
  * @this bind the service method before passing it.
  * @example executeServiceWithCookie(this.service.selectEmpresa.bind(this.service))
@@ -116,5 +116,8 @@ export const executeServiceWithCookie =
     loggerContext(ctx.requestContext).info(
       'Service Response (withCookie) => ownerId: ' + result.ownerId,
     );
-    return { ownerId: result.ownerId };
+    return {
+      ownerId: result.ownerId,
+      pendingDisclaimer: result.pendingDisclaimer,
+    };
   };

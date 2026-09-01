@@ -49,6 +49,6 @@ TiposSegmentosModel.init(
     sequelize,
     paranoid: true,
     timestamps: true,
-    tableName: 'tipos_segmentos',
+    tableName: 'Tipos_segmentos',
   },
 );

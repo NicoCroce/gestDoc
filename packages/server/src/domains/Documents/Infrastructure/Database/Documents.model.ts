@@ -100,6 +100,6 @@ Documentos.init(
     modelName: 'Documentos',
     paranoid: true,
     timestamps: true,
-    tableName: 'documentos',
+    tableName: 'Documentos',
   },
 );

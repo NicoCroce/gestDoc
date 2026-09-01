@@ -31,6 +31,6 @@ PermissionsModel.init(
     sequelize,
     paranoid: true,
     timestamps: true,
-    tableName: 'permisos',
+    tableName: 'Permisos',
   },
 );

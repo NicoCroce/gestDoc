@@ -52,6 +52,6 @@ UsuariosSegmentosModel.init(
     sequelize,
     paranoid: true,
     timestamps: true,
-    tableName: 'usuarios_segmentos',
+    tableName: 'Usuarios_segmentos',
   },
 );

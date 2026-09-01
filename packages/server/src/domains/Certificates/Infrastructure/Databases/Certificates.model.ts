@@ -132,6 +132,6 @@ CertificateModel.init(
     modelName: 'CertificateModel',
     paranoid: true,
     timestamps: true,
-    tableName: 'certificados',
+    tableName: 'Certificados',
   },
 );

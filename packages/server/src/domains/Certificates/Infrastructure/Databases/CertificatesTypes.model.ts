@@ -52,6 +52,6 @@ CertificatesTypesModel.init(
     modelName: 'CertificatesTypesModel',
     paranoid: true,
     timestamps: true,
-    tableName: 'tipo_certificados',
+    tableName: 'Tipo_Certificados',
   },
 );

@@ -74,6 +74,6 @@ DisclaimerAcceptanceModel.init(
     paranoid: true,
     modelName: 'DisclaimerAcceptance',
     timestamps: true,
-    tableName: 'disclaimer_firmas',
+    tableName: 'Disclaimer_firmas',
   },
 );

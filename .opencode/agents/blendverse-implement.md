@@ -63,13 +63,13 @@ Mostrar este banner **inmediatamente antes** de invocar cada sub-agente. El todo
    .opencode/scripts/bash/resolve-task-id.sh resolve "$(git branch --show-current)" "{título breve de la tarea}"
    ```
    El script imprime el `task_id` resuelto por stdout (reutilizado si ya había una tarea `IN_PROGRESS` para esta rama, o recién creado y ya persistido en `history_log.json` si no).
-3. **Verificar primero el checkpoint file en disco** (fuente de verdad primaria, ver Paso 1.5): si existe `memory/{task_id}/.checkpoint.json`, usarlo directamente para resolver `scope`, `context_source` y `branch` — **saltear el `mem_search` de este punto** y continuar directo al punto 4. Solo si **no existe** checkpoint file, consultar Engram (Patrón 2 de la skill `engram-sync`) como fallback:
+3. **Verificar primero el checkpoint file en disco** (fuente de verdad primaria, ver Paso 1.5): si existe `memory/{task_id}/.checkpoint.json`, usarlo directamente para resolver `scope`, `context_source` y `branch` — **saltear el `mem_search` de este punto** y continuar directo al punto 4. Solo si **no existe** checkpoint file, consultar Engram como fallback:
    - `mem_search(query: "task {task_id} status")` → si existe una observación con `status: COMPLETED`, informar que la tarea ya se cerró y **detenerse** (no duplicar). Si `BLOCKED`, informar que requiere intervención humana y detenerse.
    - `mem_search(query: "task {task_id} registration")` → si existe con `status: IN_PROGRESS`, reutilizar `scope` y `context_source` si están presentes (verificando en disco que la fuente sigue existiendo).
-4. Si quien invoca este agente indicó explícitamente `{feature}` (ej. desde `@blendverse-start-feature`), usarlo. Si no, y hay artefactos Speckit, inferirlo del directorio bajo `specs/` modificado más recientemente; si hay más de un candidato genuinamente ambiguo, preguntar al usuario cuál usar.
+4. Si quien invoca indicó `feature_key` y `feature_dir` explícitos (ej. desde `@blendverse-start-feature`), usarlos. `feature_key` identifica la tarea; `feature_dir` es la ruta de los artefactos. Si falta `feature_dir`, resolverlo desde `.specify/feature.json`; solo como último recurso inferirlo del directorio bajo `specs/` modificado más recientemente. Si hay más de un candidato genuinamente ambiguo, preguntar al usuario cuál usar.
 5. Determinar la fuente de contexto **sin transcribir ni copiar contenido**:
    - Si existe `memory/{task_id}/01_requirements.md` → esa es la fuente (flujo de input crudo, generado por `@blendverse-analyst`).
-   - Si no existe pero hay artefactos Speckit (`specs/{feature}/spec.md` + `tasks.md`) → la fuente es directamente `specs/{feature}/spec.md` y `specs/{feature}/tasks.md`.
+   - Si no existe pero `feature_dir` contiene `spec.md` y `tasks.md` → la fuente es directamente `{feature_dir}/spec.md` y `{feature_dir}/tasks.md`.
 6. Crear la carpeta `memory/{task_id}/` si no existe (para `02_dev_log.md`, `03_qa_report.md`, `04_review_log.md` y `05_test_log.md`, que no tienen equivalente en Speckit).
 7. Guardar la fuente resuelta como `{context_source}` — se usa en cada prompt del Paso 3 en lugar de una ruta fija a `01_requirements.md`.
 8. Registrar la tarea en Engram: `mem_save` con `topic_key: task/{task_id}/registration`, `status: IN_PROGRESS`, `feature`, `scope` (si ya se determinó), `context_source` y `branch`, `capture_prompt: false`.
@@ -92,7 +92,7 @@ Solo si existe `memory/{task_id}/.checkpoint.json` (detectado en el Paso 1, punt
    - `last_completed_step: "close"` → `resume_point: "pr"` (ejecutar solo Paso 5).
    - `last_completed_step: "pr"` → tarea ya cerrada, informar y detener.
 
-2. **Si `checkpoint.sh get` devuelve `valid: false`** (no existe checkpoint file), usar el **Patrón 3** de la skill `engram-sync` para determinar el `resume_point` a partir del último espejo presente (`dev-log` → `test-log` → `qa-report` → `review-log`).
+2. **Si `checkpoint.sh get` devuelve `valid: false`** (no existe checkpoint file), determinar el `resume_point` desde el último artefacto existente en `memory/{task_id}/` (`02_dev_log.md` → `05_test_log.md` → `03_qa_report.md` → `04_review_log.md`), leyendo su estado. Solo si falta el archivo correspondiente, usar su espejo Engram como fallback y verificar cualquier otro artefacto local antes de actuar.
 
 3. **Verificación en disco:** ya la hace `checkpoint.sh get` (campo `valid`/`reason` del JSON) cuando el checkpoint existe. Si venís del fallback del punto 2 (sin checkpoint file), verificar manualmente el archivo correspondiente antes de actuar: si no existe, el espejo está obsoleto → el punto de reanudación retrocede al anterior que sí tenga archivo (o `start`).
 

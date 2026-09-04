@@ -40,7 +40,7 @@ Si `blocked: true` en el JSON devuelto (`attempts >= 3` de una iteración anteri
 
 ### Paso 1 — Identificar el dominio y los archivos existentes
 
-Recibir el nombre del dominio desde el contexto: la fuente indicada por `@blendverse-implement` (`memory/{task_id}/01_requirements.md` en flujo de input crudo, o `specs/{feature}/spec.md` en flujo Speckit) o la instrucción del usuario.
+Recibir el nombre del dominio desde el contexto: la fuente indicada por `@blendverse-implement` (`memory/{task_id}/01_requirements.md` en flujo de input crudo, o `{feature_dir}/spec.md` en flujo Speckit) o la instrucción del usuario.
 
 Para cada dominio, leer:
 

@@ -25,7 +25,7 @@ Si `blocked: true` en el JSON devuelto, ejecutar directamente el **Protocolo Bre
 
 ### Paso 1 — Leer contexto
 
-- La fuente de contexto indicada por `@blendverse-implement` — `memory/{task_id}/01_requirements.md` (flujo de input crudo) o `specs/{feature}/spec.md` (flujo Speckit) — criterios de aceptación.
+- La fuente de contexto indicada por `@blendverse-implement` — `memory/{task_id}/01_requirements.md` (flujo de input crudo) o `{feature_dir}/spec.md` (flujo Speckit) — criterios de aceptación.
 - `memory/{task_id}/02_dev_log.md` — lista de `affected_files` y decisiones técnicas.
 - `memory/{task_id}/05_test_log.md` — resultado de la ejecución de tests por `@blendverse-tester`.
 

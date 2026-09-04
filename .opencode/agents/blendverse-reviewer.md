@@ -22,7 +22,7 @@ Eres el último filtro de calidad antes de cerrar una tarea. Tu responsabilidad 
 
 ### Paso 1 — Leer contexto completo
 
-- La fuente de contexto indicada por `@blendverse-implement` — `memory/{task_id}/01_requirements.md` (flujo de input crudo) o `specs/{feature}/spec.md` (flujo Speckit) — criterios de aceptación originales.
+- La fuente de contexto indicada por `@blendverse-implement` — `memory/{task_id}/01_requirements.md` (flujo de input crudo) o `{feature_dir}/spec.md` (flujo Speckit) — criterios de aceptación originales.
 - `memory/{task_id}/02_dev_log.md` — lista de `affected_files` y decisiones técnicas.
 - Cada archivo listado en `affected_files`.
 

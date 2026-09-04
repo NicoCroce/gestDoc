@@ -9,7 +9,7 @@ La implementación de tareas en este proyecto sigue las convenciones DDD/Hexagon
 
 **Para implementar una feature:**
 
-1. Invocar `@blendverse-implement` directamente, indicando la `{feature}` — lee `spec.md`/`tasks.md` directamente (sin transcribirlos), resuelve el `task_id`, detecta el alcance (back/front/full-stack) y coordina la cadena completa de agentes hasta el cierre de la tarea.
+1. Invocar `@blendverse-implement` directamente indicando `feature_key` y `feature_dir` — lee `spec.md`/`tasks.md` directamente (sin transcribirlos), resuelve el `task_id`, detecta el alcance (back/front/full-stack) y coordina la cadena completa de agentes hasta el cierre de la tarea.
 
 ```
 @blendverse-implement

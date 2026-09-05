@@ -169,6 +169,40 @@
       "status": "IN_PROGRESS",
       "created_at": "2026-08-19T14:16:39Z",
       "title": "Test tarea"
+    },
+    {
+      "task_id": "TASK-007-exclude-deleted-users-emails-20260905-1",
+      "status": "COMPLETED",
+      "created_at": "2026-09-05T14:06:09Z",
+      "title": "Exclude deleted users emails",
+      "feature": "exclude-deleted-users-emails",
+      "branch": "007-exclude-deleted-users-emails",
+      "closed_at": "2026-09-05T14:20:00Z",
+      "spec": "specs/007-exclude-deleted-users-emails/spec.md",
+      "plan": "specs/007-exclude-deleted-users-emails/plan.md",
+      "tasks": "specs/007-exclude-deleted-users-emails/tasks.md",
+      "agents_chain": [
+        {
+          "agent": "Back_Agent",
+          "status": "IMPLEMENTED",
+          "attempts": 1
+        },
+        {
+          "agent": "Tester_Agent",
+          "status": "PASS",
+          "attempts": 1
+        },
+        {
+          "agent": "QA_Agent",
+          "status": "PASS",
+          "attempts": 1
+        },
+        {
+          "agent": "Reviewer_Agent",
+          "status": "APPROVED",
+          "attempts": 1
+        }
+      ]
     }
   ]
 }

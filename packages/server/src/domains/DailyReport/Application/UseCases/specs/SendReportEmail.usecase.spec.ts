@@ -91,4 +91,54 @@ describe('SendReportEmail (FR-003/FR-004 — envío a admins)', () => {
       html: 'b',
     });
   });
+
+  // ── Regresión T006 (007-exclude-deleted-users-emails, Contrato 1/3) ──────
+  it('sends the report only to the active admin when one of two admins is soft-deleted', async () => {
+    // GetAdmins (Permissions) ya excluye soft-deleted vía paranoid: de 2
+    // admins de la empresa, solo el activo llega en el array resuelto.
+    const mockGetAdmins = {
+      execute: vi.fn().mockResolvedValue(['activo@test.com']),
+    };
+    const mockSender = { send: vi.fn().mockResolvedValue(undefined) };
+    dailyReportTemplate.mockReturnValue({ subject: 's', body: 'b' });
+
+    const useCase = new SendReportEmail(
+      mockGetAdmins as never,
+      mockSender as never,
+    );
+
+    const result = await useCase.execute({
+      input: { report: buildDailyReport() },
+      requestContext,
+    });
+
+    expect(mockSender.send).toHaveBeenCalledWith(
+      expect.objectContaining({ to: ['activo@test.com'] }),
+    );
+    expect(mockSender.send.mock.calls[0][0].to).not.toContain(
+      'eliminado@test.com',
+    );
+    expect(result).toEqual({ success: true });
+  });
+
+  it('skips the send and logs the omission when every admin of the company is soft-deleted (Contrato 3)', async () => {
+    // Todos los admins de la empresa fueron soft-deleted: GetAdmins resuelve
+    // [] (mismo criterio que "sin admins" — la condición es sobre la
+    // longitud del array, nunca sobre su truthiness).
+    const mockGetAdmins = { execute: vi.fn().mockResolvedValue([]) };
+    const mockSender = { send: vi.fn() };
+
+    const useCase = new SendReportEmail(
+      mockGetAdmins as never,
+      mockSender as never,
+    );
+
+    const result = await useCase.execute({
+      input: { report: buildDailyReport() },
+      requestContext,
+    });
+
+    expect(result).toEqual({ success: false });
+    expect(mockSender.send).not.toHaveBeenCalled();
+  });
 });

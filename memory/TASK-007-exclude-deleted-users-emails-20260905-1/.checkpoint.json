@@ -1,0 +1,10 @@
+{
+  "task_id": "TASK-007-exclude-deleted-users-emails-20260905-1",
+  "last_completed_step": "tester",
+  "completed_steps": ["back", "tester"],
+  "timestamp": "2026-09-05T14:11:00Z",
+  "scope": "back-only",
+  "branch": "007-exclude-deleted-users-emails",
+  "feature": "exclude-deleted-users-emails",
+  "context_source": "specs/007-exclude-deleted-users-emails/spec.md + tasks.md"
+}

@@ -1,4 +1,4 @@
-import { executeUseCase, IUseCase } from '@server/Application';
+import { AppError, executeUseCase, IUseCase } from '@server/Application';
 import { GetAllActiveOwners, GetUser } from '@server/domains/Users/Application';
 import { NotifyNewDocument } from '@server/domains/EmployeeReminders/Application';
 import { logger } from '@server/Infrastructure/utils/pino';
@@ -61,8 +61,11 @@ export class IngestDocument implements IUseCase<IIngestDocumentOutput> {
 
     for (const [employeeId, documents] of documentsByEmployee) {
       try {
-        const user = await executeUseCase({
-          useCase: this._getUser,
+        // No usa executeUseCase para este `_getUser`: ese adapter envuelve
+        // cualquier error en TRPCError (ver TRPCErrorAdapter), lo que rompe
+        // el `instanceof AppError` de abajo, necesario para distinguir
+        // "empleado soft-deleted" (404) del resto de errores.
+        const user = await this._getUser.execute({
           input: employeeId,
           requestContext,
         });
@@ -86,6 +89,13 @@ export class IngestDocument implements IUseCase<IIngestDocumentOutput> {
           notified = true;
         }
       } catch (error) {
+        if (error instanceof AppError && error.statusCode === 404) {
+          logger.warn(
+            { ownerId, employeeId },
+            'Document notification skipped: employee not active',
+          );
+          continue;
+        }
         logger.error(
           { error, ownerId, employeeId },
           'New document notification skipped (ingest continues)',

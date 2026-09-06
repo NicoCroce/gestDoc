@@ -8,7 +8,7 @@ import {
 } from '@server/Infrastructure';
 import { loggerContext } from '@server/Infrastructure/utils/pino';
 import { IRequestContext } from '../Interfaces';
-import { RequestContext } from '../Entities';
+import { AppError, RequestContext } from '../Entities';
 import { GetAdmins } from '@server/domains/Permissions/Application';
 
 interface IAddLicense extends IRequestContext {
@@ -53,10 +53,13 @@ export class SendEmailService {
   }
 
   private async getCurrentUser(requestContext: RequestContext) {
-    return await executeUseCase({
-      useCase: this._getUser,
-      requestContext,
+    // No usa executeUseCase: ese adapter envuelve cualquier error en
+    // TRPCError (ver TRPCErrorAdapter), lo que rompe el `instanceof AppError`
+    // que necesitan los catch de sendDocumentToEmail/signDocument para
+    // distinguir "usuario soft-deleted" (404) de un error real.
+    return await this._getUser.execute({
       input: requestContext.values.userId,
+      requestContext,
     });
   }
 
@@ -69,7 +72,7 @@ export class SendEmailService {
       const currentUser = await this.getCurrentUser(requestContext);
       const admins = await this.getAdmins(requestContext);
 
-      if (admins) {
+      if (admins.length > 0) {
         const { body, subject } = templateFn({
           ...templateArgs,
           currentUser:
@@ -80,6 +83,10 @@ export class SendEmailService {
           subject,
           html: body,
         });
+      } else {
+        loggerContext(requestContext.values).warn(
+          'Email to admins skipped: no active admins found',
+        );
       }
     } catch (error) {
       loggerContext(requestContext.values).error(
@@ -122,6 +129,12 @@ export class SendEmailService {
         ],
       });
     } catch (error) {
+      if (error instanceof AppError && error.statusCode === 404) {
+        loggerContext(requestContext.values).warn(
+          'Document email skipped: recipient not active',
+        );
+        return;
+      }
       loggerContext(requestContext.values).error(
         error,
         'Failed to send document to email',
@@ -157,7 +170,7 @@ export class SendEmailService {
       });
 
       // Enviar a los admins
-      if (admins) {
+      if (admins.length > 0) {
         const adminTemplate = emailTemplates.documentSignedAdmin({
           employeeName,
           documentId,
@@ -170,8 +183,18 @@ export class SendEmailService {
           subject: adminTemplate.subject,
           html: adminTemplate.body,
         });
+      } else {
+        loggerContext(requestContext.values).warn(
+          'Document signing email to admins skipped: no active admins found',
+        );
       }
     } catch (error) {
+      if (error instanceof AppError && error.statusCode === 404) {
+        loggerContext(requestContext.values).warn(
+          'Document signing email skipped: recipient not active',
+        );
+        return;
+      }
       loggerContext(requestContext.values).error(
         error,
         'Failed to send document signing email',
@@ -186,10 +209,12 @@ export class SendEmailService {
     requestContext,
   }: INotifyLicenseStatusChange) {
     try {
-      const employee = await executeUseCase({
-        useCase: this._getUser,
-        requestContext,
+      // No usa executeUseCase por el mismo motivo que getCurrentUser(): se
+      // necesita el AppError original (statusCode 404) para distinguir
+      // "empleado soft-deleted" en el catch.
+      const employee = await this._getUser.execute({
         input: certificate.userId!,
+        requestContext,
       });
 
       const reviewer = await this.getCurrentUser(requestContext);
@@ -220,6 +245,12 @@ export class SendEmailService {
         html: body,
       });
     } catch (error) {
+      if (error instanceof AppError && error.statusCode === 404) {
+        loggerContext(requestContext.values).warn(
+          'License status email skipped: employee not active',
+        );
+        return;
+      }
       loggerContext(requestContext.values).error(
         error,
         'Failed to send license status change email to employee',

@@ -29,6 +29,7 @@ export const useSelectEmpresa = () => {
       setQueryData((prev) => ({
         ...prev!,
         ownerId: data.ownerId,
+        pendingDisclaimer: data.pendingDisclaimer,
         companyName: companyDataRef.current?.companyName ?? prev?.companyName,
         companyLogo: companyDataRef.current?.companyLogo ?? prev?.companyLogo,
       }));

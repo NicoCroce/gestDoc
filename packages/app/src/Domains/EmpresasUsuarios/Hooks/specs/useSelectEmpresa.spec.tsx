@@ -109,7 +109,7 @@ describe('useSelectEmpresa', () => {
       .mock.calls[0][0] as TSelectEmpresaMutationOptions;
 
     await options.onSuccess?.(
-      { ownerId: 5 },
+      { ownerId: 5, pendingDisclaimer: false },
       { empresaId: 5 },
       undefined,
       mutationContext,
@@ -127,7 +127,7 @@ describe('useSelectEmpresa', () => {
       .mock.calls[0][0] as TSelectEmpresaMutationOptions;
 
     await options.onSuccess?.(
-      { ownerId: 5 },
+      { ownerId: 5, pendingDisclaimer: false },
       { empresaId: 5 },
       undefined,
       mutationContext,

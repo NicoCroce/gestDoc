@@ -35,6 +35,7 @@ export const SelectEmpresaInputSchema = z.object({
 export const SelectEmpresaOutputSchema = z.object({
   token: z.string(),
   ownerId: z.number(),
+  pendingDisclaimer: z.boolean(),
 });
 
 export type ISelectEmpresaInput = IRequestContext & {

@@ -53,7 +53,7 @@ export class Login implements IUseCase<IExecuteResponse> {
       ownerId: ownerId,
     };
 
-    const theme = await executeUseCase({
+    const ownersys = await executeUseCase({
       requestContext,
       useCase: this._getOwnersys,
       input: user.values.ownerId,
@@ -67,7 +67,15 @@ export class Login implements IUseCase<IExecuteResponse> {
 
     let pendingDisclaimer = false;
 
-    if (process.env.ENABLE_DISCLAIMER === 'true' && this._getSignatureStatus) {
+    const requiresDisclaimer = Boolean(
+      ownersys?.values.texto_disclaimer?.trim(),
+    );
+
+    if (
+      process.env.ENABLE_DISCLAIMER === 'true' &&
+      this._getSignatureStatus &&
+      requiresDisclaimer
+    ) {
       const signatureStatus = await executeUseCase({
         useCase: this._getSignatureStatus,
         input: { userId: id, ownerId },
@@ -89,7 +97,7 @@ export class Login implements IUseCase<IExecuteResponse> {
         ownerId,
         rol,
       }),
-      theme: theme?.values.tema || 1,
+      theme: ownersys?.values.tema || 1,
       pendingDisclaimer,
     };
   }

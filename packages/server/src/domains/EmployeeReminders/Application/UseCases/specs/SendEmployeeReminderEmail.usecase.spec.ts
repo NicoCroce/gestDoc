@@ -121,4 +121,26 @@ describe('SendEmployeeReminderEmail (FR-008/FR-009 — envío condicional)', () 
       }),
     ).rejects.toThrow('SMTP down');
   });
+
+  // ── Regresión T014 (007-exclude-deleted-users-emails) ────────────────────
+  // Este use case no resuelve el empleado por sí mismo (recibe el `reminder`
+  // ya armado por GenerateDailyReminder, que a su vez depende de
+  // GetEmployeesByCompany — paranoid-safe, cubierto por T002/T003): un
+  // empleado soft-deleted nunca debería llegar hasta acá. Como defensa en
+  // profundidad (FR-009), si de todos modos llegara un reminder sin email
+  // resoluble (mismo síntoma que tendría un usuario eliminado con datos
+  // stale), el envío se omite sin lanzar excepción.
+  it('skips the send when the reminder carries no resolvable email (defensive regression for soft-deleted employees)', async () => {
+    const sender = { send: vi.fn() };
+    const useCase = new SendEmployeeReminderEmail(sender);
+
+    const result = await useCase.execute({
+      input: { reminder: buildReminder({ employeeEmail: '' }) },
+      requestContext,
+    });
+
+    expect(result).toEqual({ sent: false });
+    expect(sender.send).not.toHaveBeenCalled();
+    expect(employeeDailyReminderTemplate).not.toHaveBeenCalled();
+  });
 });

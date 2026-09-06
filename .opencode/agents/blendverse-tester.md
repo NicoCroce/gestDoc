@@ -91,17 +91,32 @@ Para cada capa, **NO usar TODOs** — completar los templates con:
 4. `{Domain}.controller.spec.ts` → capa Infrastructure/Controllers
 5. `use{Action}{Entity}.spec.ts` → por cada hook en Domains/{Domain}/Hooks/
 
-### Paso 4 — Ejecutar Tests
+### Paso 4 — Ejecutar Tests (acotado a los archivos afectados)
+
+**No corras la suite completa** (`npx vitest run` sin argumentos). Existe un hang
+pre-existente y documentado (ver comentario en `.opencode/scripts/bash/qa-check.sh`)
+en los specs de `Controllers` que usan `vi.mock('@server/Infrastructure')`: el
+barrel arrastra `TrpcInstance.ts` → modelos Sequelize → intento de conexión a
+MySQL real con pool esperando indefinidamente. Correr la suite completa desde el
+Tester reproduce ese hang y deja colgada toda la cadena orquestada.
+
+En su lugar, corré vitest **acotado a los archivos de test que vos escribiste o
+modificaste en esta tarea** (y los specs ya listados en `affected_files` del
+`02_dev_log.md` del Coder, si aplican):
 
 ```bash
-# Backend
-cd packages/server && npx vitest run 2>&1
+# Backend — acotado
+cd packages/server && npx vitest run <archivo1.spec.ts> <archivo2.spec.ts> ... 2>&1
 
-# Frontend (si hay hooks)
-cd packages/app && npx vitest run 2>&1
+# Frontend (si hay hooks) — acotado
+cd packages/app && npx vitest run <archivo1.spec.ts> ... 2>&1
 ```
 
 Todos los tests generados deben pasar (0 failed). Si alguno falla, corregirlo antes de devolver el control a `@blendverse-implement`.
+
+La suite completa la ejecuta `@blendverse-qa` (Paso 2 de su protocolo, vía
+`qa-check.sh` que ya maneja el hang con timeout+kill); no es responsabilidad del
+Tester.
 
 ### Paso 5 — Escribir `05_test_log.md` y espejar en Engram
 

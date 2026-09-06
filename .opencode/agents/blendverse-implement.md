@@ -281,7 +281,7 @@ Generando y ejecutando tests
 ```
 
 2. `task` → `@blendverse-tester` con el prompt:
-   > Leer `{context_source}` para extraer las reglas de negocio y criterios de aceptación antes de generar los tests. Leer también `memory/{task_id}/02_dev_log.md` para identificar el dominio y los archivos con lógica de negocio implementados en `packages/server/src/domains/`. Generar y ejecutar los tests `.spec.ts` para todas las capas con lógica (entity, use cases, service, controller) usando datos concretos, no stubs ni `it.todo`; incluir al menos un test multi-tenant de `ownerId`. Ejecutar `cd packages/server && npx vitest run 2>&1` y asegurar 0 failed. Al finalizar, escribir `memory/{task_id}/05_test_log.md`.
+   > Leer `{context_source}` para extraer las reglas de negocio y criterios de aceptación antes de generar los tests. Leer también `memory/{task_id}/02_dev_log.md` para identificar el dominio y los archivos con lógica de negocio implementados en `packages/server/src/domains/`. Generar y ejecutar los tests `.spec.ts` para todas las capas con lógica (entity, use cases, service, controller) usando datos concretos, no stubs ni `it.todo`; incluir al menos un test multi-tenant de `ownerId`. Ejecutar los tests con `vitest run` **acotado a los archivos de test afectados por esta tarea** (no la suite completa, que tiene un hang conocido en specs de Controllers documentado en `qa-check.sh`) y asegurar 0 failed en esos archivos. Al finalizar, escribir `memory/{task_id}/05_test_log.md`.
 
 **Al completar:** marcar "Generar tests" como `completed`. Guardar checkpoint file (`last_completed_step: "tester"`). Mostrar banner de transición:
 
@@ -340,7 +340,7 @@ Generando y ejecutando tests
 ```
 
 2. `task` → `@blendverse-tester` con el prompt:
-   > Leer `{context_source}` para extraer las reglas de negocio y criterios de aceptación antes de generar los tests. Leer también `memory/{task_id}/02_dev_log.md` para identificar el dominio y los archivos con lógica de negocio implementados en `packages/app/src/Domains/`. Generar y ejecutar los tests `.spec.ts` para hooks y componentes con lógica usando datos concretos, no stubs ni `it.todo`. Ejecutar `cd packages/app && npx vitest run 2>&1` y asegurar 0 failed. Al finalizar, escribir `memory/{task_id}/05_test_log.md`.
+   > Leer `{context_source}` para extraer las reglas de negocio y criterios de aceptación antes de generar los tests. Leer también `memory/{task_id}/02_dev_log.md` para identificar el dominio y los archivos con lógica de negocio implementados en `packages/app/src/Domains/`. Generar y ejecutar los tests `.spec.ts` para hooks y componentes con lógica usando datos concretos, no stubs ni `it.todo`. Ejecutar los tests con `vitest run` **acotado a los archivos de test afectados por esta tarea** (no la suite completa) y asegurar 0 failed en esos archivos. Al finalizar, escribir `memory/{task_id}/05_test_log.md`.
 
 **Al completar:** marcar "Generar tests" como `completed`. Guardar checkpoint file (`last_completed_step: "tester"`). Mostrar banner de transición:
 
@@ -418,7 +418,7 @@ Generando y ejecutando tests (back + front)
 ```
 
 3. `task` → `@blendverse-tester` con el prompt:
-   > Leer `{context_source}` para extraer las reglas de negocio y criterios de aceptación antes de generar los tests. Leer también `memory/{task_id}/02_dev_log.md` para identificar el dominio y los archivos con lógica de negocio implementados en `packages/server/src/domains/` y `packages/app/src/Domains/`. Generar los tests `.spec.ts` para todas las capas con lógica (entity, use cases, service, controller, hooks y componentes no triviales) usando datos concretos, no stubs ni `it.todo`; incluir al menos un test multi-tenant de `ownerId` en el backend. Ejecutar `cd packages/server && npx vitest run 2>&1` y `cd packages/app && npx vitest run 2>&1` **en paralelo** (son independientes entre sí), esperar a que ambos terminen y asegurar 0 failed en los dos. Al finalizar, escribir `memory/{task_id}/05_test_log.md`.
+   > Leer `{context_source}` para extraer las reglas de negocio y criterios de aceptación antes de generar los tests. Leer también `memory/{task_id}/02_dev_log.md` para identificar el dominio y los archivos con lógica de negocio implementados en `packages/server/src/domains/` y `packages/app/src/Domains/`. Generar los tests `.spec.ts` para todas las capas con lógica (entity, use cases, service, controller, hooks y componentes no triviales) usando datos concretos, no stubs ni `it.todo`; incluir al menos un test multi-tenant de `ownerId` en el backend. Ejecutar los tests con `vitest run` **acotado a los archivos de test afectados por esta tarea** en ambos paquetes (no la suite completa, que tiene un hang conocido en specs de Controllers documentado en `qa-check.sh`) **en paralelo** (son independientes entre sí), esperar a que ambos terminen y asegurar 0 failed en los dos. Al finalizar, escribir `memory/{task_id}/05_test_log.md`.
 
 **Al completar:** marcar "Generar tests" como `completed`. Guardar checkpoint file (`last_completed_step: "tester"`). Mostrar banner de transición:
 

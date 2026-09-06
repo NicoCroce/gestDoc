@@ -248,6 +248,25 @@ export const useGetEntities = () => {
 };
 ```
 
+### Búsquedas — SIEMPRE con debounce
+
+Todo input de búsqueda que dispara una query DEBE usar `useDebounce` (de `@app/Application/Hooks`) antes de enviar el valor al hook de datos. Sin debounce, cada tecla presionada dispara un request al server.
+
+```tsx
+// ✅ Correcto
+import { useDebounce } from '@app/Application';
+
+const [search, setSearch] = useState('');
+const debouncedSearch = useDebounce(search, 400);
+const { data } = useGetEntities({ search: debouncedSearch });
+
+// ❌ Incorrecto — un request por cada tecla
+const [search, setSearch] = useState('');
+const { data } = useGetEntities({ search });
+```
+
+El delay por defecto es `400ms`. Solo cambiarlo si hay un motivo concreto (ej. búsqueda contra datos locales puede ser `200ms`).
+
 ### Hook de Mutation (crear)
 
 ```typescript
@@ -288,7 +307,9 @@ export const useCacheEntities = () => {
 
 ### Invalidación de Cache en Mutations — SIEMPRE
 
-**Regla:** toda mutation debe invalidar la cache de las queries relacionadas en su `onSuccess`. Esto se hace a nivel del hook en `queries.ts` para que todos los consumidores se beneficien automáticamente, sin depender de que cada componente lo recuerde.
+**Regla:** toda mutation debe invalidar la cache de las queries relacionadas en su `onSuccess`. Esto se hace a nivel del hook para que todos los consumidores se beneficien automáticamente, sin depender de que cada componente lo recuerde.
+
+**Patrón preferido: `useUtils()` de tRPC.** Tipa las claves de query automáticamente desde el router y evita errores de tipeo en los query keys:
 
 ```typescript
 // ✅ Correcto — invalidación en el hook, todos los consumidores la heredan

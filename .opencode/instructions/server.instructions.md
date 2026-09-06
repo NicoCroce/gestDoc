@@ -432,6 +432,25 @@ const { ownerId } = requestContext.values;
 whereClause.id_propietario = ownerId;
 ```
 
+### Excepción: el usuario accediendo a su propio registro
+
+Cuando el recurso pedido ES el propio usuario autenticado (ej. `getUser` con el mismo `userId` del token), el filtro de tenant NO debe bloquearlo. Un usuario siempre puede leerse a sí mismo aunque el `ownerId` del contexto difiera:
+
+```typescript
+// Referencia: UsersRepository.implementation.ts
+async getUser({ id, requestContext }: IGetUserRepository): Promise<User | null> {
+  const whereClause: { [key: string]: unknown } = { id };
+
+  const isCurrentUser = requestContext?.values.userId === id;
+  if (requestContext?.values.ownerId && !isCurrentUser) {
+    whereClause.id_propietario = requestContext.values.ownerId;
+  }
+  // ...
+}
+```
+
+Esta excepción aplica SOLO a lectura del propio perfil. Nunca para listados ni para operaciones sobre otros usuarios.
+
 ## Restricciones
 
 1. Los casos de uso importan e inyectan solo repositorios del mismo dominio, no puede importar otros repositorios.

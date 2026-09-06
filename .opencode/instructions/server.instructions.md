@@ -407,6 +407,22 @@ throw new AppError('Mensaje descriptivo', 400, 'VALIDATION_ERROR');
 - Nunca uses `throw new Error()` directamente en use cases o servicios.
 - Nunca uses `TRPCError` directamente. Usar `TRPCError` acopla la capa Application/Domain a la infraestructura tRPC.
 
+### Status code semántico — SIEMPRE el correcto
+
+`AppError` recibe el HTTP status code como segundo parámetro. Usá el que corresponde, no siempre 400:
+
+| Situación                       | Código | Ejemplo                                                   |
+| ------------------------------- | ------ | --------------------------------------------------------- |
+| Recurso no encontrado           | `404`  | `throw new AppError('Usuario no encontrado', 404)`        |
+| No autenticado / token inválido | `401`  | `throw new AppError('Token error', 401, 'UNAUTHORIZED')`  |
+| Sin permisos                    | `403`  | `throw new AppError('Acceso denegado', 403)`              |
+| Validación de negocio           | `400`  | `throw new AppError('Las contraseñas no coinciden', 400)` |
+| Conflicto de estado             | `409`  | `throw new AppError('El email ya está registrado', 409)`  |
+
+El tercer parámetro (`code`) es un string semántico opcional (`'UNAUTHORIZED'`, `'VALIDATION_ERROR'`) que el front puede usar para lógica condicional sin parsear el mensaje.
+
+**Por qué importa:** el front y los catchs de servicios (ej. `SendEmailService`) distinguen "no existe" (404 → skip silencioso) de "falló de verdad" (500 → alerta) por el `statusCode`. Un 400 genérico rompe esa distinción.
+
 ## Multi-Tenant
 
 Siempre filtrar por `ownerId` en el repositorio:

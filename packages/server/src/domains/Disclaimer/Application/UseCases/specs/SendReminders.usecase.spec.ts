@@ -174,4 +174,74 @@ describe('SendReminders', () => {
     expect(mockEmailSender.sendDisclaimerReminders).not.toHaveBeenCalled();
     expect(result).toEqual({ sent: 0, failed: 0, total: 0 });
   });
+
+  // ── Regla: sin disclaimer configurado no hay nada que recordar ───────────
+  it('sends nothing and skips all queries when texto_disclaimer is null', async () => {
+    const mockRepo = { getPendingEmployeeIds: vi.fn() };
+    const mockUserRepo = { getEmailsByUsersId: vi.fn() };
+    const mockEmailSender = { sendDisclaimerReminders: vi.fn() };
+    const mockOwnersysRepo = {
+      getOwnersys: vi.fn().mockResolvedValue({
+        values: { denominacion: 'Empresa Test', texto_disclaimer: null },
+      }),
+    };
+
+    const useCase = new SendReminders(
+      mockRepo as never,
+      mockUserRepo as never,
+      mockEmailSender as never,
+      mockOwnersysRepo as never,
+    );
+
+    const result = await useCase.execute({ input: {}, requestContext });
+
+    expect(mockRepo.getPendingEmployeeIds).not.toHaveBeenCalled();
+    expect(mockUserRepo.getEmailsByUsersId).not.toHaveBeenCalled();
+    expect(mockEmailSender.sendDisclaimerReminders).not.toHaveBeenCalled();
+    expect(result).toEqual({ sent: 0, failed: 0, total: 0 });
+  });
+
+  it('sends nothing when ownersys does not exist', async () => {
+    const mockRepo = { getPendingEmployeeIds: vi.fn() };
+    const mockUserRepo = { getEmailsByUsersId: vi.fn() };
+    const mockEmailSender = { sendDisclaimerReminders: vi.fn() };
+    const mockOwnersysRepo = {
+      getOwnersys: vi.fn().mockResolvedValue(null),
+    };
+
+    const useCase = new SendReminders(
+      mockRepo as never,
+      mockUserRepo as never,
+      mockEmailSender as never,
+      mockOwnersysRepo as never,
+    );
+
+    const result = await useCase.execute({ input: {}, requestContext });
+
+    expect(mockEmailSender.sendDisclaimerReminders).not.toHaveBeenCalled();
+    expect(result).toEqual({ sent: 0, failed: 0, total: 0 });
+  });
+
+  it('sends nothing when texto_disclaimer is an empty string', async () => {
+    const mockRepo = { getPendingEmployeeIds: vi.fn() };
+    const mockUserRepo = { getEmailsByUsersId: vi.fn() };
+    const mockEmailSender = { sendDisclaimerReminders: vi.fn() };
+    const mockOwnersysRepo = {
+      getOwnersys: vi.fn().mockResolvedValue({
+        values: { denominacion: 'Empresa Test', texto_disclaimer: '' },
+      }),
+    };
+
+    const useCase = new SendReminders(
+      mockRepo as never,
+      mockUserRepo as never,
+      mockEmailSender as never,
+      mockOwnersysRepo as never,
+    );
+
+    const result = await useCase.execute({ input: {}, requestContext });
+
+    expect(mockEmailSender.sendDisclaimerReminders).not.toHaveBeenCalled();
+    expect(result).toEqual({ sent: 0, failed: 0, total: 0 });
+  });
 });

@@ -23,6 +23,18 @@ export class SendReminders implements IUseCase<
   }: ISendReminders): Promise<ISendRemindersResponse> {
     const ownerId = input.ownerId ?? requestContext.values.ownerId;
 
+    const ownersys = await this.ownersyssRepository.getOwnersys({
+      id: ownerId,
+      requestContext,
+    });
+
+    const disclaimerText = ownersys?.values.texto_disclaimer;
+    const companyName = ownersys?.values.denominacion || '';
+
+    if (!disclaimerText) {
+      return { sent: 0, failed: 0, total: 0 };
+    }
+
     const pendingIds =
       input.employeeIds && input.employeeIds.length > 0
         ? input.employeeIds
@@ -30,14 +42,6 @@ export class SendReminders implements IUseCase<
             ownerId,
             requestContext,
           });
-
-    const ownersys = await this.ownersyssRepository.getOwnersys({
-      id: ownerId,
-      requestContext,
-    });
-
-    const disclaimerText = ownersys?.values.texto_disclaimer || '';
-    const companyName = ownersys?.values.denominacion || '';
 
     let sent = 0;
     let failed = 0;

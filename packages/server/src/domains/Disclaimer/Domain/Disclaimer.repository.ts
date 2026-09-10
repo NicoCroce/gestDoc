@@ -34,7 +34,7 @@ export interface IEmployeeRecord {
   apellido: string;
   email: string;
   renovar_clave: boolean;
-  estado_firma: 'Pendiente' | 'Firmado' | 'Corrupto';
+  estado_firma: 'Pendiente' | 'Firmado' | 'Corrupto' | 'No aplica';
 }
 
 // ── Reporte diario (daily-admin-report) ─────────────────────────────────────

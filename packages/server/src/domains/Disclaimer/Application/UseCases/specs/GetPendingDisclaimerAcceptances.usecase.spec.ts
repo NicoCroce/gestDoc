@@ -4,6 +4,10 @@ import { GetPendingDisclaimerAcceptances } from '../GetPendingDisclaimerAcceptan
 
 const requestContext = new RequestContext(1, 'req-1', 42);
 
+const createIsDisclaimerEnabled = (enabled: boolean) => ({
+  execute: vi.fn().mockResolvedValue(enabled),
+});
+
 describe('GetPendingDisclaimerAcceptances (US5 — términos sin aceptar)', () => {
   beforeEach(() => vi.clearAllMocks());
 
@@ -21,7 +25,10 @@ describe('GetPendingDisclaimerAcceptances (US5 — términos sin aceptar)', () =
         .mockResolvedValue(records),
     };
 
-    const useCase = new GetPendingDisclaimerAcceptances(mockRepo as never);
+    const useCase = new GetPendingDisclaimerAcceptances(
+      mockRepo as never,
+      createIsDisclaimerEnabled(true) as never,
+    );
     const result = await useCase.execute({ requestContext });
 
     expect(
@@ -36,9 +43,29 @@ describe('GetPendingDisclaimerAcceptances (US5 — términos sin aceptar)', () =
       getEmployeesWithoutDisclaimerAcceptance: vi.fn().mockResolvedValue([]),
     };
 
-    const useCase = new GetPendingDisclaimerAcceptances(mockRepo as never);
+    const useCase = new GetPendingDisclaimerAcceptances(
+      mockRepo as never,
+      createIsDisclaimerEnabled(true) as never,
+    );
     const result = await useCase.execute({ requestContext });
 
     expect(result).toEqual([]);
+  });
+
+  it('returns an empty list when disclaimer is not enabled', async () => {
+    const mockRepo = {
+      getEmployeesWithoutDisclaimerAcceptance: vi.fn(),
+    };
+
+    const useCase = new GetPendingDisclaimerAcceptances(
+      mockRepo as never,
+      createIsDisclaimerEnabled(false) as never,
+    );
+    const result = await useCase.execute({ requestContext });
+
+    expect(result).toEqual([]);
+    expect(
+      mockRepo.getEmployeesWithoutDisclaimerAcceptance,
+    ).not.toHaveBeenCalled();
   });
 });

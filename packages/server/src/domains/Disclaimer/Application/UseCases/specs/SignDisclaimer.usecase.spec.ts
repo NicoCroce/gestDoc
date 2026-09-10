@@ -11,6 +11,10 @@ import { comparePassword } from '@server/Infrastructure/utils/bcrypt';
 
 const requestContext = new RequestContext(1, 'req-1', 99);
 
+const createIsDisclaimerEnabled = (enabled: boolean) => ({
+  execute: vi.fn().mockResolvedValue(enabled),
+});
+
 function computeExpectedHash(userId: number, timestamp: string): string {
   return crypto
     .createHmac('sha256', 'test-secret')
@@ -30,6 +34,48 @@ describe('SignDisclaimer', () => {
     vi.useRealTimers();
   });
 
+  it('throws when disclaimer is not enabled', async () => {
+    const mockRepo = {
+      sign: vi.fn(),
+    };
+    const mockUserRepo = {
+      validateUser: vi.fn(),
+    };
+
+    const useCase = new SignDisclaimer(
+      mockRepo as never,
+      mockUserRepo as never,
+      createIsDisclaimerEnabled(false) as never,
+    );
+
+    await expect(
+      useCase.execute({
+        input: {
+          password: 'correct-password',
+          ip: '192.168.1.1',
+          userAgent: 'Mozilla/5.0',
+        },
+        requestContext,
+      }),
+    ).rejects.toThrow(AppError);
+
+    await expect(
+      useCase.execute({
+        input: {
+          password: 'correct-password',
+          ip: '192.168.1.1',
+          userAgent: 'Mozilla/5.0',
+        },
+        requestContext,
+      }),
+    ).rejects.toMatchObject({
+      message: 'Términos y condiciones no habilitados',
+    });
+
+    expect(mockUserRepo.validateUser).not.toHaveBeenCalled();
+    expect(mockRepo.sign).not.toHaveBeenCalled();
+  });
+
   it('signs with valid password and persists signature', async () => {
     const mockRepo = {
       sign: vi.fn().mockResolvedValue({ values: { id: 1 } }),
@@ -45,6 +91,7 @@ describe('SignDisclaimer', () => {
     const useCase = new SignDisclaimer(
       mockRepo as never,
       mockUserRepo as never,
+      createIsDisclaimerEnabled(true) as never,
     );
 
     const result = await useCase.execute({
@@ -90,6 +137,7 @@ describe('SignDisclaimer', () => {
     const useCase = new SignDisclaimer(
       mockRepo as never,
       mockUserRepo as never,
+      createIsDisclaimerEnabled(true) as never,
     );
 
     await expect(
@@ -126,6 +174,7 @@ describe('SignDisclaimer', () => {
     const useCase = new SignDisclaimer(
       mockRepo as never,
       mockUserRepo as never,
+      createIsDisclaimerEnabled(true) as never,
     );
 
     await expect(

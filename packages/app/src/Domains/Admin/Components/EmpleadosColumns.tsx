@@ -10,7 +10,7 @@ export interface IEmployeeRecord {
   apellido: string;
   email: string;
   renovar_clave: boolean;
-  estado_firma: 'Pendiente' | 'Firmado' | 'Corrupto';
+  estado_firma: 'Pendiente' | 'Firmado' | 'Corrupto' | 'No aplica';
 }
 
 interface EmployeeColumnsOptions {
@@ -26,6 +26,7 @@ export const getRenovarClaveVariant = (needsRenewal: boolean) =>
 export const getEstadoFirmaVariant = (estado: string) => {
   if (estado === 'Firmado') return 'default';
   if (estado === 'Corrupto') return 'destructive';
+  if (estado === 'No aplica') return 'outline';
   return 'secondary';
 };
 
@@ -102,11 +103,18 @@ export const employeeColumns = (
         const estado = row.getValue(
           'estado_firma',
         ) as IEmployeeRecord['estado_firma'];
-        const Icon = estado === 'Firmado' ? <OkIcon /> : <NotIcon />;
+        const Icon =
+          estado === 'Firmado' ? (
+            <OkIcon />
+          ) : estado === 'No aplica' ? null : (
+            <NotIcon />
+          );
         return (
-          <Badge variant="secondary">
+          <Badge variant={getEstadoFirmaVariant(estado)}>
             <Text>
-              {Icon} {estado}
+              {Icon}
+              {Icon ? ' ' : null}
+              {estado}
             </Text>
           </Badge>
         );

@@ -7,6 +7,7 @@ const firmColors: Record<string, string> = {
   Firmado: 'hsl(142, 71%, 45%)', // verde
   Pendiente: 'hsl(45, 93%, 58%)', // ámbar
   Corrupto: 'hsl(0, 84%, 60%)', // rojo
+  'No aplica': 'hsl(220, 10%, 60%)', // gris neutro
 };
 
 export const useGetStatisticsEmpleados = () => {

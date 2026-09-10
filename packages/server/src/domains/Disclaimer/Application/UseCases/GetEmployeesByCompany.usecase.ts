@@ -1,12 +1,16 @@
 import { IUseCase, IPaginationResponse } from '@server/Application';
 import { DisclaimerRepository, IEmployeeRecord } from '../../Domain';
 import { IGetEmployeesByCompany } from '../disclaimer.types';
+import { IsDisclaimerEnabled } from './IsDisclaimerEnabled.usecase';
 
 export class GetEmployeesByCompany implements IUseCase<
   IPaginationResponse<IEmployeeRecord[]>,
   IGetEmployeesByCompanyInput
 > {
-  constructor(private readonly disclaimerRepository: DisclaimerRepository) {}
+  constructor(
+    private readonly disclaimerRepository: DisclaimerRepository,
+    private readonly _isDisclaimerEnabled: IsDisclaimerEnabled,
+  ) {}
 
   async execute({
     input,
@@ -14,7 +18,12 @@ export class GetEmployeesByCompany implements IUseCase<
   }: IGetEmployeesByCompany): Promise<IPaginationResponse<IEmployeeRecord[]>> {
     const ownerId = input.ownerId ?? requestContext.values.ownerId;
 
-    return this.disclaimerRepository.getEmployeesByCompany({
+    const enabled = await this._isDisclaimerEnabled.execute({
+      input: ownerId,
+      requestContext,
+    });
+
+    const response = await this.disclaimerRepository.getEmployeesByCompany({
       ownerId,
       search: input.search || '',
       page: input.page,
@@ -23,6 +32,18 @@ export class GetEmployeesByCompany implements IUseCase<
       segmentIds: input.segmentIds,
       requestContext,
     });
+
+    if (!enabled) {
+      return {
+        ...response,
+        data: response.data.map((employee) => ({
+          ...employee,
+          estado_firma: 'No aplica' as const,
+        })),
+      };
+    }
+
+    return response;
   }
 }
 

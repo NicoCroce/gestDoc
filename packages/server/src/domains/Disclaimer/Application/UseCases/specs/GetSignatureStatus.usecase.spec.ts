@@ -12,6 +12,10 @@ function computeExpectedHash(userId: number, timestamp: string): string {
     .digest('hex');
 }
 
+const createIsDisclaimerEnabled = (enabled: boolean) => ({
+  execute: vi.fn().mockResolvedValue(enabled),
+});
+
 describe('GetSignatureStatus', () => {
   beforeEach(() => {
     process.env.SECRET_KEY_BACK = 'test-secret';
@@ -19,6 +23,24 @@ describe('GetSignatureStatus', () => {
 
   afterEach(() => {
     delete process.env.SECRET_KEY_BACK;
+  });
+
+  it('returns null when disclaimer is not enabled', async () => {
+    const mockRepo = {
+      getStatus: vi.fn(),
+    };
+
+    const useCase = new GetSignatureStatus(
+      mockRepo as never,
+      createIsDisclaimerEnabled(false) as never,
+    );
+    const result = await useCase.execute({
+      input: { userId: 1, ownerId: 99 },
+      requestContext,
+    });
+
+    expect(result).toBeNull();
+    expect(mockRepo.getStatus).not.toHaveBeenCalled();
   });
 
   it('returns signed status when valid signature exists', async () => {
@@ -35,7 +57,10 @@ describe('GetSignatureStatus', () => {
       }),
     };
 
-    const useCase = new GetSignatureStatus(mockRepo as never);
+    const useCase = new GetSignatureStatus(
+      mockRepo as never,
+      createIsDisclaimerEnabled(true) as never,
+    );
     const result = await useCase.execute({
       input: { userId: 1, ownerId: 99 },
       requestContext,
@@ -55,7 +80,10 @@ describe('GetSignatureStatus', () => {
       getStatus: vi.fn().mockResolvedValue(null),
     };
 
-    const useCase = new GetSignatureStatus(mockRepo as never);
+    const useCase = new GetSignatureStatus(
+      mockRepo as never,
+      createIsDisclaimerEnabled(true) as never,
+    );
     const result = await useCase.execute({
       input: { userId: 1, ownerId: 99 },
       requestContext,
@@ -78,7 +106,10 @@ describe('GetSignatureStatus', () => {
       }),
     };
 
-    const useCase = new GetSignatureStatus(mockRepo as never);
+    const useCase = new GetSignatureStatus(
+      mockRepo as never,
+      createIsDisclaimerEnabled(true) as never,
+    );
     const result = await useCase.execute({
       input: { userId: 1, ownerId: 99 },
       requestContext,

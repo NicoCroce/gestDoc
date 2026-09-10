@@ -3,6 +3,7 @@ import { UserRepository } from '@server/domains/Users';
 import { OwnersyssRepository } from '@server/domains/Ownersyss';
 import { DisclaimerRepository } from '../../Domain';
 import { ISendReminders, ISendRemindersResponse } from '../disclaimer.types';
+import { IsDisclaimerEnabled } from './IsDisclaimerEnabled.usecase';
 
 const BATCH_SIZE = 50;
 
@@ -15,6 +16,7 @@ export class SendReminders implements IUseCase<
     private readonly userRepository: UserRepository,
     private readonly disclaimerEmailService: ISendEmailService,
     private readonly ownersyssRepository: OwnersyssRepository,
+    private readonly _isDisclaimerEnabled: IsDisclaimerEnabled,
   ) {}
 
   async execute({
@@ -22,6 +24,15 @@ export class SendReminders implements IUseCase<
     requestContext,
   }: ISendReminders): Promise<ISendRemindersResponse> {
     const ownerId = input.ownerId ?? requestContext.values.ownerId;
+
+    const enabled = await this._isDisclaimerEnabled.execute({
+      input: ownerId,
+      requestContext,
+    });
+
+    if (!enabled) {
+      return { sent: 0, failed: 0, total: 0 };
+    }
 
     const pendingIds =
       input.employeeIds && input.employeeIds.length > 0

@@ -4,13 +4,17 @@ import { IExecuteResponse, Ilogin } from '../auth.types';
 import { User, ValidateUserPassword } from '@server/domains/Users';
 import { GetRoleByUser } from '@server/domains/Permissions';
 import { GetOwnersys } from '@server/domains/Ownersyss';
-import { GetSignatureStatus } from '@server/domains/Disclaimer';
+import {
+  GetSignatureStatus,
+  IsDisclaimerEnabled,
+} from '@server/domains/Disclaimer';
 
 export class Login implements IUseCase<IExecuteResponse> {
   constructor(
     private readonly _validateUserPassword: ValidateUserPassword,
     private readonly _getOwnersys: GetOwnersys,
     private readonly _getRoleByUser: GetRoleByUser,
+    private readonly _isDisclaimerEnabled: IsDisclaimerEnabled,
     private readonly _getSignatureStatus?: GetSignatureStatus,
   ) {}
 
@@ -67,21 +71,21 @@ export class Login implements IUseCase<IExecuteResponse> {
 
     let pendingDisclaimer = false;
 
-    const requiresDisclaimer = Boolean(
-      ownersys?.values.texto_disclaimer?.trim(),
-    );
-
-    if (
-      process.env.ENABLE_DISCLAIMER === 'true' &&
-      this._getSignatureStatus &&
-      requiresDisclaimer
-    ) {
-      const signatureStatus = await executeUseCase({
-        useCase: this._getSignatureStatus,
-        input: { userId: id, ownerId },
+    if (this._getSignatureStatus) {
+      const disclaimerEnabled = await executeUseCase({
+        useCase: this._isDisclaimerEnabled,
+        input: ownerId,
         requestContext,
       });
-      pendingDisclaimer = !signatureStatus || signatureStatus.corrupt;
+
+      if (disclaimerEnabled) {
+        const signatureStatus = await executeUseCase({
+          useCase: this._getSignatureStatus,
+          input: { userId: id, ownerId },
+          requestContext,
+        });
+        pendingDisclaimer = !signatureStatus || signatureStatus.corrupt;
+      }
     }
 
     return {

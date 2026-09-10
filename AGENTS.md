@@ -37,10 +37,10 @@ Monorepo TypeScript con pnpm workspaces. Arquitectura Modular Monolith con DDD y
 
 ## Spec Kit — Feature Plan
 
-Active feature: **license-rejection-reason**
+Active feature: **exclude-deleted-users-emails**
 
-- Spec: `specs/006-license-rejection-reason/spec.md`
-- Plan: `specs/006-license-rejection-reason/plan.md`
-- Branch: `006-license-rejection-reason`
+- Spec: `specs/007-exclude-deleted-users-emails/spec.md`
+- Plan: `specs/007-exclude-deleted-users-emails/plan.md`
+- Branch: `007-exclude-deleted-users-emails`
 
 <!-- SPECKIT END -->

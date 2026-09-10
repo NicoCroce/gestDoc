@@ -232,5 +232,38 @@ describe('CertificatesServices', () => {
 
       expect(notifyMock).not.toHaveBeenCalled();
     });
+
+    // ── Regresión T018 (007-exclude-deleted-users-emails) ─────────────────
+    // `notifyLicenseStatusChange` se invoca sin `await` (fire-and-forget):
+    // el estado de la licencia ya quedó persistido por `executeUseCase`
+    // ANTES de esta llamada, así que un fallo de envío (p.ej. empleado dueño
+    // de la licencia soft-deleted, T016) nunca puede bloquear ni revertir el
+    // cambio de estado — el detalle de la exclusión en sí se prueba en
+    // `SendEmail.service.spec.ts` (T017).
+    it('completes updateCertificateStatus without waiting for notifyLicenseStatusChange to resolve (fire-and-forget)', async () => {
+      vi.mocked(executeUseCase).mockResolvedValue(mockCertificate as never);
+      let resolveNotify: () => void = () => {};
+      const pendingNotify = new Promise<void>((resolve) => {
+        resolveNotify = resolve;
+      });
+      const notifyMock = vi.fn().mockReturnValue(pendingNotify);
+      const service = buildUpdateService(notifyMock);
+
+      const result = await service.updateCertificateStatus({
+        input: {
+          id: 1,
+          status: 'rechazado',
+          rejectionReason: 'Faltó documentación',
+        },
+        requestContext,
+      });
+
+      // La operación de negocio (persistencia del estado, ya resuelta por
+      // executeUseCase) se completa sin esperar a que el email se envíe.
+      expect(result).toBeDefined();
+      expect(notifyMock).toHaveBeenCalledOnce();
+
+      resolveNotify(); // limpieza: no dejar la promesa pendiente colgada
+    });
   });
 });

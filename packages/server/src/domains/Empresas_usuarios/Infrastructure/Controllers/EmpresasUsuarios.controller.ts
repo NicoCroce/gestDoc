@@ -3,8 +3,13 @@ import { EmpresasUsuariosService } from '../../Application/EmpresasUsuarios.serv
 import {
   GetEmpresasByUsuarioInputSchema,
   SelectEmpresaInputSchema,
+  SelectEmpresaOutputSchema,
 } from '../../Application/empresasUsuarios.types';
 import { executeService, executeServiceWithCookie } from '@server/Application';
+
+const SelectEmpresaResponseSchema = SelectEmpresaOutputSchema.omit({
+  token: true,
+});
 
 export class EmpresasUsuariosController {
   constructor(
@@ -25,6 +30,7 @@ export class EmpresasUsuariosController {
   selectEmpresa = () =>
     protectedProcedure
       .input(SelectEmpresaInputSchema)
+      .output(SelectEmpresaResponseSchema)
       .mutation(
         executeServiceWithCookie(
           this.empresasUsuariosService.selectEmpresa.bind(

@@ -163,12 +163,6 @@
           "attempts": 1
         }
       ]
-    },
-    {
-      "task_id": "TASK-006-license-rejection-reason-20260819-1",
-      "status": "IN_PROGRESS",
-      "created_at": "2026-08-19T14:16:39Z",
-      "title": "Test tarea"
     }
   ]
 }

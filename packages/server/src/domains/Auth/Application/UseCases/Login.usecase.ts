@@ -57,7 +57,7 @@ export class Login implements IUseCase<IExecuteResponse> {
       ownerId: ownerId,
     };
 
-    const theme = await executeUseCase({
+    const ownersys = await executeUseCase({
       requestContext,
       useCase: this._getOwnersys,
       input: user.values.ownerId,
@@ -101,7 +101,7 @@ export class Login implements IUseCase<IExecuteResponse> {
         ownerId,
         rol,
       }),
-      theme: theme?.values.tema || 1,
+      theme: ownersys?.values.tema || 1,
       pendingDisclaimer,
     };
   }

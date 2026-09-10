@@ -21,7 +21,7 @@ memory/
   BLOCKED.md              ← se crea SOLO si se alcanza el break-loop (attempts >= 3)
 ```
 
-> **`01_requirements.md` es opcional.** Solo se genera cuando el origen de la tarea es input crudo (vía `@blendverse-analyst`). Cuando el origen es Speckit, los agentes leen `specs/{feature}/spec.md` y `tasks.md` **directamente** — no se transcribe ni se copia su contenido a `memory/`. En ambos casos, `02_dev_log.md` en adelante siempre vive en `memory/{task_id}/`, porque esos archivos no tienen equivalente en Speckit.
+> **`01_requirements.md` es opcional.** Solo se genera cuando el origen es input crudo (vía `@blendverse-analyst`). Cuando el origen es Speckit, los agentes leen `{feature_dir}/spec.md` y `tasks.md` **directamente** — no se transcribe ni se copia su contenido a `memory/`. `feature_dir` se resuelve desde `.specify/feature.json`, no desde el nombre lógico de la feature. En ambos casos, `02_dev_log.md` en adelante siempre vive en `memory/{task_id}/`, porque esos archivos no tienen equivalente en Speckit.
 
 ## Convención de IDs de Tarea
 

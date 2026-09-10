@@ -1,7 +1,20 @@
 import { describe, expect, it, vi, beforeEach } from 'vitest';
-import { RequestContext } from '@server/Application';
+import { AppError, RequestContext } from '@server/Application';
 import { User } from '@server/domains/Users/Domain/User.entity';
+import { logger } from '@server/Infrastructure/utils/pino';
 import { IngestDocument } from '../IngestDocument.usecase';
+
+const mockLogger = vi.hoisted(() => ({
+  warn: vi.fn(),
+  info: vi.fn(),
+  error: vi.fn(),
+}));
+
+vi.mock('@server/Infrastructure/utils/pino', () => ({
+  logger: mockLogger,
+  loggerContext: vi.fn(() => mockLogger),
+  loggerContextInput: vi.fn(() => mockLogger),
+}));
 
 const requestContext = new RequestContext(1, 'req-1', 42);
 
@@ -199,5 +212,55 @@ describe('IngestDocument (US6/FR-011..FR-016 — ingreso + notificación real-ti
       }),
     ).rejects.toThrow('DB constraint failed');
     expect(mocks.notifyNewDocument.execute).not.toHaveBeenCalled();
+  });
+
+  // ── Regresión T012 (007-exclude-deleted-users-emails, Contrato 2) ────────
+  it('does not notify a soft-deleted employee but still creates the document (FR-015 / Contrato 2)', async () => {
+    const mocks = buildMocks();
+    mocks.repository.createDocuments.mockResolvedValue([
+      { id: 10, employeeId: 5, titulo: 'Recibo de sueldo' },
+    ]);
+    // El empleado 5 fue soft-deleted: GetUser (paranoid) no lo resuelve y
+    // lanza AppError 404 (mismo código que "no existe", ver research.md Gap 1).
+    mocks.getUser.execute.mockRejectedValue(
+      new AppError('User not found', 404),
+    );
+
+    const useCase = new IngestDocument(
+      mocks.repository as never,
+      mocks.getUser as never,
+      mocks.getAllActiveOwners as never,
+      mocks.notifyNewDocument as never,
+    );
+
+    const result = await useCase.execute({
+      input: {
+        documents: [
+          {
+            employeeId: 5,
+            tipo: 1,
+            titulo: 'Recibo de sueldo',
+            archivo: 'r.pdf',
+          },
+        ],
+      },
+      requestContext,
+    });
+
+    // El documento queda creado igual (FR-015): la ingesta nunca se bloquea.
+    expect(result.documentIds).toEqual([10]);
+    expect(result.notified).toBe(false);
+    // No se dispara ninguna notificación para el empleado eliminado.
+    expect(mocks.notifyNewDocument.execute).not.toHaveBeenCalled();
+    // El use case no lanza excepción hacia el caller (SC-003/FR-015).
+    // Contrato 2: el log debe ser distinguible de un fallo de infraestructura
+    // real ('Document notification skipped: employee not active' vs. el
+    // genérico 'New document notification skipped (ingest continues)').
+    // La resolución de `_getUser` (T010) llama a `.execute()` directo, no vía
+    // `executeUseCase`, para que el catch reciba el `AppError(404)` original.
+    expect(logger.warn).toHaveBeenCalledWith(
+      { ownerId: 42, employeeId: 5 },
+      'Document notification skipped: employee not active',
+    );
   });
 });

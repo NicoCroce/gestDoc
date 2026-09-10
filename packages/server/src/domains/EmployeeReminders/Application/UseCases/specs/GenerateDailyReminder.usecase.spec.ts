@@ -248,4 +248,36 @@ describe('GenerateDailyReminder (US1–US5 — ensambla el recordatorio diario)'
       { documentId: 20, documentTitle: 'Reglamento interno' },
     ]);
   });
+
+  // ── Regresión T014 (007-exclude-deleted-users-emails, Contrato 1) ────────
+  it('excludes a soft-deleted employee from the reminder batch (GetEmployeesByCompany already paranoid-safe)', async () => {
+    const mocks = buildMocks();
+    // La empresa tiene 2 empleados, pero uno fue soft-deleted: Disclaimer's
+    // GetEmployeesByCompany (paranoid, cubierto por SendReminders/T003) ya
+    // no lo devuelve — el mock representa ese resultado ya filtrado.
+    mocks.getEmployeesByCompany.execute.mockResolvedValue({
+      data: [employee], // empleado 5 (activo) — el empleado 8 (soft-deleted) NUNCA llega acá
+      meta: {},
+    });
+    mocks.getPendingDocumentsByEmployees.execute.mockResolvedValue([]);
+
+    const useCase = new GenerateDailyReminder(
+      mocks.getEmployeesByCompany as never,
+      mocks.getPendingDocumentsByEmployees as never,
+    );
+
+    const result = await useCase.execute({
+      input: { companyName: 'Acme S.A.' },
+      requestContext,
+    });
+
+    // Un único reminder (el empleado 8 soft-deleted nunca genera uno)
+    expect(result.reminders).toHaveLength(1);
+    expect(result.reminders[0].employeeId).toBe(5);
+    expect(result.reminders.find((r) => r.employeeId === 8)).toBeUndefined();
+    // El batch de documentos pendientes tampoco se pidió para el eliminado
+    expect(mocks.getPendingDocumentsByEmployees.execute).toHaveBeenCalledWith(
+      expect.objectContaining({ input: { employeeIds: [5] } }),
+    );
+  });
 });

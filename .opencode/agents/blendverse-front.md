@@ -24,7 +24,7 @@ Antes de crear el primer archivo, listar el árbol de directorios completo que s
 
 ## Todo List de Tareas (tasks.md)
 
-Antes de implementar, leer `specs/{feature}/tasks.md` (disponible vía `{context_source}`) y crear una todo list con la herramienta `todowrite`:
+Antes de implementar, leer `{feature_dir}/tasks.md` o la ruta de tareas incluida en `{context_source}` y crear una todo list con la herramienta `todowrite`:
 
 - Un ítem por cada tarea `T###` cuyo archivo destino esté en `packages/app/` (tu paquete). Usar el ID y una descripción corta (ej. `T021 — Crear ruta /seleccionar-empresa`).
 - Omitir las tareas que no referencien archivos de tu paquete (las ejecuta el otro coder, `@blendverse-tester` o `@blendverse-qa`).

@@ -71,6 +71,89 @@ Components/
 
 6. Los tipos de datos usan prefijo `T` (`TEntity`, `TEntitySearch`) y SIEMPRE se derivan del router del servidor con `inferRouterOutputs`. Nunca definas interfaces manuales con prefijo `I` (ej. `ICertificate` → `TCertificate`): el frontend debe sincronizarse con el backend automáticamente cuando cambia.
 
+### Botones de submit — SIEMPRE con `isLoading`
+
+Todo `<Button type="submit">` de un formulario que dispara una mutation DEBE recibir `isLoading={isPending}` de la mutation. El `Button` del proyecto ya muestra un spinner y se deshabilita automáticamente.
+
+```tsx
+// ✅ Correcto
+const { mutate, isPending } = useAddEntity();
+<Button type="submit" isLoading={isPending}>Guardar</Button>
+
+// ❌ Incorrecto — el usuario no sabe si el click hizo algo
+<Button type="submit" disabled={isPending}>Guardar</Button>
+```
+
+Los botones de "Cancelar" o acciones secundarias sí usan `disabled={isPending}` sin spinner.
+
+### Feedback de mutations — toasts en el hook, no en el componente
+
+El `toast.success` / `toast.error` de una mutation vive en el **hook** que la envuelve (`onSuccess` / `onError`), nunca en el componente. Así todos los consumidores del hook heredan el mismo feedback.
+
+```tsx
+// ✅ En Hooks/useAddEntity.ts
+export const useAddEntity = () => {
+  return EntityService.create.useMutation({
+    onSuccess: () => toast.success('Registro agregado'),
+    onError: (err) => toast.error(err.message),
+  });
+};
+
+// ❌ En el componente — duplicás el toast en cada pantalla que lo use
+```
+
+### Estados de pantalla — TODA pantalla con datos maneja los 3 estados
+
+Toda pantalla o componente que hace `useQuery` DEBE renderizar explícitamente:
+
+1. **`isError`** → `<EmptyScreenError />` (de `@app/Application`)
+2. **`isLoading`** → skeleton del dominio (`<EntityListSkeleton />`)
+3. **vacío** → `<EmptyScreenFilter />` o empty state del dominio
+4. **datos** → el contenido
+
+```tsx
+if (isError) return <EmptyScreenError message={error.message} />;
+if (isLoading) return <EntityListSkeleton />;
+if (!data?.length) return <EmptyScreenFilter onClick={openFilters} />;
+```
+
+No uses `data ? ... : null` a secas: una pantalla en blanco sin feedback es un bug de UX.
+
+### Páginas — SIEMPRE envueltas en `Page`
+
+**Toda página (`*.page.tsx`) DEBE estar envuelta en el componente `Page` de `@app/Application`.** `Page` provee el layout base de toda pantalla: título con `Title`, ancho contenido responsive, padding y el manejo del `backButton` del header.
+
+```tsx
+// ✅ Correcto
+import { Page } from '@app/Application';
+
+export const EntityListPage = () => {
+  return (
+    <Page title="Entidades">
+      <EntityTable />
+    </Page>
+  );
+};
+
+// ❌ Incorrecto — sin Page la pantalla pierde el título, el ancho
+// contenido y el padding consistente del resto de la app
+export const EntityListPage = () => {
+  return (
+    <Container space="large">
+      <Title variant="h1">Entidades</Title>
+      <EntityTable />
+    </Container>
+  );
+};
+```
+
+**Reglas:**
+
+1. Las páginas viven en `Domains/[Domain]/Pages/` — NUNCA en `Application/Components/`. Los componentes de `Application/Components/` son compartidos y reutilizables; las páginas pertenecen a un dominio.
+2. El título de la pantalla se pasa por la prop `title` de `Page`, no se renderiza un `Title` a mano dentro de la página.
+3. Usar `size="small"` para páginas acotadas (formularios de una columna, cambio de contraseña); el default `full` es para listados y pantallas anchas.
+4. Excepción: las páginas públicas de autenticación (login, restore password) usan `HalfPage`/`AuthPageLayout` porque tienen un layout propio de pantalla dividida, distinto al layout interno de la app.
+
 ### Entity (tipos)
 
 **Nunca definas los tipos manualmente.** Derivalos del router del servidor con `inferRouterOutputs` para que el frontend se sincronice automáticamente cuando el backend cambia.
@@ -165,6 +248,25 @@ export const useGetEntities = () => {
 };
 ```
 
+### Búsquedas — SIEMPRE con debounce
+
+Todo input de búsqueda que dispara una query DEBE usar `useDebounce` (de `@app/Application/Hooks`) antes de enviar el valor al hook de datos. Sin debounce, cada tecla presionada dispara un request al server.
+
+```tsx
+// ✅ Correcto
+import { useDebounce } from '@app/Application';
+
+const [search, setSearch] = useState('');
+const debouncedSearch = useDebounce(search, 400);
+const { data } = useGetEntities({ search: debouncedSearch });
+
+// ❌ Incorrecto — un request por cada tecla
+const [search, setSearch] = useState('');
+const { data } = useGetEntities({ search });
+```
+
+El delay por defecto es `400ms`. Solo cambiarlo si hay un motivo concreto (ej. búsqueda contra datos locales puede ser `200ms`).
+
 ### Hook de Mutation (crear)
 
 ```typescript
@@ -205,7 +307,9 @@ export const useCacheEntities = () => {
 
 ### Invalidación de Cache en Mutations — SIEMPRE
 
-**Regla:** toda mutation debe invalidar la cache de las queries relacionadas en su `onSuccess`. Esto se hace a nivel del hook en `queries.ts` para que todos los consumidores se beneficien automáticamente, sin depender de que cada componente lo recuerde.
+**Regla:** toda mutation debe invalidar la cache de las queries relacionadas en su `onSuccess`. Esto se hace a nivel del hook para que todos los consumidores se beneficien automáticamente, sin depender de que cada componente lo recuerde.
+
+**Patrón preferido: `useUtils()` de tRPC.** Tipa las claves de query automáticamente desde el router y evita errores de tipeo en los query keys:
 
 ```typescript
 // ✅ Correcto — invalidación en el hook, todos los consumidores la heredan

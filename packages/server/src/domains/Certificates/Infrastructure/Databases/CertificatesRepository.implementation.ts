@@ -259,6 +259,7 @@ export class CertificatesRepositoryImplementation
       const existingCertificate = await CertificateModel.findOne({
         where: {
           id_usuario: requestContext.values.userId,
+          estado: { [Op.in]: ['pendiente', 'aprobado', 'validando'] },
           [Op.or]: [
             {
               fecha_inicio: { [Op.lte]: startDate },

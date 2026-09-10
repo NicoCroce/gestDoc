@@ -76,13 +76,15 @@ export const EmployeeCards = ({
               >
                 <dt className="text-muted-foreground">Términos firmados</dt>
                 <dd className="shrink-0 font-medium text-foreground">
-                  {employee.estado_firma !== 'Firmado' ? (
-                    <Text>
-                      <NotIcon /> {employee.estado_firma}
-                    </Text>
-                  ) : (
+                  {employee.estado_firma === 'Firmado' ? (
                     <Text>
                       <OkIcon /> {employee.estado_firma}
+                    </Text>
+                  ) : employee.estado_firma === 'No aplica' ? (
+                    <Text>{employee.estado_firma}</Text>
+                  ) : (
+                    <Text>
+                      <NotIcon /> {employee.estado_firma}
                     </Text>
                   )}
                 </dd>

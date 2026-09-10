@@ -2,12 +2,16 @@ import crypto from 'node:crypto';
 import { IUseCase } from '@server/Application';
 import { DisclaimerRepository } from '../../Domain';
 import { IGetSignatureStatus } from '../disclaimer.types';
+import { IsDisclaimerEnabled } from './IsDisclaimerEnabled.usecase';
 
 export class GetSignatureStatus implements IUseCase<
   IGetSignatureStatusResponse | null,
   { userId: number; ownerId: number }
 > {
-  constructor(private readonly disclaimerRepository: DisclaimerRepository) {}
+  constructor(
+    private readonly disclaimerRepository: DisclaimerRepository,
+    private readonly isDisclaimerEnabled: IsDisclaimerEnabled,
+  ) {}
 
   private computeHash(userId: number, timestamp: string): string {
     const secret = process.env.SECRET_KEY_BACK || 'default-secret';
@@ -19,6 +23,13 @@ export class GetSignatureStatus implements IUseCase<
     input,
     requestContext,
   }: IGetSignatureStatus): Promise<IGetSignatureStatusResponse | null> {
+    const enabled = await this.isDisclaimerEnabled.execute({
+      input: input.ownerId,
+      requestContext,
+    });
+
+    if (!enabled) return null;
+
     const record = await this.disclaimerRepository.getStatus({
       userId: input.userId,
       ownerId: input.ownerId,

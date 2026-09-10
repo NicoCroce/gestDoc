@@ -8,6 +8,7 @@ import {
   SignDisclaimer,
   GetEmployeesByCompany,
   SendReminders,
+  IsDisclaimerEnabled,
 } from './Application';
 import {
   DisclaimerController,
@@ -24,6 +25,7 @@ export const disclaimerApp = {
   disclaimerService: asClass(DisclaimerService),
   disclaimerController: asClass(DisclaimerController),
   _getDisclaimerText: asClass(GetDisclaimerText),
+  _isDisclaimerEnabled: asClass(IsDisclaimerEnabled),
   _getSignatureStatus: asClass(GetSignatureStatus),
   _signDisclaimer: asClass(SignDisclaimer),
   _getEmployeesByCompany: asClass(GetEmployeesByCompany),

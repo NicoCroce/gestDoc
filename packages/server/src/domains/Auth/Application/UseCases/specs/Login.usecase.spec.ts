@@ -16,6 +16,7 @@ vi.mock('@server/domains/Ownersyss', async () => {
 });
 vi.mock('@server/domains/Disclaimer', () => ({
   GetSignatureStatus: class GetSignatureStatus {},
+  IsDisclaimerEnabled: class IsDisclaimerEnabled {},
 }));
 
 import { Ownersys } from '@server/domains/Ownersyss';
@@ -45,7 +46,7 @@ const createUser = (
     ...overrides,
   });
 
-const createOwnersys = (tema?: number) =>
+const createOwnersys = (tema?: number, texto_disclaimer?: string) =>
   Ownersys.create({
     denominacion: 'Acme',
     logo: 'logo.png',
@@ -60,6 +61,7 @@ const createOwnersys = (tema?: number) =>
     sucursal_presupuestos: 1,
     id: 99,
     tema,
+    texto_disclaimer,
   });
 
 describe('Login', () => {
@@ -85,6 +87,7 @@ describe('Login', () => {
       validateUserPassword as never,
       getOwnersys as never,
       getRoleByUser as never,
+      { execute: vi.fn().mockResolvedValue(false) } as never,
     );
 
     const response = await useCase.execute({
@@ -114,6 +117,7 @@ describe('Login', () => {
       { execute: vi.fn().mockResolvedValue(createUser()) } as never,
       { execute: vi.fn().mockResolvedValue(createOwnersys()) } as never,
       { execute: vi.fn().mockResolvedValue('') } as never,
+      { execute: vi.fn().mockResolvedValue(false) } as never,
     );
 
     const response = await useCase.execute({
@@ -136,6 +140,7 @@ describe('Login', () => {
       } as never,
       { execute: vi.fn() } as never,
       { execute: vi.fn() } as never,
+      { execute: vi.fn().mockResolvedValue(false) } as never,
     );
 
     await expect(
@@ -158,6 +163,7 @@ describe('Login', () => {
       } as never,
       { execute: vi.fn() } as never,
       { execute: vi.fn() } as never,
+      { execute: vi.fn().mockResolvedValue(false) } as never,
     );
 
     await expect(
@@ -178,6 +184,7 @@ describe('Login', () => {
       } as never,
       { execute: vi.fn() } as never,
       { execute: vi.fn() } as never,
+      { execute: vi.fn().mockResolvedValue(false) } as never,
     );
 
     await expect(
@@ -198,6 +205,7 @@ describe('Login', () => {
       } as never,
       { execute: vi.fn() } as never,
       { execute: vi.fn() } as never,
+      { execute: vi.fn().mockResolvedValue(false) } as never,
     );
 
     await expect(
@@ -212,16 +220,17 @@ describe('Login', () => {
   });
 
   it('sets pendingDisclaimer to true when user has not signed', async () => {
-    process.env.ENABLE_DISCLAIMER = 'true';
-
     const mockGetSignatureStatus = {
       execute: vi.fn().mockResolvedValue(null),
     };
 
     const useCase = new Login(
       { execute: vi.fn().mockResolvedValue(createUser()) } as never,
-      { execute: vi.fn().mockResolvedValue(createOwnersys(4)) } as never,
+      {
+        execute: vi.fn().mockResolvedValue(createOwnersys(4, 'Términos')),
+      } as never,
       { execute: vi.fn().mockResolvedValue('') } as never,
+      { execute: vi.fn().mockResolvedValue(true) } as never,
       mockGetSignatureStatus as never,
     );
 
@@ -234,8 +243,6 @@ describe('Login', () => {
   });
 
   it('sets pendingDisclaimer to false when user has signed', async () => {
-    process.env.ENABLE_DISCLAIMER = 'true';
-
     const mockGetSignatureStatus = {
       execute: vi.fn().mockResolvedValue({
         signed: true,
@@ -245,8 +252,11 @@ describe('Login', () => {
 
     const useCase = new Login(
       { execute: vi.fn().mockResolvedValue(createUser()) } as never,
-      { execute: vi.fn().mockResolvedValue(createOwnersys(4)) } as never,
+      {
+        execute: vi.fn().mockResolvedValue(createOwnersys(4, 'Términos')),
+      } as never,
       { execute: vi.fn().mockResolvedValue('') } as never,
+      { execute: vi.fn().mockResolvedValue(true) } as never,
       mockGetSignatureStatus as never,
     );
 
@@ -259,8 +269,6 @@ describe('Login', () => {
   });
 
   it('sets pendingDisclaimer to true when signature is corrupt', async () => {
-    process.env.ENABLE_DISCLAIMER = 'true';
-
     const mockGetSignatureStatus = {
       execute: vi.fn().mockResolvedValue({
         signed: false,
@@ -270,8 +278,11 @@ describe('Login', () => {
 
     const useCase = new Login(
       { execute: vi.fn().mockResolvedValue(createUser()) } as never,
-      { execute: vi.fn().mockResolvedValue(createOwnersys(4)) } as never,
+      {
+        execute: vi.fn().mockResolvedValue(createOwnersys(4, 'Términos')),
+      } as never,
       { execute: vi.fn().mockResolvedValue('') } as never,
+      { execute: vi.fn().mockResolvedValue(true) } as never,
       mockGetSignatureStatus as never,
     );
 
@@ -283,11 +294,12 @@ describe('Login', () => {
     expect(response.pendingDisclaimer).toBe(true);
   });
 
-  it('does NOT set pendingDisclaimer when ENABLE_DISCLAIMER is not true', async () => {
+  it('does NOT set pendingDisclaimer when disclaimer is not enabled', async () => {
     const useCase = new Login(
       { execute: vi.fn().mockResolvedValue(createUser()) } as never,
       { execute: vi.fn().mockResolvedValue(createOwnersys(4)) } as never,
       { execute: vi.fn().mockResolvedValue('') } as never,
+      { execute: vi.fn().mockResolvedValue(false) } as never,
     );
 
     const response = await useCase.execute({
@@ -296,5 +308,51 @@ describe('Login', () => {
     });
 
     expect(response.pendingDisclaimer).toBe(false);
+  });
+
+  it('does NOT set pendingDisclaimer when texto_disclaimer is null', async () => {
+    const mockGetSignatureStatus = {
+      execute: vi.fn().mockResolvedValue(null),
+    };
+
+    const useCase = new Login(
+      { execute: vi.fn().mockResolvedValue(createUser()) } as never,
+      {
+        execute: vi.fn().mockResolvedValue(createOwnersys(4, undefined)),
+      } as never,
+      { execute: vi.fn().mockResolvedValue('') } as never,
+      { execute: vi.fn().mockResolvedValue(false) } as never,
+      mockGetSignatureStatus as never,
+    );
+
+    const response = await useCase.execute({
+      input: { mail: 'john@example.com', password: '12345678' },
+      requestContext,
+    });
+
+    expect(response.pendingDisclaimer).toBe(false);
+    expect(mockGetSignatureStatus.execute).not.toHaveBeenCalled();
+  });
+
+  it('does NOT set pendingDisclaimer when texto_disclaimer is empty', async () => {
+    const mockGetSignatureStatus = {
+      execute: vi.fn().mockResolvedValue(null),
+    };
+
+    const useCase = new Login(
+      { execute: vi.fn().mockResolvedValue(createUser()) } as never,
+      { execute: vi.fn().mockResolvedValue(createOwnersys(4, '')) } as never,
+      { execute: vi.fn().mockResolvedValue('') } as never,
+      { execute: vi.fn().mockResolvedValue(false) } as never,
+      mockGetSignatureStatus as never,
+    );
+
+    const response = await useCase.execute({
+      input: { mail: 'john@example.com', password: '12345678' },
+      requestContext,
+    });
+
+    expect(response.pendingDisclaimer).toBe(false);
+    expect(mockGetSignatureStatus.execute).not.toHaveBeenCalled();
   });
 });

@@ -4,6 +4,10 @@ import { SendReminders } from '../SendReminders.usecase';
 
 const requestContext = new RequestContext(1, 'req-1', 99);
 
+const createIsDisclaimerEnabled = (enabled: boolean) => ({
+  execute: vi.fn().mockResolvedValue(enabled),
+});
+
 describe('SendReminders', () => {
   it('sends emails to all pending employees', async () => {
     const mockRepo = {
@@ -35,6 +39,7 @@ describe('SendReminders', () => {
       mockUserRepo as never,
       mockEmailSender as never,
       mockOwnersysRepo as never,
+      createIsDisclaimerEnabled(true) as never,
     );
 
     const result = await useCase.execute({
@@ -50,6 +55,41 @@ describe('SendReminders', () => {
       disclaimerText: 'Texto del disclaimer',
       companyName: 'Empresa Test',
     });
+  });
+
+  it('does not send emails when disclaimer is not enabled', async () => {
+    const mockRepo = {
+      getPendingEmployeeIds: vi.fn().mockResolvedValue([1, 2, 3]),
+    };
+    const mockUserRepo = {
+      getEmailsByUsersId: vi.fn(),
+    };
+    const mockEmailSender = {
+      sendDisclaimerReminders: vi.fn(),
+    };
+    const mockOwnersysRepo = {
+      getOwnersys: vi.fn(),
+    };
+
+    const useCase = new SendReminders(
+      mockRepo as never,
+      mockUserRepo as never,
+      mockEmailSender as never,
+      mockOwnersysRepo as never,
+      createIsDisclaimerEnabled(false) as never,
+    );
+
+    const result = await useCase.execute({
+      input: {},
+      requestContext,
+    });
+
+    expect(result.sent).toBe(0);
+    expect(result.failed).toBe(0);
+    expect(result.total).toBe(0);
+    expect(mockRepo.getPendingEmployeeIds).not.toHaveBeenCalled();
+    expect(mockOwnersysRepo.getOwnersys).not.toHaveBeenCalled();
+    expect(mockEmailSender.sendDisclaimerReminders).not.toHaveBeenCalled();
   });
 
   it('uses provided ownerId when given (superadmin)', async () => {
@@ -76,6 +116,7 @@ describe('SendReminders', () => {
       mockUserRepo as never,
       mockEmailSender as never,
       mockOwnersysRepo as never,
+      createIsDisclaimerEnabled(true) as never,
     );
 
     await useCase.execute({

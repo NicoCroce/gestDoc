@@ -4,6 +4,7 @@ import { comparePassword } from '@server/Infrastructure/utils/bcrypt';
 import { UserRepository } from '@server/domains/Users';
 import { DisclaimerAcceptance, DisclaimerRepository } from '../../Domain';
 import { ISignDisclaimer } from '../disclaimer.types';
+import { IsDisclaimerEnabled } from './IsDisclaimerEnabled.usecase';
 
 export class SignDisclaimer implements IUseCase<
   DisclaimerAcceptance,
@@ -12,12 +13,22 @@ export class SignDisclaimer implements IUseCase<
   constructor(
     private readonly disclaimerRepository: DisclaimerRepository,
     private readonly userRepository: UserRepository,
+    private readonly isDisclaimerEnabled: IsDisclaimerEnabled,
   ) {}
 
   async execute({
     input,
     requestContext,
   }: ISignDisclaimer): Promise<DisclaimerAcceptance> {
+    const enabled = await this.isDisclaimerEnabled.execute({
+      input: requestContext.values.ownerId,
+      requestContext,
+    });
+
+    if (!enabled) {
+      throw new AppError('Términos y condiciones no habilitados', 400);
+    }
+
     const user = await this.userRepository.validateUser({
       id: requestContext.values.userId,
       requestContext,

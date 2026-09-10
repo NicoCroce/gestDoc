@@ -3,6 +3,7 @@ import {
   DisclaimerRepository,
   IPendingDisclaimerAcceptanceRecord,
 } from '../../Domain';
+import { IsDisclaimerEnabled } from './IsDisclaimerEnabled.usecase';
 
 /**
  * Sección 4 del reporte diario: empleados que no aceptaron los términos.
@@ -11,11 +12,21 @@ import {
 export class GetPendingDisclaimerAcceptances implements IUseCase<
   IPendingDisclaimerAcceptanceRecord[]
 > {
-  constructor(private readonly disclaimerRepository: DisclaimerRepository) {}
+  constructor(
+    private readonly disclaimerRepository: DisclaimerRepository,
+    private readonly isDisclaimerEnabled: IsDisclaimerEnabled,
+  ) {}
 
   async execute({
     requestContext,
   }: IRequestContext): Promise<IPendingDisclaimerAcceptanceRecord[]> {
+    const enabled = await this.isDisclaimerEnabled.execute({
+      input: requestContext.values.ownerId,
+      requestContext,
+    });
+
+    if (!enabled) return [];
+
     return this.disclaimerRepository.getEmployeesWithoutDisclaimerAcceptance({
       requestContext,
     });

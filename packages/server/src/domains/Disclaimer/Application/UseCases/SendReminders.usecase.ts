@@ -16,7 +16,7 @@ export class SendReminders implements IUseCase<
     private readonly userRepository: UserRepository,
     private readonly disclaimerEmailService: ISendEmailService,
     private readonly ownersyssRepository: OwnersyssRepository,
-    private readonly isDisclaimerEnabled: IsDisclaimerEnabled,
+    private readonly _isDisclaimerEnabled: IsDisclaimerEnabled,
   ) {}
 
   async execute({
@@ -25,7 +25,7 @@ export class SendReminders implements IUseCase<
   }: ISendReminders): Promise<ISendRemindersResponse> {
     const ownerId = input.ownerId ?? requestContext.values.ownerId;
 
-    const enabled = await this.isDisclaimerEnabled.execute({
+    const enabled = await this._isDisclaimerEnabled.execute({
       input: ownerId,
       requestContext,
     });

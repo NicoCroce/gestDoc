@@ -10,7 +10,7 @@ export class GetSignatureStatus implements IUseCase<
 > {
   constructor(
     private readonly disclaimerRepository: DisclaimerRepository,
-    private readonly isDisclaimerEnabled: IsDisclaimerEnabled,
+    private readonly _isDisclaimerEnabled: IsDisclaimerEnabled,
   ) {}
 
   private computeHash(userId: number, timestamp: string): string {
@@ -23,7 +23,7 @@ export class GetSignatureStatus implements IUseCase<
     input,
     requestContext,
   }: IGetSignatureStatus): Promise<IGetSignatureStatusResponse | null> {
-    const enabled = await this.isDisclaimerEnabled.execute({
+    const enabled = await this._isDisclaimerEnabled.execute({
       input: input.ownerId,
       requestContext,
     });

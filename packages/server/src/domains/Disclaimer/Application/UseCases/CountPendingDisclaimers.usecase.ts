@@ -9,11 +9,11 @@ import { IsDisclaimerEnabled } from './IsDisclaimerEnabled.usecase';
 export class CountPendingDisclaimers implements IUseCase<number> {
   constructor(
     private readonly disclaimerRepository: DisclaimerRepository,
-    private readonly isDisclaimerEnabled: IsDisclaimerEnabled,
+    private readonly _isDisclaimerEnabled: IsDisclaimerEnabled,
   ) {}
 
   async execute({ requestContext }: IRequestContext): Promise<number> {
-    const enabled = await this.isDisclaimerEnabled.execute({
+    const enabled = await this._isDisclaimerEnabled.execute({
       input: requestContext.values.ownerId,
       requestContext,
     });

@@ -9,7 +9,7 @@ export class GetEmployeesByCompany implements IUseCase<
 > {
   constructor(
     private readonly disclaimerRepository: DisclaimerRepository,
-    private readonly isDisclaimerEnabled: IsDisclaimerEnabled,
+    private readonly _isDisclaimerEnabled: IsDisclaimerEnabled,
   ) {}
 
   async execute({
@@ -18,7 +18,7 @@ export class GetEmployeesByCompany implements IUseCase<
   }: IGetEmployeesByCompany): Promise<IPaginationResponse<IEmployeeRecord[]>> {
     const ownerId = input.ownerId ?? requestContext.values.ownerId;
 
-    const enabled = await this.isDisclaimerEnabled.execute({
+    const enabled = await this._isDisclaimerEnabled.execute({
       input: ownerId,
       requestContext,
     });

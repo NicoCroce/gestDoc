@@ -131,7 +131,7 @@ El sistema está organizado en **dominios funcionales** independientes. Cada dom
 | **Users**        | ✅      | ✅              | CRUD completo de usuarios, cambio de contraseña        |
 | **Permissions**  | ✅      | ✅ (vía Auth)   | Roles, permisos y asociación usuario–rol               |
 | **Themes**       | ✅      | ✅ (vía Config) | Gestión de temas visuales                              |
-| **Ownersyss**    | ✅      | ✅ (vía Config) | Datos del propietario/tenant, cambio de tema           |
+| **Ownersys**     | ✅      | ✅ (vía Config) | Datos del propietario/tenant, cambio de tema           |
 | **Userprofiles** | ✅      | —               | Asociación usuario–perfil                              |
 | **Companies**    | Modelo  | —               | Modelo de empresa (en desarrollo)                      |
 | **Profiles**     | Modelo  | —               | Modelo de perfil (en desarrollo)                       |

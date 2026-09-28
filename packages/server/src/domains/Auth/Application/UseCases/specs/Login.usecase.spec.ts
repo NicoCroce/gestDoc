@@ -9,16 +9,16 @@ vi.mock('@server/domains/Users', async () => {
 vi.mock('@server/domains/Permissions', () => ({
   GetRoleByUser: class GetRoleByUser {},
 }));
-vi.mock('@server/domains/Ownersyss', async () => {
+vi.mock('@server/domains/Ownersys', async () => {
   const { Ownersys } =
-    await import('@server/domains/Ownersyss/Domain/Ownersyss.entity.js');
+    await import('@server/domains/Ownersys/Domain/Ownersys.entity.js');
   return { Ownersys, GetOwnersys: class GetOwnersys {} };
 });
 vi.mock('@server/domains/Disclaimer', () => ({
   GetSignatureStatus: class GetSignatureStatus {},
 }));
 
-import { Ownersys } from '@server/domains/Ownersyss';
+import { Ownersys } from '@server/domains/Ownersys';
 import { User } from '@server/domains/Users';
 
 vi.mock('@server/Infrastructure/utils/JWT', () => ({

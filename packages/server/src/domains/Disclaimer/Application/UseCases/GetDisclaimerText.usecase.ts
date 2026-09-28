@@ -1,15 +1,15 @@
 import { IUseCase } from '@server/Application';
-import { OwnersyssRepository } from '@server/domains/Ownersyss';
+import { OwnersysRepository } from '@server/domains/Ownersys';
 import { IGetDisclaimerText } from '../disclaimer.types';
 
 export class GetDisclaimerText implements IUseCase<string, number> {
-  constructor(private readonly ownersyssRepository: OwnersyssRepository) {}
+  constructor(private readonly ownersysRepository: OwnersysRepository) {}
 
   async execute({
     input: ownerId,
     requestContext,
   }: IGetDisclaimerText): Promise<string> {
-    const ownersys = await this.ownersyssRepository.getOwnersys({
+    const ownersys = await this.ownersysRepository.getOwnersys({
       id: ownerId,
       requestContext,
     });

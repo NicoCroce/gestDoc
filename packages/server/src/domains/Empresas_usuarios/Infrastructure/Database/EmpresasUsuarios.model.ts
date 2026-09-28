@@ -6,7 +6,7 @@ import {
   Model,
   CreationOptional,
 } from 'sequelize';
-import { OwnersysModel } from '@server/domains/Ownersyss/Infrastructure/Database/Ownersys.model';
+import { OwnersysModel } from '@server/domains/Ownersys/Infrastructure/Database/Ownersys.model';
 
 export class EmpresasUsuariosModel extends Model<
   InferAttributes<EmpresasUsuariosModel>,

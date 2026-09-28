@@ -17,7 +17,7 @@ vi.mock('@server/domains/Users', async () => {
 vi.mock('@server/domains/Permissions', () => ({
   GetRoleByUser: class GetRoleByUser {},
 }));
-vi.mock('@server/domains/Ownersyss', () => ({
+vi.mock('@server/domains/Ownersys', () => ({
   GetOwnersys: class GetOwnersys {},
 }));
 

@@ -110,7 +110,7 @@ packages/server/src/
 │   ├── Users/
 │   ├── Permissions/
 │   ├── Themes/
-│   ├── Ownersyss/
+│   ├── Ownersys/
 │   ├── Userprofiles/
 │   ├── Companies/
 │   └── Profiles/
@@ -138,7 +138,7 @@ Cada dominio sigue la estructura `Domain/ → Application/ → Infrastructure/`.
 | **Users**        | CRUD completo de usuarios             | `GetUsers`, `GetUser`, `RegisterUser`, `UpdateUser`, `DeleteUser`, `ChangePassword`, `GetSelectUser`, `GetEmailsByUsersId`, `ValidateUserPassword`, `RenewPassword` |
 | **Permissions**  | Roles y permisos por usuario          | `GetRoles`, `GetPermissions`, `GetRoleByUser`, `GetPermissionsByUser`, `AssociateUserToRole`                                                                        |
 | **Themes**       | Temas visuales del sistema            | `GetAllThemes`, `GetTheme`                                                                                                                                          |
-| **Ownersyss**    | Datos del tenant/propietario          | `GetOwnersys`, `GetOwnerTheme`, `ChangeTheme`                                                                                                                       |
+| **Ownersys**     | Datos del tenant/propietario          | `GetOwnersys`, `GetOwnerTheme`, `ChangeTheme`                                                                                                                       |
 | **Userprofiles** | Asociación usuario–perfil             | `GetAllProfilesByUser`, `AssociateUserToProfile`                                                                                                                    |
 | **Companies**    | Modelo de empresa (solo DB)           | —                                                                                                                                                                   |
 | **Profiles**     | Modelo de perfil (solo DB)            | —                                                                                                                                                                   |

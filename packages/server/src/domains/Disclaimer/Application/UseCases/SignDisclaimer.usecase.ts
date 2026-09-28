@@ -1,7 +1,6 @@
 import crypto from 'node:crypto';
-import { AppError, IUseCase } from '@server/Application';
-import { comparePassword } from '@server/Infrastructure/utils/bcrypt';
-import { UserRepository } from '@server/domains/Users';
+import { executeUseCase, IUseCase } from '@server/Application';
+import { ValidateUserPassword } from '@server/domains/Users';
 import { DisclaimerAcceptance, DisclaimerRepository } from '../../Domain';
 import { ISignDisclaimer } from '../disclaimer.types';
 
@@ -11,30 +10,22 @@ export class SignDisclaimer implements IUseCase<
 > {
   constructor(
     private readonly disclaimerRepository: DisclaimerRepository,
-    private readonly userRepository: UserRepository,
+    // Cross-domain: caso de uso de Users, no el repositorio (skill cross-domain-relations).
+    private readonly _validateUserPassword: ValidateUserPassword,
   ) {}
 
   async execute({
     input,
     requestContext,
   }: ISignDisclaimer): Promise<DisclaimerAcceptance> {
-    const user = await this.userRepository.validateUser({
-      id: requestContext.values.userId,
+    // Lanza AppError(404) / AppError(401) si el usuario no existe o la
+    // contraseña es incorrecta — mismo comportamiento que antes, ahora
+    // encapsulado en el caso de uso dueño de esa regla (Users).
+    await executeUseCase({
+      useCase: this._validateUserPassword,
+      input: { id: requestContext.values.userId, password: input.password },
       requestContext,
     });
-
-    if (!user) {
-      throw new AppError('Usuario no encontrado', 404);
-    }
-
-    const isPasswordValid = await comparePassword(
-      input.password,
-      user.password || '',
-    );
-
-    if (!isPasswordValid) {
-      throw new AppError('Contraseña incorrecta', 401);
-    }
 
     const now = new Date();
     now.setMilliseconds(0);

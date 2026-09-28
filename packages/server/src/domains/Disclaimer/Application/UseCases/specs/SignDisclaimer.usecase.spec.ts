@@ -3,12 +3,6 @@ import { describe, expect, it, vi, beforeEach, afterEach } from 'vitest';
 import { AppError, RequestContext } from '@server/Application';
 import { SignDisclaimer } from '../SignDisclaimer.usecase';
 
-vi.mock('@server/Infrastructure/utils/bcrypt', () => ({
-  comparePassword: vi.fn(),
-}));
-
-import { comparePassword } from '@server/Infrastructure/utils/bcrypt';
-
 const requestContext = new RequestContext(1, 'req-1', 99);
 
 function computeExpectedHash(userId: number, timestamp: string): string {
@@ -34,17 +28,13 @@ describe('SignDisclaimer', () => {
     const mockRepo = {
       sign: vi.fn().mockResolvedValue({ values: { id: 1 } }),
     };
-    const mockUserRepo = {
-      validateUser: vi.fn().mockResolvedValue({
-        password: 'hashed-password-value',
-      }),
+    const mockValidateUserPassword = {
+      execute: vi.fn().mockResolvedValue({ password: 'hashed-password-value' }),
     };
-
-    const mockCompare = vi.mocked(comparePassword).mockResolvedValue(true);
 
     const useCase = new SignDisclaimer(
       mockRepo as never,
-      mockUserRepo as never,
+      mockValidateUserPassword as never,
     );
 
     const result = await useCase.execute({
@@ -59,10 +49,10 @@ describe('SignDisclaimer', () => {
     const now = new Date('2024-01-01T00:00:00.000Z');
     const expectedHash = computeExpectedHash(1, now.toISOString());
 
-    expect(mockCompare).toHaveBeenCalledWith(
-      'correct-password',
-      'hashed-password-value',
-    );
+    expect(mockValidateUserPassword.execute).toHaveBeenCalledWith({
+      input: { id: 1, password: 'correct-password' },
+      requestContext,
+    });
     expect(mockRepo.sign).toHaveBeenCalledWith({
       userId: 1,
       ownerId: 99,
@@ -79,29 +69,16 @@ describe('SignDisclaimer', () => {
     const mockRepo = {
       sign: vi.fn(),
     };
-    const mockUserRepo = {
-      validateUser: vi.fn().mockResolvedValue({
-        password: 'hashed-password-value',
-      }),
+    const mockValidateUserPassword = {
+      execute: vi
+        .fn()
+        .mockRejectedValue(new AppError('Contraseña incorrecta', 401)),
     };
-
-    vi.mocked(comparePassword).mockResolvedValue(false);
 
     const useCase = new SignDisclaimer(
       mockRepo as never,
-      mockUserRepo as never,
+      mockValidateUserPassword as never,
     );
-
-    await expect(
-      useCase.execute({
-        input: {
-          password: 'wrong-password',
-          ip: '192.168.1.1',
-          userAgent: null,
-        },
-        requestContext,
-      }),
-    ).rejects.toThrow(AppError);
 
     await expect(
       useCase.execute({
@@ -119,13 +96,15 @@ describe('SignDisclaimer', () => {
 
   it('throws 404 when user is not found', async () => {
     const mockRepo = { sign: vi.fn() };
-    const mockUserRepo = {
-      validateUser: vi.fn().mockResolvedValue(null),
+    const mockValidateUserPassword = {
+      execute: vi
+        .fn()
+        .mockRejectedValue(new AppError('Usuario no encontrado', 404)),
     };
 
     const useCase = new SignDisclaimer(
       mockRepo as never,
-      mockUserRepo as never,
+      mockValidateUserPassword as never,
     );
 
     await expect(
@@ -137,7 +116,7 @@ describe('SignDisclaimer', () => {
         },
         requestContext,
       }),
-    ).rejects.toThrow(AppError);
+    ).rejects.toMatchObject({ message: 'Usuario no encontrado' });
 
     expect(mockRepo.sign).not.toHaveBeenCalled();
   });

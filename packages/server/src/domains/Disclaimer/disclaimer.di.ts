@@ -14,12 +14,16 @@ import {
   DisclaimerRepositoryImplementation,
   DisclaimerEmailService,
 } from './Infrastructure';
-import { UsersRepositoryImplementation } from '@server/domains/Users/Infrastructure';
 import { container } from '@server/Infrastructure/di/Container';
+
+// Nota: userRepository / _getEmailsByUsersId / _validateUserPassword NO se
+// registran acá — ya los registra `Users/users.di.ts` en el mismo contenedor
+// global de Awilix (InjectionMode.CLASSIC resuelve por nombre de parámetro).
+// Ver skill cross-domain-relations: los use cases de Users se inyectan por
+// caso de uso, nunca importando el repositorio de otro dominio.
 
 export const disclaimerApp = {
   disclaimerRepository: asClass(DisclaimerRepositoryImplementation),
-  userRepository: asClass(UsersRepositoryImplementation),
   disclaimerEmailService: asClass(DisclaimerEmailService),
   disclaimerService: asClass(DisclaimerService),
   disclaimerController: asClass(DisclaimerController),

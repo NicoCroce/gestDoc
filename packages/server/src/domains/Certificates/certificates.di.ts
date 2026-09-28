@@ -22,7 +22,7 @@ import {
   SaveImagesController,
 } from './Infrastructure/Controllers';
 import { container } from '@server/Infrastructure/di/Container';
-import { CertificatesRepositoryImplementation } from './Infrastructure/Databases';
+import { CertificatesRepositoryImplementation } from './Infrastructure/Database';
 import { GetRoleByUser } from '@server/domains/Permissions/Application/UseCases/GetRoleByUser.usecase';
 
 export const certificatesApp = {

@@ -1,5 +1,5 @@
 import { sequelize } from '@server/Infrastructure/Database';
-import { CompaniesModel } from '@server/domains/Companies/Infrastructure';
+import { CompaniesModel } from '@server/domains/Companies';
 import { RolesModel } from '@server/domains/Permissions';
 import { Users_RolesModel } from '@server/domains/Permissions/Infrastructure/Database/Users_Roles.model';
 import {

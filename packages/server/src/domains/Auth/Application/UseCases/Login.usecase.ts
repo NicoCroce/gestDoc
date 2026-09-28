@@ -3,7 +3,7 @@ import { generateToken } from '@server/Infrastructure/utils/JWT';
 import { IExecuteResponse, Ilogin } from '../auth.types';
 import { User, ValidateUserPassword } from '@server/domains/Users';
 import { GetRoleByUser } from '@server/domains/Permissions';
-import { GetOwnersys } from '@server/domains/Ownersyss';
+import { GetOwnersys } from '@server/domains/Ownersys';
 import { GetSignatureStatus } from '@server/domains/Disclaimer';
 
 export class Login implements IUseCase<IExecuteResponse> {

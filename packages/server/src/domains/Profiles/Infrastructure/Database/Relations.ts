@@ -1,4 +1,4 @@
-﻿import { OwnersysModel } from '@server/domains/Ownersyss';
+﻿import { OwnersysModel } from '@server/domains/Ownersys';
 import { ProfileModel } from './Profile.model';
 
 OwnersysModel.hasMany(ProfileModel, { foreignKey: 'id_propietario' });

@@ -7,7 +7,7 @@ import { DocumentsRoutes } from '@server/domains/Documents';
 import { DocumentsTypesRoutes } from '@server/domains/DocumentsTypes';
 import { CertificatesRoutes } from '@server/domains/Certificates/Infrastructure/Routes';
 import { CertificatesRoutesExpress } from '@server/domains/Certificates/Infrastructure/Routes/CertificatesRoutesExpress';
-import { OwnersysRoutes } from '@server/domains/Ownersyss';
+import { OwnersysRoutes } from '@server/domains/Ownersys';
 import { ThemeRoutes } from '@server/domains/Themes';
 import { EmpresasUsuariosRoutes } from '@server/domains/Empresas_usuarios';
 import { DisclaimerRoutes } from '@server/domains/Disclaimer';

@@ -1,6 +1,6 @@
 import { IUseCase } from '@server/Application';
 import { UserRepository } from '@server/domains/Users';
-import { OwnersyssRepository } from '@server/domains/Ownersyss';
+import { OwnersysRepository } from '@server/domains/Ownersys';
 import { DisclaimerRepository } from '../../Domain';
 import { ISendReminders, ISendRemindersResponse } from '../disclaimer.types';
 
@@ -14,7 +14,7 @@ export class SendReminders implements IUseCase<
     private readonly disclaimerRepository: DisclaimerRepository,
     private readonly userRepository: UserRepository,
     private readonly disclaimerEmailService: ISendEmailService,
-    private readonly ownersyssRepository: OwnersyssRepository,
+    private readonly ownersysRepository: OwnersysRepository,
   ) {}
 
   async execute({
@@ -23,7 +23,7 @@ export class SendReminders implements IUseCase<
   }: ISendReminders): Promise<ISendRemindersResponse> {
     const ownerId = input.ownerId ?? requestContext.values.ownerId;
 
-    const ownersys = await this.ownersyssRepository.getOwnersys({
+    const ownersys = await this.ownersysRepository.getOwnersys({
       id: ownerId,
       requestContext,
     });

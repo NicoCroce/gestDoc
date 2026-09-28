@@ -125,18 +125,18 @@ El paquete `packages/app` contiene la SPA frontend construida con **React 18**, 
 
 El sistema está organizado en **dominios funcionales** independientes. Cada dominio encapsula su lógica tanto en el backend como en el frontend.
 
-| Dominio          | Backend | Frontend        | Descripción                                            |
-| ---------------- | ------- | --------------- | ------------------------------------------------------ |
-| **Auth**         | ✅      | ✅              | Login, logout, restauración y renovación de contraseña |
-| **Users**        | ✅      | ✅              | CRUD completo de usuarios, cambio de contraseña        |
-| **Permissions**  | ✅      | ✅ (vía Auth)   | Roles, permisos y asociación usuario–rol               |
-| **Themes**       | ✅      | ✅ (vía Config) | Gestión de temas visuales                              |
-| **Ownersyss**    | ✅      | ✅ (vía Config) | Datos del propietario/tenant, cambio de tema           |
-| **Userprofiles** | ✅      | —               | Asociación usuario–perfil                              |
-| **Companies**    | Modelo  | —               | Modelo de empresa (en desarrollo)                      |
-| **Profiles**     | Modelo  | —               | Modelo de perfil (en desarrollo)                       |
-| **Config**       | —       | ✅              | Configuración de la app (temas, preferencias)          |
-| **Main**         | —       | ✅              | Dashboard principal con estadísticas                   |
+| Dominio          | Backend | Frontend        | Descripción                                                 |
+| ---------------- | ------- | --------------- | ----------------------------------------------------------- |
+| **Auth**         | ✅      | ✅              | Login, logout, restauración y renovación de contraseña      |
+| **Users**        | ✅      | ✅              | CRUD completo de usuarios, cambio de contraseña             |
+| **Permissions**  | ✅      | ✅ (vía Auth)   | Roles, permisos y asociación usuario–rol                    |
+| **Themes**       | ✅      | ✅ (vía Config) | Gestión de temas visuales                                   |
+| **Ownersys**     | ✅      | ✅ (vía Config) | Datos del propietario/tenant, cambio de tema                |
+| **Userprofiles** | ✅      | —               | Asociación usuario–perfil                                   |
+| **Companies**    | Modelo  | —               | Modelo de empresa (solo persistencia, sin capas de negocio) |
+| **Profiles**     | Modelo  | —               | Modelo de perfil (solo persistencia, sin capas de negocio)  |
+| **Config**       | —       | ✅              | Configuración de la app (temas, preferencias)               |
+| **Main**         | —       | ✅              | Dashboard principal con estadísticas                        |
 
 # Tecnologías utilizadas
 

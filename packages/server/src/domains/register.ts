@@ -4,7 +4,7 @@ import { permissionsApp } from './Permissions';
 import { documentsApp } from './Documents';
 import { documentTypesApp } from './DocumentsTypes';
 import { certificatesApp } from './Certificates';
-import { ownersysApp } from './Ownersyss';
+import { ownersysApp } from './Ownersys';
 import { userprofileApp } from './Userprofiles';
 import { themeApp } from './Themes';
 import { empresasUsuariosApp } from './Empresas_usuarios';

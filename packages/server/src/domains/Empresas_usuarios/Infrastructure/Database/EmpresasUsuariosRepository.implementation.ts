@@ -1,7 +1,7 @@
 import { IEmpresasUsuariosRepository } from '../../Domain/EmpresasUsuarios.repository';
 import { EmpresaUsuario } from '../../Domain/EmpresasUsuarios.entity';
 import { EmpresasUsuariosModel } from './EmpresasUsuarios.model';
-import { OwnersysModel } from '@server/domains/Ownersyss/Infrastructure/Database/Ownersys.model';
+import { OwnersysModel } from '@server/domains/Ownersys/Infrastructure/Database/Ownersys.model';
 
 export class EmpresasUsuariosRepositoryImplementation implements IEmpresasUsuariosRepository {
   async belongsToEmpresa(userId: number, empresaId: number): Promise<boolean> {

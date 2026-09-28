@@ -1,4 +1,4 @@
-﻿import { OwnersysModel } from '@server/domains/Ownersyss';
+﻿import { OwnersysModel } from '@server/domains/Ownersys';
 import { sequelize } from '@server/Infrastructure/Database';
 import {
   DataTypes,

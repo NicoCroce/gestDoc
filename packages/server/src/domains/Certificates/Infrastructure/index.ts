@@ -1,3 +1,3 @@
 export * from './Controllers';
-export * from './Databases';
+export * from './Database';
 export * from './Routes';

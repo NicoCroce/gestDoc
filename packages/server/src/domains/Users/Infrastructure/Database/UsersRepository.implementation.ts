@@ -12,7 +12,7 @@ import {
 } from '../../Domain';
 
 import { UserModel } from './Users.model';
-import { CompaniesModel } from '@server/domains/Companies/Infrastructure';
+import { CompaniesModel } from '@server/domains/Companies';
 import { TenantAwareRepository } from '@server/Infrastructure/Database/TenantAwareRepository';
 
 export class UsersRepositoryImplementation

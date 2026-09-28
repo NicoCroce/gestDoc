@@ -1,4 +1,4 @@
-import { CompaniesModel } from '@server/domains/Companies/Infrastructure';
+import { CompaniesModel } from '@server/domains/Companies';
 import { UserModel } from './Users.model';
 import {
   TiposSegmentosModel,

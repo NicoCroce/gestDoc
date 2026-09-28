@@ -1,6 +1,5 @@
 ﻿import { OwnersysModel } from '@server/domains/Ownersyss';
 import { sequelize } from '@server/Infrastructure/Database';
-import { registerTenantScopedModel } from '@server/Infrastructure/Database/tenantScopes';
 import {
   DataTypes,
   InferAttributes,
@@ -55,5 +54,3 @@ ProfileModel.init(
     tableName: 'Perfiles',
   },
 );
-
-registerTenantScopedModel(ProfileModel);

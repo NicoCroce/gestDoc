@@ -1,5 +1,4 @@
 import { sequelize } from '@server/Infrastructure/Database';
-import { registerTenantScopedModel } from '@server/Infrastructure/Database/tenantScopes';
 import { CompaniesModel } from '@server/domains/Companies/Infrastructure';
 import { RolesModel } from '@server/domains/Permissions';
 import { Users_RolesModel } from '@server/domains/Permissions/Infrastructure/Database/Users_Roles.model';
@@ -77,5 +76,3 @@ UserModel.init(
     tableName: 'Usuarios',
   },
 );
-
-registerTenantScopedModel(UserModel);

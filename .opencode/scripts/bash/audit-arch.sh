@@ -1,8 +1,7 @@
 #!/usr/bin/env bash
 # audit-arch.sh — Verifica que cada archivo de una lista (affected_files) esté
 # en la carpeta correcta según las convenciones DDD/Hexagonal del proyecto
-# (server.instructions.md / app.instructions.md). Reemplaza el Paso 3 de la
-# skill qa-runner ("Verificación de Estructura de Carpetas").
+# (server.instructions.md / app.instructions.md). Lo invoca qa-report.sh.
 #
 # NO reemplaza la skill `arch-audit` (que hace un escaneo completo del
 # proyecto para @blendverse-arch-fixer — tipos legacy, di.ts, naming, stubs).

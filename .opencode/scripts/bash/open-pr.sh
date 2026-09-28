@@ -14,7 +14,8 @@
 #       borra al final, sea cual sea el resultado)
 #     base_branch: default "main"
 #
-# Salida: JSON {method: "gh"|"manual", pr_url: "..."|null, compare_url: "..."}
+# Salida: JSON {method: "gh"|"manual"|"push_failed", pr_url: "..."|null, compare_url: "...", error?}
+#   push_failed: el push falló (credenciales, rechazo, timeout); pr-detail.md se conserva.
 #
 # Requiere: git. `gh` es opcional (fallback automático si falta o falla).
 
@@ -43,6 +44,11 @@ require_jq
 
 cd "$REPO_ROOT"
 
+if [[ "$(git rev-parse --show-toplevel 2>/dev/null)" != "$(pwd -P)" ]]; then
+    echo "ERROR: $REPO_ROOT no es la raíz de un repo git; se aborta para no operar sobre otro repo." >&2
+    exit 1
+fi
+
 CURRENT_BRANCH="$(git branch --show-current)"
 if [[ -z "$CURRENT_BRANCH" ]]; then
     echo "ERROR: no se pudo determinar la rama actual (HEAD detached?)." >&2
@@ -61,15 +67,27 @@ if [[ -n "$owner_repo" ]]; then
     compare_url="https://github.com/${owner_repo}/compare/${BASE_BRANCH}...${CURRENT_BRANCH}?expand=1"
 fi
 
+# Sin prompts interactivos: un pedido de credenciales o passphrase colgaría al agente
+# sin que nadie lo vea. Falla rápido y se informa.
+export GIT_TERMINAL_PROMPT=0
+export GIT_SSH_COMMAND="${GIT_SSH_COMMAND:-ssh} -o BatchMode=yes -o ConnectTimeout=15"
+export GH_PROMPT_DISABLED=1
+RUN_TIMEOUT="$SCRIPT_DIR/run-timeout.sh"
+
 # --- fetch + push (mecánico, sin generar contenido) ---
-git fetch origin "$BASE_BRANCH" >&2
-git push -u origin "$CURRENT_BRANCH" >&2
+"$RUN_TIMEOUT" 60 git fetch origin "$BASE_BRANCH" >&2
+if ! push_err="$("$RUN_TIMEOUT" 90 git push -u origin "$CURRENT_BRANCH" 2>&1)"; then
+    echo "$push_err" >&2
+    jq -n --arg compare_url "$compare_url" --arg error "$(tail -n 5 <<<"$push_err")" \
+        '{method: "push_failed", pr_url: null, compare_url: $compare_url, error: $error}'
+    exit 0
+fi
 
 pr_url=""
 method="manual"
 
 if command -v gh >/dev/null 2>&1; then
-    if pr_url="$(gh pr create --base "$BASE_BRANCH" --head "$CURRENT_BRANCH" --title "$TITLE" --body-file "$BODY_FILE" 2>&2)"; then
+    if pr_url="$("$RUN_TIMEOUT" 60 gh pr create --base "$BASE_BRANCH" --head "$CURRENT_BRANCH" --title "$TITLE" --body-file "$BODY_FILE")"; then
         method="gh"
     else
         pr_url=""

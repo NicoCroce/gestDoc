@@ -1,51 +1,11 @@
 ---
-description: Inicia el flujo orquestado completo para una nueva tarea. Genera el task_id, delega a @blendverse-analyst para crear los requerimientos y orquesta la cadena Analyst → Coder → QA → Reviewer.
+description: Flujo para tareas sin artefactos Speckit (input crudo). @blendverse-analyst genera 01_requirements.md y @blendverse-implement ejecuta la cadena hasta el PR. Para features con diseño Speckit usar @develop.
 ---
 
-Actúa como el punto de entrada del flujo orquestado. Tu responsabilidad es iniciar la tarea y asegurarte de que cada eslabón de la cadena tenga el contexto que necesita. El cierre final de la tarea en `history_log.json` queda a cargo de `@blendverse-implement` una vez aprobada por `@blendverse-reviewer`.
+1. `task_id=$(.opencode/scripts/bash/resolve-task-id.sh resolve "$(git branch --show-current)" "<título en una línea>")`.
+2. `task` → `@blendverse-analyst`:
+   > task_id `{task_id}`. Requerimiento: $ARGUMENTS. Seguir la skill `requirements-analyst` y escribir `memory/{task_id}/01_requirements.md`.
+3. Cuando el usuario apruebe los requerimientos, `task` → `@blendverse-implement`:
+   > task_id `{task_id}`. Contexto: `memory/{task_id}/01_requirements.md`.
 
-## Pasos a ejecutar
-
-### 1. Registrar la tarea en el historial
-
-1. Leer `memory/history_log.json` (crear el archivo si no existe con un array vacío `[]`).
-2. Ejecutar `git branch --show-current` y sanitizar el resultado (`/` → `-`).
-3. Generar el siguiente `task_id` con el formato `TASK-{rama-sanitizada}-YYYYMMDD-N` (ver `.opencode/instructions/memory.instructions.md`).
-4. Agregar al JSON una nueva entrada con:
-   - `task_id`: el ID generado
-   - `title`: resumen en una línea de la tarea del usuario
-   - `status`: `"IN_PROGRESS"`
-   - `created_at`: timestamp actual ISO 8601
-   - `agents_chain`: `[]`
-
-### 2. Delegar a @blendverse-analyst
-
-Invocar el agente `@blendverse-analyst` con el siguiente contexto:
-
-> **task_id activo:** `{task_id_generado}`
->
-> **Requerimiento del usuario:**
-> {{userRequest}}
->
-> Cargar y seguir la skill `requirements-analyst`. Crear la carpeta `memory/{task_id}/` y escribir `01_requirements.md`.
-> Al finalizar, hacer handoff a `@blendverse-implement` pasando el `task_id`, quien detecta el alcance (back/front/full-stack) y coordina la cadena completa hasta el cierre de la tarea.
-
-### 3. Instrucciones para el resto de la cadena
-
-Informar al usuario del flujo que se va a ejecutar:
-
-```
-📋 Tarea iniciada: {task_id}
-
-Cadena de ejecución:
-  1. @blendverse-analyst  → 01_requirements.md
-  2. @blendverse-back / @blendverse-front → código + 02_dev_log.md
-  3. @blendverse-tester   → 05_test_log.md
-  4. @blendverse-qa       → 03_qa_report.md
-  5. @blendverse-reviewer → 04_review_log.md
-  6. @blendverse-implement → cierre en history_log.json (status: COMPLETED)
-```
-
----
-
-**Requerimiento del usuario:** {{userRequest}}
+Informar: `Tarea {task_id}: analyst → coder(s) → tester ∥ reviewer → QA (script) → cierre y PR`.

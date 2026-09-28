@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 # breakloop-check.sh — Lee el campo `attempts` del frontmatter YAML de un
 # artefacto de memory/{task_id}/ y decide si corresponde activar el Protocolo
-# Break-Loop (attempts >= 3), replicado idéntico hoy en blendverse-tester.md,
-# blendverse-qa.md y blendverse-reviewer.md. También puede escribir
+# Break-Loop (attempts >= 3) que usan blendverse-tester.md,
+# blendverse-reviewer.md y qa-report.sh. También puede escribir
 # memory/BLOCKED.md con el schema de memory.instructions.md.
 #
 # Uso:

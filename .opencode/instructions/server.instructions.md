@@ -281,6 +281,12 @@ export class CertificatesRepositoryImplementation implements CertificateReposito
 - Los archivos nuevos en `utils/` deben agregarse al barrel `Infrastructure/index.ts`.
 - Los repositorios solo contienen lógica de persistencia/mapeo con el modelo Sequelize.
 
+### Imports del barrel `@server/Infrastructure`
+
+Controllers, repositorios y use cases pueden importar desde `@server/Infrastructure`. **Excepción obligatoria:** los `*.model.ts` y todo archivo dentro de `packages/server/src/Infrastructure/**` importan el submódulo concreto (`@server/Infrastructure/Database`, `@server/Infrastructure/utils/pino`, …). Si un modelo usa el barrel, se forma un ciclo con `TrpcInstance.ts` que cuelga todos los specs de controllers que mockean `@server/Infrastructure`.
+
+Los modelos multi-tenant se registran con `registerTenantScopedModel(Model)` (desde `@server/Infrastructure/Database/tenantScopes`) al final de su archivo; `TrpcInstance.ts` nunca importa modelos.
+
 ## Registro DI (Awilix)
 
 ### `[domain].di.ts`

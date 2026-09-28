@@ -1,0 +1,70 @@
+---
+description: Contrato facade entre orquestadores Cursor y Speckit stock. Los agents design-* deben leer esta regla primero.
+alwaysApply: true
+---
+
+# Design Adapters — Contrato Facade Speckit
+
+Los agents `@design-*` son la **única capa** entre el orquestador del proyecto y Speckit stock (`@speckit-*`). Permiten instalar o actualizar Speckit sin mezclar lógica del proyecto en archivos stock.
+
+Leer `.cursor/project-profile.md` para paths y slots concretos del proyecto.
+
+## Zonas del repositorio
+
+| Zona | Paths típicos | Owner |
+| ---- | ------------- | ----- |
+| Speckit stock | `.specify/*`, agents/commands Speckit del CLI | `specify init` / `specify upgrade` |
+| Proyecto | `.cursor/skills/`, rules de stack, agents de implementación | `/analyze-project` + git |
+| Facade | `.cursor/agents/develop.md`, `design-*`, `commands/{start,improve}-feature.md`, `orchestrate.md`, esta regla | Kit seed — estable |
+| Overlays | `.cursor/templates/speckit/` (si existe) | Proyecto — política de templates |
+
+**Regla:** nunca editar archivos Speckit stock con referencias al facade del proyecto. Tras `specify upgrade`, ejecutar `/orchestrate`.
+
+## Rol del pipeline
+
+| Capa | Responsabilidad |
+| ---- | --------------- |
+| `@develop` / `/start-feature` | Orquestación: fases, modos, gates, handoff |
+| `@design-*` | Política del proyecto + delegación a Speckit |
+| `@speckit-*` | Motor SDD stock (spec/plan/tasks/analyze/implement) |
+| `@implement` | Implementación del proyecto (reemplaza `@speckit-implement` en flujo diario) |
+
+## Input común
+
+Cada adapter recibe del orquestador:
+
+- `{feature}` — nombre kebab-case o directorio bajo `specs/`
+- `{description}` — texto del usuario cuando aplica (especialmente en specify)
+- Paths esperados bajo `specs/{feature}/` (ver `project-profile.md`)
+
+## Protocolo obligatorio
+
+1. **Pre-condiciones** — verificar inputs; leer gobernanza en `constitution_path` del profile.
+2. **Delegación** — invocar subagent/agent Speckit correspondiente con prompt enriquecido. Incluir overlays de `.cursor/templates/speckit/` cuando existan.
+3. **Post-chequeo** — verificar artefactos en disco.
+4. **Reporte** — devolver paths y resumen al orquestador.
+
+## Prohibiciones
+
+- No modificar archivos Speckit stock.
+- No invocar `@implement` desde adapters de **diseño** (solo el orquestador en Fase 6).
+- No usar `/speckit.*` slash commands en el flujo diario; delegar vía `@speckit-<fase>` o el mecanismo de subagentes de Cursor.
+
+## Política por fase
+
+| Adapter | Delega a | Política |
+| ------- | -------- | -------- |
+| `design-specify` | `speckit-specify` | WHAT/WHY; preguntar dominio si no existe |
+| `design-clarify` | `speckit-clarify` | Taxonomía de cobertura; máx. 3 clarificaciones |
+| `design-plan` | `speckit-plan` | Constitution Check; alinear con `frontend-design.md` si existe |
+| `design-tasks` | `speckit-tasks` | Sin test-tasks en el plan (tests en cadena de implementación) |
+| `design-analyze` | `speckit-analyze` | Findings → `@design-*` (no `/speckit.*`) |
+
+## Entrypoints
+
+| Uso | Invocar |
+| --- | ------- |
+| Post-install / post-upgrade Speckit | `/orchestrate` |
+| Feature nueva end-to-end | `@develop` o `/start-feature` |
+| Mejorar feature existente | `/improve-feature` |
+| Speckit manual / diagnóstico | agents Speckit stock directamente |

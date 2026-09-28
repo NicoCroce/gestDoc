@@ -12,11 +12,12 @@ Cada tarea recibe su propia subcarpeta con el formato `TASK-{rama}-YYYYMMDD-N`:
 ```
 memory/
   TASK-feat-segments-20260517-1/
-    01_requirements.md    ← @analyst (SOLO si el origen es input crudo; ver nota abajo)
-    02_dev_log.md         ← @back o @front
-    03_qa_report.md       ← @qa
-    04_review_log.md      ← @reviewer
-    05_test_log.md        ← @tester
+    01_requirements.md    ← @blendverse-analyst (SOLO si el origen es input crudo; ver nota abajo)
+    02_dev_log.md         ← @blendverse-back / @blendverse-front (skill dev-logger)
+    03_qa_report.md       ← qa-report.sh (script, sin agente)
+    04_review_log.md      ← @blendverse-reviewer
+    05_test_log.md        ← @blendverse-tester
+    .checkpoint.json      ← checkpoint.sh (fuente de reanudación)
   history_log.json        ← índice global cronológico (actualizado por @blendverse-implement al cerrar)
   BLOCKED.md              ← se crea SOLO si se alcanza el break-loop (attempts >= 3)
 ```
@@ -61,7 +62,7 @@ affected_files:
 ---
 ```
 
-> **Regla `affected_files`:** Listar **solo** los archivos que contienen lógica nueva o modificada (entidades, use cases, servicios, controladores, modelos, implementaciones de repositorio). **No listar** barrels (`index.ts`), archivos de DI (`*.di.ts`) ni archivos de rutas que solo registran el dominio sin lógica propia.
+> **Regla `affected_files`:** Listar **todos** los archivos creados o modificados (incluidos barrels, DI y registros globales). `qa-report.sh` valida exactamente esta lista (eslint, `vitest related`, estructura): un archivo omitido no se valida. El tester decide por su cuenta cuáles tienen lógica que testear.
 
 ### Schema — `03_qa_report.md`
 
@@ -169,7 +170,7 @@ El campo `attempts` en el frontmatter lleva el conteo de iteraciones por agente.
 
 ## Reglas para los Agentes
 
-1. **Antes de escribir**, leer `memory/history_log.json` para obtener el `task_id` activo.
+1. **`task_id`**: usar el que pasa el orquestador; si no hay, `resolve-task-id.sh resolve <rama> <título>`.
 2. **No sobreescribir** archivos de una tarea anterior sin generar un nuevo `task_id`.
 3. **El frontmatter es inmutable** una vez que el archivo alcanza estado final (`DONE`, `IMPLEMENTED`, `PASS`, `APPROVED`). Para re-iterar, incrementar `attempts`.
 4. **Cada agente escribe únicamente su archivo designado**; no modifica archivos de otros agentes.
@@ -178,9 +179,5 @@ El campo `attempts` en el frontmatter lleva el conteo de iteraciones por agente.
 
 ## Espejo en Engram (`engram-sync`)
 
-Cada artefacto de memoria se espeja en Engram (skill `engram-sync`) para recuperación entre sesiones:
-
-- **Quién:** cada agente espeja su propio artefacto en su paso de cierre; `@blendverse-implement` espeja `registration` (Paso 1) y `status` (Paso 4).
-- **Topic keys:** `task/{task_id}/registration`, `task/{task_id}/dev-log`, `task/{task_id}/test-log`, `task/{task_id}/qa-report`, `task/{task_id}/review-log`, `task/{task_id}/status`.
-- **Regla de oro:** los archivos de `memory/` siguen siendo la **fuente de verdad**. Engram es un espejo de estado; si se contradicen, gana el archivo y se corrige el espejo.
-- **`capture_prompt: false`** en todos los espejos (son artefactos automatizados, no decisiones humanas).
+- Solo `@blendverse-implement` escribe en Engram, un único espejo `task/{task_id}/status` al cerrar (`COMPLETED`) o bloquear (`BLOCKED`), con `capture_prompt: false`. Los workers no espejan sus artefactos.
+- La reanudación usa `.checkpoint.json` y los archivos de `memory/`, que son la fuente de verdad.

@@ -1,4 +1,5 @@
 import { sequelize } from '@server/Infrastructure/Database';
+import { registerTenantScopedModel } from '@server/Infrastructure/Database/tenantScopes';
 import {
   CreationOptional,
   DataTypes,
@@ -52,3 +53,5 @@ TiposSegmentosModel.init(
     tableName: 'Tipos_segmentos',
   },
 );
+
+registerTenantScopedModel(TiposSegmentosModel);

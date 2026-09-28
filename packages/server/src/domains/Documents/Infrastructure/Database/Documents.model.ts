@@ -1,6 +1,6 @@
 import { DocumentsTypesModel } from '@server/domains/DocumentsTypes/Infrastructure';
 import { UserModel } from '@server/domains/Users';
-import { sequelize } from '@server/Infrastructure';
+import { sequelize } from '@server/Infrastructure/Database';
 import {
   Model,
   DataTypes,

@@ -1,4 +1,5 @@
 import { sequelize } from '@server/Infrastructure/Database';
+import { registerTenantScopedModel } from '@server/Infrastructure/Database/tenantScopes';
 import {
   CreationOptional,
   DataTypes,
@@ -52,3 +53,8 @@ TiposSegmentosModel.init(
     tableName: 'Tipos_segmentos',
   },
 );
+
+// Auto-registro: este modelo se declara tenant-scoped a sí mismo, en vez de
+// que Infraestructura genérica (TrpcInstance) importe TiposSegmentosModel
+// por nombre.
+registerTenantScopedModel(TiposSegmentosModel);

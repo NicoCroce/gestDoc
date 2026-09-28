@@ -3,7 +3,7 @@ import { sequelize } from '@server/Infrastructure';
 import { Op, WhereOptions } from 'sequelize';
 import { IGetCertificatesRepository } from '../../Domain';
 import { CertificateModel } from './Certificates.model';
-import { UserModel } from '@server/domains/Users';
+import { UserModel } from '@server/domains/Users/Infrastructure/Database/Users.model';
 
 export const CertificatesFilters = (
   filters: IGetCertificatesRepository['filters'],

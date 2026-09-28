@@ -21,7 +21,7 @@ import {
 import { DocumentsFilters } from './DocumentsFilters';
 import { Documentos } from './';
 import { DocumentsTypesModel } from '@server/domains/DocumentsTypes/Infrastructure';
-import { UserModel } from '@server/domains/Users';
+import { UserModel } from '@server/domains/Users/Infrastructure/Database/Users.model';
 import { UsuariosSegmentosModel } from '@server/domains/Segments/Infrastructure/Database/UsuariosSegmentos.model';
 import { Op, IncludeOptions, WhereOptions } from 'sequelize';
 import { buildEmployeeName } from '@server/Infrastructure';

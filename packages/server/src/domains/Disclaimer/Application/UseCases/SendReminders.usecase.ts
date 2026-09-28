@@ -1,5 +1,5 @@
-import { IUseCase } from '@server/Application';
-import { UserRepository } from '@server/domains/Users';
+import { executeUseCase, IUseCase } from '@server/Application';
+import { GetEmailsByUsersId } from '@server/domains/Users';
 import { OwnersysRepository } from '@server/domains/Ownersys';
 import { DisclaimerRepository } from '../../Domain';
 import { ISendReminders, ISendRemindersResponse } from '../disclaimer.types';
@@ -12,7 +12,8 @@ export class SendReminders implements IUseCase<
 > {
   constructor(
     private readonly disclaimerRepository: DisclaimerRepository,
-    private readonly userRepository: UserRepository,
+    // Cross-domain: caso de uso de Users, no el repositorio (skill cross-domain-relations).
+    private readonly _getEmailsByUsersId: GetEmailsByUsersId,
     private readonly disclaimerEmailService: ISendEmailService,
     private readonly ownersysRepository: OwnersysRepository,
   ) {}
@@ -49,8 +50,9 @@ export class SendReminders implements IUseCase<
     for (let i = 0; i < pendingIds.length; i += BATCH_SIZE) {
       const batch = pendingIds.slice(i, i + BATCH_SIZE);
       try {
-        const emails = await this.userRepository.getEmailsByUsersId({
-          userIds: batch,
+        const emails = await executeUseCase({
+          useCase: this._getEmailsByUsersId,
+          input: batch,
           requestContext,
         });
 

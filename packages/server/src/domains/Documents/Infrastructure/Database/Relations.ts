@@ -1,4 +1,4 @@
-import { UserModel } from '@server/domains/Users';
+import { UserModel } from '@server/domains/Users/Infrastructure/Database/Users.model';
 import { Documentos } from './';
 import { DocumentsTypesModel } from '@server/domains/DocumentsTypes/Infrastructure';
 

@@ -1,6 +1,6 @@
 ﻿import { ProfileModel } from '@server/domains/Profiles';
 import { UserprofileModel } from './Userprofile.model';
-import { UserModel } from '@server/domains/Users';
+import { UserModel } from '@server/domains/Users/Infrastructure/Database/Users.model';
 
 export const relateUserprofiles = () => {
   ProfileModel.hasMany(UserprofileModel, { foreignKey: 'id_perfil' });

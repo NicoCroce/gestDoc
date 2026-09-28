@@ -1,5 +1,5 @@
 import { Op } from 'sequelize';
-import { UserModel } from '@server/domains/Users';
+import { UserModel } from '@server/domains/Users/Infrastructure/Database/Users.model';
 import {
   IAssociateUserToRoleRepository,
   IDissociateUserToRoleRepository,

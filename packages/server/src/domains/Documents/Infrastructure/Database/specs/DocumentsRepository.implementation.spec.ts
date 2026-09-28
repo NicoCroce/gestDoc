@@ -2,7 +2,7 @@ import { describe, expect, it, vi, beforeEach } from 'vitest';
 import { Op } from 'sequelize';
 import { RequestContext } from '@server/Application';
 import type { IDocumentToCreate } from '@server/domains/Documents/Domain';
-import { UserModel } from '@server/domains/Users';
+import { UserModel } from '@server/domains/Users/Infrastructure/Database/Users.model';
 import { logger } from '@server/Infrastructure/utils/pino';
 import { Documentos } from '../index';
 import { DocumentsRepositoryImplementation } from '../DocumentsRepository.implementation';
@@ -15,7 +15,7 @@ vi.mock('../index', () => ({
   Documentos: { bulkCreate: vi.fn() },
 }));
 
-vi.mock('@server/domains/Users', () => ({
+vi.mock('@server/domains/Users/Infrastructure/Database/Users.model', () => ({
   UserModel: { findAll: vi.fn() },
 }));
 

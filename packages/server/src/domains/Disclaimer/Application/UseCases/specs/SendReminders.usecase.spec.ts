@@ -9,8 +9,8 @@ describe('SendReminders', () => {
     const mockRepo = {
       getPendingEmployeeIds: vi.fn().mockResolvedValue([1, 2, 3]),
     };
-    const mockUserRepo = {
-      getEmailsByUsersId: vi
+    const mockGetEmailsByUsersId = {
+      execute: vi
         .fn()
         .mockResolvedValue([
           'juan@test.com',
@@ -32,7 +32,7 @@ describe('SendReminders', () => {
 
     const useCase = new SendReminders(
       mockRepo as never,
-      mockUserRepo as never,
+      mockGetEmailsByUsersId as never,
       mockEmailSender as never,
       mockOwnersysRepo as never,
     );
@@ -56,8 +56,8 @@ describe('SendReminders', () => {
     const mockRepo = {
       getPendingEmployeeIds: vi.fn().mockResolvedValue([1]),
     };
-    const mockUserRepo = {
-      getEmailsByUsersId: vi.fn().mockResolvedValue(['juan@test.com']),
+    const mockGetEmailsByUsersId = {
+      execute: vi.fn().mockResolvedValue(['juan@test.com']),
     };
     const mockEmailSender = {
       sendDisclaimerReminders: vi.fn().mockResolvedValue(undefined),
@@ -73,7 +73,7 @@ describe('SendReminders', () => {
 
     const useCase = new SendReminders(
       mockRepo as never,
-      mockUserRepo as never,
+      mockGetEmailsByUsersId as never,
       mockEmailSender as never,
       mockOwnersysRepo as never,
     );
@@ -92,18 +92,16 @@ describe('SendReminders', () => {
   // ── Regresión T003 (007-exclude-deleted-users-emails) ────────────────────
   // Contrato 1: getEmailsByUsersId (Users) ya excluye soft-deleted (paranoid).
   // Este use case es agnóstico a esa exclusión: solo debe reenviar exactamente
-  // lo que el repositorio de Users le devuelva, sin reintroducir al eliminado.
+  // lo que el caso de uso de Users le devuelva, sin reintroducir al eliminado.
   it('only forwards emails of active employees when the pending batch mixes active and soft-deleted ids', async () => {
     const mockRepo = {
       // 3 ids pendientes: 1 y 3 activos, 2 pertenece a un empleado soft-deleted
       getPendingEmployeeIds: vi.fn().mockResolvedValue([1, 2, 3]),
     };
-    const mockUserRepo = {
-      // getEmailsByUsersId (repo real) ya excluye al soft-deleted vía paranoid:
+    const mockGetEmailsByUsersId = {
+      // GetEmailsByUsersId (Users) ya excluye al soft-deleted vía paranoid:
       // dado el batch [1,2,3] devuelve solo 2 emails, no 3.
-      getEmailsByUsersId: vi
-        .fn()
-        .mockResolvedValue(['juan@test.com', 'carlos@test.com']),
+      execute: vi.fn().mockResolvedValue(['juan@test.com', 'carlos@test.com']),
     };
     const mockEmailSender = {
       sendDisclaimerReminders: vi.fn().mockResolvedValue(undefined),
@@ -119,7 +117,7 @@ describe('SendReminders', () => {
 
     const useCase = new SendReminders(
       mockRepo as never,
-      mockUserRepo as never,
+      mockGetEmailsByUsersId as never,
       mockEmailSender as never,
       mockOwnersysRepo as never,
     );
@@ -127,8 +125,8 @@ describe('SendReminders', () => {
     const result = await useCase.execute({ input: {}, requestContext });
 
     // El batch de envío (`to`) NUNCA contiene un email del usuario eliminado
-    expect(mockUserRepo.getEmailsByUsersId).toHaveBeenCalledWith({
-      userIds: [1, 2, 3],
+    expect(mockGetEmailsByUsersId.execute).toHaveBeenCalledWith({
+      input: [1, 2, 3],
       requestContext,
     });
     expect(mockEmailSender.sendDisclaimerReminders).toHaveBeenCalledWith({
@@ -140,9 +138,10 @@ describe('SendReminders', () => {
       mockEmailSender.sendDisclaimerReminders.mock.calls[0][0].to,
     ).not.toContain('maria@test.com'); // email del empleado 2 (soft-deleted)
 
-    // El batch se procesó sin error (el repo de Users ya filtró, no hace falta
-    // manejo especial acá); sent/total reflejan el tamaño del batch de IDs
-    // (diseño actual: no distingue "email resuelto" de "id en el batch").
+    // El batch se procesó sin error (el caso de uso de Users ya filtró, no
+    // hace falta manejo especial acá); sent/total reflejan el tamaño del
+    // batch de IDs (diseño actual: no distingue "email resuelto" de "id en
+    // el batch").
     expect(result).toEqual({ sent: 3, failed: 0, total: 3 });
   });
 
@@ -151,7 +150,7 @@ describe('SendReminders', () => {
       // Sin candidatos pendientes tras excluir soft-deleted (o lista vacía real)
       getPendingEmployeeIds: vi.fn().mockResolvedValue([]),
     };
-    const mockUserRepo = { getEmailsByUsersId: vi.fn() };
+    const mockGetEmailsByUsersId = { execute: vi.fn() };
     const mockEmailSender = {
       sendDisclaimerReminders: vi.fn().mockResolvedValue(undefined),
     };
@@ -163,14 +162,14 @@ describe('SendReminders', () => {
 
     const useCase = new SendReminders(
       mockRepo as never,
-      mockUserRepo as never,
+      mockGetEmailsByUsersId as never,
       mockEmailSender as never,
       mockOwnersysRepo as never,
     );
 
     const result = await useCase.execute({ input: {}, requestContext });
 
-    expect(mockUserRepo.getEmailsByUsersId).not.toHaveBeenCalled();
+    expect(mockGetEmailsByUsersId.execute).not.toHaveBeenCalled();
     expect(mockEmailSender.sendDisclaimerReminders).not.toHaveBeenCalled();
     expect(result).toEqual({ sent: 0, failed: 0, total: 0 });
   });
@@ -178,7 +177,7 @@ describe('SendReminders', () => {
   // ── Regla: sin disclaimer configurado no hay nada que recordar ───────────
   it('sends nothing and skips all queries when texto_disclaimer is null', async () => {
     const mockRepo = { getPendingEmployeeIds: vi.fn() };
-    const mockUserRepo = { getEmailsByUsersId: vi.fn() };
+    const mockGetEmailsByUsersId = { execute: vi.fn() };
     const mockEmailSender = { sendDisclaimerReminders: vi.fn() };
     const mockOwnersysRepo = {
       getOwnersys: vi.fn().mockResolvedValue({
@@ -188,7 +187,7 @@ describe('SendReminders', () => {
 
     const useCase = new SendReminders(
       mockRepo as never,
-      mockUserRepo as never,
+      mockGetEmailsByUsersId as never,
       mockEmailSender as never,
       mockOwnersysRepo as never,
     );
@@ -196,14 +195,14 @@ describe('SendReminders', () => {
     const result = await useCase.execute({ input: {}, requestContext });
 
     expect(mockRepo.getPendingEmployeeIds).not.toHaveBeenCalled();
-    expect(mockUserRepo.getEmailsByUsersId).not.toHaveBeenCalled();
+    expect(mockGetEmailsByUsersId.execute).not.toHaveBeenCalled();
     expect(mockEmailSender.sendDisclaimerReminders).not.toHaveBeenCalled();
     expect(result).toEqual({ sent: 0, failed: 0, total: 0 });
   });
 
   it('sends nothing when ownersys does not exist', async () => {
     const mockRepo = { getPendingEmployeeIds: vi.fn() };
-    const mockUserRepo = { getEmailsByUsersId: vi.fn() };
+    const mockGetEmailsByUsersId = { execute: vi.fn() };
     const mockEmailSender = { sendDisclaimerReminders: vi.fn() };
     const mockOwnersysRepo = {
       getOwnersys: vi.fn().mockResolvedValue(null),
@@ -211,7 +210,7 @@ describe('SendReminders', () => {
 
     const useCase = new SendReminders(
       mockRepo as never,
-      mockUserRepo as never,
+      mockGetEmailsByUsersId as never,
       mockEmailSender as never,
       mockOwnersysRepo as never,
     );
@@ -224,7 +223,7 @@ describe('SendReminders', () => {
 
   it('sends nothing when texto_disclaimer is an empty string', async () => {
     const mockRepo = { getPendingEmployeeIds: vi.fn() };
-    const mockUserRepo = { getEmailsByUsersId: vi.fn() };
+    const mockGetEmailsByUsersId = { execute: vi.fn() };
     const mockEmailSender = { sendDisclaimerReminders: vi.fn() };
     const mockOwnersysRepo = {
       getOwnersys: vi.fn().mockResolvedValue({
@@ -234,7 +233,7 @@ describe('SendReminders', () => {
 
     const useCase = new SendReminders(
       mockRepo as never,
-      mockUserRepo as never,
+      mockGetEmailsByUsersId as never,
       mockEmailSender as never,
       mockOwnersysRepo as never,
     );

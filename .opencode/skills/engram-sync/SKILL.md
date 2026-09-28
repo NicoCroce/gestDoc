@@ -1,57 +1,26 @@
 ---
 name: engram-sync
-description: Espeja el estado de los pipelines Speckit y Blendverse en Engram para reanudar trabajo interrumpido. Usar en el inicio/cierre de cada pipeline y al cerrar artefactos de agentes.
+description: Qué estado de los pipelines se espeja en Engram y cuándo. Los archivos en disco son siempre la fuente de verdad; Engram solo sirve para detectar y reanudar trabajo entre sesiones.
 ---
 
 # Engram Sync
 
-Los archivos en disco son la fuente de verdad. Engram solo indexa estado para
-recuperación. Antes de reanudar, verificar el archivo indicado; si contradice el
-espejo, actualizar el espejo con el mismo `topic_key`.
+Todos los espejos: `scope: project`, `capture_prompt: false`, título breve, `topic_key` y `status` explícitos. Si el espejo contradice al archivo, gana el archivo y se corrige el espejo con el mismo `topic_key`.
 
-Todos los espejos usan `scope: project`, `capture_prompt: false`, un título breve y
-contenido con `topic_key` y `status` explícitos.
+## Diseño (`@develop`)
 
-## Pipeline de diseño
-
-Usar exclusivamente `feature/{feature_key}/pipeline`. Guardar en pre-flight y tras
-cada fase aprobada, salteada o handoff:
+Un único espejo `feature/{feature_key}/pipeline`, guardado solo en el pre-flight y al pasar a `HANDOFF`:
 
 ```text
-**What**: Pipeline de <feature_key> en <status>.
-**Why**: <resultado de la última fase>.
-**Where**: <feature_dir o pending>.
-**Learned**: <decisión o riesgo material, si existe>.
-
 topic_key: feature/<feature_key>/pipeline
 status: IN_PROGRESS | HANDOFF
 next_phase: <1..6>
-approved_phases: [<n>]
-feature_key: <feature_key>
-feature_dir: <ruta real o pending>
-branch: <rama efectiva o pending>
-mode: plan | auto
-artifacts: <lista breve de rutas existentes>
+feature_key / feature_dir / branch / mode / complexity
+summary: <una línea>
 ```
 
-Para recuperar, buscar `pipeline {feature_key}`. Si existe `IN_PROGRESS`, leer
-`next_phase` y verificar los artefactos de `approved_phases`. Si falta alguno,
-retroceder a la fase que lo produce. Si está `HANDOFF`, no volver a delegar.
+Recuperar con `mem_search("pipeline <feature_key>")` y verificar en disco los artefactos de las fases previas.
 
-## Cadena de implementación
+## Implementación (`@blendverse-implement`)
 
-Mantener los topic keys por tarea porque representan artefactos independientes:
-
-```text
-task/{task_id}/registration
-task/{task_id}/dev-log
-task/{task_id}/test-log
-task/{task_id}/qa-report
-task/{task_id}/review-log
-task/{task_id}/status
-```
-
-El checkpoint en `memory/{task_id}/.checkpoint.json` es la fuente primaria de
-reanudación. Si falta, usar los archivos de `memory/{task_id}/` y solo después el
-espejo Engram. Los workers guardan su espejo inmediatamente después de escribir su
-artefacto definitivo; el orquestador guarda `registration` y `status`.
+La reanudación usa `memory/{task_id}/.checkpoint.json` (`checkpoint.sh get`). Engram guarda un solo espejo, `task/{task_id}/status`, al cerrar (`COMPLETED` + `pr_url`) o al bloquear (`BLOCKED`). Los workers no escriben en Engram.

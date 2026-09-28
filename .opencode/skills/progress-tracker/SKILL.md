@@ -1,6 +1,6 @@
 ---
 name: progress-tracker
-description: Muestra el progreso compacto de pipelines y cadenas de agentes. Usar al iniciar, cambiar de fase, pausar o delegar en `blendverse-start-feature` y `blendverse-implement`.
+description: Muestra el progreso compacto de pipelines y cadenas de agentes. Usar al iniciar, cambiar de fase, pausar o delegar. `@develop` y `@blendverse-implement` ya traen estas reglas inline; cargarla solo en flujos ad-hoc.
 ---
 
 # Progress Tracker
@@ -33,7 +33,7 @@ Motivo: <hecho concreto>. Siguiente: <acción>.
 
 ## Cadena de implementación
 
-Crear la lista según scope: back, front, tester, QA, reviewer y cierre. Mostrar
+Crear la lista según scope: back, front, tester ∥ reviewer, QA (script) y cierre. Mostrar
 antes de cada `task`:
 
 ```text

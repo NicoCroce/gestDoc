@@ -1,28 +1,7 @@
 ---
-description: Dispara manualmente el agente @blendverse-qa sobre el código actual. Útil para validar después de cambios manuales o para re-ejecutar QA sin iniciar una tarea nueva.
-agent: blendverse-qa
+description: Re-ejecuta la QA (tsc + eslint + vitest related + estructura) de una tarea sin iniciar la cadena. Entrada: task_id y scope (back-only | front-only | full-stack).
 ---
 
-Actúa como el agente `@blendverse-qa`. Carga y sigue estrictamente la skill `qa-runner`.
+Ejecutar `.opencode/scripts/bash/qa-report.sh $ARGUMENTS` (argumentos: `<task_id> <scope>`).
 
-## Contexto
-
-**task_id activo:** {{taskId}}
-
-## Pasos
-
-1. Leer `.opencode/instructions/memory.instructions.md` para confirmar el schema de frontmatter.
-2. Leer `memory/{{taskId}}/02_dev_log.md` para obtener la lista de `affected_files`.
-3. Verificar el campo `attempts` — si es >= 3, ejecutar el Protocolo Break-Loop.
-4. Ejecutar la secuencia de validación completa:
-   - `npx tsc --noEmit` en el paquete correspondiente.
-   - `pnpm lint`.
-   - Verificación de estructura de carpetas.
-5. Escribir `memory/{{taskId}}/03_qa_report.md` con el resultado.
-6. Si `status: PASS` → hacer handoff a `@blendverse-reviewer`.
-7. Si `status: FAIL` → reportar los errores y hacer handoff al Coder correspondiente.
-
----
-
-**task_id:** {{taskId}}
-**Paquete a validar:** {{scope}}
+El script lee `affected_files` de `memory/<task_id>/02_dev_log.md`, valida solo esos archivos y escribe `memory/<task_id>/03_qa_report.md`. Mostrar el `status` y, si es `FAIL`, el `feedback` tal cual. Sin argumentos, usar `.opencode/scripts/bash/qa-check.sh full-stack` (paquetes completos) y mostrar el resumen del JSON.

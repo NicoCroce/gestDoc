@@ -12,7 +12,7 @@
     "prepare": "husky",
     "app:dev": "pnpm --filter app dev",
     "server:dev": "pnpm --filter server dev",
-    "tsc": "tsc --noEmit ./**/src/**/*.ts",
+    "tsc": "pnpm --filter server exec tsc --noEmit && pnpm --filter app exec tsc --noEmit",
     "server:build": "cd packages/server pnpm build",
     "app:build": "cd packages/app pnpm build",
     "build": "pnpm server:build && pnpm app:build",

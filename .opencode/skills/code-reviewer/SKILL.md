@@ -1,146 +1,53 @@
 ---
 name: code-reviewer
-description: Guía al agente @blendverse-reviewer en la revisión de estándares de arquitectura, seguridad y convenciones del proyecto, y en la generación del reporte de revisión.
+description: Checklist de @blendverse-reviewer (arquitectura, tipado, seguridad multi-tenant, convenciones y estados de UI) y formato de 04_review_log.md.
 ---
 
 # Skill: code-reviewer
 
-## Propósito
-
-Guía al agente `@blendverse-reviewer` en la revisión de estándares de arquitectura, seguridad y convenciones del proyecto, y en la generación del reporte `memory/{task_id}/04_review_log.md`.
-
----
-
-## Checklist de Revisión (16 Ítems)
-
-Los ítems marcados con 🔴 son **críticos** — un fallo en cualquiera de ellos resulta en `status: REJECTED`.  
-Los ítems marcados con 🟡 son **recomendados** — un fallo genera feedback pero no bloquea la aprobación.
-
-### Arquitectura Hexagonal
-
-| #   | Criterio                                                                          | Nivel | Cómo verificar                                                 |
-| --- | --------------------------------------------------------------------------------- | ----- | -------------------------------------------------------------- |
-| 1   | La capa `Domain/` no importa de `Infrastructure/` ni de `Application/`            | 🔴    | Revisar `import` statements en `.entity.ts` y `.repository.ts` |
-| 2   | Los Use Cases no importan repositorios directamente — solo la interfaz abstracta  | 🔴    | Revisar imports en `*.usecase.ts`                              |
-| 3   | Los archivos globales de registro (`register.ts`, `Router.ts`) están actualizados | 🔴    | Verificar presencia del nuevo dominio en ambos archivos        |
-
-### TypeScript y Tipado
-
-| #   | Criterio                                                                                  | Nivel | Cómo verificar                                            |
-| --- | ----------------------------------------------------------------------------------------- | ----- | --------------------------------------------------------- |
-| 4   | No existe ningún `any` explícito en los archivos afectados                                | 🔴    | Buscar `any` con grep en `affected_files`                 |
-| 5   | Todos los métodos públicos tienen tipo de retorno explícito                               | 🟡    | Revisar firmas de métodos en entidad, use cases y service |
-| 6   | Los tipos de interfaces (`I[Entity]`, `T[Entity]`) son los únicos compartidos entre capas | 🔴    | Verificar que no se importan clases concretas entre capas |
-
-### Validación y Seguridad (OWASP)
-
-| #   | Criterio                                                                            | Nivel | Cómo verificar                                                 |
-| --- | ----------------------------------------------------------------------------------- | ----- | -------------------------------------------------------------- |
-| 7   | Zod valida el input en el controller (backend) o en el formulario RHF (frontend)    | 🔴    | Verificar esquema Zod en `*.controller.ts` o en el formulario  |
-| 8   | El filtro multi-tenant `ownerId` está aplicado en todas las queries del repositorio | 🔴    | Revisar `findAll`/`findOne` en `*Repository.implementation.ts` |
-| 9   | No existe `console.log` ni `console.error` en código productivo                     | 🟡    | Buscar `console.` en `affected_files`                          |
-
-### Convenciones de Nomenclatura
-
-| #   | Criterio                                                                        | Nivel | Cómo verificar                                                                                 |
-| --- | ------------------------------------------------------------------------------- | ----- | ---------------------------------------------------------------------------------------------- |
-| 10  | Los nombres de clases, archivos y carpetas siguen las convenciones del proyecto | 🔴    | Comparar contra las tablas de nomenclatura en `server.instructions.md` o `app.instructions.md` |
-| 11  | La entidad implementa `static create()`, `toJSON()` y `get values()`            | 🟡    | Revisar la clase entidad                                                                       |
-
-### Frontend — Estados de Pantalla y UX
-
-> Se aplica SOLO si la tarea toca `packages/app/**`. Criterios definidos en `app.instructions.md` — sección "Estados de Pantalla — Loading / Error / Empty".
-
-| #   | Criterio                                                                                                                                      | Nivel | Cómo verificar                                                            |
-| --- | --------------------------------------------------------------------------------------------------------------------------------------------- | ----- | ------------------------------------------------------------------------- |
-| 12  | Las pantallas que obtienen datos implementan `isError` → `EmptyScreenError`, `isLoading` → skeleton, empty → `EmptyScreenFilter`/`EmptyState` | 🔴    | Revisar páginas/componentes con `useQuery` en `affected_files`            |
-| 13  | No hay texto suelto inline para estados (`<Text.Muted>Cargando</Text.Muted>`, `<p>`) ni fallbacks inalcanzables al final de ternarios         | 🔴    | Buscar `Cargando`, `<Text.Muted>` en componentes de pantalla              |
-| 14  | Los botones que ejecutan servicios reciben `isLoading={isPending}` (spinner) — nunca solo `disabled={isPending}`                              | 🔴    | Buscar `disabled={...isPending}` sin `isLoading` en botones con mutations |
-| 15  | Los empty states domain-specific usan `EmptyState` como base visual (no diseños custom duplicados)                                            | 🟡    | Revisar `*EmptyState.tsx` en dominios                                     |
-| 16  | Los skeletons de dominio viven en `Components/` del dominio (o `Application/Components/` si es cross-domain)                                  | 🟡    | Verificar ubicación de archivos `*Skeleton.tsx`                           |
-
-### Mantenibilidad
-
-| #   | Criterio                                                                     | Nivel | Cómo verificar                                                  |
-| --- | ---------------------------------------------------------------------------- | ----- | --------------------------------------------------------------- |
-| 17  | El `index.ts` barrel del dominio exporta correctamente los símbolos públicos | 🟡    | Verificar que el barrel no re-exporta implementaciones privadas |
-
----
-
-## Template Obligatorio — `04_review_log.md`
-
-> **Regla de brevedad:** Si el resultado es `APPROVED`, el cuerpo se limita a la tabla del checklist. La sección de Feedback solo se escribe en `REJECTED`; la de Deuda Técnica solo si hay algo concreto que reportar.
-
-````markdown
----
-task_id: 'TASK-{rama}-YYYYMMDD-N'
-agent: 'Reviewer_Agent'
-status: 'APPROVED' # APPROVED | REJECTED
-attempts: 1 # incrementar en cada re-revisión
-date: 'YYYY-MM-DD'
----
-
-# Revisión de Estándares — [Título de la Tarea]
-
-## Resultado: ✅ APPROVED / ❌ REJECTED
-
----
+Tsc, lint y ubicación de carpetas los valida `qa-report.sh`; no los revises. Revisá solo los `affected_files`.
 
 ## Checklist
 
-| #   | Criterio                                | Nivel | Estado | Detalle |
-| --- | --------------------------------------- | ----- | ------ | ------- |
-| 1   | Domain no importa Infrastructure        | 🔴    | ✅     | —       |
-| 2   | Use Cases usan interfaz abstracta       | 🔴    | ✅     | —       |
-| 3   | Archivos globales actualizados          | 🔴    | ✅     | —       |
-| 4   | Sin `any` explícito                     | 🔴    | ✅     | —       |
-| 5   | Tipos de retorno explícitos             | 🟡    | ✅     | —       |
-| 6   | Solo interfaces compartidas entre capas | 🔴    | ✅     | —       |
-| 7   | Zod en controller/formulario            | 🔴    | ✅     | —       |
-| 8   | Filtro `ownerId` en queries             | 🔴    | ✅     | —       |
-| 9   | Sin `console.log` en producción         | 🟡    | ✅     | —       |
-| 10  | Convenciones de nomenclatura            | 🔴    | ✅     | —       |
-| 11  | Entidad con `static create()` etc.      | 🟡    | ✅     | —       |
-| 12  | Pantallas con error/loading/empty       | 🔴    | ✅     | —       |
-| 13  | Sin texto inline para estados           | 🔴    | ✅     | —       |
-| 14  | Botones con `isLoading`                 | 🔴    | ✅     | —       |
-| 15  | Empty states usan `EmptyState`          | 🟡    | ✅     | —       |
-| 16  | Skeletons en Components/ del dominio    | 🟡    | ✅     | —       |
-| 17  | Barrels exportan correctamente          | 🟡    | ✅     | —       |
+🔴 = crítico (un fallo → `REJECTED`). 🟡 = recomendado (va a Deuda técnica, no bloquea).
 
----
+Chequeos mecánicos primero (un solo `grep` sobre `affected_files`): `: any\b|as any|<any>` (ítem 4) y `console\.` (ítem 9).
 
-## Feedback (solo si status: REJECTED)
+**Backend / arquitectura**
+1. 🔴 `Domain/` no importa de `Application/` ni `Infrastructure/`.
+2. 🔴 Los use cases dependen de la interfaz del repositorio, no de la implementación.
+3. 🔴 Dominio nuevo registrado en `register.ts` y `Router.ts`.
+4. 🔴 Sin `any` explícito.
+5. 🟡 Métodos públicos con tipo de retorno explícito.
+6. 🔴 Entre capas solo se comparten interfaces/tipos, no clases concretas.
+7. 🔴 Input validado con Zod (controller) o RHF + Zod (formulario).
+8. 🔴 Toda query del repositorio filtra por `ownerId`/`id_propietario` (o usa `TenantAwareRepository`).
+9. 🟡 Sin `console.*` en código productivo.
+10. 🔴 Naming de clases, archivos y carpetas según `server.instructions.md` / `app.instructions.md`.
+11. 🟡 La entidad expone `static create()`, `toJSON()` y `get values()`.
 
-### Ítem [N] — [Nombre del ítem]
+**Frontend** (solo si hay archivos en `packages/app/`; ver `app.instructions.md` → "Estados de Pantalla")
+12. 🔴 Pantallas con datos: `isError` → `EmptyScreenError`, `isLoading` → skeleton, vacío → `EmptyScreenFilter`/`EmptyState`.
+13. 🔴 Sin texto suelto para estados (`Cargando`, `<Text.Muted>`, `<p>`) ni fallbacks inalcanzables en ternarios.
+14. 🔴 Botones que disparan mutations usan `isLoading={isPending}`, no solo `disabled`.
+15. 🟡 Empty states de dominio construidos sobre `EmptyState`.
+16. 🟡 Skeletons en `Components/` del dominio (o `Application/Components/` si son cross-domain).
+17. 🟡 El barrel `index.ts` no reexporta implementaciones privadas.
 
-**Problema:** [Descripción exacta del incumplimiento]
+Rechazar solo por incumplimientos de estándares documentados, nunca por estilo personal.
 
-**Archivo afectado:** `ruta/al/archivo.ts` — línea X
+## `04_review_log.md`
 
-**Solución esperada:**
+Frontmatter: `.opencode/scripts/bash/memory-log-scaffold.sh frontmatter review_log {task_id} Reviewer_Agent APPROVED|REJECTED`.
 
-```typescript
-// Ejemplo de cómo debe quedar el código
-```
+```markdown
+# Revisión — <título>
 
----
+Resultado: APPROVED | REJECTED · ítems revisados: <n> · 🔴 fallidos: <lista o "ninguno">
 
-## Deuda Técnica (solo si hay algo concreto)
+## Feedback (solo si REJECTED; uno por ítem 🔴 fallido)
+- Ítem <n> — `<archivo>:<línea>`: <problema>. Esperado: <cambio concreto, con snippet si ayuda>.
 
-- [Ítem subóptimo que debe atenderse en una tarea futura]
-````
-
----
-
-## Reglas de Calidad
-
-1. **Completar el checklist completo** para todas las revisiones, aunque el resultado sea `APPROVED`.
-2. **Si `status: REJECTED`**, la sección de Feedback es **obligatoria** con ejemplo de código correcto.
-3. **No rechazar** por ítems 🟡 — solo generar feedback en "Deuda Técnica".
-4. **`attempts`** comienza en `1` y se incrementa en cada re-revisión.
-5. **Si `attempts >= 3`**, no escribir el reporte — ejecutar el Protocolo Break-Loop definido en `@blendverse-reviewer`.
-
-```
-
+## Deuda técnica (solo si hay 🟡 fallidos)
+- <ítem>: <detalle>
 ```

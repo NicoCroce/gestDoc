@@ -130,7 +130,7 @@ Presentar al usuario:
 - 🟡 Application/Utils/Email/ → mover a Infrastructure/
 
 ### Próximos pasos sugeridos
-1. Ejecutar `@blendverse-qa` para validación completa (tsc + lint + vitest).
+1. Ejecutar `.opencode/scripts/bash/qa-check.sh full-stack` para validación completa (tsc + lint + vitest).
 2. Resolver los desvíos manuales según disponibilidad.
 ```
 

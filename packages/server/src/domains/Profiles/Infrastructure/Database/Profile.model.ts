@@ -1,5 +1,5 @@
 ﻿import { OwnersysModel } from '@server/domains/Ownersyss';
-import { sequelize } from '@server/Infrastructure';
+import { sequelize } from '@server/Infrastructure/Database';
 import {
   DataTypes,
   InferAttributes,

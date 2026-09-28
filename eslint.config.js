@@ -31,6 +31,28 @@ const customRules = {
   },
 };
 
+const serverBarrelCycleRule = {
+  files: [
+    'packages/server/src/Infrastructure/**/*.ts',
+    'packages/server/src/**/*.model.ts',
+  ],
+  ignores: ['**/specs/**', '**/*.spec.ts', '**/*.test.ts'],
+  rules: {
+    'no-restricted-imports': [
+      'error',
+      {
+        paths: [
+          {
+            name: '@server/Infrastructure',
+            message:
+              'Importar el submódulo concreto (@server/Infrastructure/Database, .../utils/pino, ...). El barrel crea un ciclo con TrpcInstance.ts que cuelga los specs de controllers.',
+          },
+        ],
+      },
+    ],
+  },
+};
+
 export default tseslint.config(
   eslint.configs.recommended,
   ...tseslint.configs.recommended,
@@ -43,4 +65,5 @@ export default tseslint.config(
   ignores,
   eslintPluginPrettierRecommended,
   customRules,
+  serverBarrelCycleRule,
 );

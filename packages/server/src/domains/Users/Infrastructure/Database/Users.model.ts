@@ -1,6 +1,7 @@
 import { sequelize } from '@server/Infrastructure/Database';
+import { registerTenantScopedModel } from '@server/Infrastructure/Database/tenantScopes';
 import { CompaniesModel } from '@server/domains/Companies';
-import { RolesModel } from '@server/domains/Permissions';
+import { RolesModel } from '@server/domains/Permissions/Infrastructure/Database/Roles.model';
 import { Users_RolesModel } from '@server/domains/Permissions/Infrastructure/Database/Users_Roles.model';
 import {
   DataTypes,
@@ -76,3 +77,7 @@ UserModel.init(
     tableName: 'Usuarios',
   },
 );
+
+// Auto-registro: este modelo se declara tenant-scoped a sí mismo, en vez de
+// que Infraestructura genérica (TrpcInstance) importe UserModel por nombre.
+registerTenantScopedModel(UserModel);

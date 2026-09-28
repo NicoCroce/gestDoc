@@ -8,7 +8,7 @@ import {
   NonAttribute,
 } from 'sequelize';
 import { CertificatesTypesModel } from './CertificatesTypes.model';
-import { UserModel } from '@server/domains/Users';
+import { UserModel } from '@server/domains/Users/Infrastructure/Database/Users.model';
 
 export class CertificateModel extends Model<
   InferAttributes<CertificateModel>,

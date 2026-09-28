@@ -8,12 +8,10 @@
 import { IRequestContext } from '@server/Application';
 
 import { UserprofileModel } from './Userprofile.model';
-import { UserModel } from '@server/domains/Users';
+import { UserModel } from '@server/domains/Users/Infrastructure/Database/Users.model';
 import { ProfileModel } from '@server/domains/Profiles';
 
-export class UserprofilesRepositoryImplementation
-  implements UserprofilesRepository
-{
+export class UserprofilesRepositoryImplementation implements UserprofilesRepository {
   async createUserprofile({
     userprofile,
   }: ICreateUserprofileRepository): Promise<Userprofile | null> {

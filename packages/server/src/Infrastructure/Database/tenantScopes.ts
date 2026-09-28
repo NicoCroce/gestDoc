@@ -40,3 +40,46 @@ export const addTenantScope = (
     { override: true },
   );
 };
+
+interface TenantScopedModelEntry {
+  model: ModelStatic<Model>;
+  tenantColumn: string;
+}
+
+const tenantScopedModels: TenantScopedModelEntry[] = [];
+
+/**
+ * Self-registration hook for tenant-scoped models.
+ *
+ * **Por qué existe.** Antes, el código genérico de tRPC (`TrpcInstance.ts`)
+ * importaba `UserModel`, `ProfileModel` y `TiposSegmentosModel` por nombre
+ * desde sus respectivos dominios para aplicarles `addTenantScope`. Eso crea
+ * una dependencia inversa (Infraestructura transversal → Dominio) que, al
+ * combinarse con los barrels de dominio, generaba ciclos de import.
+ *
+ * Con este registro, cada modelo se auto-declara tenant-scoped **en su
+ * propio archivo de definición** (Dominio → mecanismo genérico, la dirección
+ * permitida), y el código transversal solo itera el registro sin conocer
+ * los nombres de los modelos. Ver `applyAllTenantScopes`.
+ *
+ * @param model - El modelo Sequelize a registrar.
+ * @param tenantColumn - Columna de propietario (default `'id_propietario'`).
+ */
+export const registerTenantScopedModel = (
+  model: ModelStatic<Model>,
+  tenantColumn = 'id_propietario',
+): void => {
+  tenantScopedModels.push({ model, tenantColumn });
+};
+
+/**
+ * Aplica el scope `'tenant'` a todos los modelos que se auto-registraron
+ * vía `registerTenantScopedModel`. Pensado para llamarse una vez por
+ * request (ver `TrpcInstance.ts`), sin necesidad de conocer qué modelos
+ * existen.
+ */
+export const applyAllTenantScopes = (ownerId: number): void => {
+  for (const { model, tenantColumn } of tenantScopedModels) {
+    addTenantScope(model, ownerId, tenantColumn);
+  }
+};

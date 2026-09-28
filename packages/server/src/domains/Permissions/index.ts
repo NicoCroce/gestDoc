@@ -1,4 +1,4 @@
 export * from './Application';
 export * from './Domain';
-export * from './Infrastructure';
+export * from './Infrastructure/Routes';
 export * from './permissions.di';

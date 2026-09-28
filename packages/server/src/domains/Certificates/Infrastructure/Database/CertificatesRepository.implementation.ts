@@ -1,4 +1,4 @@
-import { UserModel } from '@server/domains/Users';
+import { UserModel } from '@server/domains/Users/Infrastructure/Database/Users.model';
 import { UsuariosSegmentosModel } from '@server/domains/Segments/Infrastructure/Database/UsuariosSegmentos.model';
 import { TiposSegmentosModel } from '@server/domains/Segments/Infrastructure/Database/TiposSegmentos.model';
 import {

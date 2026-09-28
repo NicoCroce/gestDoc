@@ -4,10 +4,7 @@ import { verifyTokenInHeader } from '../Auth/Auth';
 import { verifyToken } from '@server/Infrastructure/utils/JWT';
 import { logger, loggerContext } from '@server/Infrastructure/utils/pino';
 import { RequestContext } from '@server/Application';
-import { addTenantScope } from '@server/Infrastructure/Database/tenantScopes';
-import { UserModel } from '@server/domains/Users';
-import { TiposSegmentosModel } from '@server/domains/Segments/Infrastructure/Database/TiposSegmentos.model';
-import { ProfileModel } from '@server/domains/Profiles';
+import { applyAllTenantScopes } from '@server/Infrastructure/Database/tenantScopes';
 
 // created for each request
 export const createContext = ({
@@ -74,11 +71,14 @@ const t = initTRPC.context<Context>().create({
  * This is a defence-in-depth safety net. The primary tenant isolation
  * lives in the TenantAwareRepository helpers and explicit `where` clauses.
  * See `tenantScopes.ts` for the concurrency caveat.
+ *
+ * Deliberately model-agnostic: which models are tenant-scoped is decided by
+ * each domain's own model file via `registerTenantScopedModel` (self
+ * registration), not by this generic transport-layer code importing domain
+ * models by name.
  */
 const applyTenantScopes = (ownerId: number) => {
-  addTenantScope(UserModel, ownerId);
-  addTenantScope(TiposSegmentosModel, ownerId);
-  addTenantScope(ProfileModel, ownerId);
+  applyAllTenantScopes(ownerId);
 };
 
 const protectedProcedure = t.procedure.use(async function isAuthed(opts) {

@@ -1,4 +1,4 @@
-import { UserModel } from '@server/domains/Users';
+import { UserModel } from '@server/domains/Users/Infrastructure/Database/Users.model';
 import { DisclaimerAcceptanceModel } from './DisclaimerAcceptance.model';
 
 export const relateDisclaimer = () => {

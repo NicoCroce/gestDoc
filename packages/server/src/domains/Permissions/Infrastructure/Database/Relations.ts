@@ -1,4 +1,4 @@
-import { UserModel } from '@server/domains/Users';
+import { UserModel } from '@server/domains/Users/Infrastructure/Database/Users.model';
 import { PermissionsModel } from './Permissions.model';
 import { RolesModel } from './Roles.model';
 import { Users_RolesModel } from './Users_Roles.model';

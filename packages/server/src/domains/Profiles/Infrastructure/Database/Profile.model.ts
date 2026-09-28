@@ -1,5 +1,6 @@
-﻿import { OwnersysModel } from '@server/domains/Ownersys';
+﻿import { OwnersysModel } from '@server/domains/Ownersys/Infrastructure/Database/Ownersys.model';
 import { sequelize } from '@server/Infrastructure/Database';
+import { registerTenantScopedModel } from '@server/Infrastructure/Database/tenantScopes';
 import {
   DataTypes,
   InferAttributes,
@@ -54,3 +55,7 @@ ProfileModel.init(
     tableName: 'Perfiles',
   },
 );
+
+// Auto-registro: este modelo se declara tenant-scoped a sí mismo, en vez de
+// que Infraestructura genérica (TrpcInstance) importe ProfileModel por nombre.
+registerTenantScopedModel(ProfileModel);

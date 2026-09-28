@@ -53,6 +53,34 @@ const serverBarrelCycleRule = {
   },
 };
 
+const domainBarrelScopeRule = {
+  files: ['packages/server/src/domains/*/index.ts'],
+  // Companies y Profiles son stubs sin capa Domain/Application/Routes (deuda
+  // documentada por arch-audit, requiere decisión humana). Userprofiles no
+  // tiene rutas propias (dominio de asociación). Ninguno de los tres tiene
+  // Controllers, así que no reintroducen el ciclo — quedan exceptuados hasta
+  // que se complete su estructura.
+  ignores: [
+    'packages/server/src/domains/Companies/index.ts',
+    'packages/server/src/domains/Profiles/index.ts',
+    'packages/server/src/domains/Userprofiles/index.ts',
+  ],
+  rules: {
+    'no-restricted-imports': [
+      'error',
+      {
+        paths: [
+          {
+            name: './Infrastructure',
+            message:
+              "El index.ts público de un dominio solo puede re-exportar './Infrastructure/Routes' (constitution.md). Re-exportar './Infrastructure' completo expone Controllers/Database a otros dominios y recrea el ciclo con @server/Infrastructure.",
+          },
+        ],
+      },
+    ],
+  },
+};
+
 export default tseslint.config(
   eslint.configs.recommended,
   ...tseslint.configs.recommended,
@@ -66,4 +94,5 @@ export default tseslint.config(
   eslintPluginPrettierRecommended,
   customRules,
   serverBarrelCycleRule,
+  domainBarrelScopeRule,
 );

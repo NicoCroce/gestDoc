@@ -26,6 +26,10 @@ Revisás que el código de la tarea cumpla los estándares documentados. Compila
 
 Si `attempts` llega a 3 sin aprobación: `breakloop-check.sh block "{task_id}" "Reviewer_Agent" "<feedback exacto>"` y detenerse.
 
+## Límite de steps
+
+Si quedan ≤2 de los 20 steps y todavía no escribiste `04_review_log.md`: escribirlo ahora con `status: REJECTED` y una nota "Steps agotados antes de completar la revisión" detallando qué ítems alcanzaste a revisar, y detenerse. Nunca dejar la cadena esperando un archivo que no vas a llegar a crear.
+
 ## Límites
 
 No modificar código ni tests. No invocar otros agentes.

@@ -10,5 +10,6 @@ export * from './utils/Email';
 export * from './utils/LoadImages';
 export * from './utils/cookie';
 export * from './utils/dateUtils';
+export * from './utils/disclaimerUtils';
 export * from './utils/employeeUtils';
 export * from './utils/emailUtils';

@@ -1,4 +1,5 @@
 import { executeUseCase, IUseCase } from '@server/Application';
+import { hasDisclaimerText } from '@server/Infrastructure';
 import { generateToken } from '@server/Infrastructure/utils/JWT';
 import { IExecuteResponse, Ilogin } from '../auth.types';
 import { User, ValidateUserPassword } from '@server/domains/Users';
@@ -67,8 +68,8 @@ export class Login implements IUseCase<IExecuteResponse> {
 
     let pendingDisclaimer = false;
 
-    const requiresDisclaimer = Boolean(
-      ownersys?.values.texto_disclaimer?.trim(),
+    const requiresDisclaimer = hasDisclaimerText(
+      ownersys?.values.texto_disclaimer,
     );
 
     if (

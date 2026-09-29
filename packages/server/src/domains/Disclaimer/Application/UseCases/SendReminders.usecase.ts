@@ -1,4 +1,5 @@
 import { executeUseCase, IUseCase } from '@server/Application';
+import { hasDisclaimerText } from '@server/Infrastructure';
 import { GetEmailsByUsersId } from '@server/domains/Users';
 import { OwnersysRepository } from '@server/domains/Ownersys';
 import { DisclaimerRepository } from '../../Domain';
@@ -29,10 +30,12 @@ export class SendReminders implements IUseCase<
       requestContext,
     });
 
-    const disclaimerText = ownersys?.values.texto_disclaimer;
+    const disclaimerText = ownersys?.values.texto_disclaimer ?? '';
     const companyName = ownersys?.values.denominacion || '';
 
-    if (!disclaimerText) {
+    // Guard alineado a la definición común de "sin texto" (nulo, vacío o solo
+    // espacios/tabs/saltos): sin texto no existe el pendiente de términos.
+    if (!hasDisclaimerText(disclaimerText)) {
       return { sent: 0, failed: 0, total: 0 };
     }
 

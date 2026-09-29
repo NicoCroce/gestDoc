@@ -79,6 +79,9 @@ const buildMocks = () => ({
   statisticalSummary: {
     execute: vi.fn().mockResolvedValue({ section: summarySection }),
   },
+  hasDisclaimerText: {
+    execute: vi.fn().mockResolvedValue(true),
+  },
 });
 
 describe('GenerateDailyReport (US8 — orquestador de las 7 secciones)', () => {
@@ -95,6 +98,7 @@ describe('GenerateDailyReport (US8 — orquestador de las 7 secciones)', () => {
       mocks.upcomingVacations as never,
       mocks.expiringLicenses as never,
       mocks.statisticalSummary as never,
+      mocks.hasDisclaimerText as never,
     );
 
     const result = await useCase.execute({
@@ -145,6 +149,7 @@ describe('GenerateDailyReport (US8 — orquestador de las 7 secciones)', () => {
       mocks.upcomingVacations as never,
       mocks.expiringLicenses as never,
       mocks.statisticalSummary as never,
+      mocks.hasDisclaimerText as never,
     );
 
     await useCase.execute({
@@ -172,6 +177,7 @@ describe('GenerateDailyReport (US8 — orquestador de las 7 secciones)', () => {
       mocks.upcomingVacations as never,
       mocks.expiringLicenses as never,
       mocks.statisticalSummary as never,
+      mocks.hasDisclaimerText as never,
     );
 
     const result = await useCase.execute({
@@ -202,6 +208,7 @@ describe('GenerateDailyReport (US8 — orquestador de las 7 secciones)', () => {
       mocks.upcomingVacations as never,
       mocks.expiringLicenses as never,
       mocks.statisticalSummary as never,
+      mocks.hasDisclaimerText as never,
     );
 
     // El fallback `input?.companyName ?? ''` es defensivo en runtime; el tipo
@@ -210,5 +217,66 @@ describe('GenerateDailyReport (US8 — orquestador de las 7 secciones)', () => {
     const result = await useCase.execute({ requestContext } as never);
 
     expect(result.report.values.companyName).toBe('');
+  });
+
+  // ── Bandera por empresa propagada al reporte (FR-005) ────────────────────
+  it('propagates hasDisclaimerText=false when the company has no terms text', async () => {
+    const mocks = buildMocks();
+    mocks.hasDisclaimerText.execute.mockResolvedValue(false);
+    // El gate interno devuelve [] cuando no hay texto: se representa acá.
+    mocks.pendingDisclaimers.execute.mockResolvedValue([]);
+    mocks.statisticalSummary.execute.mockResolvedValue({
+      section: { ...summarySection, pendingDisclaimerAcceptances: 0 },
+    });
+
+    const useCase = new GenerateDailyReport(
+      mocks.employeesOnLeave as never,
+      mocks.pendingLicenses as never,
+      mocks.unsignedDocuments as never,
+      mocks.pendingDisclaimers as never,
+      mocks.upcomingVacations as never,
+      mocks.expiringLicenses as never,
+      mocks.statisticalSummary as never,
+      mocks.hasDisclaimerText as never,
+    );
+
+    const result = await useCase.execute({
+      input: { companyName: 'Acme S.A.' },
+      requestContext,
+    });
+
+    expect(result.report.values.hasDisclaimerText).toBe(false);
+    expect(result.report.values.sections.pendingDisclaimerAcceptances).toEqual({
+      items: [],
+      totalCount: 0,
+    });
+    // El resto del reporte no se altera (FR-010).
+    expect(result.report.values.sections.unsignedDocuments.totalCount).toBe(1);
+  });
+
+  it('propagates hasDisclaimerText=true when the company has terms text (SC-004)', async () => {
+    const mocks = buildMocks();
+
+    const useCase = new GenerateDailyReport(
+      mocks.employeesOnLeave as never,
+      mocks.pendingLicenses as never,
+      mocks.unsignedDocuments as never,
+      mocks.pendingDisclaimers as never,
+      mocks.upcomingVacations as never,
+      mocks.expiringLicenses as never,
+      mocks.statisticalSummary as never,
+      mocks.hasDisclaimerText as never,
+    );
+
+    const result = await useCase.execute({
+      input: { companyName: 'Acme S.A.' },
+      requestContext,
+    });
+
+    expect(result.report.values.hasDisclaimerText).toBe(true);
+    expect(result.report.values.sections.pendingDisclaimerAcceptances).toEqual({
+      items: [pendingDisclaimerRecord],
+      totalCount: 1,
+    });
   });
 });

@@ -163,6 +163,35 @@
           "attempts": 1
         }
       ]
+    },
+    {
+      "task_id": "TASK-008-exclude-terms-pending-no-text-20260929-1",
+      "status": "COMPLETED",
+      "created_at": "2026-09-29T00:33:39Z",
+      "title": "Excluir términos pendientes sin texto",
+      "closed_at": "2026-09-29T02:55:26Z",
+      "agents_chain": [
+        {
+          "agent": "Front_Agent",
+          "status": "IMPLEMENTED",
+          "attempts": 2
+        },
+        {
+          "agent": "Tester_Agent",
+          "status": "PASS",
+          "attempts": 1
+        },
+        {
+          "agent": "QA_Agent",
+          "status": "FAIL",
+          "attempts": 1
+        },
+        {
+          "agent": "Reviewer_Agent",
+          "status": "APPROVED",
+          "attempts": 1
+        }
+      ]
     }
   ]
 }

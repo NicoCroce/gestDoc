@@ -61,6 +61,11 @@ export interface INewDocumentNotificationTemplate {
 export interface IDailyReport {
   companyName: string;
   date: string;
+  /**
+   * Bandera a nivel empresa: cuando es `false` el template omite por completo
+   * la fila del resumen y la sección detallada de términos.
+   */
+  hasDisclaimerText: boolean;
   sections: {
     employeesOnLeaveToday: {
       items: Array<{

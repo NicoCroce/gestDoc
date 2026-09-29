@@ -3,9 +3,15 @@ import { useGetStatisticsEmpleados } from '../Hooks/useGetStatisticsEmpleados';
 import { cn } from '@app/Application/lib/utils';
 import { EmpleadosStatCard } from './EmpleadosStatCard';
 
-export const StatisticsEmpleados = () => {
+interface StatisticsEmpleadosProps {
+  hasDisclaimerText: boolean;
+}
+
+export const StatisticsEmpleados = ({
+  hasDisclaimerText,
+}: StatisticsEmpleadosProps) => {
   const { total, dataChartRenovacionClave, dataChartEstadoFirma } =
-    useGetStatisticsEmpleados();
+    useGetStatisticsEmpleados(hasDisclaimerText);
 
   const necesitaRenovar = Number(
     dataChartRenovacionClave.find((d) => d.segment === 'Debe renovar')?.data ??
@@ -23,7 +29,12 @@ export const StatisticsEmpleados = () => {
   );
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+    <div
+      className={cn(
+        'grid grid-cols-1 gap-4',
+        hasDisclaimerText ? 'md:grid-cols-3' : 'md:grid-cols-2',
+      )}
+    >
       <EmpleadosStatCard label="Empleados" value={total} />
 
       <EmpleadosStatCard
@@ -49,36 +60,38 @@ export const StatisticsEmpleados = () => {
         </Container>
       </EmpleadosStatCard>
 
-      <EmpleadosStatCard
-        label="Aceptación de términos"
-        value={`${firmados} firmados`}
-        className={cn(
-          corruptos > 0
-            ? 'border-l-4 border-l-destructive'
-            : pendientes > 0
-              ? 'border-l-4 border-l-amber-500'
-              : 'border-l-4 border-l-green-500',
-        )}
-      >
-        <Container row align="center" className="gap-3 text-xs flex-wrap">
-          <span className="flex items-center gap-1.5">
-            <span className="size-2 rounded-full bg-green-500" />
-            <span className="text-muted-foreground">{firmados} firmados</span>
-          </span>
-          <span className="flex items-center gap-1.5">
-            <span className="size-2 rounded-full bg-amber-500" />
-            <span className="text-muted-foreground">{pendientes} pend.</span>
-          </span>
-          {corruptos > 0 && (
-            <span className="flex items-center gap-1.5">
-              <span className="size-2 rounded-full bg-destructive" />
-              <span className="text-muted-foreground">
-                {corruptos} corruptos
-              </span>
-            </span>
+      {hasDisclaimerText && (
+        <EmpleadosStatCard
+          label="Aceptación de términos"
+          value={`${firmados} firmados`}
+          className={cn(
+            corruptos > 0
+              ? 'border-l-4 border-l-destructive'
+              : pendientes > 0
+                ? 'border-l-4 border-l-amber-500'
+                : 'border-l-4 border-l-green-500',
           )}
-        </Container>
-      </EmpleadosStatCard>
+        >
+          <Container row align="center" className="gap-3 text-xs flex-wrap">
+            <span className="flex items-center gap-1.5">
+              <span className="size-2 rounded-full bg-green-500" />
+              <span className="text-muted-foreground">{firmados} firmados</span>
+            </span>
+            <span className="flex items-center gap-1.5">
+              <span className="size-2 rounded-full bg-amber-500" />
+              <span className="text-muted-foreground">{pendientes} pend.</span>
+            </span>
+            {corruptos > 0 && (
+              <span className="flex items-center gap-1.5">
+                <span className="size-2 rounded-full bg-destructive" />
+                <span className="text-muted-foreground">
+                  {corruptos} corruptos
+                </span>
+              </span>
+            )}
+          </Container>
+        </EmpleadosStatCard>
+      )}
     </div>
   );
 };

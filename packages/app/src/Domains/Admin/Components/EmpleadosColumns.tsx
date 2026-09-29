@@ -18,6 +18,7 @@ interface EmployeeColumnsOptions {
   selectedIds: Set<number>;
   onToggleSelection: (id: number) => void;
   onToggleAll: () => void;
+  hasDisclaimerText: boolean;
 }
 
 export const getRenovarClaveVariant = (needsRenewal: boolean) =>
@@ -32,8 +33,13 @@ export const getEstadoFirmaVariant = (estado: string) => {
 export const employeeColumns = (
   options: EmployeeColumnsOptions,
 ): ColumnDef<IEmployeeRecord>[] => {
-  const { selectionMode, selectedIds, onToggleSelection, onToggleAll } =
-    options;
+  const {
+    selectionMode,
+    selectedIds,
+    onToggleSelection,
+    onToggleAll,
+    hasDisclaimerText,
+  } = options;
 
   const columns: ColumnDef<IEmployeeRecord>[] = [];
 
@@ -95,7 +101,10 @@ export const employeeColumns = (
         );
       },
     },
-    {
+  );
+
+  if (hasDisclaimerText) {
+    columns.push({
       accessorKey: 'estado_firma',
       header: 'Términos firmados',
       cell: ({ row }) => {
@@ -111,8 +120,8 @@ export const employeeColumns = (
           </Badge>
         );
       },
-    },
-  );
+    });
+  }
 
   return columns;
 };

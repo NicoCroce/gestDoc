@@ -27,6 +27,7 @@ export class GenerateDailyReportStub implements IUseCase<
       ownerId: requestContext.values.ownerId,
       companyName: input?.companyName ?? '',
       date: todayISO(),
+      hasDisclaimerText: true,
       sections: {
         employeesOnLeaveToday: emptySection(),
         pendingLicenses: emptySection(),

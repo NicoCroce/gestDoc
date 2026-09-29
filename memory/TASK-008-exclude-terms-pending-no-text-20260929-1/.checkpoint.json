@@ -1,0 +1,11 @@
+{
+  "task_id": "TASK-008-exclude-terms-pending-no-text-20260929-1",
+  "last_completed_step": "pr",
+  "completed_steps": ["back", "front", "pr", "reviewer", "tester"],
+  "timestamp": "2026-09-29T02:56:36Z",
+  "scope": "full-stack",
+  "branch": "008-exclude-terms-pending-no-text",
+  "feature": "disclaimer-requires-text",
+  "context_source": "specs/008-exclude-terms-pending-no-text/spec.md + specs/008-exclude-terms-pending-no-text/tasks.md",
+  "pr_url": "https://github.com/NicoCroce/gestDoc/pull/51"
+}

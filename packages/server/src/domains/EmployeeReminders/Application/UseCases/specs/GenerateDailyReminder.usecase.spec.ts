@@ -55,6 +55,9 @@ const buildMocks = () => ({
   getPendingDocumentsByEmployees: {
     execute: vi.fn().mockResolvedValue(pendingDocuments),
   },
+  hasDisclaimerText: {
+    execute: vi.fn().mockResolvedValue(true),
+  },
 });
 
 describe('GenerateDailyReminder (US1–US5 — ensambla el recordatorio diario)', () => {
@@ -65,6 +68,7 @@ describe('GenerateDailyReminder (US1–US5 — ensambla el recordatorio diario)'
     const useCase = new GenerateDailyReminder(
       mocks.getEmployeesByCompany as never,
       mocks.getPendingDocumentsByEmployees as never,
+      mocks.hasDisclaimerText as never,
     );
 
     const result = await useCase.execute({
@@ -100,6 +104,7 @@ describe('GenerateDailyReminder (US1–US5 — ensambla el recordatorio diario)'
     const useCase = new GenerateDailyReminder(
       mocks.getEmployeesByCompany as never,
       mocks.getPendingDocumentsByEmployees as never,
+      mocks.hasDisclaimerText as never,
     );
 
     await useCase.execute({
@@ -140,6 +145,7 @@ describe('GenerateDailyReminder (US1–US5 — ensambla el recordatorio diario)'
     const useCase = new GenerateDailyReminder(
       mocks.getEmployeesByCompany as never,
       mocks.getPendingDocumentsByEmployees as never,
+      mocks.hasDisclaimerText as never,
     );
 
     const result = await useCase.execute({
@@ -164,6 +170,7 @@ describe('GenerateDailyReminder (US1–US5 — ensambla el recordatorio diario)'
     const useCase = new GenerateDailyReminder(
       mocks.getEmployeesByCompany as never,
       mocks.getPendingDocumentsByEmployees as never,
+      mocks.hasDisclaimerText as never,
     );
 
     const result = await useCase.execute({
@@ -215,6 +222,7 @@ describe('GenerateDailyReminder (US1–US5 — ensambla el recordatorio diario)'
     const useCase = new GenerateDailyReminder(
       mocks.getEmployeesByCompany as never,
       mocks.getPendingDocumentsByEmployees as never,
+      mocks.hasDisclaimerText as never,
     );
 
     const result = await useCase.execute({
@@ -264,6 +272,7 @@ describe('GenerateDailyReminder (US1–US5 — ensambla el recordatorio diario)'
     const useCase = new GenerateDailyReminder(
       mocks.getEmployeesByCompany as never,
       mocks.getPendingDocumentsByEmployees as never,
+      mocks.hasDisclaimerText as never,
     );
 
     const result = await useCase.execute({
@@ -279,5 +288,130 @@ describe('GenerateDailyReminder (US1–US5 — ensambla el recordatorio diario)'
     expect(mocks.getPendingDocumentsByEmployees.execute).toHaveBeenCalledWith(
       expect.objectContaining({ input: { employeeIds: [5] } }),
     );
+  });
+
+  // ── Regla por empresa: sin texto de términos no existe el pendiente ───────
+  describe('gate por empresa del pendiente de términos (US1)', () => {
+    it('computes hasTerms once per company and never marks the terms pending without text', async () => {
+      const mocks = buildMocks();
+      mocks.getEmployeesByCompany.execute.mockResolvedValue({
+        data: [
+          {
+            ...employee,
+            id: 7,
+            email: 'ana@test.com',
+            estado_firma: 'Pendiente' as const,
+          },
+          {
+            ...employee,
+            id: 8,
+            email: 'leo@test.com',
+            estado_firma: 'Pendiente' as const,
+          },
+        ],
+        meta: {},
+      });
+      mocks.getPendingDocumentsByEmployees.execute.mockResolvedValue([]);
+      mocks.hasDisclaimerText.execute.mockResolvedValue(false);
+
+      const useCase = new GenerateDailyReminder(
+        mocks.getEmployeesByCompany as never,
+        mocks.getPendingDocumentsByEmployees as never,
+        mocks.hasDisclaimerText as never,
+      );
+
+      const result = await useCase.execute({
+        input: { companyName: 'Acme S.A.' },
+        requestContext,
+      });
+
+      // Una sola evaluación por empresa, no una por empleado (FR-008).
+      expect(mocks.hasDisclaimerText.execute).toHaveBeenCalledTimes(1);
+      expect(result.reminders).toHaveLength(2);
+      // Aunque `estado_firma === 'Pendiente'`, el pendiente de términos no existe.
+      expect(
+        result.reminders.every(
+          (r) => r.pending.pendingDisclaimerAcceptance === false,
+        ),
+      ).toBe(true);
+      // Único pendiente era términos → no se envía correo (US1 esc. 2 / FR-004).
+      expect(result.reminders.every((r) => r.shouldSend === false)).toBe(true);
+    });
+
+    it('keeps sending only the other pendings when the company has no terms text', async () => {
+      const mocks = buildMocks();
+      mocks.getEmployeesByCompany.execute.mockResolvedValue({
+        data: [
+          {
+            ...employee,
+            id: 7,
+            email: 'ana@test.com',
+            estado_firma: 'Pendiente' as const,
+          },
+        ],
+        meta: {},
+      });
+      mocks.getPendingDocumentsByEmployees.execute.mockResolvedValue([
+        {
+          employeeId: 7,
+          documentId: 10,
+          documentTitle: 'Recibo de sueldo',
+          isUnsigned: true,
+          isUnviewed: false,
+        },
+      ]);
+      mocks.hasDisclaimerText.execute.mockResolvedValue(false);
+
+      const useCase = new GenerateDailyReminder(
+        mocks.getEmployeesByCompany as never,
+        mocks.getPendingDocumentsByEmployees as never,
+        mocks.hasDisclaimerText as never,
+      );
+
+      const result = await useCase.execute({
+        input: { companyName: 'Acme S.A.' },
+        requestContext,
+      });
+
+      const reminder = result.reminders[0];
+      expect(reminder.pending.pendingDisclaimerAcceptance).toBe(false);
+      expect(reminder.pending.unsignedDocuments).toEqual([
+        { documentId: 10, documentTitle: 'Recibo de sueldo' },
+      ]);
+      // Otros pendientes siguen vigentes → el correo se envía igual (US1 esc. 1).
+      expect(reminder.shouldSend).toBe(true);
+    });
+
+    it('keeps the current behavior when the company has terms text (SC-004)', async () => {
+      const mocks = buildMocks();
+      mocks.getEmployeesByCompany.execute.mockResolvedValue({
+        data: [
+          {
+            ...employee,
+            id: 7,
+            email: 'ana@test.com',
+            estado_firma: 'Pendiente' as const,
+          },
+        ],
+        meta: {},
+      });
+      mocks.getPendingDocumentsByEmployees.execute.mockResolvedValue([]);
+
+      const useCase = new GenerateDailyReminder(
+        mocks.getEmployeesByCompany as never,
+        mocks.getPendingDocumentsByEmployees as never,
+        mocks.hasDisclaimerText as never,
+      );
+
+      const result = await useCase.execute({
+        input: { companyName: 'Acme S.A.' },
+        requestContext,
+      });
+
+      expect(result.reminders[0].pending.pendingDisclaimerAcceptance).toBe(
+        true,
+      );
+      expect(result.reminders[0].shouldSend).toBe(true);
+    });
   });
 });

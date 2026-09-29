@@ -79,10 +79,10 @@ Formato de ID: `provider/modelo` (ver `opencode models`). Omitir cualquier entra
 
 ## Spec Kit — Feature Plan
 
-Active feature: **exclude-deleted-users-emails**
+Active feature: **exclude-terms-pending-no-text**
 
-- Spec: `specs/007-exclude-deleted-users-emails/spec.md`
-- Plan: `specs/007-exclude-deleted-users-emails/plan.md`
-- Branch: `007-exclude-deleted-users-emails`
+- Spec: `specs/008-exclude-terms-pending-no-text/spec.md`
+- Plan: `specs/008-exclude-terms-pending-no-text/plan.md`
+- Branch: `008-exclude-terms-pending-no-text`
 
 <!-- SPECKIT END -->

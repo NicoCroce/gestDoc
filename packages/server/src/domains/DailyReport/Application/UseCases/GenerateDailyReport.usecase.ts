@@ -6,7 +6,10 @@ import {
   GetUpcomingVacations,
 } from '@server/domains/Certificates/Application';
 import { GetUnsignedDocuments } from '@server/domains/Documents/Application';
-import { GetPendingDisclaimerAcceptances } from '@server/domains/Disclaimer/Application';
+import {
+  GetPendingDisclaimerAcceptances,
+  HasDisclaimerText,
+} from '@server/domains/Disclaimer/Application';
 import { DailyReport } from '../../Domain/DailyReport.entity';
 import {
   IGenerateDailyReport,
@@ -35,6 +38,7 @@ export class GenerateDailyReport implements IUseCase<
     private readonly _getUpcomingVacations: GetUpcomingVacations,
     private readonly _getExpiringLicenses: GetExpiringLicenses,
     private readonly _getStatisticalSummary: GetStatisticalSummary,
+    private readonly _hasDisclaimerText: HasDisclaimerText,
   ) {}
 
   async execute({
@@ -49,6 +53,7 @@ export class GenerateDailyReport implements IUseCase<
       upcomingVacations,
       expiringLicenses,
       statisticalSummary,
+      hasDisclaimerText,
     ] = await Promise.all([
       executeUseCase({
         useCase: this._getEmployeesOnLeaveToday,
@@ -63,12 +68,14 @@ export class GenerateDailyReport implements IUseCase<
       executeUseCase({ useCase: this._getUpcomingVacations, requestContext }),
       executeUseCase({ useCase: this._getExpiringLicenses, requestContext }),
       executeUseCase({ useCase: this._getStatisticalSummary, requestContext }),
+      executeUseCase({ useCase: this._hasDisclaimerText, requestContext }),
     ]);
 
     const report = DailyReport.create({
       ownerId: requestContext.values.ownerId,
       companyName: input?.companyName ?? '',
       date: todayISO(),
+      hasDisclaimerText,
       sections: {
         employeesOnLeaveToday: {
           items: employeesOnLeave,

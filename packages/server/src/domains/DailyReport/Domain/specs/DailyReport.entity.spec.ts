@@ -91,6 +91,7 @@ describe('DailyReport entity', () => {
     ownerId: 7,
     companyName: 'Acme S.A.',
     date: '2026-08-06',
+    hasDisclaimerText: true,
     sections: buildSections(),
   };
 
@@ -151,6 +152,18 @@ describe('DailyReport entity', () => {
     it('returns the same structure as values', () => {
       const report = DailyReport.create(reportProps);
       expect(report.toJSON()).toEqual(report.values);
+    });
+  });
+
+  describe('hasDisclaimerText flag', () => {
+    it('keeps hasDisclaimerText=false in values and toJSON', () => {
+      const report = DailyReport.create({
+        ...reportProps,
+        hasDisclaimerText: false,
+      });
+
+      expect(report.values.hasDisclaimerText).toBe(false);
+      expect(report.toJSON().hasDisclaimerText).toBe(false);
     });
   });
 });

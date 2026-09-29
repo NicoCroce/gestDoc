@@ -1,4 +1,8 @@
-import { executeUseCase, IPaginationResponse } from '@server/Application';
+import {
+  executeUseCase,
+  IPaginationResponse,
+  IRequestContext,
+} from '@server/Application';
 import { DisclaimerAcceptance, IEmployeeRecord } from '../Domain';
 import {
   IGetDisclaimerText,
@@ -11,6 +15,7 @@ import {
 import {
   GetDisclaimerText,
   GetSignatureStatus,
+  HasDisclaimerText,
   IGetSignatureStatusResponse,
   SignDisclaimer,
 } from './UseCases';
@@ -24,7 +29,17 @@ export class DisclaimerService {
     private readonly _signDisclaimer: SignDisclaimer,
     private readonly _getEmployeesByCompany: GetEmployeesByCompany,
     private readonly _sendReminders: SendReminders,
+    private readonly _hasDisclaimerText: HasDisclaimerText,
   ) {}
+
+  async hasDisclaimerText({
+    requestContext,
+  }: IRequestContext): Promise<boolean> {
+    return executeUseCase({
+      useCase: this._hasDisclaimerText,
+      requestContext,
+    });
+  }
 
   async getDisclaimerText({
     input,

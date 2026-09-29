@@ -118,5 +118,11 @@ export interface IDailyReport {
   ownerId: number;
   companyName: string;
   date: string; // ISO 8601 (YYYY-MM-DD)
+  /**
+   * Bandera a nivel empresa: `true` si la empresa tiene texto de términos con
+   * contenido real. Cuando es `false`, el reporte omite toda referencia a
+   * términos (resumen y sección).
+   */
+  hasDisclaimerText: boolean;
   sections: IDailyReportSections;
 }

@@ -8,6 +8,7 @@ interface EmployeeCardsProps {
   selectionMode: boolean;
   selectedIds: Set<number>;
   onToggleSelection: (id: number) => void;
+  hasDisclaimerText: boolean;
 }
 
 export const EmployeeCards = ({
@@ -15,6 +16,7 @@ export const EmployeeCards = ({
   selectionMode,
   selectedIds,
   onToggleSelection,
+  hasDisclaimerText,
 }: EmployeeCardsProps) => (
   <Container space="large" className="md:hidden">
     {employees.map((employee) => {
@@ -67,26 +69,28 @@ export const EmployeeCards = ({
                   )}
                 </dd>
               </Container>
-              <Container
-                row
-                align="baseline"
-                justify="between"
-                space="small"
-                className="text-sm"
-              >
-                <dt className="text-muted-foreground">Términos firmados</dt>
-                <dd className="shrink-0 font-medium text-foreground">
-                  {employee.estado_firma !== 'Firmado' ? (
-                    <Text>
-                      <NotIcon /> {employee.estado_firma}
-                    </Text>
-                  ) : (
-                    <Text>
-                      <OkIcon /> {employee.estado_firma}
-                    </Text>
-                  )}
-                </dd>
-              </Container>
+              {hasDisclaimerText && (
+                <Container
+                  row
+                  align="baseline"
+                  justify="between"
+                  space="small"
+                  className="text-sm"
+                >
+                  <dt className="text-muted-foreground">Términos firmados</dt>
+                  <dd className="shrink-0 font-medium text-foreground">
+                    {employee.estado_firma !== 'Firmado' ? (
+                      <Text>
+                        <NotIcon /> {employee.estado_firma}
+                      </Text>
+                    ) : (
+                      <Text>
+                        <OkIcon /> {employee.estado_firma}
+                      </Text>
+                    )}
+                  </dd>
+                </Container>
+              )}
             </dl>
           </Container>
         </Container>

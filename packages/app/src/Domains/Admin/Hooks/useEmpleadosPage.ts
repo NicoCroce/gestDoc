@@ -6,6 +6,7 @@ import {
   useGetEmployees,
   useSendReminders,
 } from '@app/Domains/Admin/Hooks/useEmployeeActions';
+import { useHasDisclaimerText } from './useHasDisclaimerText';
 
 export const useEmpleadosPage = () => {
   const [search, setSearch] = useState('');
@@ -22,6 +23,9 @@ export const useEmpleadosPage = () => {
     isError,
     error,
   } = useGetEmployees()({ search, page, limit }, { refetchOnMount: 'always' });
+
+  const { hasDisclaimerText, isLoading: isLoadingHasDisclaimerText } =
+    useHasDisclaimerText();
 
   const sendReminders = useSendReminders();
 
@@ -65,11 +69,15 @@ export const useEmpleadosPage = () => {
 
   const handleActivateSelection = useCallback(() => {
     setSelectionMode(true);
-    const pendingIds = new Set(
-      employees.filter((e) => e.estado_firma === 'Pendiente').map((e) => e.id),
-    );
+    const pendingIds = hasDisclaimerText
+      ? new Set(
+          employees
+            .filter((e) => e.estado_firma === 'Pendiente')
+            .map((e) => e.id),
+        )
+      : new Set<number>();
     setSelectedIds(pendingIds);
-  }, [employees]);
+  }, [employees, hasDisclaimerText]);
 
   const handleCancelSelection = useCallback(() => {
     setSelectionMode(false);
@@ -96,8 +104,15 @@ export const useEmpleadosPage = () => {
         selectedIds,
         onToggleSelection: handleToggleSelection,
         onToggleAll: handleToggleAll,
+        hasDisclaimerText,
       }),
-    [selectionMode, selectedIds, handleToggleSelection, handleToggleAll],
+    [
+      selectionMode,
+      selectedIds,
+      handleToggleSelection,
+      handleToggleAll,
+      hasDisclaimerText,
+    ],
   );
 
   return {
@@ -113,7 +128,8 @@ export const useEmpleadosPage = () => {
     employees,
     paginationMeta,
     columns,
-    isLoading,
+    hasDisclaimerText,
+    isLoading: isLoading || isLoadingHasDisclaimerText,
     isError,
     error,
   };

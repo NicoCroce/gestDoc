@@ -6,7 +6,12 @@ import type { IDailyReport } from './types';
  * las 7 secciones del reporte. Las secciones con datos muestran sus items;
  * las secciones vacías muestran "No existen coincidencias en este período".
  */
-export const dailyReport = ({ companyName, date, sections }: IDailyReport) => {
+export const dailyReport = ({
+  companyName,
+  date,
+  hasDisclaimerText,
+  sections,
+}: IDailyReport) => {
   const stats = sections.statisticalSummary;
 
   return {
@@ -31,10 +36,14 @@ export const dailyReport = ({ companyName, date, sections }: IDailyReport) => {
                   <td style="padding: 6px 12px 6px 0; font-weight: bold; color: #374151;">Documentos sin firmar</td>
                   <td style="padding: 6px 0; color: #111827;">${stats.unsignedDocuments}</td>
                 </tr>
-                <tr>
+                ${
+                  hasDisclaimerText
+                    ? `<tr>
                   <td style="padding: 6px 12px 6px 0; font-weight: bold; color: #374151;">Términos sin aceptar</td>
                   <td style="padding: 6px 0; color: #111827;">${stats.pendingDisclaimerAcceptances}</td>
-                </tr>
+                </tr>`
+                    : ''
+                }
                 <tr>
                   <td style="padding: 6px 12px 6px 0; font-weight: bold; color: #374151;">Empleados de licencia hoy</td>
                   <td style="padding: 6px 0; color: #111827;">${sections.employeesOnLeaveToday.totalCount}</td>
@@ -87,12 +96,16 @@ export const dailyReport = ({ companyName, date, sections }: IDailyReport) => {
                     `${item.documentTitle} — ${item.employeeName} (${item.viewStatus})`,
                 ),
               )}
-              ${renderSection(
-                `Términos y condiciones sin aceptar (${sections.pendingDisclaimerAcceptances.totalCount})`,
-                sections.pendingDisclaimerAcceptances.items.map(
-                  (item) => `${item.employeeName}`,
-                ),
-              )}
+              ${
+                hasDisclaimerText
+                  ? renderSection(
+                      `Términos y condiciones sin aceptar (${sections.pendingDisclaimerAcceptances.totalCount})`,
+                      sections.pendingDisclaimerAcceptances.items.map(
+                        (item) => `${item.employeeName}`,
+                      ),
+                    )
+                  : ''
+              }
               ${emailFooter}
               `,
   };

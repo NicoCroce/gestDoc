@@ -30,6 +30,7 @@ export const EmpleadosPage = () => {
     employees,
     paginationMeta,
     columns,
+    hasDisclaimerText,
     isLoading,
     isError,
     error,
@@ -38,7 +39,7 @@ export const EmpleadosPage = () => {
 
   return (
     <Page title="Empleados">
-      <StatisticsEmpleados />
+      <StatisticsEmpleados hasDisclaimerText={hasDisclaimerText} />
 
       <Container row className="flex-col sm:flex-row" space="small">
         <div className="relative flex-1">
@@ -99,6 +100,7 @@ export const EmpleadosPage = () => {
               selectionMode={selectionMode}
               selectedIds={selectedIds}
               onToggleSelection={handleToggleSelection}
+              hasDisclaimerText={hasDisclaimerText}
             />
             <DataTablePagination
               totalPages={paginationMeta.totalPages}

@@ -32,6 +32,7 @@ export const buildDailyReport = (
     ownerId: 42,
     companyName: 'Acme S.A.',
     date: '2026-08-06',
+    hasDisclaimerText: true,
     sections: emptySections(),
     ...overrides,
   });

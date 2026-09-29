@@ -9,7 +9,7 @@ const firmColors: Record<string, string> = {
   Corrupto: 'hsl(0, 84%, 60%)', // rojo
 };
 
-export const useGetStatisticsEmpleados = () => {
+export const useGetStatisticsEmpleados = (hasDisclaimerText: boolean) => {
   const { data: paginated, isLoading } = useGetEmployees()(
     { search: '' },
     { refetchOnMount: 'always' },
@@ -37,6 +37,8 @@ export const useGetStatisticsEmpleados = () => {
   }, [employees, total]);
 
   const dataChartEstadoFirma: TDataPieChart[] = useMemo(() => {
+    if (!hasDisclaimerText) return [];
+
     const counts = new Map<IEmployeeRecord['estado_firma'], number>();
 
     for (const e of employees) {
@@ -48,7 +50,7 @@ export const useGetStatisticsEmpleados = () => {
       data: count,
       fill: firmColors[estado] || 'hsl(0, 0%, 50%)',
     }));
-  }, [employees]);
+  }, [employees, hasDisclaimerText]);
 
   const dataChartTotal: TDataPieChart[] = useMemo(
     () => [

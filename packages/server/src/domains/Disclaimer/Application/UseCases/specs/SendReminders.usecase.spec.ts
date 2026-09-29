@@ -243,4 +243,79 @@ describe('SendReminders', () => {
     expect(mockEmailSender.sendDisclaimerReminders).not.toHaveBeenCalled();
     expect(result).toEqual({ sent: 0, failed: 0, total: 0 });
   });
+
+  // ── Guard alineado a la definición común de "sin texto" (FR-001/FR-007) ──
+  // Un texto nulo, vacío o compuesto solo por espacios/tabs/saltos bloquea el
+  // envío sin consultar repositorios ni enviar mails.
+  it.each([
+    ['undefined', undefined],
+    ['only spaces', '   '],
+    ['tabs and newlines only', '\t\n'],
+    ['mixed whitespace', ' \t \n \r '],
+  ])(
+    'sends nothing and skips all queries when texto_disclaimer is %s',
+    async (_label, disclaimerValue) => {
+      const mockRepo = { getPendingEmployeeIds: vi.fn() };
+      const mockGetEmailsByUsersId = { execute: vi.fn() };
+      const mockEmailSender = { sendDisclaimerReminders: vi.fn() };
+      const mockOwnersysRepo = {
+        getOwnersys: vi.fn().mockResolvedValue({
+          values: {
+            denominacion: 'Empresa Test',
+            texto_disclaimer: disclaimerValue,
+          },
+        }),
+      };
+
+      const useCase = new SendReminders(
+        mockRepo as never,
+        mockGetEmailsByUsersId as never,
+        mockEmailSender as never,
+        mockOwnersysRepo as never,
+      );
+
+      const result = await useCase.execute({ input: {}, requestContext });
+
+      expect(mockRepo.getPendingEmployeeIds).not.toHaveBeenCalled();
+      expect(mockGetEmailsByUsersId.execute).not.toHaveBeenCalled();
+      expect(mockEmailSender.sendDisclaimerReminders).not.toHaveBeenCalled();
+      expect(result).toEqual({ sent: 0, failed: 0, total: 0 });
+    },
+  );
+
+  it('sends the reminder with the raw text preserved when it has real content padded with whitespace', async () => {
+    const mockRepo = {
+      getPendingEmployeeIds: vi.fn().mockResolvedValue([1]),
+    };
+    const mockGetEmailsByUsersId = {
+      execute: vi.fn().mockResolvedValue(['juan@test.com']),
+    };
+    const mockEmailSender = {
+      sendDisclaimerReminders: vi.fn().mockResolvedValue(undefined),
+    };
+    const mockOwnersysRepo = {
+      getOwnersys: vi.fn().mockResolvedValue({
+        values: {
+          denominacion: 'Empresa Test',
+          texto_disclaimer: '  Términos reales  ',
+        },
+      }),
+    };
+
+    const useCase = new SendReminders(
+      mockRepo as never,
+      mockGetEmailsByUsersId as never,
+      mockEmailSender as never,
+      mockOwnersysRepo as never,
+    );
+
+    const result = await useCase.execute({ input: {}, requestContext });
+
+    expect(mockEmailSender.sendDisclaimerReminders).toHaveBeenCalledWith({
+      to: ['juan@test.com'],
+      disclaimerText: '  Términos reales  ',
+      companyName: 'Empresa Test',
+    });
+    expect(result).toEqual({ sent: 1, failed: 0, total: 1 });
+  });
 });

@@ -10,6 +10,7 @@ export class DailyReport {
     protected readonly _companyName: string,
     protected readonly _date: string,
     protected readonly _sections: IDailyReportSections,
+    protected readonly _hasDisclaimerText: boolean,
   ) {}
 
   static create({
@@ -17,8 +18,15 @@ export class DailyReport {
     companyName,
     date,
     sections,
+    hasDisclaimerText,
   }: IDailyReport): DailyReport {
-    return new DailyReport(ownerId, companyName, date, sections);
+    return new DailyReport(
+      ownerId,
+      companyName,
+      date,
+      sections,
+      hasDisclaimerText,
+    );
   }
 
   toJSON() {
@@ -30,6 +38,7 @@ export class DailyReport {
       ownerId: this._ownerId,
       companyName: this._companyName,
       date: this._date,
+      hasDisclaimerText: this._hasDisclaimerText,
       sections: this._sections,
     };
   }

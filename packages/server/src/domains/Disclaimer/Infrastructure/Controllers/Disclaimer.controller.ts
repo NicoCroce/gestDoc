@@ -1,10 +1,17 @@
 import { protectedProcedure } from '@server/Infrastructure';
 import { DisclaimerService } from '../../Application';
-import { executeService } from '@server/Application';
+import { executeService, executeServiceAlone } from '@server/Application';
 import z from 'zod';
 
 export class DisclaimerController {
   constructor(private disclaimerService: DisclaimerService) {}
+
+  hasText = () =>
+    protectedProcedure.query(
+      executeServiceAlone(
+        this.disclaimerService.hasDisclaimerText.bind(this.disclaimerService),
+      ),
+    );
 
   getText = () =>
     protectedProcedure

@@ -1,5 +1,8 @@
 import { executeUseCase, IUseCase } from '@server/Application';
-import { GetEmployeesByCompany } from '@server/domains/Disclaimer/Application';
+import {
+  GetEmployeesByCompany,
+  HasDisclaimerText,
+} from '@server/domains/Disclaimer/Application';
 import { GetPendingDocumentsByEmployees } from '@server/domains/Documents/Application';
 import { buildEmployeeName, formatDate } from '@server/Infrastructure';
 import {
@@ -32,6 +35,7 @@ export class GenerateDailyReminder implements IUseCase<
   constructor(
     private readonly _getEmployeesByCompany: GetEmployeesByCompany,
     private readonly _getPendingDocumentsByEmployees: GetPendingDocumentsByEmployees,
+    private readonly _hasDisclaimerText: HasDisclaimerText,
   ) {}
 
   async execute({
@@ -39,6 +43,14 @@ export class GenerateDailyReminder implements IUseCase<
     requestContext,
   }: IGenerateDailyReminder): Promise<IGenerateDailyReminderOutput> {
     const ownerId = requestContext.values.ownerId;
+
+    // Regla por empresa (FR-001/FR-002): sin texto de términos no existe el
+    // pendiente de aceptación. Se computa UNA vez por empresa y se reutiliza
+    // para todos los empleados de la corrida.
+    const hasTerms = await executeUseCase({
+      useCase: this._hasDisclaimerText,
+      requestContext,
+    });
 
     const { data: employees } = await executeUseCase({
       useCase: this._getEmployeesByCompany,
@@ -93,7 +105,8 @@ export class GenerateDailyReminder implements IUseCase<
         pending: {
           unsignedDocuments,
           unviewedDocuments,
-          pendingDisclaimerAcceptance: employee.estado_firma !== 'Firmado',
+          pendingDisclaimerAcceptance:
+            hasTerms && employee.estado_firma !== 'Firmado',
           renewPassword: employee.renovar_clave,
         },
       });

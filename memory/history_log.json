@@ -169,7 +169,7 @@
       "status": "COMPLETED",
       "created_at": "2026-09-29T00:33:39Z",
       "title": "Excluir términos pendientes sin texto",
-      "closed_at": "2026-09-29T02:55:26Z",
+      "closed_at": "2026-09-29T02:56:36Z",
       "agents_chain": [
         {
           "agent": "Front_Agent",
@@ -191,7 +191,8 @@
           "status": "APPROVED",
           "attempts": 1
         }
-      ]
+      ],
+      "pr_url": "https://github.com/NicoCroce/gestDoc/pull/51"
     }
   ]
 }

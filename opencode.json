@@ -2,10 +2,20 @@
   "$schema": "https://opencode.ai/config.json",
   "subagent_depth": 2,
   "agent": {
-    "speckit-specify": { "steps": 25 },
-    "speckit-clarify": { "steps": 20 },
-    "speckit-plan": { "steps": 35 },
-    "speckit-tasks": { "steps": 25 },
-    "speckit-analyze": { "steps": 20 }
+    "speckit-specify": {
+      "steps": 25
+    },
+    "speckit-clarify": {
+      "steps": 20
+    },
+    "speckit-plan": {
+      "steps": 35
+    },
+    "speckit-tasks": {
+      "steps": 25
+    },
+    "speckit-analyze": {
+      "steps": 20
+    }
   }
 }

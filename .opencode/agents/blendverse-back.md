@@ -29,6 +29,10 @@ Implementás la parte servidor de la tarea. Área de trabajo: `packages/server/`
 
 Si falta información indispensable (atributos de la entidad, métodos del repositorio) y no está en el contexto, devolver la pregunta al orquestador en vez de inventar.
 
+## Límite de steps
+
+Si quedan ≤4 de los 40 steps y todavía no escribiste `02_dev_log.md`: escribirlo ahora con la skill `dev-logger` pero con status `IN_PROGRESS` (en vez de `IMPLEMENTED`), con los `affected_files` tocados hasta el momento y una sección `## Pendiente` que liste las tareas `T###` sin terminar. Luego detenerse. Nunca dejar la cadena sin `02_dev_log.md`.
+
 ## Límites
 
 - Sin tests (los genera `@blendverse-tester`), sin React/CSS, sin archivos fuera de `packages/server/`.

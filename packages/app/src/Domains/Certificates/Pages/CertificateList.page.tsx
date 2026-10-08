@@ -25,30 +25,49 @@ export const CertificateListPage = () => {
     setFiltersIsOpen((prevState) => !prevState);
   };
 
-  if (isError) {
-    return <EmptyScreenError message={error?.message} />;
-  }
+  const renderContent = () => {
+    if (isError) {
+      return <EmptyScreenError message={error?.message} />;
+    }
 
-  if (isLoading) {
-    return (
-      <Page
-        title="Licencias"
-        headerRight={<ActionsCertificateListPage onClick={handleFilters} />}
-      >
-        <CertificatesListSkeleton />
-      </Page>
-    );
-  }
+    if (isLoading) {
+      return <CertificatesListSkeleton />;
+    }
 
-  if (data && Object.keys(data).length === 0)
+    if (data && Object.keys(data).length === 0) {
+      return <CertificatesEmptyState onFilterClick={handleFilters} />;
+    }
+
     return (
-      <Page
-        title="Licencias"
-        headerRight={<ActionsCertificateListPage onClick={handleFilters} />}
-      >
-        <CertificatesEmptyState onFilterClick={handleFilters} />
-      </Page>
+      data &&
+      Object.entries(data).map(([year, certificates]) => {
+        const list = certificates as TCertificate[];
+        return (
+          <Container key={year} block className="mt-10 first:mt-0">
+            <Container
+              row
+              align="end"
+              justify="between"
+              space="medium"
+              className="pb-3 border-b"
+            >
+              <Container row align="baseline" space="small" className="gap-3">
+                <span className="text-3xl font-semibold tracking-tight tabular-nums text-foreground">
+                  {year}
+                </span>
+                <span className="text-sm text-muted-foreground">
+                  {list.length} {list.length === 1 ? 'licencia' : 'licencias'}
+                </span>
+              </Container>
+            </Container>
+            <Container block className="mt-6">
+              <CertificatesGrid certificatesList={list} year={Number(year)} />
+            </Container>
+          </Container>
+        );
+      })
     );
+  };
 
   return (
     <Page
@@ -56,42 +75,7 @@ export const CertificateListPage = () => {
       headerRight={<ActionsCertificateListPage onClick={handleFilters} />}
     >
       <>
-        {data &&
-          Object.entries(data).map(([year, certificates]) => {
-            const list = certificates as TCertificate[];
-            return (
-              <Container key={year} block className="mt-10 first:mt-0">
-                <Container
-                  row
-                  align="end"
-                  justify="between"
-                  space="medium"
-                  className="pb-3 border-b"
-                >
-                  <Container
-                    row
-                    align="baseline"
-                    space="small"
-                    className="gap-3"
-                  >
-                    <span className="text-3xl font-semibold tracking-tight tabular-nums text-foreground">
-                      {year}
-                    </span>
-                    <span className="text-sm text-muted-foreground">
-                      {list.length}{' '}
-                      {list.length === 1 ? 'licencia' : 'licencias'}
-                    </span>
-                  </Container>
-                </Container>
-                <Container block className="mt-6">
-                  <CertificatesGrid
-                    certificatesList={list}
-                    year={Number(year)}
-                  />
-                </Container>
-              </Container>
-            );
-          })}
+        {renderContent()}
         <FiltersSheet
           open={filtersIsOpen}
           closeSheet={handleFilters}

@@ -43,7 +43,13 @@ Rellenar `{task_id}`, `{context_source}`, `{feature_dir}`, `{scope}` en cada pro
 - `@blendverse-front` (si scope incluye app):
   > Implementar la parte frontend de `{context_source}` (tareas T### con paths en `packages/app/`). task_id: `{task_id}`. No generar tests. Si hay backend en esta tarea, leer primero `memory/{task_id}/02_dev_log.md` para ver qué expone. Actualizar `02_dev_log.md` (skill `dev-logger`).
 - `full-stack`: back → front, en serie (ambos escriben `02_dev_log.md`).
-- Tras cada coder: `checkpoint.sh set {task_id} back|front scope={scope} branch=<rama> feature=<feature_key> context_source={context_source}`.
+- Tras cada coder, verificar `grep -m1 "^status:" memory/{task_id}/02_dev_log.md`. Si es `IN_PROGRESS` (el coder agotó sus steps), re-invocar **una sola vez** al mismo coder:
+
+  > Continuar `{context_source}`, task_id `{task_id}`: completar solo las tareas de la sección `## Pendiente` de `memory/{task_id}/02_dev_log.md`, sin rehacer lo ya hecho. Cerrar con `dev-logger` en `IMPLEMENTED`.
+
+  Si vuelve en `IN_PROGRESS`, guardar el checkpoint en el paso anterior, informar `Cadena pausada: <coder> no completó las tareas pendientes; re-invocar @blendverse-implement en una sesión nueva` y detener. No avanzar a B con el dev log en `IN_PROGRESS`.
+
+- Con `status: IMPLEMENTED`: `checkpoint.sh set {task_id} back|front scope={scope} branch=<rama> feature=<feature_key> context_source={context_source}`.
 
 ### B. Tester ∥ Reviewer (mismo mensaje, en paralelo)
 
@@ -63,9 +69,11 @@ Leer `status` del frontmatter de `05_test_log.md` y `04_review_log.md` (`grep -m
 
 - Todo OK (tests `PASS`, QA `PASS`, review `APPROVED`) → `checkpoint.sh set {task_id} reviewer` → paso E.
 - Algo falló → **un solo retry** del/los coder(s) afectados con el feedback combinado:
+
   > Corregir según: QA → `{feedback}`; Review → sección Feedback de `04_review_log.md`; Tests → sección de fallos de `05_test_log.md`. Actualizar `02_dev_log.md` (attempts lo calcula el scaffold).
 
   Luego repetir B (solo los eslabones que fallaron o cuyo input cambió: el tester si cambió código con lógica; el reviewer si había rechazado) y C.
+
 - `BLOCKED` de QA, o `breakloop-check.sh check` con `blocked: true` en `02_dev_log.md`/`04_review_log.md`/`05_test_log.md` → `breakloop-check.sh block {task_id} <agente> "<motivo>"`, `resolve-task-id.sh close {task_id} BLOCKED`, `mem_save` `task/{task_id}/status` con `status: BLOCKED`, informar `⛔ Intervención humana requerida. Ver memory/BLOCKED.md.` y detener.
 
 ### E. Cierre y PR

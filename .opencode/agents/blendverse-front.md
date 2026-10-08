@@ -27,6 +27,10 @@ Implementás la parte frontend de la tarea. Área de trabajo: `packages/app/` ú
 4. Verificar lo tocado antes de cerrar: `cd packages/app && ../../.opencode/scripts/bash/run-timeout.sh 120 npx tsc --noEmit --incremental --tsBuildInfoFile node_modules/.cache/qa-check/tsc.tsbuildinfo` (exit 124 = timeout: informarlo en el dev log y seguir) y corregir los errores propios.
 5. Cerrar con la skill `dev-logger` → actualizar `memory/{task_id}/02_dev_log.md` (agregar tus `affected_files`, sin borrar los del backend).
 
+## Límite de steps
+
+Si quedan ≤4 de los 40 steps y todavía no actualizaste `02_dev_log.md`: actualizarlo ahora con la skill `dev-logger` pero con status `IN_PROGRESS` (en vez de `IMPLEMENTED`), agregando los `affected_files` tocados hasta el momento (sin borrar los del backend) y una sección `## Pendiente` que liste las tareas `T###` sin terminar. Luego detenerse. Nunca dejar la cadena sin `02_dev_log.md` actualizado.
+
 ## Límites
 
 - Sin tests, sin código de servidor, sin archivos fuera de `packages/app/`.

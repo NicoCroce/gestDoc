@@ -7,9 +7,9 @@ import {
   SheetDescription,
   SheetHeader,
   SheetTitle,
-} from '@macrosistemas/ui/ui/sheet';
+} from 'macro-design/ui/sheet';
 import { faBars } from '@fortawesome/free-solid-svg-icons';
-import { Button } from '@macrosistemas/ui/ui/button';
+import { Button } from 'macro-design/ui/button';
 import { useLocation } from 'react-router-dom';
 
 import './MobileMenu.css';

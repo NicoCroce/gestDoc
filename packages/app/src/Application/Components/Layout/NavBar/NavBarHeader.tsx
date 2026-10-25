@@ -1,6 +1,6 @@
 import { TUserLogged } from '@app/Domains/Users';
 
-import { Container, Title, Text } from '@macrosistemas/ui';
+import { Container, Title, Text } from 'macro-design';
 import { useGlobalStore } from '@app/Application/Hooks';
 
 export const NavBarHeader = () => {

@@ -1,5 +1,5 @@
 import { Container, PieChartComponent } from '@app/Application/Components';
-import { Card } from '@macrosistemas/ui/ui/card';
+import { Card } from 'macro-design/ui/card';
 import { CheckCircle2, Clock, FileText } from 'lucide-react';
 import { StatCard } from './StatCard';
 import { useGetStatisticsDocuments } from '../Hooks';

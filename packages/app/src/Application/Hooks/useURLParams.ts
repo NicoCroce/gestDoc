@@ -1,1 +1,1 @@
-export { useURLParams } from '@macrosistemas/ui';
+export { useURLParams } from 'macro-design';

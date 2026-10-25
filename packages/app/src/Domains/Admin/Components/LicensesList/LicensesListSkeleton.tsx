@@ -1,5 +1,5 @@
 import { Container } from '@app/Application';
-import { Skeleton } from '@macrosistemas/ui/ui/skeleton';
+import { Skeleton } from 'macro-design/ui/skeleton';
 
 export const LicensesListSkeleton = () => (
   <Container space="small">

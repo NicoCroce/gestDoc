@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
 import { toast } from 'sonner';
-import { Input } from '@macrosistemas/ui/ui/input';
+import { Input } from 'macro-design/ui/input';
 import { useUpdateSegmentType } from '../Hooks/useUpdateSegmentType';
 import type { TSegmentType } from '../Segments.entity';
 

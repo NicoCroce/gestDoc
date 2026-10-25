@@ -1,4 +1,4 @@
-import { Card, CardContent } from '@macrosistemas/ui/ui/card';
+import { Card, CardContent } from 'macro-design/ui/card';
 import { cn } from '@app/Application/lib/utils';
 
 export const EmpleadosStatCard = ({

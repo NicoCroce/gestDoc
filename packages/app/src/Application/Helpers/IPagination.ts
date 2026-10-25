@@ -4,4 +4,4 @@ export {
   type IPaginationResponse,
   type TPagination,
   type TupdateParamsPagination,
-} from '@macrosistemas/ui';
+} from 'macro-design';

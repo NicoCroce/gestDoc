@@ -1,5 +1,5 @@
 import { Container, EmptyState, List, Title } from '@app/Application';
-import { ScrollArea } from '@macrosistemas/ui/ui/scroll-area';
+import { ScrollArea } from 'macro-design/ui/scroll-area';
 import { faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
 
 import {
@@ -7,7 +7,7 @@ import {
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
-} from '@macrosistemas/ui/ui/accordion';
+} from 'macro-design/ui/accordion';
 import { TuseGetCertificatesByCompany } from '../../Hooks';
 import { Certificate } from '@app/Domains/Certificates/Components';
 import { CertificateActions } from '@app/Domains/Certificates/Components/Certificate/CertificateActions';

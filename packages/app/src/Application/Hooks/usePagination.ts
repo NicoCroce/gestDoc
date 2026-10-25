@@ -1,1 +1,1 @@
-export { usePagination } from '@macrosistemas/ui';
+export { usePagination } from 'macro-design';

@@ -2,10 +2,10 @@ import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useNavigate } from 'react-router-dom';
 import { MobileMenu } from './MobileMenu/MobileMenu';
-import { Button } from '@macrosistemas/ui/ui/button';
+import { Button } from 'macro-design/ui/button';
 import { AccountMenu } from '../Organisms/Menu/AccountMenu';
 import { useDevice, useGlobalStore } from '@app/Application/Hooks';
-import { Container, Title } from '@macrosistemas/ui';
+import { Container, Title } from 'macro-design';
 import img from '/images/icons/launchericon-192x192.png';
 
 export const Header = () => {

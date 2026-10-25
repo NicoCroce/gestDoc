@@ -1,20 +1,17 @@
 import { Button, Container, Input, useURLParams } from '@app/Application';
-import { Label } from '@macrosistemas/ui/ui/label';
-import { SheetClose, SheetFooter } from '@macrosistemas/ui/ui/sheet';
+import { Label } from 'macro-design/ui/label';
+import { SheetClose, SheetFooter } from 'macro-design/ui/sheet';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@macrosistemas/ui/ui/select';
+} from 'macro-design/ui/select';
 import { useState } from 'react';
 import { TCertificatesSearch, TCertificateType } from '../Certificate.entity';
 import { useGetCertificatesTypes } from '../Hooks';
-import {
-  ToggleGroup,
-  ToggleGroupItem,
-} from '@macrosistemas/ui/ui/toggle-group';
+import { ToggleGroup, ToggleGroupItem } from 'macro-design/ui/toggle-group';
 import clsx from 'clsx';
 import { CertificateStatus } from '@server/domains/Certificates/Domain/Certificate.types';
 import { SegmentsFilterField } from '@app/Domains/Segments';

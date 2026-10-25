@@ -1,4 +1,4 @@
-import { Skeleton } from '@macrosistemas/ui/ui/skeleton';
+import { Skeleton } from 'macro-design/ui/skeleton';
 
 export const SegmentsLoadingSkeleton = () => (
   <div className="space-y-2">

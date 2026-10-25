@@ -1,6 +1,6 @@
 import { screen } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { Sheet } from '@macrosistemas/ui/ui/sheet';
+import { Sheet } from 'macro-design/ui/sheet';
 import { renderWithProviders } from '@app/test/renderWithProviders';
 import { FiltersCertificatesForm } from '../FiltersCertificatesForm';
 

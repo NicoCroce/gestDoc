@@ -1,5 +1,5 @@
 import { Container } from '@app/Application';
-import { Skeleton } from '@macrosistemas/ui/ui/skeleton';
+import { Skeleton } from 'macro-design/ui/skeleton';
 
 export const CardsSkeleton = () => (
   <Container space="small" className="md:hidden">

@@ -1,4 +1,4 @@
-import { Skeleton } from '@macrosistemas/ui/ui/skeleton';
+import { Skeleton } from 'macro-design/ui/skeleton';
 
 export const CertificatesListSkeleton = () => (
   <div className="space-y-8">

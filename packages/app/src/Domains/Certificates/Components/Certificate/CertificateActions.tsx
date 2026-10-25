@@ -6,7 +6,7 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@macrosistemas/ui/ui/select';
+} from 'macro-design/ui/select';
 import { AlertDialogCancelConfirm } from '@app/Application/Components';
 import { AlertDialogTrigger } from '@radix-ui/react-alert-dialog';
 import { useDeleteCertificate } from '../../Hooks/useDeleteCertificate';

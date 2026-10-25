@@ -1,6 +1,6 @@
 import { Component, ErrorInfo, ReactNode } from 'react';
 import { hasAttemptedRecovery, recoverApp } from '@app/Application/Helpers';
-import { Button } from '@macrosistemas/ui/ui/button';
+import { Button } from 'macro-design/ui/button';
 
 interface AppErrorBoundaryProps {
   children: ReactNode;

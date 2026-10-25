@@ -1,1 +1,1 @@
-export { useGetFiltersSetted } from '@macrosistemas/ui';
+export { useGetFiltersSetted } from 'macro-design';

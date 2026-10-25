@@ -1,9 +1,6 @@
 import { Container } from '@app/Application';
-import { Label } from '@macrosistemas/ui/ui/label';
-import {
-  ToggleGroup,
-  ToggleGroupItem,
-} from '@macrosistemas/ui/ui/toggle-group';
+import { Label } from 'macro-design/ui/label';
+import { ToggleGroup, ToggleGroupItem } from 'macro-design/ui/toggle-group';
 import {
   DOCUMENT_STATES,
   PENDING,

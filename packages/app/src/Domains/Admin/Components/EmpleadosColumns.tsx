@@ -1,6 +1,6 @@
 import { ColumnDef } from '@tanstack/react-table';
-import { Badge } from '@macrosistemas/ui/ui/badge';
-import { Checkbox } from '@macrosistemas/ui/ui/checkbox';
+import { Badge } from 'macro-design/ui/badge';
+import { Checkbox } from 'macro-design/ui/checkbox';
 import { Text } from '@app/Application';
 import { OkIcon, NotIcon } from './StatusIcons';
 

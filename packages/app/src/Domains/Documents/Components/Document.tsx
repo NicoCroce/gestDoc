@@ -6,8 +6,8 @@ import {
   useURLParams,
   useGlobalStore,
 } from '@app/Application';
-import { Badge } from '@macrosistemas/ui/ui/badge';
-import { Card } from '@macrosistemas/ui/ui/card';
+import { Badge } from 'macro-design/ui/badge';
+import { Card } from 'macro-design/ui/card';
 import { TDocument, TDocumentSearch } from '../Document.entity';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {

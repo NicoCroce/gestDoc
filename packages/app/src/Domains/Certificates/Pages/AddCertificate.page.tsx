@@ -1,6 +1,6 @@
 import { Page } from '@app/Application';
 import { AddLicenseForm } from '../Components/AddLicenseForm/AddLicenseForm';
-import { Card } from '@macrosistemas/ui/ui/card';
+import { Card } from 'macro-design/ui/card';
 
 export const AddCertificatePage = () => {
   return (

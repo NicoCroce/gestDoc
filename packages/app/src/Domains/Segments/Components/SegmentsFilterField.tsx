@@ -3,7 +3,7 @@ import {
   DASHBOARD_ACCESS,
   useHasPermission,
 } from '@app/Application';
-import { Label } from '@macrosistemas/ui/ui/label';
+import { Label } from 'macro-design/ui/label';
 import { SegmentsFilter } from './SegmentsFilter';
 
 type SegmentsFilterFieldProps = {

@@ -1,14 +1,14 @@
 import { useMemo, useCallback } from 'react';
 import { Text, Button, Container } from '@app/Application';
-import { Badge } from '@macrosistemas/ui/ui/badge';
-import { Skeleton } from '@macrosistemas/ui/ui/skeleton';
+import { Badge } from 'macro-design/ui/badge';
+import { Skeleton } from 'macro-design/ui/skeleton';
 import {
   Sheet,
   SheetContent,
   SheetHeader,
   SheetTitle,
   SheetDescription,
-} from '@macrosistemas/ui/ui/sheet';
+} from 'macro-design/ui/sheet';
 import { Cross2Icon } from '@radix-ui/react-icons';
 import { useGetSegmentTypes } from '../../Hooks/useGetSegmentTypes';
 import { useGetUserSegments } from '../../Hooks/useGetUserSegments';

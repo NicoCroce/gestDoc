@@ -1,1 +1,1 @@
-export { usePaginationIntersection } from '@macrosistemas/ui';
+export { usePaginationIntersection } from 'macro-design';

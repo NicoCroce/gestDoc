@@ -1,2 +1,2 @@
 /** Used by tailwind */
-export { cn } from '@macrosistemas/ui';
+export { cn } from 'macro-design';

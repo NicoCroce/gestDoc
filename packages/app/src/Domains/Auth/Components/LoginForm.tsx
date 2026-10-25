@@ -6,7 +6,7 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '@macrosistemas/ui/ui/form';
+} from 'macro-design/ui/form';
 import { Input } from '@app/Application/Components';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';

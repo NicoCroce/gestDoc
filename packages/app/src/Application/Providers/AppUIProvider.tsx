@@ -1,4 +1,4 @@
-import { UIProvider } from '@macrosistemas/ui';
+import { UIProvider } from 'macro-design';
 import { useGlobalStore } from '../Hooks/useGlobalStore';
 import { useHasPermission } from '../Hooks/useHasPermission';
 import { useIsEditable } from '../Hooks/useIsEditable';

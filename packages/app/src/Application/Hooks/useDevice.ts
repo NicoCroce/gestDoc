@@ -1,1 +1,1 @@
-export { useDevice } from '@macrosistemas/ui';
+export { useDevice } from 'macro-design';

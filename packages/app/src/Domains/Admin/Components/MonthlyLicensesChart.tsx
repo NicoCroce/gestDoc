@@ -4,14 +4,14 @@ import {
   TDataAreaChart,
 } from '@app/Application/Components';
 import { Container } from '@app/Application/Components';
-import { Card } from '@macrosistemas/ui/ui/card';
+import { Card } from 'macro-design/ui/card';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@macrosistemas/ui/ui/select';
+} from 'macro-design/ui/select';
 import { useGetMonthlyStatisticsCertificates } from '../Hooks';
 import { MonthlyLicensesChartTooltip } from './MonthlyLicensesChartTooltip';
 

@@ -4,6 +4,10 @@ import { resolve } from 'node:path';
 // Config independiente de vite.config.ts — evita conflictos con VitePWA en el entorno de test.
 // JSX se transforma via esbuild usando "jsx": "react-jsx" del tsconfig (no necesita el plugin de React).
 export default defineConfig({
+  define: {
+    // mirrors vite.config.ts, used by the React Query persister
+    __APP_VERSION__: JSON.stringify('test'),
+  },
   resolve: {
     alias: [
       { find: '@app', replacement: resolve(__dirname, 'src') },

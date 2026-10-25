@@ -7,19 +7,19 @@ import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 
 import './index.css';
 import { Layout } from './Application/Components/Layout/AppLayout/Layout';
-import { registerEventViewport } from './Application/Helpers';
+import { recoverApp, registerEventViewport } from './Application/Helpers';
+import { AppErrorBoundary } from './Application/Components/Layout/AppErrorBoundary';
 import { TrpcApi, trpcClientApi } from './Infrastructure/Services/clientApi';
 import { persistOptions } from './Application/Helpers/persister';
 import { registerSW } from 'virtual:pwa-register';
 import { queryClient } from './queryClient';
 
-// add this to prompt for a refresh
-const updateSW = registerSW({
-  onNeedRefresh() {
-    if (confirm('Nueva versión disponible')) {
-      updateSW(true);
-    }
-  },
+// new versions are activated and reloaded automatically (registerType: autoUpdate)
+registerSW({ immediate: true });
+
+// a lazy chunk from a previous deploy no longer exists on the server
+window.addEventListener('vite:preloadError', () => {
+  void recoverApp();
 });
 
 registerEventViewport(queryClient);
@@ -31,9 +31,11 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
         client={queryClient}
         persistOptions={persistOptions}
       >
-        <HashRouter basename="/">
-          <Layout />
-        </HashRouter>
+        <AppErrorBoundary>
+          <HashRouter basename="/">
+            <Layout />
+          </HashRouter>
+        </AppErrorBoundary>
         <ReactQueryDevtools initialIsOpen={false} />
       </PersistQueryClientProvider>
     </TrpcApi.Provider>

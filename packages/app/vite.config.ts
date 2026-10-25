@@ -5,12 +5,21 @@ import { VitePWA } from 'vite-plugin-pwa';
 
 // https://vitejs.dev/config/
 export default defineConfig({
+  define: {
+    // changes on every build, used to invalidate persisted data
+    __APP_VERSION__: JSON.stringify(Date.now().toString()),
+  },
   plugins: [
     react(),
     VitePWA({
+      // activate new versions without asking the user
+      registerType: 'autoUpdate',
       // add this to cache all the imports
       workbox: {
         globPatterns: ['**/*'],
+        cleanupOutdatedCaches: true,
+        clientsClaim: true,
+        skipWaiting: true,
       },
       // add this to cache all the
       // static assets in the public folder

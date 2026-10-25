@@ -6,3 +6,4 @@ export * from './isLogged';
 export * from './permissions';
 export * from './persister';
 export * from './uuid';
+export * from './recovery';

@@ -6,3 +6,4 @@ export * from './Header';
 export * from './MobileMenu/MobileMenu';
 export * from './NavBar';
 export * from './Page';
+export * from './AppErrorBoundary';

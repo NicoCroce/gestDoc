@@ -11,7 +11,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
-} from '@app/Application/Components/ui/alert-dialog';
+} from '@macrosistemas/ui/ui/alert-dialog';
 import { useGetSegmentTypes } from '../Hooks/useGetSegmentTypes';
 import { useDeleteSegmentType } from '../Hooks/useDeleteSegmentType';
 import type { TSegmentType } from '../Segments.entity';

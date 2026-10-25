@@ -1,9 +1,9 @@
 import { Container } from '@app/Application';
-import { Label } from '@app/Application/Components/ui/label';
+import { Label } from '@macrosistemas/ui/ui/label';
 import {
   ToggleGroup,
   ToggleGroupItem,
-} from '@app/Application/Components/ui/toggle-group';
+} from '@macrosistemas/ui/ui/toggle-group';
 import {
   DOCUMENT_STATES,
   PENDING,

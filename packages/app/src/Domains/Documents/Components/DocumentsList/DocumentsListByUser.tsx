@@ -10,7 +10,7 @@ import {
 import { MagnifyingGlassIcon, Cross2Icon } from '@radix-ui/react-icons';
 import { faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
 import { Document } from '../Document';
-import { ScrollArea } from '@app/Application/Components/ui/scroll-area';
+import { ScrollArea } from '@macrosistemas/ui/ui/scroll-area';
 import { DocumentsListSkeleton } from './DocumentsListSkeleton';
 
 import {
@@ -18,7 +18,7 @@ import {
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
-} from '@app/Application/Components/ui/accordion';
+} from '@macrosistemas/ui/ui/accordion';
 import { TuseGetDocumentsByCompany } from '@app/Domains/Admin';
 
 interface DocumentsListProps {

@@ -1,9 +1,9 @@
 import { Button, Container, useURLParams } from '@app/Application';
-import { Input } from '@app/Application/Components/ui/input';
-import { Label } from '@app/Application/Components/ui/label';
+import { Input } from '@macrosistemas/ui/ui/input';
+import { Label } from '@macrosistemas/ui/ui/label';
 import { PENDING, TDocumentSearch } from '../../Document.entity';
 import { useState } from 'react';
-import { SheetClose, SheetFooter } from '@app/Application/Components/ui/sheet';
+import { SheetClose, SheetFooter } from '@macrosistemas/ui/ui/sheet';
 import { SegmentsFilterField } from '@app/Domains/Segments';
 import { DocumentsStateFilterField } from '../DocumentsStateFilterField';
 

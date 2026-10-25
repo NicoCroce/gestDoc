@@ -3,7 +3,7 @@ import {
   CardContent,
   CardHeader,
   CardTitle,
-} from '@app/Application/Components/ui/card';
+} from '@macrosistemas/ui/ui/card';
 import { Container } from '@app/Application';
 
 export interface StatCardProps {

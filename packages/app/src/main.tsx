@@ -9,6 +9,7 @@ import './index.css';
 import { Layout } from './Application/Components/Layout/AppLayout/Layout';
 import { recoverApp, registerEventViewport } from './Application/Helpers';
 import { AppErrorBoundary } from './Application/Components/Layout/AppErrorBoundary';
+import { AppUIProvider } from './Application/Providers/AppUIProvider';
 import { TrpcApi, trpcClientApi } from './Infrastructure/Services/clientApi';
 import { persistOptions } from './Application/Helpers/persister';
 import { registerSW } from 'virtual:pwa-register';
@@ -33,7 +34,9 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
       >
         <AppErrorBoundary>
           <HashRouter basename="/">
-            <Layout />
+            <AppUIProvider>
+              <Layout />
+            </AppUIProvider>
           </HashRouter>
         </AppErrorBoundary>
         <ReactQueryDevtools initialIsOpen={false} />

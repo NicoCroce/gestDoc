@@ -2,7 +2,7 @@ import { Button, Container, useURLParams } from '@app/Application';
 import { TDocumentSearch } from '../Document.entity';
 import { useGetDocument } from '../Hooks';
 import { faThumbsDown, faThumbsUp } from '@fortawesome/free-solid-svg-icons';
-import { ConfirmWithPassword } from '@app/Application/Components/Molecules';
+import { ConfirmWithPassword } from '@app/Application/Components';
 import { useSignDocument } from '../Hooks/useSignDocument';
 import { useState } from 'react';
 

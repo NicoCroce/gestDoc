@@ -5,9 +5,9 @@ import {
   MenubarTrigger,
   MenubarContent,
   MenubarItem,
-} from '../../ui/menubar';
+} from '@macrosistemas/ui/ui/menubar';
 import { faLock, faUser } from '@fortawesome/free-solid-svg-icons';
-import { Container } from '../../Layout';
+import { Container } from '@macrosistemas/ui';
 import { Link } from 'react-router-dom';
 import { USERS_CHANGE_PASSWORD } from '@app/Domains/Users';
 

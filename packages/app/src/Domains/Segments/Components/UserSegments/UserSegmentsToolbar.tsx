@@ -1,5 +1,5 @@
 import { Input, Container } from '@app/Application';
-import { Checkbox } from '@app/Application/Components/ui/checkbox';
+import { Checkbox } from '@macrosistemas/ui/ui/checkbox';
 import { Cross2Icon, MagnifyingGlassIcon } from '@radix-ui/react-icons';
 import { cn } from '@app/Application/lib/utils';
 import { SegmentsFilterField } from '../SegmentsFilterField';

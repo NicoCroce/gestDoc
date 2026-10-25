@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { TDataPieChart } from '@app/Application/Components/Organisms/PieChart/PieChart';
+import { TDataPieChart } from '@app/Application/Components';
 import { useGetEmployees } from './useEmployeeActions';
 import { IEmployeeRecord } from '../Components/EmpleadosColumns';
 

@@ -1,8 +1,8 @@
 import { useMemo } from 'react';
-import { Badge } from '@app/Application/Components/ui/badge';
-import { Skeleton } from '@app/Application/Components/ui/skeleton';
+import { Badge } from '@macrosistemas/ui/ui/badge';
+import { Skeleton } from '@macrosistemas/ui/ui/skeleton';
 import { Button, Container } from '@app/Application';
-import { DataTable } from '@app/Application/Components/Organisms/DataCollection/DataTable';
+import { DataTable } from '@app/Application/Components';
 import { useGetUserSegments } from '../../Hooks/useGetUserSegments';
 import type { Employee } from './types';
 import type { ColumnDef, CellContext } from '@tanstack/react-table';

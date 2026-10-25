@@ -6,8 +6,8 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '@app/Application/Components/ui/form';
-import { Input } from '@app/Application/Components/Molecules/Input';
+} from '@macrosistemas/ui/ui/form';
+import { Input } from '@app/Application/Components';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';

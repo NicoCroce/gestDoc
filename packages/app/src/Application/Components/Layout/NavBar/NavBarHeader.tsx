@@ -1,8 +1,7 @@
 import { TUserLogged } from '@app/Domains/Users';
 
-import { Container } from '../Container';
+import { Container, Title, Text } from '@macrosistemas/ui';
 import { useGlobalStore } from '@app/Application/Hooks';
-import { Title, Text } from '../../Molecules';
 
 export const NavBarHeader = () => {
   const { data: dataUser } = useGlobalStore<TUserLogged>('dataUser');

@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { useGlobalStore, Container, Title } from '@app/Application';
-import { HalfPage } from '@app/Application/Components/Layout';
+import { HalfPage } from '@app/Application/Components';
 import { TUserLogged } from '@app/Domains/Users';
 import { EmpresaCard } from '../Components';
 import { useGetEmpresasByUsuario, useSelectEmpresa } from '../Hooks';

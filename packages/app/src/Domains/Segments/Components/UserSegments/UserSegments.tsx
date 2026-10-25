@@ -1,8 +1,8 @@
 import { useState, useMemo } from 'react';
 import { Container, EmptyScreenError, useDevice } from '@app/Application';
-import { TooltipProvider } from '@app/Application/Components/ui/tooltip';
-import { DataTable } from '@app/Application/Components/Organisms/DataCollection/DataTable';
-import { DataTablePagination } from '@app/Application/Components/Organisms/DataCollection/DataTablePagination';
+import { TooltipProvider } from '@macrosistemas/ui/ui/tooltip';
+import { DataTable } from '@app/Application/Components';
+import { DataTablePagination } from '@app/Application/Components';
 import { useGetSegmentTypes } from '../../Hooks/useGetSegmentTypes';
 import { useGetEmployees } from '@app/Domains/Admin';
 import { useURLParams } from '@app/Application/Hooks/useURLParams';

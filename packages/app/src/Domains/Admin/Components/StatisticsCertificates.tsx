@@ -1,5 +1,5 @@
 import { Container, PieChartComponent } from '@app/Application/Components';
-import { Card } from '@app/Application/Components/ui/card';
+import { Card } from '@macrosistemas/ui/ui/card';
 import { useGetStatisticsCertificates } from '../Hooks';
 
 export const StatisticsCertificates = () => {

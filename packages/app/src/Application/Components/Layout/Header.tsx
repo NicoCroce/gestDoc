@@ -2,12 +2,11 @@ import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useNavigate } from 'react-router-dom';
 import { MobileMenu } from './MobileMenu/MobileMenu';
-import { Button } from '../ui/button';
+import { Button } from '@macrosistemas/ui/ui/button';
 import { AccountMenu } from '../Organisms/Menu/AccountMenu';
 import { useDevice, useGlobalStore } from '@app/Application/Hooks';
-import { Container } from './Container';
+import { Container, Title } from '@macrosistemas/ui';
 import img from '/images/icons/launchericon-192x192.png';
-import { Title } from '../Molecules';
 
 export const Header = () => {
   const navigate = useNavigate();

@@ -4,7 +4,7 @@ import {
   Dialog,
   DialogContent,
   DialogTitle,
-} from '@app/Application/Components/ui/dialog';
+} from '@macrosistemas/ui/ui/dialog';
 import {
   CheckCircle2,
   Clock,

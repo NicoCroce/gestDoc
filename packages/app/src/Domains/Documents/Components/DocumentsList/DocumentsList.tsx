@@ -1,7 +1,7 @@
 import { EmptyScreenError, EmptyScreenFilter, List } from '@app/Application';
 import { TuseGetDocuments } from '../../Hooks/useGetDocuments';
 import { Document } from '../Document';
-import { ScrollArea } from '@app/Application/Components/ui/scroll-area';
+import { ScrollArea } from '@macrosistemas/ui/ui/scroll-area';
 import { DocumentsListSkeleton } from './DocumentsListSkeleton';
 
 interface DocumentsListProps {

@@ -7,7 +7,11 @@ import {
 import { TDocumentSearch } from '../../Document.entity';
 import { useGetDocument } from '../../Hooks';
 import { useSendDocumentToEmail } from '../../Hooks/useSendDocumentToEmail';
-import { Alert, AlertDescription, AlertTitle } from 'macro-design/ui/alert';
+import {
+  Alert,
+  AlertDescription,
+  AlertTitle,
+} from '@blendverse/design/ui/alert';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faArrowDown,

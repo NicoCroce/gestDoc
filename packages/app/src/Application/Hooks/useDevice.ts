@@ -1,1 +1,1 @@
-export { useDevice } from 'macro-design';
+export { useDevice } from '@blendverse/design';

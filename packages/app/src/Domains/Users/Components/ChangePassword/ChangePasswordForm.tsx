@@ -6,7 +6,7 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from 'macro-design/ui/form';
+} from '@blendverse/design/ui/form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';

@@ -1,4 +1,4 @@
-import { Skeleton } from 'macro-design/ui/skeleton';
+import { Skeleton } from '@blendverse/design/ui/skeleton';
 
 export const SegmentsLoadingSkeleton = () => (
   <div className="space-y-2">

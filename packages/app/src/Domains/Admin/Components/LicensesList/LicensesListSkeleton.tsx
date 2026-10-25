@@ -1,5 +1,5 @@
 import { Container } from '@app/Application';
-import { Skeleton } from 'macro-design/ui/skeleton';
+import { Skeleton } from '@blendverse/design/ui/skeleton';
 
 export const LicensesListSkeleton = () => (
   <Container space="small">

@@ -1,6 +1,10 @@
 import { useState } from 'react';
 import { Container, Text, Alert } from '@app/Application';
-import { Dialog, DialogContent, DialogTitle } from 'macro-design/ui/dialog';
+import {
+  Dialog,
+  DialogContent,
+  DialogTitle,
+} from '@blendverse/design/ui/dialog';
 import {
   CheckCircle2,
   Clock,

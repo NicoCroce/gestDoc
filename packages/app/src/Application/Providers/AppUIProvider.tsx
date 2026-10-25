@@ -1,4 +1,4 @@
-import { UIProvider } from 'macro-design';
+import { UIProvider } from '@blendverse/design';
 import { useGlobalStore } from '../Hooks/useGlobalStore';
 import { useHasPermission } from '../Hooks/useHasPermission';
 import { useIsEditable } from '../Hooks/useIsEditable';

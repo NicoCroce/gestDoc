@@ -4,4 +4,4 @@ export {
   type IPaginationResponse,
   type TPagination,
   type TupdateParamsPagination,
-} from 'macro-design';
+} from '@blendverse/design';

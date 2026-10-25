@@ -3,7 +3,7 @@ import { DisclaimerForm } from './DisclaimerForm';
 import { useGlobalStore } from '@app/Application';
 import { useGetDisclaimerText } from './Hooks/useDisclaimer';
 import { TUserLogged } from '@app/Domains/Users/User.entity';
-import { Skeleton } from 'macro-design/ui/skeleton';
+import { Skeleton } from '@blendverse/design/ui/skeleton';
 
 export const DisclaimerModal = () => {
   const { data: dataUser, setQueryData } =

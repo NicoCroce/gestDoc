@@ -1,5 +1,5 @@
 import { useState, useMemo } from 'react';
-import { Button } from 'macro-design/ui/button';
+import { Button } from '@blendverse/design/ui/button';
 import {
   Command,
   CommandEmpty,
@@ -7,14 +7,14 @@ import {
   CommandInput,
   CommandItem,
   CommandList,
-} from 'macro-design/ui/command';
+} from '@blendverse/design/ui/command';
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from 'macro-design/ui/popover';
-import { Checkbox } from 'macro-design/ui/checkbox';
-import { Label } from 'macro-design/ui/label';
+} from '@blendverse/design/ui/popover';
+import { Checkbox } from '@blendverse/design/ui/checkbox';
+import { Label } from '@blendverse/design/ui/label';
 import { Container, useURLParams } from '@app/Application';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {

@@ -1,6 +1,6 @@
 import { useState, useMemo } from 'react';
 import { Container, EmptyScreenError, useDevice } from '@app/Application';
-import { TooltipProvider } from 'macro-design/ui/tooltip';
+import { TooltipProvider } from '@blendverse/design/ui/tooltip';
 import { DataTable } from '@app/Application/Components';
 import { DataTablePagination } from '@app/Application/Components';
 import { useGetSegmentTypes } from '../../Hooks/useGetSegmentTypes';

@@ -1,9 +1,9 @@
 import { Button, Container, useURLParams } from '@app/Application';
-import { Input } from 'macro-design/ui/input';
-import { Label } from 'macro-design/ui/label';
+import { Input } from '@blendverse/design/ui/input';
+import { Label } from '@blendverse/design/ui/label';
 import { PENDING, TDocumentSearch } from '../../Document.entity';
 import { useState } from 'react';
-import { SheetClose, SheetFooter } from 'macro-design/ui/sheet';
+import { SheetClose, SheetFooter } from '@blendverse/design/ui/sheet';
 import { SegmentsFilterField } from '@app/Domains/Segments';
 import { DocumentsStateFilterField } from '../DocumentsStateFilterField';
 

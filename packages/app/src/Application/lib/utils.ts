@@ -1,2 +1,2 @@
 /** Used by tailwind */
-export { cn } from 'macro-design';
+export { cn } from '@blendverse/design';

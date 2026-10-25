@@ -1,1 +1,1 @@
-export { useURLParams } from 'macro-design';
+export { useURLParams } from '@blendverse/design';

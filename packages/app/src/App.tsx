@@ -1,5 +1,5 @@
 import { Routes } from 'react-router-dom';
-import { Toaster } from 'macro-design/ui/sonner';
+import { Toaster } from '@blendverse/design/ui/sonner';
 
 import { AllRoutes } from './Infrastructure';
 

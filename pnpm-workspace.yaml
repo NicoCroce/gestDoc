@@ -1,6 +1,6 @@
 packages:
   - 'packages/app'
   - 'packages/server'
-  - 'packages/macro-design'
+  - 'packages/design'
 allowBuilds:
   esbuild: set this to true or false

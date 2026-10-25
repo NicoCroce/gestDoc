@@ -1,1 +1,1 @@
-export { usePagination } from 'macro-design';
+export { usePagination } from '@blendverse/design';

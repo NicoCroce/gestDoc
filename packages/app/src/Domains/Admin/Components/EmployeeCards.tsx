@@ -1,4 +1,4 @@
-import { Checkbox } from 'macro-design/ui/checkbox';
+import { Checkbox } from '@blendverse/design/ui/checkbox';
 import { IEmployeeRecord } from './EmpleadosColumns';
 import { Text, Container } from '@app/Application';
 import { OkIcon, NotIcon } from './StatusIcons';

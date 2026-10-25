@@ -1,4 +1,4 @@
-// Componentes compartidos: viven en el Design System (packages/macro-design).
-export * from 'macro-design';
+// Componentes compartidos: viven en el Design System (packages/design).
+export * from '@blendverse/design';
 // Carcasa propia de esta app.
 export * from './Layout';

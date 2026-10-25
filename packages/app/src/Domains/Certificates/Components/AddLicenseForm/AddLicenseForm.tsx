@@ -7,14 +7,14 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from 'macro-design/ui/form';
+} from '@blendverse/design/ui/form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMemo } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
 import { z } from 'zod';
 import { useGetCertificatesTypes } from '../../Hooks';
 import { useNavigate } from 'react-router-dom';
-import { Textarea } from 'macro-design/ui/textarea';
+import { Textarea } from '@blendverse/design/ui/textarea';
 import { useAddLicense } from '../../Hooks/useAddLicense';
 import { CERTIFICATES_ROUTES } from '../../Certificates.routes';
 import { TCertificateType } from '../../Certificate.entity';

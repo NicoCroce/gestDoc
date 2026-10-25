@@ -1,4 +1,9 @@
-import { Card, CardContent, CardHeader, CardTitle } from 'macro-design/ui/card';
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from '@blendverse/design/ui/card';
 import { Container } from '@app/Application';
 
 export interface StatCardProps {

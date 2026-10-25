@@ -11,7 +11,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
-} from 'macro-design/ui/alert-dialog';
+} from '@blendverse/design/ui/alert-dialog';
 import { useGetSegmentTypes } from '../Hooks/useGetSegmentTypes';
 import { useDeleteSegmentType } from '../Hooks/useDeleteSegmentType';
 import type { TSegmentType } from '../Segments.entity';

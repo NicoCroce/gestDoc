@@ -1,6 +1,9 @@
 import { Container } from '@app/Application';
-import { Label } from 'macro-design/ui/label';
-import { ToggleGroup, ToggleGroupItem } from 'macro-design/ui/toggle-group';
+import { Label } from '@blendverse/design/ui/label';
+import {
+  ToggleGroup,
+  ToggleGroupItem,
+} from '@blendverse/design/ui/toggle-group';
 import {
   DOCUMENT_STATES,
   PENDING,

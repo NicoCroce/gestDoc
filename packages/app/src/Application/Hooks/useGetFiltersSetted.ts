@@ -1,1 +1,1 @@
-export { useGetFiltersSetted } from 'macro-design';
+export { useGetFiltersSetted } from '@blendverse/design';

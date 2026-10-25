@@ -9,8 +9,8 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogFooter,
-} from 'macro-design/ui/alert-dialog';
-import { Textarea } from 'macro-design/ui/textarea';
+} from '@blendverse/design/ui/alert-dialog';
+import { Textarea } from '@blendverse/design/ui/textarea';
 
 const MAX_CHARS = 500;
 const COUNTER_WARN_THRESHOLD = 50;

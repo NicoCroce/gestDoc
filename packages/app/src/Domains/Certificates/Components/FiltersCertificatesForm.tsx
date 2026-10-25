@@ -1,17 +1,20 @@
 import { Button, Container, Input, useURLParams } from '@app/Application';
-import { Label } from 'macro-design/ui/label';
-import { SheetClose, SheetFooter } from 'macro-design/ui/sheet';
+import { Label } from '@blendverse/design/ui/label';
+import { SheetClose, SheetFooter } from '@blendverse/design/ui/sheet';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from 'macro-design/ui/select';
+} from '@blendverse/design/ui/select';
 import { useState } from 'react';
 import { TCertificatesSearch, TCertificateType } from '../Certificate.entity';
 import { useGetCertificatesTypes } from '../Hooks';
-import { ToggleGroup, ToggleGroupItem } from 'macro-design/ui/toggle-group';
+import {
+  ToggleGroup,
+  ToggleGroupItem,
+} from '@blendverse/design/ui/toggle-group';
 import clsx from 'clsx';
 import { CertificateStatus } from '@server/domains/Certificates/Domain/Certificate.types';
 import { SegmentsFilterField } from '@app/Domains/Segments';

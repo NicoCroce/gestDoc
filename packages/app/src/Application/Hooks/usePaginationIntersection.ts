@@ -1,1 +1,1 @@
-export { usePaginationIntersection } from 'macro-design';
+export { usePaginationIntersection } from '@blendverse/design';

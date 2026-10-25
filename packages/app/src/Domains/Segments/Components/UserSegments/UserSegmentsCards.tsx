@@ -1,6 +1,6 @@
 import { Button, Container } from '@app/Application';
-import { Badge } from 'macro-design/ui/badge';
-import { Skeleton } from 'macro-design/ui/skeleton';
+import { Badge } from '@blendverse/design/ui/badge';
+import { Skeleton } from '@blendverse/design/ui/skeleton';
 import { useGetUserSegments } from '../../Hooks/useGetUserSegments';
 import type { Employee } from './types';
 

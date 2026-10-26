@@ -7,9 +7,9 @@ import {
   SheetDescription,
   SheetHeader,
   SheetTitle,
-} from '../../ui/sheet';
+} from '@blendverse/design/ui/sheet';
 import { faBars } from '@fortawesome/free-solid-svg-icons';
-import { Button } from '../../ui/button';
+import { Button } from '@blendverse/design/ui/button';
 import { useLocation } from 'react-router-dom';
 
 import './MobileMenu.css';

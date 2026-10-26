@@ -6,8 +6,8 @@ import {
   useURLParams,
   useGlobalStore,
 } from '@app/Application';
-import { Badge } from '@app/Application/Components/ui/badge';
-import { Card } from '@app/Application/Components/ui/card';
+import { Badge } from '@blendverse/design/ui/badge';
+import { Card } from '@blendverse/design/ui/card';
 import { TDocument, TDocumentSearch } from '../Document.entity';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {

@@ -1,6 +1,6 @@
 import { Component, ErrorInfo, ReactNode } from 'react';
 import { hasAttemptedRecovery, recoverApp } from '@app/Application/Helpers';
-import { Button } from '../ui/button';
+import { Button } from '@blendverse/design/ui/button';
 
 interface AppErrorBoundaryProps {
   children: ReactNode;

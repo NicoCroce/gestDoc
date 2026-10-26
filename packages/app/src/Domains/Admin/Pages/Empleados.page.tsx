@@ -5,8 +5,8 @@ import {
   Input,
   useDevice,
 } from '@app/Application';
-import { DataTable } from '@app/Application/Components/Organisms/DataCollection/DataTable';
-import { DataTablePagination } from '@app/Application/Components/Organisms/DataCollection/DataTablePagination';
+import { DataTable } from '@app/Application/Components';
+import { DataTablePagination } from '@app/Application/Components';
 import { Button } from '@app/Application/Components';
 import { Cross2Icon, MagnifyingGlassIcon } from '@radix-ui/react-icons';
 import { StatisticsEmpleados } from '@app/Domains/Admin/Components/StatisticsEmpleados';

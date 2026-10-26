@@ -1,5 +1,5 @@
 import { cn } from '@app/Application/lib/utils';
-import { buttonVariants } from '@app/Application/Components/ui/button';
+import { buttonVariants } from '@blendverse/design/ui/button';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faAdd } from '@fortawesome/free-solid-svg-icons';
 import { Link } from 'react-router-dom';

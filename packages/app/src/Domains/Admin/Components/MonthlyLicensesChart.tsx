@@ -4,14 +4,14 @@ import {
   TDataAreaChart,
 } from '@app/Application/Components';
 import { Container } from '@app/Application/Components';
-import { Card } from '@app/Application/Components/ui/card';
+import { Card } from '@blendverse/design/ui/card';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@app/Application/Components/ui/select';
+} from '@blendverse/design/ui/select';
 import { useGetMonthlyStatisticsCertificates } from '../Hooks';
 import { MonthlyLicensesChartTooltip } from './MonthlyLicensesChartTooltip';
 

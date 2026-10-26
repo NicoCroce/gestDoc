@@ -1,0 +1,3 @@
+[submodule "packages/design"]
+	path = packages/design
+	url = git@github.com:macrosistemassa/macro-ui.git

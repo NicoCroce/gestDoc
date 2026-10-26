@@ -1,4 +1,4 @@
-import { Skeleton } from '@app/Application/Components/ui/skeleton';
+import { Skeleton } from '@blendverse/design/ui/skeleton';
 
 export const CertificatesListSkeleton = () => (
   <div className="space-y-8">

@@ -1,6 +1,6 @@
 import { fireEvent, screen } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { Sheet } from '@app/Application/Components/ui/sheet';
+import { Sheet } from '@blendverse/design/ui/sheet';
 import { renderWithProviders } from '@app/test/renderWithProviders';
 import { FiltersDocumentsForm } from '../FiltersDocumentsForm';
 

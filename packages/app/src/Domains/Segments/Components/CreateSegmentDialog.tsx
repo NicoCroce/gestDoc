@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { toast } from 'sonner';
 import { Container, Button } from '@app/Application';
-import { Input } from '@app/Application/Components/ui/input';
-import { Label } from '@app/Application/Components/ui/label';
+import { Input } from '@blendverse/design/ui/input';
+import { Label } from '@blendverse/design/ui/label';
 import {
   Dialog,
   DialogContent,
@@ -11,7 +11,7 @@ import {
   DialogTrigger,
   DialogFooter,
   DialogClose,
-} from '@app/Application/Components/ui/dialog';
+} from '@blendverse/design/ui/dialog';
 import { useCreateSegmentType } from '../Hooks/useCreateSegmentType';
 
 export const CreateSegmentDialog = () => {

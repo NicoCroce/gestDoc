@@ -4,11 +4,7 @@ import {
   FiltersSheet,
   useURLParams,
 } from '@app/Application';
-import {
-  Tabs,
-  TabsList,
-  TabsTrigger,
-} from '@app/Application/Components/ui/tabs';
+import { Tabs, TabsList, TabsTrigger } from '@blendverse/design/ui/tabs';
 import { useEffect, useState } from 'react';
 import {
   PENDING,

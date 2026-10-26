@@ -8,7 +8,7 @@ import {
   DrawerFooter,
   DrawerHeader,
   DrawerTitle,
-} from '@app/Application/Components/ui/drawer';
+} from '@blendverse/design/ui/drawer';
 import { TDocumentSearch } from '../../Document.entity';
 import { useState } from 'react';
 import { SignedDetail } from '../SignedDetail';
@@ -18,7 +18,7 @@ import {
   Alert,
   AlertDescription,
   AlertTitle,
-} from '@app/Application/Components/ui/alert';
+} from '@blendverse/design/ui/alert';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faArrowDown,

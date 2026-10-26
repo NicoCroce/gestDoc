@@ -11,7 +11,7 @@ import {
   Alert,
   AlertDescription,
   AlertTitle,
-} from '@app/Application/Components/ui/alert';
+} from '@blendverse/design/ui/alert';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faArrowDown,

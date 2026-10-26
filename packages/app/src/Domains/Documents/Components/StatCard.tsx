@@ -3,7 +3,7 @@ import {
   CardContent,
   CardHeader,
   CardTitle,
-} from '@app/Application/Components/ui/card';
+} from '@blendverse/design/ui/card';
 import { Container } from '@app/Application';
 
 export interface StatCardProps {

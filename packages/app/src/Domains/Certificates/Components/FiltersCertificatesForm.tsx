@@ -1,20 +1,20 @@
 import { Button, Container, Input, useURLParams } from '@app/Application';
-import { Label } from '@app/Application/Components/ui/label';
-import { SheetClose, SheetFooter } from '@app/Application/Components/ui/sheet';
+import { Label } from '@blendverse/design/ui/label';
+import { SheetClose, SheetFooter } from '@blendverse/design/ui/sheet';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@app/Application/Components/ui/select';
+} from '@blendverse/design/ui/select';
 import { useState } from 'react';
 import { TCertificatesSearch, TCertificateType } from '../Certificate.entity';
 import { useGetCertificatesTypes } from '../Hooks';
 import {
   ToggleGroup,
   ToggleGroupItem,
-} from '@app/Application/Components/ui/toggle-group';
+} from '@blendverse/design/ui/toggle-group';
 import clsx from 'clsx';
 import { CertificateStatus } from '@server/domains/Certificates/Domain/Certificate.types';
 import { SegmentsFilterField } from '@app/Domains/Segments';

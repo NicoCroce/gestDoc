@@ -1,5 +1,5 @@
 import { Container, PieChartComponent } from '@app/Application/Components';
-import { Card } from '@app/Application/Components/ui/card';
+import { Card } from '@blendverse/design/ui/card';
 import { useGetStatisticsCertificates } from '../Hooks';
 
 export const StatisticsCertificates = () => {

@@ -6,8 +6,8 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@app/Application/Components/ui/select';
-import { AlertDialogCancelConfirm } from '@app/Application/Components/Molecules/AlertDialog';
+} from '@blendverse/design/ui/select';
+import { AlertDialogCancelConfirm } from '@app/Application/Components';
 import { AlertDialogTrigger } from '@radix-ui/react-alert-dialog';
 import { useDeleteCertificate } from '../../Hooks/useDeleteCertificate';
 import { useUpdateCertificateStatus } from '../../Hooks/useUpdateCertificateStatus';

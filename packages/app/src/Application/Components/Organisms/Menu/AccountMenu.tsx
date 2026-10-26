@@ -5,9 +5,9 @@ import {
   MenubarTrigger,
   MenubarContent,
   MenubarItem,
-} from '../../ui/menubar';
+} from '@blendverse/design/ui/menubar';
 import { faLock, faUser } from '@fortawesome/free-solid-svg-icons';
-import { Container } from '../../Layout';
+import { Container } from '@blendverse/design';
 import { Link } from 'react-router-dom';
 import { USERS_CHANGE_PASSWORD } from '@app/Domains/Users';
 

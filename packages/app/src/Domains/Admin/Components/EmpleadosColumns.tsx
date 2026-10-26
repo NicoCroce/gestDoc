@@ -1,6 +1,6 @@
 import { ColumnDef } from '@tanstack/react-table';
-import { Badge } from '@app/Application/Components/ui/badge';
-import { Checkbox } from '@app/Application/Components/ui/checkbox';
+import { Badge } from '@blendverse/design/ui/badge';
+import { Checkbox } from '@blendverse/design/ui/checkbox';
 import { Text } from '@app/Application';
 import { OkIcon, NotIcon } from './StatusIcons';
 

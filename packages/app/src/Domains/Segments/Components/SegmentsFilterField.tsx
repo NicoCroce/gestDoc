@@ -3,7 +3,7 @@ import {
   DASHBOARD_ACCESS,
   useHasPermission,
 } from '@app/Application';
-import { Label } from '@app/Application/Components/ui/label';
+import { Label } from '@blendverse/design/ui/label';
 import { SegmentsFilter } from './SegmentsFilter';
 
 type SegmentsFilterFieldProps = {

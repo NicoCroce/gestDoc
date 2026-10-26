@@ -1,5 +1,5 @@
 import { Container, Title } from '@app/Application';
-import { Card } from '@app/Application/Components/ui/card';
+import { Card } from '@blendverse/design/ui/card';
 import { LicensesListSearch } from './LicensesListSearch';
 import { TuseGetCertificatesByCompany } from '@app/Domains/Admin/Hooks';
 

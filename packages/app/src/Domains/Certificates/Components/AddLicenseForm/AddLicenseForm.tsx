@@ -1,5 +1,5 @@
 import { Button, Combobox, Container, InputField } from '@app/Application';
-import { UploadFile } from '@app/Application/Components/Molecules/UploadFile';
+import { UploadFile } from '@app/Application/Components';
 import {
   Form,
   FormControl,
@@ -7,21 +7,21 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '@app/Application/Components/ui/form';
+} from '@blendverse/design/ui/form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMemo } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
 import { z } from 'zod';
 import { useGetCertificatesTypes } from '../../Hooks';
 import { useNavigate } from 'react-router-dom';
-import { Textarea } from '@app/Application/Components/ui/textarea';
+import { Textarea } from '@blendverse/design/ui/textarea';
 import { useAddLicense } from '../../Hooks/useAddLicense';
 import { CERTIFICATES_ROUTES } from '../../Certificates.routes';
 import { TCertificateType } from '../../Certificate.entity';
 import { formSchemeAddLicense } from './AddLicenceScheme';
-import { SelectField } from '@app/Application/Components/Molecules/FormFields/SelectField';
-import { Input } from '@app/Application/Components/Molecules/Input';
-import { Checkbox } from '@app/Application/Components/Molecules/Checkbox';
+import { SelectField } from '@app/Application/Components';
+import { Input } from '@app/Application/Components';
+import { Checkbox } from '@app/Application/Components';
 
 export const AddLicenseForm = () => {
   const { data: dataTypes } = useGetCertificatesTypes();
